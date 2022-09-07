@@ -14,7 +14,7 @@ services:
       timeout: 30s
       retries: 3
   rabbitmq:
-    image: egalbox/rabbitmq:2.0.1-management
+    image: egalbox/rabbitmq:2.0.1
     restart: unless-stopped
     environment:
       RABBITMQ_USER: ${RABBITMQ_USER}
@@ -55,3 +55,5 @@ services:
       RABBITMQ_USER: ${RABBITMQ_USER}
       RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD}
       WAIT_HOSTS: rabbitmq:5672,postgres:5432
+    volumes:
+      - ../php-package:/dependencies/php-package

@@ -5,6 +5,10 @@ services:
       - published: 5432
         target: 5432
   rabbitmq:
+    image: ${RABBITMQ_IMAGE:-egalbox/rabbitmq:2.0.1}
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD}
     ports:
       - published: 15672
         target: 15672

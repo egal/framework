@@ -9,5 +9,11 @@ auth-service-build: generate-dot-env-file
 auth-service-composer-install: generate-dot-env-file auth-service-build
 	docker-compose run --rm --no-deps auth-service composer install
 
-up: generate-dot-env-file
-	docker-compose up
+auth-service-composer-update: generate-dot-env-file
+	docker-compose run --rm --no-deps auth-service composer update
+
+up-dependencies-detach:
+	docker-compose up --detach rabbitmq postgres
+
+up: generate-dot-env-file up-dependencies-detach
+	docker-compose up auth-service web-service
