@@ -14,11 +14,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  * @property DateTime   $created_at    {@property-type field}
  * @property DateTime   $updated_at    {@property-type field}
  *
- * @action getItem  {@roles-access developer}
- * @action getItems {@roles-access developer}
- * @action create   {@roles-access developer}
- * @action update   {@roles-access developer}
- * @action delete   {@roles-access developer}
+ * @action getItem  {@statuses-access guest|logged}
+ * @action getItems {@statuses-access guest|logged}
+ * @action create   {@statuses-access guest|logged}
+ * @action update   {@statuses-access guest|logged}
+ * @action delete   {@statuses-access guest|logged}
  */
 class Permission extends Model
 {

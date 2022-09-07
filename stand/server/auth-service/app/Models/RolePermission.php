@@ -12,11 +12,11 @@ use DateTime;
  * @property DateTime   $created_at        {@property-type field}
  * @property DateTime   $updated_at        {@property-type field}
  *
- * @action getItem  {@roles-access admin,developer}
- * @action getItems {@roles-access admin,developer}
- * @action create   {@roles-access admin,developer}
- * @action update   {@roles-access admin,developer}
- * @action delete   {@roles-access admin,developer}
+ * @action getItem  {@statuses-access guest|logged}
+ * @action getItems {@statuses-access guest|logged}
+ * @action create   {@statuses-access guest|logged}
+ * @action update   {@statuses-access guest|logged}
+ * @action delete   {@statuses-access guest|logged}
  */
 class RolePermission extends Model
 {
