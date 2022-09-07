@@ -1,0 +1,57 @@
+version: '3.7'
+services:
+  postgres:
+    image: egalbox/postgres:2.1.0
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_MULTIPLE_DATABASES: auth
+    healthcheck:
+      test: pg_isready --username=${DB_USERNAME} --dbname=auth && pg_isready --username=${DB_USERNAME}
+        --dbname=auth
+      interval: 30s
+      timeout: 30s
+      retries: 3
+  rabbitmq:
+    image: egalbox/rabbitmq:2.0.1-management
+    restart: unless-stopped
+    environment:
+      RABBITMQ_USER: ${RABBITMQ_USER}
+      RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD}
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 30s
+      timeout: 30s
+      retries: 3
+  web-service:
+    image: egalbox/web-service:2.2.2
+    restart: unless-stopped
+    depends_on:
+      - rabbitmq
+    environment:
+      APP_NAME: ${PROJECT_NAME}
+      APP_SERVICE_NAME: web
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_USER: ${RABBITMQ_USER}
+      RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD}
+      WAIT_HOSTS: rabbitmq:5672
+  auth-service:
+    build:
+      context: server/auth-service
+    restart: unless-stopped
+    depends_on:
+      - rabbitmq
+      - postgres
+    environment:
+      APP_NAME: ${PROJECT_NAME}
+      APP_SERVICE_NAME: auth
+      APP_SERVICE_KEY: ${AUTH_SERVICE_KEY}
+      APP_SERVICES: ${AUTH_SERVICE_ENVIRONMENT_APP_SERVICES}
+      DB_HOST: postgres
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_USER: ${RABBITMQ_USER}
+      RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD}
+      WAIT_HOSTS: rabbitmq:5672,postgres:5432
