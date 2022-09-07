@@ -30,6 +30,7 @@ use Staudenmeir\EloquentHasManyDeep\HasRelationships;
  */
 class Employee extends Model
 {
+
     use UsesUuidKey;
     use HasFactory;
     use HasRelationships;
@@ -38,4 +39,5 @@ class Employee extends Model
         'created_at',
         'updated_at',
     ];
+
 }
