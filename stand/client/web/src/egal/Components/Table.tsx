@@ -2,36 +2,43 @@ import * as React from 'react';
 import NumberViewWidget from '../Widgets/NumberViewWidget';
 import StringViewWidget from '../Widgets/StringViewWidget';
 import TableColumnType from '../Types/TableColumnType';
-import { faker } from '@faker-js/faker';
+import axios from 'axios';
+import { DataProvider } from '../Providers/DataProvider';
 
 type Props = {
   header?: string;
+  serviceName: string;
   modelName: string;
   columns: TableColumnType[];
 };
 
 type State = {
-  bool: boolean;
+  items: object[];
 };
 
 export default class Table extends React.Component<Props, State> {
-  render() {
-    const data: any[] = [];
+  constructor(props: Props) {
+    super(props);
 
-    Array.from({ length: 10 }).forEach(() =>
-      data.push({
-        id: faker.datatype.number(),
-        age: faker.datatype.number({ min: 0, max: 100 }),
-        username: faker.internet.userName(),
-        first_name: faker.internet.userName(),
-        email: faker.internet.email(),
-        avatar: faker.image.avatar(),
-        password: faker.internet.password(),
-        birthdate: faker.date.birthdate(),
-        registeredAt: faker.date.past()
+    console.log(1);
+
+    this.state = { items: [] };
+  }
+
+  componentDidMount() {
+    new DataProvider(this.props.serviceName, this.props.modelName)
+      .getItems({
+        pagination: {
+          per_page: 10,
+          page: 1
+        }
       })
-    );
+      .then((res) => {
+        this.setState({ items: res.items });
+      });
+  }
 
+  render() {
     const columnsProps = this.props.columns.map((column: TableColumnType): TableColumnType => {
       const props: TableColumnType = Object.assign({}, column);
 
@@ -49,23 +56,22 @@ export default class Table extends React.Component<Props, State> {
       return props;
     });
 
-    const tableHeaders = columnsProps.map((columnProps: TableColumnType, index: number) => {
-      return <th key={index}>{columnProps.header}</th>;
-    });
+    const tableHeader = (
+      <tr>
+        {columnsProps.map((columnProps: TableColumnType, index: number) => {
+          return <th key={index}>{columnProps.header}</th>;
+        })}
+        <th>Actions</th>
+      </tr>
+    );
 
-    tableHeaders.push(<th>Actions</th>);
-
-    const tableData = data.map((dataRow, index: number) => {
+    const tableBody = this.state.items.map((item, index: number) => {
       return (
         <tr key={index}>
           {columnsProps.map((columnProps: TableColumnType, index: number) => {
             return (
               <td key={index}>
-                {React.createElement(
-                  columnProps.viewWidget,
-                  {},
-                  dataRow[columnProps.modelFieldPath as keyof object]
-                )}
+                {React.createElement(columnProps.viewWidget, {}, item[columnProps.field as keyof object])}
               </td>
             );
           })}
@@ -78,10 +84,10 @@ export default class Table extends React.Component<Props, State> {
 
     return (
       <div>
-        {this.props.header === null ? null : <h1>{this.props.header}</h1>}
+        {this.props.header && <h1>{this.props.header}</h1>}
         <table>
-          <tr>{tableHeaders}</tr>
-          {tableData}
+          <thead>{tableHeader}</thead>
+          <tbody>{tableBody}</tbody>
         </table>
       </div>
     );

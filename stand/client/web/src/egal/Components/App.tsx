@@ -1,7 +1,8 @@
 import * as React from 'react';
-import { PathRouteProps, Route, Routes } from 'react-router';
+import { PathRouteProps, Route, Routes } from 'react-router-dom';
 import MenuItemLink from './Navigate/MenuItemLink';
 import MenuItemGroup from './Navigate/MenuItemGroup';
+import { ReactElement } from 'react';
 
 type Props = {
   menu: React.ReactElement;
@@ -10,16 +11,15 @@ type Props = {
 };
 
 export default class App extends React.Component<Props> {
-  private scanRoutes = (menuItem: any, index: number) => {
+  private scanRoutes = (menuItem: ReactElement) => {
     if (menuItem.type === MenuItemLink) {
       return (
         <Route
           path={menuItem.props.path}
-          key={index}
           element={React.createElement(
             this.props.layout,
             { menu: this.props.menu },
-            menuItem.props.children
+            menuItem.props.element
           )}
         />
       );

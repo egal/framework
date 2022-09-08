@@ -24,12 +24,7 @@ COPY --from=composer /usr/bin/composer /usr/bin/composer
 WORKDIR /app
 
 # Preparing code base
-COPY composer.json .
-COPY composer.lock .
-RUN composer install --no-interaction --no-progress --no-autoloader --no-cache \
-    $(if [ $DEBUG == 'true' ]; then echo '--dev'; else echo '--no-dev'; fi)
 COPY . .
-RUN composer dump-autoload
 
 # Cleanup before run
 RUN if [ $DEBUG == 'false' ]; then rm /usr/bin/composer; fi

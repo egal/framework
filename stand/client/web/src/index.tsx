@@ -5,54 +5,45 @@ import logo from './assets/logo.svg';
 import Menu from './egal/Components/Navigate/Menu';
 import MenuItemLink from './egal/Components/Navigate/MenuItemLink';
 import MenuItemGroup from './egal/Components/Navigate/MenuItemGroup';
-import { BrowserRouter } from 'react-router-dom';
+import { BrowserRouter as Router, Routes } from 'react-router-dom';
 import App from './egal/Components/App';
 import Layout from './egal/Components/Layout';
 import Table from './egal/Components/Table';
 import NotFound from './egal/Components/NotFound';
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
-  <React.StrictMode>
-    <BrowserRouter>
+  <>
+    <Router>
       <div className="App">
         <App
           layout={Layout}
           menu={
             <Menu logotype={logo}>
-              <MenuItemLink header={'Home'} path={'/'}>
-                <h1>Home page</h1>
-              </MenuItemLink>
-              <MenuItemLink header={'Users'} path={'/first'}>
-                <Table
-                  header={'Users table header'}
-                  modelName={'users'}
-                  columns={[
-                    { header: 'ID', modelFieldPath: 'id', type: 'number', editable: false },
-                    {
-                      header: 'First name',
-                      modelFieldPath: 'first_name',
-                      type: 'string',
-                      editable: false
-                    },
-                    { header: 'Email', modelFieldPath: 'email', type: 'string', editable: false },
-                    { header: 'Age', modelFieldPath: 'age', type: 'number', editable: false }
-                  ]}
-                />
-              </MenuItemLink>
-              <MenuItemLink header={'Second'} path={'/second'}>
-                <h1>Second page</h1>
-              </MenuItemLink>
+              <MenuItemLink header={'Home'} path={'/'} element={<h1>Home page</h1>} />
+              <MenuItemLink
+                header={'Users'}
+                path={'/first'}
+                element={
+                  <Table
+                    header={'Users table header'}
+                    serviceName={'auth'}
+                    modelName={'Employee'}
+                    columns={[
+                      { header: 'ID', field: 'id', type: 'string', editable: false },
+                      { header: 'Address', field: 'address', type: 'string', editable: false },
+                      { header: 'Adult', field: 'adult', type: 'string', editable: false },
+                      { header: 'Phone', field: 'phone', type: 'number', editable: false },
+                      { header: 'Weight', field: 'weight', type: 'number', editable: false }
+                    ]}
+                  />
+                }
+              />
+              <MenuItemLink header={'Second'} path={'/second'} element={<h1>Second page</h1>} />
               <MenuItemGroup header={'Third'}>
-                <MenuItemLink header={'1'} path={'/1'}>
-                  <h1>1 page</h1>
-                </MenuItemLink>
-                <MenuItemLink header={'2'} path={'/2'}>
-                  <h1>2 page</h1>
-                </MenuItemLink>
+                <MenuItemLink header={'1'} path={'/1'} element={<h1>1 page</h1>} />
+                <MenuItemLink header={'2'} path={'/2'} element={<h1>2 page</h1>} />
               </MenuItemGroup>
-              <MenuItemLink header={'Fourth'} path={'/fourth'}>
-                <h1>Fourth page</h1>
-              </MenuItemLink>
+              <MenuItemLink header={'Fourth'} path={'/fourth'} element={<h1>Fourth page</h1>} />
             </Menu>
           }
           additionalRoutes={[
@@ -61,6 +52,6 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
           ]}
         />
       </div>
-    </BrowserRouter>
-  </React.StrictMode>
+    </Router>
+  </>
 );

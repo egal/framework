@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 
 export interface MenuItemLinkProps extends MenuItemProps {
   path: string;
-  children: ReactElement;
+  element: ReactElement;
 }
 
 export default class MenuItemLink extends MenuItem<MenuItemLinkProps> {

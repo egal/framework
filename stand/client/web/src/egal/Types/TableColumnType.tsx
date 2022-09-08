@@ -4,5 +4,5 @@ export default interface TableColumnType {
   viewWidget?: any;
   editWidget?: any;
   editable: boolean;
-  modelFieldPath: string;
+  field: string;
 }
