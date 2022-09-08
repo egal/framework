@@ -50,4 +50,11 @@ class FieldMetadata
 
         return $this;
     }
+
+    public function addValidationRule(string $validationRule, ): self
+    {
+        $this->validationRules[] = $validationRule;
+
+        return $this;
+    }
 }
