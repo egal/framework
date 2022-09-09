@@ -6,7 +6,7 @@ use App\Exceptions\EmptyPasswordException;
 use App\Exceptions\PasswordHashException;
 use App\Metadata\FieldMetadata;
 use App\Metadata\FieldTypeEnum;
-use App\Metadata\ModelMetadataManager;
+use App\Facades\ModelMetadataManager;
 use App\Metadata\ModelMetadata;
 use Egal\Auth\Tokens\UserMasterRefreshToken;
 use Egal\Auth\Tokens\UserMasterToken;

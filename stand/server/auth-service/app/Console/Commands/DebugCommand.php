@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Models\Employee;
 use Illuminate\Console\Command;
 
 class DebugCommand extends Command
@@ -11,7 +12,7 @@ class DebugCommand extends Command
 
     public function handle(): void
     {
-        //
+        var_dump((new \App\Models\Employee)->getMetadata());
     }
 
 }

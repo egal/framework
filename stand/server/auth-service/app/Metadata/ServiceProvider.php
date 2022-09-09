@@ -28,7 +28,7 @@ class ServiceProvider extends IlluminateServiceProvider
             $this->commands([]);
         }
 
-        $this->app->singleton(ModelMetadataManager::class, function (): ModelMetadataManager {
+        $this->app->singleton('modelMetadataManager', function (): ModelMetadataManager {
             return new ModelMetadataManager();
         });
 

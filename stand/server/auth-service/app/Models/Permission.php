@@ -4,7 +4,7 @@ namespace App\Models;
 
 use App\Metadata\FieldMetadata;
 use App\Metadata\FieldTypeEnum;
-use App\Metadata\ModelMetadataManager;
+use App\Facades\ModelMetadataManager;
 use App\Metadata\ModelMetadata;
 use DateTime;
 use Egal\Model\Model;

@@ -4,7 +4,7 @@ namespace App\Models;
 
 use App\Metadata\FieldMetadata;
 use App\Metadata\FieldTypeEnum;
-use App\Metadata\ModelMetadataManager;
+use App\Facades\ModelMetadataManager;
 use App\Metadata\ModelMetadata;
 use DateTime;
 use Egal\Model\Model;
@@ -48,7 +48,7 @@ class Employee extends Model
     /**
      * @throws ReflectionException
      */
-    public function constructMetadata(): ModelMetadata
+    public static function constructMetadata(): ModelMetadata
     {
         return ModelMetadata::make(Employee::class, FieldMetadata::make('id',FieldTypeEnum::UUID))
             ->addFields([
@@ -83,7 +83,7 @@ class Employee extends Model
             ]);
     }
 
-    public function getMetadata(): array
+    public static function getMetadata(): array
     {
         return ModelMetadataManager::getModelMetadata(static::class)->toArray();
     }
