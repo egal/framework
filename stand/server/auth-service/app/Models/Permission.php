@@ -2,6 +2,10 @@
 
 namespace App\Models;
 
+use Egal\Model\Enums\FieldTypeEnum;
+use Egal\Model\Facades\ModelMetadataManager;
+use Egal\Model\Metadata\FieldMetadata;
+use Egal\Model\Metadata\ModelMetadata;
 use DateTime;
 use Egal\Model\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -53,6 +57,16 @@ class Permission extends Model
                 });
             }
         });
+    }
+
+    public static function constructMetadata(): ModelMetadata
+    {
+        return ModelMetadata::make(self::class, FieldMetadata::make('id', FieldTypeEnum::UUID));
+    }
+
+    public static function getMetadata(): array
+    {
+        return ModelMetadataManager::getModelMetadata(static::class)->toArray();
     }
 
 }

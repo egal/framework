@@ -8,6 +8,10 @@ use Egal\Auth\Tokens\UserMasterRefreshToken;
 use Egal\Auth\Tokens\UserMasterToken;
 use Egal\AuthServiceDependencies\Exceptions\LoginException;
 use Egal\AuthServiceDependencies\Models\User as BaseUser;
+use Egal\Model\Enums\FieldTypeEnum;
+use Egal\Model\Facades\ModelMetadataManager;
+use Egal\Model\Metadata\FieldMetadata;
+use Egal\Model\Metadata\ModelMetadata;
 use Egal\Model\Traits\UsesUuidKey;
 use DateTime;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -128,6 +132,16 @@ class User extends BaseUser
     protected function getPermissions(): array
     {
         return array_unique($this->permissions->pluck('id')->toArray());
+    }
+
+    public static function constructMetadata(): ModelMetadata
+    {
+        return ModelMetadata::make(self::class, FieldMetadata::make('id', FieldTypeEnum::UUID));
+    }
+
+    public static function getMetadata(): array
+    {
+        return ModelMetadataManager::getModelMetadata(static::class)->toArray();
     }
 
 }

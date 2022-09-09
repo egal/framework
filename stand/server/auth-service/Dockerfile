@@ -25,7 +25,6 @@ WORKDIR /app
 
 # Preparing code base
 COPY . .
-RUN composer dump-autoload
 
 # Cleanup before run
 RUN if [ $DEBUG == 'false' ]; then rm /usr/bin/composer; fi

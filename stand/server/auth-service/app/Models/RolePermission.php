@@ -2,6 +2,10 @@
 
 namespace App\Models;
 
+use Egal\Model\Enums\FieldTypeEnum;
+use Egal\Model\Facades\ModelMetadataManager;
+use Egal\Model\Metadata\FieldMetadata;
+use Egal\Model\Metadata\ModelMetadata;
 use Egal\Model\Model;
 use DateTime;
 
@@ -30,5 +34,15 @@ class RolePermission extends Model
         'created_at',
         'updated_at',
     ];
+
+    public static function constructMetadata(): ModelMetadata
+    {
+        return ModelMetadata::make(self::class, FieldMetadata::make('id', FieldTypeEnum::UUID));
+    }
+
+    public static function getMetadata(): array
+    {
+        return ModelMetadataManager::getModelMetadata(static::class)->toArray();
+    }
 
 }

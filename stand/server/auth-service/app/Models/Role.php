@@ -2,6 +2,10 @@
 
 namespace App\Models;
 
+use Egal\Model\Enums\FieldTypeEnum;
+use Egal\Model\Facades\ModelMetadataManager;
+use Egal\Model\Metadata\FieldMetadata;
+use Egal\Model\Metadata\ModelMetadata;
 use Egal\Model\Model;
 use DateTime;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -69,4 +73,13 @@ class Role extends Model
         return $this->belongsToMany(Permission::class, 'role_permissions');
     }
 
+    public static function constructMetadata(): ModelMetadata
+    {
+        return ModelMetadata::make(self::class, FieldMetadata::make('id', FieldTypeEnum::UUID));
+    }
+
+    public static function getMetadata(): array
+    {
+        return ModelMetadataManager::getModelMetadata(static::class)->toArray();
+    }
 }

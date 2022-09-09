@@ -1,6 +1,8 @@
 <?php
 
-namespace App\Metadata;
+namespace Egal\Model\Traits;
+
+use Egal\Model\Enums\ValidationRulesEnum;
 
 trait FieldValidationRules
 {

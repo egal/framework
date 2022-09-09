@@ -7,6 +7,7 @@ namespace Egal\Model;
 use Egal\Model\Exceptions\ObjectNotFoundException;
 use Egal\Model\Exceptions\UpdateException;
 use Egal\Model\Exceptions\UpdateManyException;
+use Egal\Model\Facades\ModelMetadataManager;
 use Egal\Model\Filter\FilterPart;
 use Egal\Model\Traits\FilterConditionApplier;
 use Egal\Model\Traits\HasDefaultLimits;
@@ -88,7 +89,7 @@ abstract class Model extends EloquentModel
      */
     public static function actionGetMetadata(): array
     {
-        return ModelManager::getModelMetadata(static::class)->toArray();
+        return ModelMetadataManager::getModelMetadata(static::class)->toArray();
     }
 
     /**
