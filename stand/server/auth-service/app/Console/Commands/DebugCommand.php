@@ -12,7 +12,7 @@ class DebugCommand extends Command
 
     public function handle(): void
     {
-        var_dump(Employee::getMetadata());
+        //
     }
 
 }
