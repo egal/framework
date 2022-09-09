@@ -2,7 +2,6 @@
 
 namespace App\Console\Commands;
 
-use App\Models\Employee;
 use Illuminate\Console\Command;
 
 class DebugCommand extends Command
