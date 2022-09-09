@@ -4,6 +4,10 @@ namespace App\Models;
 
 use App\Exceptions\EmptyPasswordException;
 use App\Exceptions\PasswordHashException;
+use App\Metadata\FieldMetadata;
+use App\Metadata\FieldTypeEnum;
+use App\Metadata\MetadataManager;
+use App\Metadata\ModelMetadata;
 use Egal\Auth\Tokens\UserMasterRefreshToken;
 use Egal\Auth\Tokens\UserMasterToken;
 use Egal\AuthServiceDependencies\Exceptions\LoginException;
@@ -128,6 +132,16 @@ class User extends BaseUser
     protected function getPermissions(): array
     {
         return array_unique($this->permissions->pluck('id')->toArray());
+    }
+
+    public static function constructMetadata(): ModelMetadata
+    {
+        return ModelMetadata::make(self::class, FieldMetadata::make('id', Uuid::class,FieldTypeEnum::KEY));
+    }
+
+    public static function getMetadata(): array
+    {
+        return MetadataManager::getModelMetadata(static::class)->toArray();
     }
 
 }

@@ -2,8 +2,6 @@
 
 namespace App\Metadata;
 
-use App\Exceptions\TypeNotAllowedAsFieldTypeException;
-
 class FieldMetadata
 {
 
@@ -11,37 +9,35 @@ class FieldMetadata
 
     protected string $name;
 
-    protected string $type;
+    protected string $dataType;
+
+    protected FieldTypeEnum $fieldType;
 
     /**
      * @var string[]
      */
     protected array $validationRules = [];
 
-    /**
-     * @param string $name
-     * @param string $type
-     * @return FieldMetadata
-     * @throws TypeNotAllowedAsFieldTypeException
-     */
-    public static function make(string $name, string $type): self
+    public static function make(string $name, string $dataType, FieldTypeEnum $fieldType): self
     {
-        if (! in_array($type, FieldTypeEnum::getValuesInLowerCase())) {
-            throw TypeNotAllowedAsFieldTypeException::make($type);
-        }
-
-        return new static($name, $type);
+        return new static($name, $dataType, $fieldType);
     }
 
-    protected function __construct(string $name, string $type)
+    protected function __construct(string $name, string $dataType, FieldTypeEnum $fieldType)
     {
         $this->name = $name;
-        $this->type = $type;
+        $this->fieldType = $fieldType;
+        $this->dataType = $dataType;
     }
 
-    public function getName(): string
+    public function toArray(): array
     {
-        return $this->name;
+        return [
+            'name' => $this->name,
+            'fieldType' => $this->fieldType->value,
+            'dataType' => $this->dataType,
+            'validationRules' => $this->validationRules
+        ];
     }
 
     public function setName(string $name): self
@@ -51,10 +47,40 @@ class FieldMetadata
         return $this;
     }
 
-    public function addValidationRule(string $validationRule, ): self
+    public function setFieldType(FieldTypeEnum $fieldType): self
+    {
+        $this->fieldType = $fieldType;
+
+        return $this;
+    }
+
+    public function setDataType(string $dataType): self
+    {
+        $this->dataType = $dataType;
+
+        return $this;
+    }
+
+    public function addValidationRule(string $validationRule): self
     {
         $this->validationRules[] = $validationRule;
 
         return $this;
     }
+
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    public function getDataType(): string
+    {
+        return $this->dataType;
+    }
+
+    public function getFiledType(): FieldTypeEnum
+    {
+        return $this->fieldType;
+    }
+
 }

@@ -32,7 +32,7 @@ class ServiceProvider extends IlluminateServiceProvider
             return new MetadataManager();
         });
 
-        MetadataManager::loadModel(MetadataManager::class);
+        MetadataManager::loadModel();
 
         $this->commands([]);
     }

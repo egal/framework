@@ -2,9 +2,14 @@
 
 namespace App\Models;
 
+use App\Metadata\FieldMetadata;
+use App\Metadata\FieldTypeEnum;
+use App\Metadata\MetadataManager;
+use App\Metadata\ModelMetadata;
 use DateTime;
 use Egal\Model\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Ramsey\Uuid\Uuid;
 
 /**
  * @property string     $id            {@primary-key}           {@property-type field}
@@ -53,6 +58,16 @@ class Permission extends Model
                 });
             }
         });
+    }
+
+    public static function constructMetadata(): ModelMetadata
+    {
+        return ModelMetadata::make(self::class, FieldMetadata::make('id', Uuid::class,FieldTypeEnum::KEY));
+    }
+
+    public static function getMetadata(): array
+    {
+        return MetadataManager::getModelMetadata(static::class)->toArray();
     }
 
 }

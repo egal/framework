@@ -7,6 +7,7 @@ namespace Egal\Model;
 use Egal\Core\Exceptions\ModelNotFoundException;
 use Egal\Model\Exceptions\LoadModelImpossiblyException;
 use Egal\Model\Metadata\ModelMetadata;
+use Illuminate\Support\Facades\Log;
 
 class ModelManager
 {
@@ -65,7 +66,6 @@ class ModelManager
         if (isset($instance->modelsMetadata[$classShortName])) {
             throw new LoadModelImpossiblyException();
         }
-
         $instance->modelsMetadata[$classShortName] = new ModelMetadata($class);
     }
 

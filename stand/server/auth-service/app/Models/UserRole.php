@@ -2,6 +2,10 @@
 
 namespace App\Models;
 
+use App\Metadata\FieldMetadata;
+use App\Metadata\FieldTypeEnum;
+use App\Metadata\MetadataManager;
+use App\Metadata\ModelMetadata;
 use Egal\Model\Model;
 use Faker\Core\DateTime;
 use Ramsey\Uuid\Uuid;
@@ -31,5 +35,15 @@ class UserRole extends Model
         'created_at',
         'updated_at',
     ];
+
+    public static function constructMetadata(): ModelMetadata
+    {
+        return ModelMetadata::make(self::class, FieldMetadata::make('id', Uuid::class,FieldTypeEnum::KEY));
+    }
+
+    public static function getMetadata(): array
+    {
+        return MetadataManager::getModelMetadata(static::class)->toArray();
+    }
 
 }
