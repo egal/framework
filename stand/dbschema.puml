@@ -31,7 +31,6 @@ entity "School" as school {
   *id : uid <<generated>>
   --
   *name : string
-  *school_id: uid <<FK>>
   avatar: string
 }
 

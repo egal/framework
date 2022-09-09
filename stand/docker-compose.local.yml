@@ -25,3 +25,10 @@ services:
     user: ${UID}:${GID}
     volumes:
       - ./server/auth-service:/app:rw
+  core-service:
+    build:
+      args:
+        DEBUG: 'true'
+    user: ${UID}:${GID}
+    volumes:
+      - ./server/core-service:/app:rw
