@@ -4,6 +4,7 @@ import StringViewWidget from '../Widgets/StringViewWidget';
 import TableColumnType from '../Types/TableColumnType';
 import axios from 'axios';
 import { DataProvider } from '../Providers/DataProvider';
+import { Box, DataTable, Meter, Text } from 'grommet';
 
 type Props = {
   header?: string;
@@ -19,8 +20,6 @@ type State = {
 export default class Table extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
-
-    console.log(1);
 
     this.state = { items: [] };
   }
