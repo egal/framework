@@ -20,6 +20,8 @@ class ModelMetadata
      */
     protected array $fields = [];
 
+    protected array $fakeFields = [];
+
     /**
      * @var Closure[]
      */
@@ -49,20 +51,35 @@ class ModelMetadata
             'model_class' => $this->modelClass,
             'model_short_name' => $this->modelShortName,
             'primary_key'   => $this->primaryKey,
-            'relations' => $this->relations,
         ];
+
         foreach ($this->fields as $field) {
-            $modelMetadata[$field->getFiledType()->value . 's'][] = $field->toArray();
+            $modelMetadata['fields'][] = $field->toArray();
+        }
+
+        foreach ($this->fakeFields as $field) {
+            $modelMetadata['fields'][] = $field->toArray();
         }
 
         return $modelMetadata;
     }
+
     /**
      * @param FieldMetadata[] $fields
      */
     public function addFields(array $fields): self
     {
         $this->fields = array_merge($this->fields, $fields);
+
+        return $this;
+    }
+
+    /**
+     * @param FieldMetadata[] $fakeFields
+     */
+    public function addFakeFields(array $fakeFields): self
+    {
+        $this->fakeFields = array_merge($this->fakeFields, $fakeFields);
 
         return $this;
     }
@@ -77,4 +94,18 @@ class ModelMetadata
         return $this;
     }
 
+    public function getFields(): array
+    {
+        return $this->fields;
+    }
+
+    public function getFakeFields(): array
+    {
+        return $this->fakeFields;
+    }
+
+    public function getPrimaryKey(): FieldMetadata
+    {
+        return $this->primaryKey;
+    }
 }

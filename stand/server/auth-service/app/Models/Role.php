@@ -4,13 +4,12 @@ namespace App\Models;
 
 use App\Metadata\FieldMetadata;
 use App\Metadata\FieldTypeEnum;
-use App\Metadata\MetadataManager;
+use App\Metadata\ModelMetadataManager;
 use App\Metadata\ModelMetadata;
 use Egal\Model\Model;
 use DateTime;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Ramsey\Uuid\Uuid;
 
 /**
  * @property string     $id            {@primary-key}          {@property-type field} {@validation-rules required|string|unique:role}
@@ -76,11 +75,11 @@ class Role extends Model
 
     public static function constructMetadata(): ModelMetadata
     {
-        return ModelMetadata::make(self::class, FieldMetadata::make('id', Uuid::class,FieldTypeEnum::KEY));
+        return ModelMetadata::make(self::class, FieldMetadata::make('id', FieldTypeEnum::UUID));
     }
 
     public static function getMetadata(): array
     {
-        return MetadataManager::getModelMetadata(static::class)->toArray();
+        return ModelMetadataManager::getModelMetadata(static::class)->toArray();
     }
 }

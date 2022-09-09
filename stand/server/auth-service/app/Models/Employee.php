@@ -4,7 +4,7 @@ namespace App\Models;
 
 use App\Metadata\FieldMetadata;
 use App\Metadata\FieldTypeEnum;
-use App\Metadata\MetadataManager;
+use App\Metadata\ModelMetadataManager;
 use App\Metadata\ModelMetadata;
 use DateTime;
 use Egal\Model\Model;
@@ -48,30 +48,32 @@ class Employee extends Model
     /**
      * @throws ReflectionException
      */
-    public static function constructMetadata(): ModelMetadata
+    public function constructMetadata(): ModelMetadata
     {
-        return ModelMetadata::make(Employee::class, FieldMetadata::make('id', Uuid::class, FieldTypeEnum::KEY))
+        return ModelMetadata::make(Employee::class, FieldMetadata::make('id',FieldTypeEnum::UUID))
             ->addFields([
-                FieldMetadata::make('address', 'string', FieldTypeEnum::FIELD)
+                FieldMetadata::make('address', FieldTypeEnum::STRING)
                     ->required()
                     ->string()
                 ,
-                FieldMetadata::make('phone', 'int', FieldTypeEnum::FIELD)
+                FieldMetadata::make('phone', FieldTypeEnum::INT)
                     ->required()
                     ->int()
                     ->addValidationRule('unique:employees,phone')
                 ,
-                FieldMetadata::make('adult', 'bool', FieldTypeEnum::FIELD)
+                FieldMetadata::make('adult', FieldTypeEnum::BOOL)
                     ->required()
                     ->boolean()
                 ,
-                FieldMetadata::make('weight', 'float', FieldTypeEnum::FIELD)
+                FieldMetadata::make('weight', FieldTypeEnum::FLOAT)
                     ->required()
                     ->float()
                 ,
-                FieldMetadata::make('created_at', DateTime::class, FieldTypeEnum::FIELD),
-                FieldMetadata::make('updated_at', DateTime::class, FieldTypeEnum::FIELD),
-                FieldMetadata::make('height', 'float', FieldTypeEnum::FAKE_FIELD)
+                FieldMetadata::make('created_at', FieldTypeEnum::DATETIME),
+                FieldMetadata::make('updated_at', FieldTypeEnum::DATETIME)
+            ])
+            ->addFakeFields([
+                FieldMetadata::make('height',  FieldTypeEnum::FLOAT)
                     ->sometimes()
                     ->required()
                     ->float()
@@ -81,9 +83,9 @@ class Employee extends Model
             ]);
     }
 
-    public static function getMetadata(): array
+    public function getMetadata(): array
     {
-        return MetadataManager::getModelMetadata(static::class)->toArray();
+        return ModelMetadataManager::getModelMetadata(static::class)->toArray();
     }
 
 }

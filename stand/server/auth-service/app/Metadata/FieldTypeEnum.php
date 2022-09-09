@@ -2,15 +2,17 @@
 
 namespace App\Metadata;
 
+use DateTime;
+use Ramsey\Uuid\Uuid;
+
 enum FieldTypeEnum: string
 {
 
-    use EnumValuesTrait;
-
-    case FIELD = 'field';
-
-    case KEY = 'key';
-
-    case FAKE_FIELD = 'fake_field';
+    case STRING = 'field';
+    case INT = 'key';
+    case FLOAT = 'float';
+    case BOOL = 'bool';
+    case UUID = Uuid::class;
+    case DATETIME = DateTime::class;
 
 }

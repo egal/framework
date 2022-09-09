@@ -9,33 +9,29 @@ class FieldMetadata
 
     protected string $name;
 
-    protected string $dataType;
-
-    protected FieldTypeEnum $fieldType;
+    protected FieldTypeEnum $type;
 
     /**
      * @var string[]
      */
     protected array $validationRules = [];
 
-    public static function make(string $name, string $dataType, FieldTypeEnum $fieldType): self
+    public static function make(string $name, FieldTypeEnum $type): self
     {
-        return new static($name, $dataType, $fieldType);
+        return new static($name, $type);
     }
 
-    protected function __construct(string $name, string $dataType, FieldTypeEnum $fieldType)
+    protected function __construct(string $name, FieldTypeEnum $type)
     {
         $this->name = $name;
-        $this->fieldType = $fieldType;
-        $this->dataType = $dataType;
+        $this->type = $type;
     }
 
     public function toArray(): array
     {
         return [
             'name' => $this->name,
-            'fieldType' => $this->fieldType->value,
-            'dataType' => $this->dataType,
+            'fieldType' => $this->type->value,
             'validationRules' => $this->validationRules
         ];
     }
@@ -47,16 +43,9 @@ class FieldMetadata
         return $this;
     }
 
-    public function setFieldType(FieldTypeEnum $fieldType): self
+    public function setType(FieldTypeEnum $type): self
     {
-        $this->fieldType = $fieldType;
-
-        return $this;
-    }
-
-    public function setDataType(string $dataType): self
-    {
-        $this->dataType = $dataType;
+        $this->type = $type;
 
         return $this;
     }
@@ -73,14 +62,9 @@ class FieldMetadata
         return $this->name;
     }
 
-    public function getDataType(): string
+    public function getType(): FieldTypeEnum
     {
-        return $this->dataType;
-    }
-
-    public function getFiledType(): FieldTypeEnum
-    {
-        return $this->fieldType;
+        return $this->type;
     }
 
 }

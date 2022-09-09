@@ -4,7 +4,7 @@ namespace App\Metadata;
 
 use Egal\Core\Exceptions\ModelNotFoundException;
 
-class MetadataManager
+class ModelMetadataManager
 {
     /**
      * @var ModelMetadata[]
@@ -16,7 +16,7 @@ class MetadataManager
         $this->scanModels();
     }
 
-    public static function getInstance(): MetadataManager
+    public static function getInstance(): ModelMetadataManager
     {
         return app(self::class);
     }

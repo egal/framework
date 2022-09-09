@@ -6,7 +6,7 @@ use App\Exceptions\EmptyPasswordException;
 use App\Exceptions\PasswordHashException;
 use App\Metadata\FieldMetadata;
 use App\Metadata\FieldTypeEnum;
-use App\Metadata\MetadataManager;
+use App\Metadata\ModelMetadataManager;
 use App\Metadata\ModelMetadata;
 use Egal\Auth\Tokens\UserMasterRefreshToken;
 use Egal\Auth\Tokens\UserMasterToken;
@@ -136,12 +136,12 @@ class User extends BaseUser
 
     public static function constructMetadata(): ModelMetadata
     {
-        return ModelMetadata::make(self::class, FieldMetadata::make('id', Uuid::class,FieldTypeEnum::KEY));
+        return ModelMetadata::make(self::class, FieldMetadata::make('id', FieldTypeEnum::UUID));
     }
 
     public static function getMetadata(): array
     {
-        return MetadataManager::getModelMetadata(static::class)->toArray();
+        return ModelMetadataManager::getModelMetadata(static::class)->toArray();
     }
 
 }
