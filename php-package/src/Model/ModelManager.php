@@ -7,7 +7,6 @@ namespace Egal\Model;
 use Egal\Core\Exceptions\ModelNotFoundException;
 use Egal\Model\Exceptions\LoadModelImpossiblyException;
 use Egal\Model\Metadata\ModelMetadata;
-use Illuminate\Support\Facades\Log;
 
 class ModelManager
 {
