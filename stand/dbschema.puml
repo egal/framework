@@ -125,11 +125,11 @@ entity "Role" as role {
   --
   *name : string
 }
+
  user    |o--|{ user_role
  role    |o--|{ user_role
  role    |o--|{ role_permission
  permission |o--|{ role_permission
-
 }
 
 database chat-service: {
@@ -153,7 +153,7 @@ entity "User" as chat_user {
 entity "Chat" as chat {
   *id : uid <<generated>>
   --
-  *name
+  *name: string
 }
 
 entity "UserChat" as user_chat {
