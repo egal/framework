@@ -1,6 +1,9 @@
 <?php
 
-namespace App\Metadata;
+namespace Egal\Model\Metadata;
+
+use Egal\Model\Traits\FieldValidationRules;
+use Egal\Model\Enums\FieldTypeEnum;
 
 class FieldMetadata
 {

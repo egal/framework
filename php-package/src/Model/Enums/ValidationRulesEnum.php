@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Metadata;
+namespace Egal\Model\Enums;
 
 enum ValidationRulesEnum: string
 {

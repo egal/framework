@@ -1,18 +1,20 @@
 <?php
 
-namespace App\Facades;
+namespace Egal\Model\Facades;
 
-use App\Metadata\ModelMetadata;
+use Egal\Model\Metadata\ModelMetadata;
 use Illuminate\Support\Facades\Facade;
 
 /**
- * @method static \App\Metadata\ModelMetadataManager getInstance()
+ * @method static \Egal\Model\ModelMetadataManager getInstance()
  * @method static ModelMetadata getModelMetadata(string $class)
  */
 class ModelMetadataManager extends Facade
 {
+
     protected static function getFacadeAccessor(): string
     {
         return 'modelMetadataManager';
     }
+
 }

@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Metadata;
+namespace Egal\Model;
 
-use Egal\Core\Exceptions\ModelNotFoundException;
+use Egal\Model\Metadata\ModelMetadata;
 
 class ModelMetadataManager
 {
@@ -21,9 +21,6 @@ class ModelMetadataManager
         return app(self::class);
     }
 
-    /**
-     * @throws ModelNotFoundException
-     */
     public static function getModelMetadata(string $class): ModelMetadata
     {
         return self::getInstance()->modelsMetadata[$class] ?? call_user_func(array($class, 'constructMetadata'))->toArray();

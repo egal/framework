@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Metadata;
+namespace Egal\Model\Enums;
 
 use DateTime;
 use Ramsey\Uuid\Uuid;

@@ -2,10 +2,9 @@
 
 namespace App\Models;
 
-use App\Metadata\FieldMetadata;
-use App\Metadata\FieldTypeEnum;
-use App\Facades\ModelMetadataManager;
-use App\Metadata\ModelMetadata;
+use Egal\Model\Enums\FieldTypeEnum;
+use Egal\Model\Metadata\FieldMetadata;
+use Egal\Model\Metadata\ModelMetadata;
 use DateTime;
 use Egal\Model\Model;
 use Egal\Model\Traits\UsesUuidKey;
@@ -81,11 +80,6 @@ class Employee extends Model
             ->addRelations([
                 'first' => fn() => $this->hasMany(User::class)
             ]);
-    }
-
-    public static function getMetadata(): array
-    {
-        return ModelMetadataManager::getModelMetadata(static::class)->toArray();
     }
 
 }

@@ -2,10 +2,10 @@
 
 namespace App\Models;
 
-use App\Metadata\FieldMetadata;
-use App\Metadata\FieldTypeEnum;
-use App\Facades\ModelMetadataManager;
-use App\Metadata\ModelMetadata;
+use Egal\Model\Enums\FieldTypeEnum;
+use Egal\Model\Facades\ModelMetadataManager;
+use Egal\Model\Metadata\FieldMetadata;
+use Egal\Model\Metadata\ModelMetadata;
 use Egal\AuthServiceDependencies\Models\Service as BaseService;
 
 /**

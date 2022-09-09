@@ -68,7 +68,6 @@ $app->configure('app');
 
 $app->register(Egal\Core\ServiceProvider::class);
 $app->register(Egal\Model\ServiceProvider::class);
-$app->register(App\Metadata\ServiceProvider::class);
 $app->register(Egal\AuthServiceDependencies\ServiceProvider::class);
 
 return $app;

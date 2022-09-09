@@ -4,14 +4,14 @@ namespace App\Models;
 
 use App\Exceptions\EmptyPasswordException;
 use App\Exceptions\PasswordHashException;
-use App\Metadata\FieldMetadata;
-use App\Metadata\FieldTypeEnum;
-use App\Facades\ModelMetadataManager;
-use App\Metadata\ModelMetadata;
 use Egal\Auth\Tokens\UserMasterRefreshToken;
 use Egal\Auth\Tokens\UserMasterToken;
 use Egal\AuthServiceDependencies\Exceptions\LoginException;
 use Egal\AuthServiceDependencies\Models\User as BaseUser;
+use Egal\Model\Enums\FieldTypeEnum;
+use Egal\Model\Facades\ModelMetadataManager;
+use Egal\Model\Metadata\FieldMetadata;
+use Egal\Model\Metadata\ModelMetadata;
 use Egal\Model\Traits\UsesUuidKey;
 use DateTime;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
