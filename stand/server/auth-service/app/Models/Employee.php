@@ -11,7 +11,6 @@ use Egal\Model\Traits\UsesUuidKey;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Collection;
 use Ramsey\Uuid\Uuid;
-use ReflectionException;
 use Staudenmeir\EloquentHasManyDeep\HasRelationships;
 
 /**
@@ -44,9 +43,6 @@ class Employee extends Model
         'updated_at',
     ];
 
-    /**
-     * @throws ReflectionException
-     */
     public static function constructMetadata(): ModelMetadata
     {
         return ModelMetadata::make(Employee::class, FieldMetadata::make('id',FieldTypeEnum::UUID))

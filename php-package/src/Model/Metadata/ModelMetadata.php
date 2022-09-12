@@ -3,8 +3,8 @@
 namespace Egal\Model\Metadata;
 
 use Closure;
-use ReflectionClass;
-use ReflectionException;
+use Egal\Model\Exceptions\FieldNotFoundException;
+use Egal\Model\Exceptions\RelationNotFoundException;
 
 class ModelMetadata
 {
@@ -27,21 +27,17 @@ class ModelMetadata
      */
     protected array $relations = [];
 
-    /**
-     * @throws ReflectionException
-     */
+    protected array $actions = [];
+
     public static function make(string $modelClass, FieldMetadata $key): self
     {
         return new static($modelClass, $key);
     }
 
-    /**
-     * @throws ReflectionException
-     */
     public function __construct(string $modelClass, FieldMetadata $key)
     {
         $this->modelClass = $modelClass;
-        $this->modelShortName = (new ReflectionClass($this->modelClass))->getShortName();
+        $this->modelShortName = get_class_short_name($modelClass);
         $this->primaryKey = $key;
     }
 
@@ -51,6 +47,8 @@ class ModelMetadata
             'model_class' => $this->modelClass,
             'model_short_name' => $this->modelShortName,
             'primary_key'   => $this->primaryKey->toArray(),
+            'actions' => $this->actions,
+            'relations' => $this->getRelations()
         ];
 
         foreach ($this->fields as $field) {
@@ -94,6 +92,53 @@ class ModelMetadata
         return $this;
     }
 
+    public function addActions(array $actions): self
+    {
+        $this->actions = array_merge($this->actions, $actions);
+
+        return $this;
+    }
+
+    public function fieldExist(string $fieldName): bool
+    {
+        foreach ($this->fields as $field) {
+            if ($field->getName() === $fieldName) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @throws FieldNotFoundException
+     */
+    public function fieldExistOrFail(string $fieldName): bool
+    {
+        if (!$this->fieldExist($fieldName)) {
+            throw FieldNotFoundException::make($fieldName);
+        }
+
+        return true;
+    }
+
+    public function relationExist(string $relation): bool
+    {
+        return array_key_exists($relation, $this->relations);
+    }
+
+    /**
+     * @throws RelationNotFoundException
+     */
+    public function relationExistOrFail(string $relation): bool
+    {
+        if (!$this->relationExist($relation)) {
+            throw RelationNotFoundException::make($relation);
+        }
+
+        return true;
+    }
+
     public function getPrimaryKey(): FieldMetadata
     {
         return $this->primaryKey;
@@ -112,6 +157,16 @@ class ModelMetadata
     public function getRelations(): array
     {
         return $this->relations;
+    }
+
+    public function getModelClass(): string
+    {
+        return $this->$this->modelClass;
+    }
+
+    public function getActions(): array
+    {
+        return $this->actions;
     }
 
 }

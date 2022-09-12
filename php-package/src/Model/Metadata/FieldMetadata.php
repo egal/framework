@@ -70,4 +70,9 @@ class FieldMetadata
         return $this->type;
     }
 
+    public function getValidationRules(): array
+    {
+        return $this->validationRules;
+    }
+
 }

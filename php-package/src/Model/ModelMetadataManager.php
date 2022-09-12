@@ -2,7 +2,7 @@
 
 namespace Egal\Model;
 
-use App\Models\Employee;
+use Egal\Core\Exceptions\ModelNotFoundException;
 use Egal\Model\Metadata\ModelMetadata;
 
 class ModelMetadataManager
@@ -20,9 +20,25 @@ class ModelMetadataManager
         return app(self::class);
     }
 
+    /**
+     * @throws ModelNotFoundException
+     */
     public function getModelMetadata(string $class): ModelMetadata
     {
-        return $this->getInstance()->modelsMetadata[$class] ?? call_user_func(array($class, 'constructMetadata'));
+        if (class_exists($class)) {
+            return $this->getInstance()->modelsMetadata[get_class_short_name($class)] ?? call_user_func(array($class, 'constructMetadata'));
+        }
+
+        if (isset(self::getInstance()->modelsMetadata[$class])) {
+            return self::getInstance()->modelsMetadata[$class];
+        }
+
+        throw ModelNotFoundException::make($class);
+    }
+
+    public function getModelsMetadata(): array
+    {
+        return $this->modelsMetadata;
     }
 
     public function registerDir(string $dir, string $modelsNamespace): void
@@ -52,17 +68,19 @@ class ModelMetadataManager
             $class = str_replace('/', '\\', $class);
             $class = $modelsNamespace . $class;
 
-            $this->modelsMetadata[$class] = call_user_func(array($class, 'constructMetadata'));
+            $this->registerModel($class);
         }
     }
 
     public function registerModel(string $class): void
     {
-        if (empty($this->modelsMetadata[$class])) {
+        $classShortName = get_class_short_name($class);
+
+        if (empty($this->modelsMetadata[$classShortName])) {
             return;
         }
 
-        $this->modelsMetadata[$class] = call_user_func(array($class, 'constructMetadata'))->toArray();
+        $this->modelsMetadata[$classShortName] = call_user_func(array($class, 'constructMetadata'))->toArray();
     }
 
 }

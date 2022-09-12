@@ -12,5 +12,8 @@ enum FieldTypeEnum: string
     case UUID       = 'uuid';
     case DATETIME   = 'datetime';
     case DATE       = 'date';
+    case JSON       = 'json';
+    case BOOLEAN    = 'boolean';
+    case NUMERIC    = 'numeric';
 
 }

@@ -41,9 +41,4 @@ class UserRole extends Model
         return ModelMetadata::make(self::class, FieldMetadata::make('id', FieldTypeEnum::UUID));
     }
 
-    public static function getMetadata(): array
-    {
-        return ModelMetadataManager::getModelMetadata(static::class)->toArray();
-    }
-
 }
