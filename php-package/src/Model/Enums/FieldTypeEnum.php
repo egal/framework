@@ -2,9 +2,6 @@
 
 namespace Egal\Model\Enums;
 
-use DateTime;
-use Ramsey\Uuid\Uuid;
-
 enum FieldTypeEnum: string
 {
 
@@ -14,5 +11,6 @@ enum FieldTypeEnum: string
     case BOOL       = 'bool';
     case UUID       = 'uuid';
     case DATETIME   = 'datetime';
+    case DATE       = 'date';
 
 }
