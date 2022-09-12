@@ -8,9 +8,9 @@ use Egal\Auth\Accesses\StatusAccess;
 use Egal\Core\Exceptions\ActionCallException;
 use Egal\Core\Exceptions\NoAccessActionCallException;
 use Egal\Core\Session\Session;
+use Egal\Model\Facades\ModelMetadataManager;
 use Egal\Model\Metadata\ModelActionMetadata;
 use Egal\Model\Metadata\ModelMetadata;
-use Egal\Model\ModelManager;
 use Illuminate\Support\Str;
 
 /**
@@ -45,7 +45,7 @@ class ActionCaller
      */
     public function __construct(string $modelName, string $actionName, array $actionParameters = [])
     {
-        $this->modelMetadata = ModelManager::getModelMetadata($modelName);
+        $this->modelMetadata = ModelMetadataManager::getModelMetadata(static::class);
         $this->modelActionMetadata = $this->modelMetadata->getAction($actionName);
         $this->actionParameters = $actionParameters;
     }
