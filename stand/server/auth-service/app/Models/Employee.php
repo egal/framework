@@ -57,7 +57,7 @@ class Employee extends Model
                 ,
                 FieldMetadata::make('phone', FieldTypeEnum::INT)
                     ->required()
-                    ->int()
+                    ->integer()
                     ->addValidationRule('unique:employees,phone')
                 ,
                 FieldMetadata::make('adult', FieldTypeEnum::BOOL)
