@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Facade;
 /**
  * @method static \Egal\Model\ModelMetadataManager getInstance()
  * @method static void registerDir(string $dir, string $modelsNamespace)
- * @method static void registerModel()
+ * @method static void registerModel(string $class)
  * @method static ModelMetadata getModelMetadata(string $class)
  */
 class ModelMetadataManager extends Facade
