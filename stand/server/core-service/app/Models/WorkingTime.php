@@ -8,13 +8,14 @@ use Egal\Model\Metadata\ModelMetadata;
 use Egal\Model\Model;
 use ReflectionException;
 
-class AdditionalSpeakerLanguage extends Model
+class WorkingTime extends Model
 {
-    protected $table = 'additional_speaker_languages';
+    protected $table = 'working_times';
 
     protected $fillable = [
-        'language_id',
-        'speaker_id'
+        'speaker_id',
+        'starts_at',
+        'ends_at'
     ];
 
     /**
@@ -24,18 +25,19 @@ class AdditionalSpeakerLanguage extends Model
     {
         return ModelMetadata::make(self::class, FieldMetadata::make('id', FieldTypeEnum::INTEGER))
             ->addFields([
-                FieldMetadata::make('language_id', FieldTypeEnum::STRING)
-                    ->required()
-                    ->addValidationRule('exists:languages,id')
-                    ->string()
-                ,
                 FieldMetadata::make('speaker_id', FieldTypeEnum::UUID)
                     ->addValidationRule('uuid')
                     ->addValidationRule('exists:speakers,id')
                     ->required()
                 ,
+                FieldMetadata::make('starts_at', FieldTypeEnum::DATETIME),
+                FieldMetadata::make('ends_at', FieldTypeEnum::DATETIME),
                 FieldMetadata::make('created_at', FieldTypeEnum::DATETIME),
-                FieldMetadata::make('updated_at', FieldTypeEnum::DATETIME)
+                FieldMetadata::make('updated_at', FieldTypeEnum::DATETIME),
+            ])
+            ->addRelations([
+                'speaker' => fn() => $this->belongsTo(Speaker::class),
             ]);
     }
+
 }

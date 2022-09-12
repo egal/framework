@@ -59,7 +59,7 @@ entity "WorkingTime" as working_time {
   --
   *speaker_id: uid <<FK>>
   *starts_at: timestamp
-  *end_at: timestamp
+  *ends_at: timestamp
 }
 
 entity "LessonRequest" as lesson_request {
@@ -74,7 +74,7 @@ entity "LessonRequest" as lesson_request {
 entity "Lesson" as lesson {
   *id : number <<generated>>
   --
-  *chat_id: uid
+  chat_id: uid
   *speaker_id: uid <<FK>>
   *school_id: uid <<FK>>
   *lesson_request_id: number <<FK>>
@@ -155,6 +155,7 @@ entity "User" as chat_user {
 entity "Chat" as chat {
   *id : uid <<generated>>
   --
+  *lesson_id : number
   *name: string
 }
 

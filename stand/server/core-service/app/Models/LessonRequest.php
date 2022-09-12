@@ -6,27 +6,17 @@ use Egal\Model\Enums\FieldTypeEnum;
 use Egal\Model\Metadata\FieldMetadata;
 use Egal\Model\Metadata\ModelMetadata;
 use Egal\Model\Model;
-use Egal\Model\Traits\UsesUuidKey;
 use ReflectionException;
 
-class Student extends Model
+class LessonRequest extends Model
 {
-    use UsesUuidKey;
-
-    protected $table = 'students';
+    protected $table = 'lesson_requests';
 
     protected $fillable = [
-        'name',
-        'surname',
-        'school_id'
-    ];
-
-    protected $hidden = [
-        'user_id'
-    ];
-
-    protected $guarded = [
-        'user_id'
+        'speaker_id',
+        'school_id',
+        'stage',
+        'supposedly_lesson_starts_at'
     ];
 
     /**
@@ -34,30 +24,30 @@ class Student extends Model
      */
     public static function constructMetadata(): ModelMetadata
     {
-        return ModelMetadata::make(self::class, FieldMetadata::make('id', FieldTypeEnum::STRING))
+        return ModelMetadata::make(self::class, FieldMetadata::make('id', FieldTypeEnum::INTEGER))
             ->addFields([
-                FieldMetadata::make('user_id', FieldTypeEnum::UUID)
+                FieldMetadata::make('speaker_id', FieldTypeEnum::UUID)
                     ->addValidationRule('uuid')
+                    ->addValidationRule('exists:speakers,id')
                     ->required()
-                ,
-                FieldMetadata::make('name', FieldTypeEnum::STRING)
-                    ->required()
-                    ->string()
-                ,
-                FieldMetadata::make('surname', FieldTypeEnum::STRING)
-                    ->required()
-                    ->string()
                 ,
                 FieldMetadata::make('school_id', FieldTypeEnum::UUID)
                     ->addValidationRule('uuid')
                     ->addValidationRule('exists:schools,id')
                     ->required()
                 ,
+                FieldMetadata::make('stage', FieldTypeEnum::STRING)
+                    ->string()
+                    ->required()
+                ,
+                FieldMetadata::make('supposedly_lesson_starts_at', FieldTypeEnum::DATETIME),
                 FieldMetadata::make('created_at', FieldTypeEnum::DATETIME),
-                FieldMetadata::make('updated_at', FieldTypeEnum::DATETIME)
+                FieldMetadata::make('updated_at', FieldTypeEnum::DATETIME),
             ])
             ->addRelations([
+                'speaker' => fn() => $this->belongsTo(Speaker::class),
                 'school' => fn() => $this->belongsTo(School::class),
             ]);
     }
+
 }

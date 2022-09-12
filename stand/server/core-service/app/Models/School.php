@@ -38,7 +38,7 @@ class School extends Model
                 FieldMetadata::make('updated_at', FieldTypeEnum::DATETIME)
             ])
             ->addRelations([
-                'students' => fn() => $this->hasManyThrough(Speaker::class, Student::class)
+                'students' => fn() => $this->hasMany(Speaker::class),
             ]);
     }
 }
