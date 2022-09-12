@@ -160,6 +160,11 @@ abstract class Model extends EloquentModel
     }
 
     /**
+     * Construct ModelMetadata object
+     */
+    public abstract static function constructMetadata();
+
+    /**
      * Get count entityes.
      *
      * @param mixed[] $filter

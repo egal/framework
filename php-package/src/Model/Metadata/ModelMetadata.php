@@ -50,7 +50,7 @@ class ModelMetadata
         $modelMetadata = [
             'model_class' => $this->modelClass,
             'model_short_name' => $this->modelShortName,
-            'primary_key'   => $this->primaryKey,
+            'primary_key'   => $this->primaryKey->toArray(),
         ];
 
         foreach ($this->fields as $field) {
@@ -58,7 +58,7 @@ class ModelMetadata
         }
 
         foreach ($this->fakeFields as $field) {
-            $modelMetadata['fields'][] = $field->toArray();
+            $modelMetadata['fake_fields'][] = $field->toArray();
         }
 
         return $modelMetadata;
@@ -113,4 +113,5 @@ class ModelMetadata
     {
         return $this->relations;
     }
+
 }
