@@ -13,7 +13,9 @@ use Egal\Model\Metadata\ModelMetadata;
 trait UsesModelMetadata
 {
 
-    public function getModelMetadata(): ModelMetadata
+    public abstract static function constructMetadata(): ModelMetadata;
+
+    public final function getModelMetadata(): ModelMetadata
     {
         return ModelMetadataManager::getModelMetadata(static::class);
     }
@@ -21,6 +23,20 @@ trait UsesModelMetadata
     public function getRelations(): array
     {
         return $this->getModelMetadata()->getRelations();
+    }
+
+    public function getValidationRules(): array
+    {
+        $modelMetadata = $this->getModelMetadata();
+        $fields =  array_merge($modelMetadata->getFields(), $modelMetadata->getFakeFields());
+
+        $validationRules = [];
+
+        foreach ($fields as $field) {
+            $validationRules[] = [$field->getName() => $field->getValidationRules()];
+        }
+
+        return $validationRules;
     }
 
 }
