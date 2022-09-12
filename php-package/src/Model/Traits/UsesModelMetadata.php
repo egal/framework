@@ -27,16 +27,7 @@ trait UsesModelMetadata
 
     public function getValidationRules(): array
     {
-        $modelMetadata = $this->getModelMetadata();
-        $fields =  array_merge($modelMetadata->getFields(), $modelMetadata->getFakeFields());
-
-        $validationRules = [];
-
-        foreach ($fields as $field) {
-            $validationRules[] = [$field->getName() => $field->getValidationRules()];
-        }
-
-        return $validationRules;
+        return ModelMetadataManager::getModelMetadata(static::class)->getValidationRules();
     }
 
 }

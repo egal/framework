@@ -42,9 +42,9 @@ trait FieldValidationRules
         return $this;
     }
 
-    public function float(): self
+    public function numeric(): self
     {
-        $this->validationRules[] = ValidationRulesEnum::FLOAT->value;
+        $this->validationRules[] = ValidationRulesEnum::NUMERIC->value;
 
         return $this;
     }
@@ -171,6 +171,48 @@ trait FieldValidationRules
     public function ipv6(): self
     {
         $this->validationRules[] = ValidationRulesEnum::IPV6->value;
+
+        return $this;
+    }
+
+    public function mac_address(): self
+    {
+        $this->validationRules[] = ValidationRulesEnum::MAC_ADDRESS->value;
+
+        return $this;
+    }
+
+    public function present(): self
+    {
+        $this->validationRules[] = ValidationRulesEnum::PRESENT->value;
+
+        return $this;
+    }
+
+    public function prohibited(): self
+    {
+        $this->validationRules[] = ValidationRulesEnum::PROHIBITED->value;
+
+        return $this;
+    }
+
+    public function timezone(): self
+    {
+        $this->validationRules[] = ValidationRulesEnum::TIMEZONE->value;
+
+        return $this;
+    }
+
+    public function url(): self
+    {
+        $this->validationRules[] = ValidationRulesEnum::URL->value;
+
+        return $this;
+    }
+
+    public function uuid(): self
+    {
+        $this->validationRules[] = ValidationRulesEnum::UUID->value;
 
         return $this;
     }

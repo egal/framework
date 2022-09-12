@@ -44,7 +44,6 @@ class ModelMetadata
     public function toArray(): array
     {
         $modelMetadata = [
-            'model_class' => $this->modelClass,
             'model_short_name' => $this->modelShortName,
             'primary_key'   => $this->primaryKey->toArray(),
             'actions' => $this->actions,
@@ -167,6 +166,18 @@ class ModelMetadata
     public function getActions(): array
     {
         return $this->actions;
+    }
+
+    public function getValidationRules(): array
+    {
+        $fields =  array_merge($this->getFields(), $this->getFakeFields());
+
+        $validationRules = [];
+
+        foreach ($fields as $field) {
+            $validationRules[$field->getName()] = $field->getValidationRules();
+        }
+        return $validationRules;
     }
 
 }
