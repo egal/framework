@@ -2,56 +2,44 @@
 
 namespace Egal\Model;
 
+use App\Models\Employee;
 use Egal\Model\Metadata\ModelMetadata;
 
 class ModelMetadataManager
 {
+
     /**
      * @var ModelMetadata[]
      */
     protected array $modelsMetadata = [];
 
-    public function __construct()
-    {
-        $this->scanModels();
-    }
+    public function __construct() { }
 
-    public static function getInstance(): ModelMetadataManager
+    public function getInstance(): ModelMetadataManager
     {
         return app(self::class);
     }
 
-    public static function getModelMetadata(string $class): ModelMetadata
+    public function getModelMetadata(string $class): ModelMetadata
     {
-        return self::getInstance()->modelsMetadata[$class] ?? call_user_func(array($class, 'constructMetadata'))->toArray();
+        return $this->getInstance()->modelsMetadata[$class] ?? call_user_func(array($class, 'constructMetadata'));
     }
 
-    public static function loadModel(): void
+    public function registerDir(string $dir, string $modelsNamespace): void
     {
-        $instance = static::getInstance();
-
-        if (empty($instance->modelsMetadata)) {
-            $instance->scanModels();
-        }
-    }
-
-    protected function scanModels(?string $dir = null): void
-    {
-        $baseDir = base_path('app/Models/');
-
-        $dir = $dir ?? $baseDir;
-
-        $modelsNamespace = 'App\Models\\';
-
         foreach (scandir($dir) as $dirItem) {
             $itemPath = str_replace('//', '/', $dir . '/' . $dirItem);
-
             if ($dirItem === '.' || $dirItem === '..') {
                 continue;
             }
 
             if (is_dir($itemPath)) {
-                $this->scanModels($itemPath);
+                $itemNamespace = str_replace('/app/', '', $itemPath);
+                $itemNamespace = str_replace($itemPath, '', $itemNamespace);
+                $itemNamespace =  str_replace('/', '\\', $itemNamespace);
+                $itemNamespace = ucfirst($itemNamespace);
+
+                $this->registerDir($itemPath, $itemNamespace);
             }
 
             if (!str_contains($dirItem, '.php')) {
@@ -59,11 +47,22 @@ class ModelMetadataManager
             }
 
             $classShortName = str_replace('.php', '', $dirItem);
-            $class = str_replace($baseDir, '', $itemPath);
+            $class = str_replace($dir, '', $itemPath);
             $class = str_replace($dirItem, $classShortName, $class);
             $class = str_replace('/', '\\', $class);
             $class = $modelsNamespace . $class;
+
             $this->modelsMetadata[$class] = call_user_func(array($class, 'constructMetadata'));
         }
     }
+
+    public function registerModel(string $class): void
+    {
+        if (empty($this->modelsMetadata[$class])) {
+            return;
+        }
+
+        $this->modelsMetadata[$class] = call_user_func(array($class, 'constructMetadata'))->toArray();
+    }
+
 }

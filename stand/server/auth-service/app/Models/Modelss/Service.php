@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Modelss;
 
 use Egal\Model\Enums\FieldTypeEnum;
 use Egal\Model\Facades\ModelMetadataManager;
@@ -14,14 +14,10 @@ use Egal\AuthServiceDependencies\Models\Service as BaseService;
  */
 class Service extends BaseService
 {
+
     public static function constructMetadata(): ModelMetadata
     {
         return ModelMetadata::make(self::class, FieldMetadata::make('id', FieldTypeEnum::UUID));
-    }
-
-    public static function getMetadata(): array
-    {
-        return ModelMetadataManager::getModelMetadata(static::class)->toArray();
     }
 
 }

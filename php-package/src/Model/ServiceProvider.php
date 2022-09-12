@@ -3,6 +3,7 @@
 namespace Egal\Model;
 
 use Illuminate\Support\ServiceProvider as IlluminateServiceProvider;
+use \Egal\Model\Facades\ModelMetadataManager as ModelMetadataManagerFacade;
 
 /**
  * @package Egal\Model
@@ -25,10 +26,6 @@ class ServiceProvider extends IlluminateServiceProvider
      */
     protected array $commands = [];
 
-    /**
-     * @throws \Egal\Model\Exceptions\LoadModelImpossiblyException
-     * @throws \ReflectionException
-     */
     public function register(): void
     {
         if ($this->app->runningInConsole()) {
@@ -39,7 +36,7 @@ class ServiceProvider extends IlluminateServiceProvider
             return new ModelMetadataManager();
         });
 
-        ModelMetadataManager::loadModel();
+        ModelMetadataManagerFacade::registerDir('/app/app/Models/', 'App\Models\\');
 
         $this->commands([]);
     }
