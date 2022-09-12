@@ -10,7 +10,7 @@ class Service extends BaseService
 
     public static function constructMetadata(): ModelMetadata
     {
-        return ModelMetadata::make(self::class)
+        return ModelMetadata::make(Service::class)
             ->addActions(['login', 'loginToService']);
     }
 

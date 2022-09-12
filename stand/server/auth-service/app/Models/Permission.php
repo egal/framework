@@ -3,21 +3,12 @@
 namespace App\Models;
 
 use Egal\Model\Enums\FieldTypeEnum;
-use Egal\Model\Facades\ModelMetadataManager;
 use Egal\Model\Metadata\FieldMetadata;
 use Egal\Model\Metadata\ModelMetadata;
-use DateTime;
 use Egal\Model\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
- * @property string     $id            {@primary-key}           {@property-type field}
- *                                                              {@validation-rules required|string|unique:permissions}
- * @property string     $name          {@property-type field}   {@validation-rules required|string|unique:permissions}
- * @property bool       $is_default    {@property-type field}   {@validation-rules bool}
- * @property DateTime   $created_at    {@property-type field}
- * @property DateTime   $updated_at    {@property-type field}
- *
  * @action getItem  {@statuses-access guest|logged}
  * @action getItems {@statuses-access guest|logged}
  * @action create   {@statuses-access guest|logged}
@@ -61,7 +52,27 @@ class Permission extends Model
 
     public static function constructMetadata(): ModelMetadata
     {
-        return ModelMetadata::make(self::class, FieldMetadata::make('id', FieldTypeEnum::UUID));
+        return ModelMetadata::make(Permission::class, FieldMetadata::make('id',FieldTypeEnum::STRING))
+            ->addFields([
+                FieldMetadata::make('name', FieldTypeEnum::STRING)
+                    ->required()
+                    ->string()
+                    ->addValidationRule('unique:roles,name')
+                ,
+                FieldMetadata::make('is_default', FieldTypeEnum::BOOLEAN)
+                    ->required()
+                    ->boolean()
+                ,
+                FieldMetadata::make('created_at', FieldTypeEnum::DATETIME),
+                FieldMetadata::make('updated_at', FieldTypeEnum::DATETIME)
+            ])
+            ->addActions([
+                'getItem',
+                'getItems',
+                'create',
+                'update',
+                'delete'
+            ]);
     }
 
 }

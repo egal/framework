@@ -35,7 +35,7 @@ class Employee extends Model
                     ->integer()
                     ->addValidationRule('unique:employees,phone')
                 ,
-                FieldMetadata::make('adult', FieldTypeEnum::BOOL)
+                FieldMetadata::make('adult', FieldTypeEnum::BOOLEAN)
                     ->required()
                     ->boolean()
                 ,
@@ -51,9 +51,6 @@ class Employee extends Model
                     ->sometimes()
                     ->required()
                     ->numeric()
-            ])
-            ->addRelations([
-                'first' => fn() => $this->hasMany(User::class)
             ])
             ->addActions([
                 'getItems',
