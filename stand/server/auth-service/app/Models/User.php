@@ -9,9 +9,10 @@ use Egal\Auth\Tokens\UserMasterToken;
 use Egal\AuthServiceDependencies\Exceptions\LoginException;
 use Egal\AuthServiceDependencies\Models\User as BaseUser;
 use Egal\Model\Enums\FieldTypeEnum;
-use Egal\Model\Facades\ModelMetadataManager;
+use Egal\Model\Enums\RelationTypeEnum;
 use Egal\Model\Metadata\FieldMetadata;
 use Egal\Model\Metadata\ModelMetadata;
+use Egal\Model\Metadata\RelationMetadata;
 use Egal\Model\Traits\UsesUuidKey;
 use DateTime;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -136,7 +137,37 @@ class User extends BaseUser
 
     public static function constructMetadata(): ModelMetadata
     {
-        return ModelMetadata::make(self::class, FieldMetadata::make('id', FieldTypeEnum::UUID));
+        return ModelMetadata::make(User::class, FieldMetadata::make('id',FieldTypeEnum::UUID))
+            ->addFields([
+                FieldMetadata::make('email', FieldTypeEnum::STRING)
+                    ->required()
+                    ->string()
+                    ->addValidationRule('unique:users,email')
+                ,
+                FieldMetadata::make('password', FieldTypeEnum::INTEGER)
+                    ->required()
+                    ->string()
+                ,
+                FieldMetadata::make('created_at', FieldTypeEnum::DATETIME),
+                FieldMetadata::make('updated_at', FieldTypeEnum::DATETIME)
+            ])
+            ->addRelations([
+                RelationMetadata::make(
+                    'roles',
+                    RelationTypeEnum::HAS_ONE,
+                    fn(User $user) => $user->hasOne(UserRole::class, 'user_id', 'id')
+                )
+            ])
+            ->addActions([
+                'getItems',
+                'create',
+                'update'
+            ]);
+    }
+
+
+    function test() {
+
     }
 
 }

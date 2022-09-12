@@ -2,7 +2,6 @@
 
 namespace Egal\Model\Metadata;
 
-use Closure;
 use Egal\Model\Exceptions\FieldNotFoundException;
 use Egal\Model\Exceptions\RelationNotFoundException;
 
@@ -13,23 +12,23 @@ class ModelMetadata
 
     protected string $modelShortName;
 
-    protected FieldMetadata $primaryKey;
+    protected ?FieldMetadata $primaryKey;
 
     /**
      * @var FieldMetadata[]
      */
     protected array $fields = [];
 
-    protected array $fakeFields = [];
-
     /**
-     * @var Closure[]
+     * @var RelationMetadata[]
      */
     protected array $relations = [];
 
+    protected array $fakeFields = [];
+
     protected array $actions = [];
 
-    public static function make(string $modelClass, FieldMetadata $key): self
+    public static function make(string $modelClass, ?FieldMetadata $key = null): self
     {
         return new static($modelClass, $key);
     }
@@ -47,7 +46,6 @@ class ModelMetadata
             'model_short_name' => $this->modelShortName,
             'primary_key'   => $this->primaryKey->toArray(),
             'actions' => $this->actions,
-            'relations' => $this->getRelations()
         ];
 
         foreach ($this->fields as $field) {
@@ -58,6 +56,9 @@ class ModelMetadata
             $modelMetadata['fake_fields'][] = $field->toArray();
         }
 
+        foreach ($this->relations as $relation) {
+            $modelMetadata['relations'] = $relation->toArray();
+        }
         return $modelMetadata;
     }
 
@@ -82,7 +83,7 @@ class ModelMetadata
     }
 
     /**
-     * @param Closure[] $relations
+     * @param RelationMetadata[] $relations
      */
     public function addRelations(array $relations): self
     {
@@ -121,18 +122,24 @@ class ModelMetadata
         return true;
     }
 
-    public function relationExist(string $relation): bool
+    public function relationExist(string $relationName): bool
     {
-        return array_key_exists($relation, $this->relations);
+        foreach ($this->relations as $relation) {
+            if ($relation->getName() === $relationName) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
      * @throws RelationNotFoundException
      */
-    public function relationExistOrFail(string $relation): bool
+    public function relationExistOrFail(string $relationName): bool
     {
-        if (!$this->relationExist($relation)) {
-            throw RelationNotFoundException::make($relation);
+        if (!$this->relationExist($relationName)) {
+            throw RelationNotFoundException::make($relationName);
         }
 
         return true;
