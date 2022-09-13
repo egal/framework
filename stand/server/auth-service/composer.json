@@ -7,7 +7,7 @@
     "repositories": [
         {
             "type": "path",
-            "url": "/dependencies/php-package/"
+            "url": "/dependencies/php-package"
         }
     ],
     "require": {

@@ -5,12 +5,8 @@ namespace Egal\Model\Enums;
 enum ValidationRulesEnum: string
 {
 
-    case REQUIRED = 'required';
     case SOMETIMES = 'sometimes';
-    case NULLABLE = 'nullable';
-    case STRING = 'string';
     case BOOLEAN = 'boolean';
-    case INT = 'int';
     case FLOAT = 'float';
     case ACCEPTED = 'accepted';
     case ACTIVE_URL = 'active_url';
@@ -30,5 +26,15 @@ enum ValidationRulesEnum: string
     case IP = 'ip';
     case IPV4 = 'ipv4';
     case IPV6 = 'ipv6';
+    case MAC_ADDRESS = 'mac_address';
+    case NULLABLE = 'nullable';
+    case NUMERIC = 'numeric';
+    case PRESENT = 'present';
+    case PROHIBITED = 'prohibited';
+    case REQUIRED = 'required';
+    case STRING = 'string';
+    case TIMEZONE = 'timezone';
+    case URL = 'url';
+    case UUID = 'uuid';
 
 }

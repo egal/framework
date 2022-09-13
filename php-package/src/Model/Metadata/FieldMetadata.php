@@ -34,7 +34,7 @@ class FieldMetadata
     {
         return [
             'name' => $this->name,
-            'fieldType' => $this->type->value,
+            'type' => $this->type->value,
             'validationRules' => $this->validationRules
         ];
     }
@@ -68,6 +68,11 @@ class FieldMetadata
     public function getType(): FieldTypeEnum
     {
         return $this->type;
+    }
+
+    public function getValidationRules(): array
+    {
+        return $this->validationRules;
     }
 
 }

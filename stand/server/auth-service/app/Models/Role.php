@@ -3,29 +3,14 @@
 namespace App\Models;
 
 use Egal\Model\Enums\FieldTypeEnum;
-use Egal\Model\Facades\ModelMetadataManager;
+use Egal\Model\Enums\RelationTypeEnum;
 use Egal\Model\Metadata\FieldMetadata;
 use Egal\Model\Metadata\ModelMetadata;
+use Egal\Model\Metadata\RelationMetadata;
 use Egal\Model\Model;
-use DateTime;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-/**
- * @property string     $id            {@primary-key}          {@property-type field} {@validation-rules required|string|unique:role}
- * @property string     $name          {@property-type field}  {@validation-rules required|string|unique:permissions}
- * @property bool       $is_default    {@property-type field}  {@validation-rules bool}
- * @property DateTime   $created_at    {@property-type field}
- * @property DateTime   $updated_at    {@property-type field}
- *
- * @property Permission[] $permissions {@property-type relation}
- *
- * @action getItem  {@statuses-access guest|logged}
- * @action getItems {@statuses-access guest|logged}
- * @action create   {@statuses-access guest|logged}
- * @action update   {@statuses-access guest|logged}
- * @action delete   {@statuses-access guest|logged}
- */
 class Role extends Model
 {
 
@@ -75,11 +60,34 @@ class Role extends Model
 
     public static function constructMetadata(): ModelMetadata
     {
-        return ModelMetadata::make(self::class, FieldMetadata::make('id', FieldTypeEnum::UUID));
+        return ModelMetadata::make(Role::class, FieldMetadata::make('id', FieldTypeEnum::STRING))
+            ->addFields([
+                FieldMetadata::make('name', FieldTypeEnum::STRING)
+                    ->required()
+                    ->string()
+                    ->addValidationRule('unique:roles,name')
+                ,
+                FieldMetadata::make('is_default', FieldTypeEnum::BOOLEAN)
+                    ->required()
+                    ->boolean()
+                ,
+                FieldMetadata::make('created_at', FieldTypeEnum::DATETIME),
+                FieldMetadata::make('updated_at', FieldTypeEnum::DATETIME)
+            ])
+            ->addRelations([
+                RelationMetadata::make(
+                    'permissions',
+                    RelationTypeEnum::HAS_MANY,
+                    fn(Role $role) => $role->hasMany(Permission::class, 'role_id', 'id')
+                )
+            ])
+            ->addActions([
+                'getItem',
+                'getItems',
+                'create',
+                'update',
+                'delete'
+            ]);
     }
 
-    public static function getMetadata(): array
-    {
-        return ModelMetadataManager::getModelMetadata(static::class)->toArray();
-    }
 }

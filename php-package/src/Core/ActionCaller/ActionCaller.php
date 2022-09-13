@@ -45,7 +45,7 @@ class ActionCaller
      */
     public function __construct(string $modelName, string $actionName, array $actionParameters = [])
     {
-        $this->modelMetadata = ModelMetadataManager::getModelMetadata(static::class);
+        $this->modelMetadata = ModelMetadataManager::getModelMetadata($modelName);
         $this->modelActionMetadata = $this->modelMetadata->getAction($actionName);
         $this->actionParameters = $actionParameters;
     }

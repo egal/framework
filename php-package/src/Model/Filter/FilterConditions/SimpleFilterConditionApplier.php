@@ -69,7 +69,6 @@ class SimpleFilterConditionApplier extends FilterConditionApplier
         foreach ($types as $type) {
             $relationModelMetadata = (new $type())->getModelMetadata();
             $relationModelMetadata->fieldExistOrFail($field);
-            $relationModelMetadata->validateFieldValueType($field, $value);
         }
 
         $clause = static function (Builder $query) use ($field, $operator, $value): void {
@@ -148,7 +147,6 @@ class SimpleFilterConditionApplier extends FilterConditionApplier
         // For condition field like `field`.
         [$field, $modelMetadata] = [$condition->getField(), $builder->getModel()->getModelMetadata()];
         $modelMetadata->fieldExistOrFail($field);
-        $modelMetadata->validateFieldValueType($field, $value);
         $builder->where($condition->getField(), $operator, $value, $boolean);
     }
 

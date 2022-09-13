@@ -32,11 +32,7 @@ class ServiceProvider extends IlluminateServiceProvider
             $this->commands([]);
         }
 
-        $this->app->singleton('modelMetadataManager', function (): ModelMetadataManager {
-            return new ModelMetadataManager();
-        });
-
-        ModelMetadataManagerFacade::registerDir('/app/app/Models/', 'App\Models\\');
+        $this->app->singleton('modelMetadataManager', fn () => new ModelMetadataManager());
 
         $this->commands([]);
     }
