@@ -1,19 +1,28 @@
 import * as React from 'react';
-import { ColumnConfig, DataTable as GrommetDataTable, DataTableExtendedProps } from 'grommet/components/DataTable';
-import { DataProvider, GetItemsResult } from '../../Providers/DataProvider';
-import { Box, Meter, Text } from 'grommet';
+import {
+  ColumnConfig as GrommetColumnConfig,
+  DataTable as GrommetDataTable,
+  DataTableExtendedProps
+} from 'grommet/components/DataTable';
+import { DataProvider } from '../../Providers/DataProvider';
 
-interface Props extends DataTableExtendedProps {
+interface ColumnConfig<TRowType = any> extends GrommetColumnConfig<TRowType> {
+  someone?: undefined;
+}
+
+interface Props<TRowType = any> extends DataTableExtendedProps<TRowType> {
   modelName: string;
   serviceName: string;
   data?: undefined;
+  columns?: ColumnConfig<TRowType>[];
 }
+
 type State = {
-  items: [];
+  items: object[];
 };
 
 export class DataTable extends React.Component<Props, State> {
-  state: State = {
+  state = {
     items: []
   };
 
@@ -31,11 +40,11 @@ export class DataTable extends React.Component<Props, State> {
   }
 
   render() {
-    console.log(this.state.items);
     return React.createElement(GrommetDataTable, {
       ...this.props,
       data: this.state.items,
-      paginate: true
+      paginate: true,
+      key: Date.now() // TODO: Crutch.
     });
   }
 }

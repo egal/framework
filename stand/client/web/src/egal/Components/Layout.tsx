@@ -1,17 +1,17 @@
-// @flow
 import * as React from 'react';
-import { ReactElement } from 'react';
+import { MenuConfig, MenuItemConfig } from './App';
+import Menu from './Navigate/Menu';
 
 type Props = {
-  children: ReactElement;
-  menu: ReactElement;
+  children: React.ReactElement;
+  menu: MenuConfig;
 };
 
 export default class Layout extends React.Component<Props> {
   render() {
     return (
       <div style={{ display: 'flex' }}>
-        {this.props.menu}
+        {React.createElement(Menu, this.props.menu)}
         <div style={{ margin: '20px' }}>{this.props.children}</div>
       </div>
     );

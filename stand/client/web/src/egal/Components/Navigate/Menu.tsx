@@ -1,13 +1,33 @@
 import React, { ReactElement } from 'react';
 import styled from 'styled-components';
-
-export interface MenuProps {
-  children: ReactElement[];
-  logotype?: string;
-}
+import { MenuItemConfig, MenuConfig as MenuProps } from '../App';
+import MenuItemGroup from './MenuItemGroup';
+import MenuItemLink from './MenuItemLink';
 
 export default class Menu extends React.Component<MenuProps> {
-  render() {
+  constructor(props: MenuProps) {
+    super(props);
+    this.renderMenuItem = this.renderMenuItem.bind(this);
+  }
+
+  renderMenuItem(item: MenuItemConfig, key: number): React.ReactElement {
+    if (item.render !== undefined) {
+      return item.render;
+    } else if (item.items !== undefined) {
+      return React.createElement(MenuItemGroup, {
+        header: item.header,
+        liKey: key,
+        key: key,
+        items: <div key={key}>{item.items.map(this.renderMenuItem)}</div>
+      });
+    } else if (item.path !== undefined) {
+      return <MenuItemLink liKey={key} key={key} path={item.path} header={item.header} />;
+    } else {
+      throw new Error();
+    }
+  }
+
+  render(): React.ReactElement {
     const Container = styled.div`
       padding: 20px;
       display: flex;
@@ -27,7 +47,7 @@ export default class Menu extends React.Component<MenuProps> {
       <Container>
         <div>
           {this.props.logotype ? <img src={this.props.logotype} alt="logotype" /> : null}
-          <Body>{this.props.children}</Body>
+          <Body>{this.props.items.map(this.renderMenuItem)}</Body>
         </div>
         <div>
           <button>X Exit</button>
