@@ -34,7 +34,7 @@ class ModelMetadata
      */
     protected array $actions = [];
 
-    public function __construct(string $modelClass, FieldMetadata $key)
+    public function __construct(string $modelClass, ?FieldMetadata $key)
     {
         $this->modelClass = $modelClass;
         $this->modelShortName = get_class_short_name($modelClass);

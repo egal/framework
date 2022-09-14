@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Egal\Model;
 
+use Egal\AuthServiceDependencies\Models\Service;
 use Egal\Core\Exceptions\ModelNotFoundException;
 use Egal\Model\Metadata\ModelMetadata;
 use Mockery\Exception;
@@ -86,7 +87,7 @@ class ModelMetadataManager
 
         $model = new $class();
 
-        if (! ($model instanceof Model)) {
+        if (! ($model instanceof Model || $model instanceof Service)) {
             throw new Exception();
         }
 
