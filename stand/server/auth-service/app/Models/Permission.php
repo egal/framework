@@ -2,19 +2,12 @@
 
 namespace App\Models;
 
-use Egal\Model\Enums\FieldTypeEnum;
+use Egal\Model\Enums\FieldType;
 use Egal\Model\Metadata\FieldMetadata;
 use Egal\Model\Metadata\ModelMetadata;
 use Egal\Model\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-/**
- * @action getItem  {@statuses-access guest|logged}
- * @action getItems {@statuses-access guest|logged}
- * @action create   {@statuses-access guest|logged}
- * @action update   {@statuses-access guest|logged}
- * @action delete   {@statuses-access guest|logged}
- */
 class Permission extends Model
 {
 
@@ -52,19 +45,19 @@ class Permission extends Model
 
     public static function constructMetadata(): ModelMetadata
     {
-        return ModelMetadata::make(Permission::class, FieldMetadata::make('id',FieldTypeEnum::STRING))
+        return ModelMetadata::make(Permission::class, FieldMetadata::make('id',FieldType::STRING))
             ->addFields([
-                FieldMetadata::make('name', FieldTypeEnum::STRING)
+                FieldMetadata::make('name', FieldType::STRING)
                     ->required()
                     ->string()
                     ->addValidationRule('unique:roles,name')
                 ,
-                FieldMetadata::make('is_default', FieldTypeEnum::BOOLEAN)
+                FieldMetadata::make('is_default', FieldType::BOOLEAN)
                     ->required()
                     ->boolean()
                 ,
-                FieldMetadata::make('created_at', FieldTypeEnum::DATETIME),
-                FieldMetadata::make('updated_at', FieldTypeEnum::DATETIME)
+                FieldMetadata::make('created_at', FieldType::DATETIME),
+                FieldMetadata::make('updated_at', FieldType::DATETIME)
             ])
             ->addActions([
                 'getItem',
