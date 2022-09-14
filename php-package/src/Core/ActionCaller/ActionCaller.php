@@ -70,7 +70,7 @@ class ActionCaller
                 $this->modelActionMetadata->getActionMethodName(),
             ],
             $this->actionParameters
-// TODO:           $this->getValidActionParameters()
+            // TODO:           $this->getValidActionParameters()
         );
     }
 
@@ -85,7 +85,6 @@ class ActionCaller
 
         // TODO: валидация logged|guest
         // For user and service we check if it guest.
-
         // TODO:  return $this->isServiceAccess() || $this->isUserAccess()
         return true;
     }
@@ -117,11 +116,11 @@ class ActionCaller
         if (!Session::isUserServiceTokenExists()) {
             return false;
         }
-//        TODO:
-//        return in_array(Session::getAuthStatus(), $this->modelActionMetadata->getStatusesAccess())
-//            && $this->userHasAccessWithCurrentRoles()
-//            && $this->userHasAccessWithCurrentPermissions();
 
+// TODO:
+// return in_array(Session::getAuthStatus(), $this->modelActionMetadata->getStatusesAccess())
+// && $this->userHasAccessWithCurrentRoles()
+// && $this->userHasAccessWithCurrentPermissions();
         return true;
     }
 
@@ -134,18 +133,17 @@ class ActionCaller
      */
     private function userHasAccessWithCurrentRoles(): bool
     {
-//        if (count($this->modelActionMetadata->getRolesAccess()) === 0) {
-//            return true;
-//        }
+// if (count($this->modelActionMetadata->getRolesAccess()) === 0) {
+// return true;
+// }
 //
-//        foreach ($this->modelActionMetadata->getRolesAccess() as $rolesAccess) {
-//            $userRoles = Session::getUserServiceToken()->getRoles();
+// foreach ($this->modelActionMetadata->getRolesAccess() as $rolesAccess) {
+// $userRoles = Session::getUserServiceToken()->getRoles();
 //
-//            if (count(array_intersect($userRoles, $rolesAccess)) === count($rolesAccess)) {
-//                return true;
-//            }
-//        }
-
+// if (count(array_intersect($userRoles, $rolesAccess)) === count($rolesAccess)) {
+// return true;
+// }
+// }
         return false;
     }
 
@@ -158,18 +156,17 @@ class ActionCaller
      */
     private function userHasAccessWithCurrentPermissions(): bool
     {
-//        if (count($this->modelActionMetadata->getPermissionsAccess()) === 0) {
-//            return true;
-//        }
+// if (count($this->modelActionMetadata->getPermissionsAccess()) === 0) {
+// return true;
+// }
 //
-//        foreach ($this->modelActionMetadata->getPermissionsAccess() as $permissionsAccess) {
-//            $userPermissions = Session::getUserServiceToken()->getPermissions();
+// foreach ($this->modelActionMetadata->getPermissionsAccess() as $permissionsAccess) {
+// $userPermissions = Session::getUserServiceToken()->getPermissions();
 //
-//            if (count(array_intersect($userPermissions, $permissionsAccess)) === count($permissionsAccess)) {
-//                return true;
-//            }
-//        }
-
+// if (count(array_intersect($userPermissions, $permissionsAccess)) === count($permissionsAccess)) {
+// return true;
+// }
+// }
         return false;
     }
 
@@ -178,6 +175,7 @@ class ActionCaller
      *
      * If it is impossible to generate valid parameters, an exception is thrown.
      * TODO: реализовать в новой схеме
+     *
      * @return array
      * @throws \ReflectionException|\Egal\Core\Exceptions\ActionCallException
      */

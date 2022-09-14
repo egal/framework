@@ -13,10 +13,7 @@ class FilterCondition
 
     private string $operator;
 
-    /**
-     * @var mixed
-     */
-    private $value = null;
+    private mixed $value = null;
 
     /**
      * @param mixed[] $array
@@ -46,10 +43,7 @@ class FilterCondition
         return $this->operator;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getValue()
+    public function getValue(): mixed
     {
         return $this->value;
     }

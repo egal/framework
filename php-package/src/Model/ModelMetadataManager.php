@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Egal\Model;
 
 use Egal\Core\Exceptions\ModelNotFoundException;
@@ -27,7 +29,7 @@ class ModelMetadataManager
     public function getModelMetadata(string $class): ModelMetadata
     {
         if (class_exists($class)) {
-            return $this->getInstance()->modelsMetadata[get_class_short_name($class)] ?? call_user_func(array($class, 'constructMetadata'));
+            return $this->getInstance()->modelsMetadata[get_class_short_name($class)] ?? call_user_func([$class, 'constructMetadata']);
         }
 
         if (isset(self::getInstance()->modelsMetadata[$class])) {
@@ -46,6 +48,7 @@ class ModelMetadataManager
     {
         foreach (scandir($dir) as $dirItem) {
             $itemPath = str_replace('//', '/', $dir . '/' . $dirItem);
+
             if ($dirItem === '.' || $dirItem === '..') {
                 continue;
             }
@@ -53,7 +56,7 @@ class ModelMetadataManager
             if (is_dir($itemPath)) {
                 $itemNamespace = str_replace('/app/', '', $itemPath);
                 $itemNamespace = str_replace($itemPath, '', $itemNamespace);
-                $itemNamespace =  str_replace('/', '\\', $itemNamespace);
+                $itemNamespace = str_replace('/', '\\', $itemNamespace);
                 $itemNamespace = ucfirst($itemNamespace);
 
                 $this->registerDir($itemPath, $itemNamespace);
@@ -81,7 +84,7 @@ class ModelMetadataManager
             return;
         }
 
-        $model = new $class;
+        $model = new $class();
 
         if (! ($model instanceof Model)) {
             throw new Exception();

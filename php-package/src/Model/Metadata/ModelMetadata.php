@@ -1,8 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Egal\Model\Metadata;
 
-use Egal\Model\Enums\ValidationRules;
 use Egal\Model\Exceptions\ActionNotFoundException;
 use Egal\Model\Exceptions\FieldNotFoundException;
 use Egal\Model\Exceptions\RelationNotFoundException;
@@ -33,11 +34,6 @@ class ModelMetadata
      */
     protected array $actions = [];
 
-    public static function make(string $modelClass, ?FieldMetadata $key = null): self
-    {
-        return new static($modelClass, $key);
-    }
-
     public function __construct(string $modelClass, FieldMetadata $key)
     {
         $this->modelClass = $modelClass;
@@ -45,11 +41,16 @@ class ModelMetadata
         $this->primaryKey = $key;
     }
 
+    public static function make(string $modelClass, ?FieldMetadata $key = null): self
+    {
+        return new static($modelClass, $key);
+    }
+
     public function toArray(): array
     {
         $modelMetadata = [
             'model_short_name' => $this->modelShortName,
-            'primary_key'   => $this->primaryKey->toArray(),
+            'primary_key' => $this->primaryKey->toArray(),
         ];
 
         foreach ($this->fields as $field) {
@@ -155,6 +156,11 @@ class ModelMetadata
         }
 
         return true;
+    }
+
+    public function getModelShortName(): string
+    {
+        return $this->modelShortName;
     }
 
     public function getPrimaryKey(): FieldMetadata

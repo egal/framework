@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Egal\Model\Traits;
 
 trait Pagination
@@ -18,17 +20,11 @@ trait Pagination
      */
     protected int $maxPerPage = 100;
 
-    /**
-     * @return int
-     */
     public function getPage(): int
     {
         return $this->page;
     }
 
-    /**
-     * @return int
-     */
     public function getMaxPerPage(): int
     {
         return $this->maxPerPage;

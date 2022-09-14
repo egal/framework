@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Egal\Validation\Rules;
 
 use Illuminate\Contracts\Validation\Rule as IlluminateValidationRule;
@@ -10,30 +12,27 @@ abstract class Rule implements IlluminateValidationRule
 {
 
     protected const VALIDATE_FUNCTION_NAME = 'validate';
+
     protected string $rule;
+
+    abstract public function validate($attribute, $value, $parameters = null): bool;
 
     /**
      * @param string $attribute
      * @param mixed $value
-     * @return bool
      * @noinspection PhpMissingReturnTypeInspection
      */
-    public function passes($attribute, $value)
+    public function passes($attribute, $value): bool
     {
         return $this->validate($attribute, $value);
     }
 
-    /**
-     * @return string
-     */
     public function message(): string
     {
         return 'Rule check failed '
             . (new ReflectionClass(static::class))->getShortName()
             . ' of :attribute attribute!';
     }
-
-    abstract public function validate($attribute, $value, $parameters = null): bool;
 
     public function getCallback(): string
     {
@@ -43,10 +42,10 @@ abstract class Rule implements IlluminateValidationRule
     public function getRule(): string
     {
         return $this->rule ?? Str::snake(str_replace(
-                'Rule',
-                '',
-                (new ReflectionClass(static::class))->getShortName()
-            ));
+            'Rule',
+            '',
+            (new ReflectionClass(static::class))->getShortName()
+        ));
     }
 
 }

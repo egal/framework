@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Egal\Validation\Rules;
 
 use Egal\Validation\Rules\Rule as EgalRule;
@@ -13,9 +15,6 @@ class LowerCaseRule extends EgalRule
         return Str::lower($value) === $value;
     }
 
-    /**
-     * @return string
-     */
     public function message(): string
     {
         return 'Attribute :attribute not in lower case!';

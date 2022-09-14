@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Egal\Model\Metadata;
 
-use Egal\Model\Enums\FieldType;
-
 /**
  * @package Egal\Model
  */
@@ -17,19 +15,18 @@ class ActionMetadata
     // TODO: добавить обработку дефолтных значений параметров
     // TODO: добавить правила валидации для action
     // TODO: добавить примеры запроса-ответа
-
     public const METHOD_NAME_PREFIX = 'action';
 
     protected string $actionName;
 
-    public static function make(string $name): self
-    {
-        return new static($name);
-    }
-
     protected function __construct(string $name)
     {
         $this->actionName = $name;
+    }
+
+    public static function make(string $name): self
+    {
+        return new static($name);
     }
 
     /**

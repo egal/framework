@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Egal\CodeGenerator;
 
 use Egal\CodeGenerator\Commands\EventMakeCommand;
@@ -17,8 +19,6 @@ class ServiceProvider extends IlluminateServiceProvider
 
     /**
      * Указывает, отложена ли загрузка провайдера.
-     *
-     * @var bool
      */
     protected bool $defer = true;
 

@@ -19,17 +19,13 @@ trait UsesBuilder
      * Create a new Egal query builder for the model.
      *
      * @param \Illuminate\Database\Query\Builder $query
-     * @return \Egal\Model\Builder|\Illuminate\Database\Eloquent\Builder
      */
-    public function newEloquentBuilder($query)
+    public function newEloquentBuilder($query): Builder|\Illuminate\Database\Eloquent\Builder
     {
         return new Builder($query);
     }
 
-    /**
-     * @return \Egal\Model\Builder|\Illuminate\Database\Eloquent\Builder
-     */
-    public function newQuery()
+    public function newQuery(): Builder|\Illuminate\Database\Eloquent\Builder
     {
         if ($this->isInstanceForAction) {
             return $this->newQueryForAction();
@@ -38,10 +34,7 @@ trait UsesBuilder
         return parent::newQuery();
     }
 
-    /**
-     * @return \Egal\Model\Builder|\Illuminate\Database\Eloquent\Builder
-     */
-    public function newQueryForAction()
+    public function newQueryForAction(): Builder|\Illuminate\Database\Eloquent\Builder
     {
         return parent::newQuery();
     }

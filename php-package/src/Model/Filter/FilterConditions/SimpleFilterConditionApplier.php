@@ -70,7 +70,7 @@ class SimpleFilterConditionApplier extends FilterConditionApplier
             $relationModelMetadata = (new $type())->getModelMetadata();
             $relationModelMetadata->fieldExistOrFail($field);
 // TODO: валидировать поле по указанному типу
-//            $relationModelMetadata->validateFieldValueType($field, $value);
+// $relationModelMetadata->validateFieldValueType($field, $value);
         }
 
         $clause = static function (Builder $query) use ($field, $operator, $value): void {
@@ -128,7 +128,7 @@ class SimpleFilterConditionApplier extends FilterConditionApplier
         $relationModelMetadata = $model->$relationName()->getQuery()->getModel()->getModelMetadata();
         $relationModelMetadata->fieldExistOrFail($field);
 // TODO: реализовать
-//        $relationModelMetadata->validateFieldValueType($field, $value);
+// $relationModelMetadata->validateFieldValueType($field, $value);
         $clause = static function (Builder $query) use ($field, $operator, $value): void {
             $query->where($field, $operator, $value);
         };
@@ -151,8 +151,8 @@ class SimpleFilterConditionApplier extends FilterConditionApplier
         // For condition field like `field`.
         [$field, $modelMetadata] = [$condition->getField(), $builder->getModel()->getModelMetadata()];
         $modelMetadata->fieldExistOrFail($field);
-//  TODO: реализовать
-//        $modelMetadata->validateFieldValueType($field, $value);
+// TODO: реализовать
+// $modelMetadata->validateFieldValueType($field, $value);
         $builder->where($condition->getField(), $operator, $value, $boolean);
     }
 
@@ -192,9 +192,8 @@ class SimpleFilterConditionApplier extends FilterConditionApplier
 
     /**
      * @param mixed $value
-     * @return mixed
      */
-    private static function getPreparedValue(string $operator, $value)
+    private static function getPreparedValue(string $operator, $value): mixed
     {
         switch ($operator) {
             case self::CONTAIN_OPERATOR:

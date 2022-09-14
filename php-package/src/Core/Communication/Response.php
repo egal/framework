@@ -161,10 +161,9 @@ class Response
     }
 
     /**
-     * @return mixed
      * @throws \Egal\Core\Exceptions\NoResultMessageException
      */
-    public function getResultData()
+    public function getResultData(): mixed
     {
         $actionResultMessage = $this->getActionResultMessage();
 

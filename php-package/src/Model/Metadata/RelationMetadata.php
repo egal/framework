@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Egal\Model\Metadata;
 
 use Closure;
@@ -14,11 +16,6 @@ class RelationMetadata
 
     protected Closure $closure;
 
-    public static function make(string $name, RelationType $type, Closure $closure): self
-    {
-        return new static($name, $type, $closure);
-    }
-
     protected function __construct(string $name, RelationType $type, Closure $closure)
     {
         $this->name = $name;
@@ -26,11 +23,16 @@ class RelationMetadata
         $this->closure = $closure;
     }
 
+    public static function make(string $name, RelationType $type, Closure $closure): self
+    {
+        return new static($name, $type, $closure);
+    }
+
     public function toArray(): array
     {
         return [
             'name' => $this->name,
-            'type' => $this->type->value
+            'type' => $this->type->value,
         ];
     }
 

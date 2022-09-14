@@ -56,10 +56,11 @@ final class Order
      * @return \Egal\Model\Order\Order|\Egal\Model\Order\Order[]
      * @throws \Egal\Model\Exceptions\OrderException
      */
-    public static function fromArray(array $array)
+    public static function fromArray(array $array): Order|array
     {
         if (array_is_multidimensional($array)) {
             $result = [];
+
             /** @var array $orderArrayItem */
             foreach ($array as $orderArrayItem) {
                 $result[] = self::fromOrderArray($orderArrayItem);
