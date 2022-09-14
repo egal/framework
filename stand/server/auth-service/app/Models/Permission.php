@@ -58,7 +58,7 @@ class Permission extends Model
                     ->boolean()
                 ,
                 FieldMetadata::make('created_at', FieldType::DATETIME),
-                FieldMetadata::make('updated_at', FieldType::DATETIME)
+                FieldMetadata::make('updated_at', FieldType::DATETIME),
             ])
             ->addActions([
                 ActionMetadata::make('getItem'),

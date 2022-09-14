@@ -137,13 +137,13 @@ class User extends BaseUser
                     ->string()
                 ,
                 FieldMetadata::make('created_at', FieldType::DATETIME),
-                FieldMetadata::make('updated_at', FieldType::DATETIME)
+                FieldMetadata::make('updated_at', FieldType::DATETIME),
             ])
             ->addRelations([
                 RelationMetadata::make(
                     'roles',
                     RelationType::HAS_MANY,
-                    fn(User $user) => $user->hasMany(UserRole::class, 'user_id', 'id')
+                    fn(User $user) => $user->hasMany(UserRole::class, 'user_id', 'id'),
                 )
             ])
             ->addActions([

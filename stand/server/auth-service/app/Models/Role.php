@@ -73,13 +73,13 @@ class Role extends Model
                     ->boolean()
                 ,
                 FieldMetadata::make('created_at', FieldType::DATETIME),
-                FieldMetadata::make('updated_at', FieldType::DATETIME)
+                FieldMetadata::make('updated_at', FieldType::DATETIME),
             ])
             ->addRelations([
                 RelationMetadata::make(
                     'permissions',
                     RelationType::HAS_MANY,
-                    fn (Role $role) => $role->hasMany(Permission::class, 'role_id', 'id')
+                    fn (Role $role) => $role->hasMany(Permission::class, 'role_id', 'id'),
                 )
             ])
             ->addActions([

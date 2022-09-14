@@ -36,7 +36,7 @@ class UserRole extends Model
                     ->addValidationRule('exists:roles')
                 ,
                 FieldMetadata::make('created_at', FieldType::DATETIME),
-                FieldMetadata::make('updated_at', FieldType::DATETIME)
+                FieldMetadata::make('updated_at', FieldType::DATETIME),
             ])
             ->addActions([
                 ActionMetadata::make('getItem'),
