@@ -1,12 +1,9 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Egal\Model\Traits;
 
 /**
  * Trait HashGuardable
- *
  * @package Egal\Model
  */
 trait HashGuardable
@@ -27,6 +24,8 @@ trait HashGuardable
      *
      * Данную функцию можно переопределить,
      * для изменения названия field для хранения hash данных модели
+     *
+     * @return string
      */
     public function getHashFieldName(): string
     {

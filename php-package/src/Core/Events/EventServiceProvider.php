@@ -1,8 +1,4 @@
-<?php
-
-declare(strict_types=1);
-
-/** @noinspection PhpMissingFieldTypeInspection */
+<?php /** @noinspection PhpMissingFieldTypeInspection */
 
 namespace Egal\Core\Events;
 
@@ -23,7 +19,6 @@ class EventServiceProvider extends LumenEventServiceProvider
     public function __construct($app)
     {
         parent::__construct($app);
-
         EventManager::setGlobalListen($this->globalListen);
     }
 

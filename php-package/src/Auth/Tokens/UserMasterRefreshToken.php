@@ -12,9 +12,15 @@ class UserMasterRefreshToken extends Token
 
     protected string $type = TokenType::USER_MASTER_REFRESH;
 
-    private string|int $authIdentification;
+    /**
+     * @var string|int
+     */
+    private $authIdentification;
 
-    public function getAuthIdentification(): int|string
+    /**
+     * @return int|string
+     */
+    public function getAuthIdentification()
     {
         return $this->authIdentification;
     }
@@ -47,7 +53,6 @@ class UserMasterRefreshToken extends Token
                 throw new InitializeUserMasterRefreshTokenException('Incomplete information!');
             }
         }
-
         $token = new UserMasterRefreshToken();
 
         if ($array['type'] !== TokenType::USER_MASTER_REFRESH) {

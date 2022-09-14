@@ -12,7 +12,10 @@ class ActionResultMessage extends Message implements HasActionMessageInterface
 
     use HasActionMessage;
 
-    protected mixed $data;
+    /**
+     * @var mixed
+     */
+    protected $data;
 
     protected string $type = MessageType::ACTION_RESULT;
 
@@ -34,7 +37,10 @@ class ActionResultMessage extends Message implements HasActionMessageInterface
         return $result;
     }
 
-    public function getData(): mixed
+    /**
+     * @return mixed
+     */
+    public function getData()
     {
         return $this->data;
     }

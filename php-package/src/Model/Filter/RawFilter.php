@@ -1,8 +1,4 @@
-<?php
-
-declare(strict_types=1);
-
-/** @noinspection PhpUnused */
+<?php /** @noinspection PhpUnused */
 
 namespace Egal\Model\Filter;
 
@@ -25,9 +21,7 @@ class RawFilter
             $rawFilter = str_replace('"', "'", $rawFilter);
 
             foreach ($databaseProperties as $databaseProperty) {
-                if (! str_contains($rawFilter, $databaseProperty)) {
-                    continue;
-                }
+                if (!str_contains($rawFilter, $databaseProperty)) continue;
 
                 $rawFilter = str_replace(
                     "'" . $databaseProperty . "'",

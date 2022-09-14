@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Egal\Model\Casts;
 
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
@@ -18,15 +16,16 @@ class XssGuardCast implements CastsAttributes
      * Убрирает из строчных атрибутов при выводе все HTML теги.
      *
      * @param mixed $model
+     * @param string $key
      * @param mixed $value
      * @param array $attributes
+     * @return mixed
      */
-    public function get($model, string $key, $value, array $attributes): mixed
+    public function get($model, string $key, $value, array $attributes)
     {
         if (is_string($value)) {
             return strip_tags($value);
         }
-
         return $value;
     }
 
@@ -34,15 +33,16 @@ class XssGuardCast implements CastsAttributes
      * Убрирает из строчных атрибутов при вводе все HTML теги.
      *
      * @param mixed $model
+     * @param string $key
      * @param mixed $value
      * @param array $attributes
+     * @return mixed
      */
-    public function set($model, string $key, $value, array $attributes): mixed
+    public function set($model, string $key, $value, array $attributes)
     {
         if (is_string($value)) {
             return strip_tags($value);
         }
-
         return $value;
     }
 

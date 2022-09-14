@@ -7,13 +7,13 @@ namespace Egal\Model\Enums;
 enum FieldType: string
 {
 
-    case STRING = 'string';
-    case INTEGER = 'integer';
-    case UUID = 'uuid';
-    case DATETIME = 'datetime';
-    case DATE = 'date';
-    case JSON = 'json';
-    case BOOLEAN = 'boolean';
-    case NUMERIC = 'numeric';
+    case STRING     = 'string';
+    case INTEGER    = 'integer';
+    case UUID       = 'uuid';
+    case DATETIME   = 'datetime';
+    case DATE       = 'date';
+    case JSON       = 'json';
+    case BOOLEAN    = 'boolean';
+    case NUMERIC    = 'numeric';
 
 }

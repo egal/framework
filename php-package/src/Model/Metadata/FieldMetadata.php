@@ -1,11 +1,9 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Egal\Model\Metadata;
 
-use Egal\Model\Enums\FieldType;
 use Egal\Model\Traits\FieldValidationRules;
+use Egal\Model\Enums\FieldType;
 
 class FieldMetadata
 {
@@ -21,15 +19,15 @@ class FieldMetadata
      */
     protected array $validationRules = [];
 
+    public static function make(string $name, FieldType $type): self
+    {
+        return new static($name, $type);
+    }
+
     protected function __construct(string $name, FieldType $type)
     {
         $this->name = $name;
         $this->type = $type;
-    }
-
-    public static function make(string $name, FieldType $type): self
-    {
-        return new static($name, $type);
     }
 
     public function toArray(): array
@@ -37,7 +35,7 @@ class FieldMetadata
         return [
             'name' => $this->name,
             'type' => $this->type->value,
-            'validationRules' => $this->validationRules,
+            'validationRules' => $this->validationRules
         ];
     }
 

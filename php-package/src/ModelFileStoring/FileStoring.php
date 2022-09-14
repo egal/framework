@@ -57,7 +57,12 @@ trait FileStoring
         return ['path' => $path];
     }
 
-    protected function mutateAttribute(string $key, mixed $value): mixed
+    /**
+     * @param string $key
+     * @param mixed $value
+     * @return mixed
+     */
+    protected function mutateAttribute($key, $value)
     {
         if ($this->isNeedMutateUrlFields() && str_ends_with($key, $this->getContentUrlPropertyNamePostfix())) {
             $contentName = $this->getContentName($key);

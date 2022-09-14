@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Egal\Model\Traits;
 
 use Egal\Model\Casts\XssGuardCast;
@@ -27,6 +25,8 @@ trait XssGuardable
      * Можно переопределить для изменения Cast класса.
      *
      * В Egal доступны три типа Cast классов: {@see XssGuardCast}, {@see XssOutputGuardCast}, {@see XssInputGuardCast}.
+     *
+     * @var string
      */
     protected string $xssShieldingCastClass = XssGuardCast::class;
 

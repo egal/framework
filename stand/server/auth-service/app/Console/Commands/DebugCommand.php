@@ -13,7 +13,9 @@ class DebugCommand extends Command
     public function handle(): void
     {
         $model = new User();
-        dump($model->getRelations());
+        $relation =
+        $relationName = camel_case('role');
+        dump($model->$relationName()->getQuery()->getModel()->getModelMetadata());
     }
 
 }

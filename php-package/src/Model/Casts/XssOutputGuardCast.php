@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Egal\Model\Casts;
 
 /**
@@ -18,10 +16,12 @@ class XssOutputGuardCast extends XssGuardCast
      * Отменяет действие {@see XssGuardCast::set()}
      *
      * @param mixed $model
+     * @param string $key
      * @param mixed $value
      * @param array $attributes
+     * @return mixed
      */
-    public function set($model, string $key, $value, array $attributes): mixed
+    public function set($model, string $key, $value, array $attributes)
     {
         return $value;
     }

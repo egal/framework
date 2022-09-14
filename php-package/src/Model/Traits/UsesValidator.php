@@ -44,7 +44,7 @@ trait UsesValidator
     }
 
     /**
-     * @throws \Egal\Model\Exceptions\ValidateException
+     * @throws ValidateException
      */
     protected function validate(): void
     {
@@ -71,7 +71,7 @@ trait UsesValidator
 
     /**
      * @param mixed $keyValue
-     * @throws \Egal\Model\Exceptions\ValidateException
+     * @throws ValidateException
      */
     protected function validateKey($keyValue): void
     {
@@ -99,7 +99,7 @@ trait UsesValidator
     }
 
     /**
-     * @throws \Egal\Model\Exceptions\ValidateException
+     * @throws ValidateException
      * @throws \ReflectionException
      */
     protected static function bootUsesValidator(): void

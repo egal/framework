@@ -1,8 +1,4 @@
-<?php
-
-declare(strict_types=1);
-
-/** @noinspection PhpMissingFieldTypeInspection */
+<?php /** @noinspection PhpMissingFieldTypeInspection */
 
 namespace Egal\Core\Commands;
 
@@ -27,16 +23,13 @@ class GenerateKeyCommand extends Command
         );
         shuffle($seed);
         $key = '';
-
         foreach (array_rand($seed, 32) as $k) {
             $key .= $seed[$k];
         }
 
-        if (! $this->option('show')) {
-            return;
+        if ($this->option('show')) {
+            $this->line("Секретный ключ: <info>$key</info>");
         }
-
-        $this->line("Секретный ключ: <info>$key</info>");
     }
 
 }

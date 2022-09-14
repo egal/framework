@@ -18,18 +18,18 @@ trait UsesModelMetadata
 
     private array $validationRules;
 
-    public abstract static function constructMetadata(): ModelMetadata;
-
-    public final function getModelMetadata(): ModelMetadata
-    {
-        return ModelMetadataManager::getModelMetadata(static::class);
-    }
-
     public function initializeUsesModelMetadata(): void
     {
         $this->modelMetadata = ModelMetadataManager::getModelMetadata(static::class);
 
         $this->getValidationRules();
+    }
+
+    public abstract static function constructMetadata(): ModelMetadata;
+
+    public final function getModelMetadata(): ModelMetadata
+    {
+        return ModelMetadataManager::getModelMetadata(static::class);
     }
 
     // TODO: протестировать реализацию

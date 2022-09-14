@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Egal\Auth\Tokens;
 
 use Egal\Auth\Exceptions\InitializeServiceMasterTokenException;
@@ -12,32 +10,15 @@ class ServiceMasterToken extends Token
 
     protected string $type = TokenType::SERVICE_MASTER;
 
-    private string|int $authIdentification;
+    /**
+     * @var string|int
+     */
+    private $authIdentification;
 
     /**
-     * @param array $array
-     * @throws \Egal\Auth\Exceptions\InitializeServiceMasterTokenException
+     * @return int|string
      */
-    public static function fromArray(array $array): ServiceMasterToken
-    {
-        foreach (['type', 'auth_identification'] as $index) {
-            if (!array_key_exists($index, $array)) {
-                throw new InitializeServiceMasterTokenException('Incomplete information!');
-            }
-        }
-
-        if ($array['type'] !== TokenType::SERVICE_MASTER) {
-            throw new InitializeServiceMasterTokenException('Type mismatch!');
-        }
-
-        $token = new ServiceMasterToken();
-        $token->setAuthIdentification($array['auth_identification']);
-        $token->aliveUntil = Carbon::parse($array['alive_until']);
-
-        return $token;
-    }
-
-    public function getAuthIdentification(): int|string
+    public function getAuthIdentification()
     {
         return $this->authIdentification;
     }
@@ -55,8 +36,30 @@ class ServiceMasterToken extends Token
         return [
             'type' => $this->type,
             'auth_identification' => $this->authIdentification,
-            'alive_until' => $this->aliveUntil->toISOString(),
+            'alive_until' => $this->aliveUntil->toISOString()
         ];
+    }
+
+    /**
+     * @param array $array
+     * @return ServiceMasterToken
+     * @throws InitializeServiceMasterTokenException
+     */
+    public static function fromArray(array $array): ServiceMasterToken
+    {
+        foreach (['type', 'auth_identification'] as $index) {
+            if (!array_key_exists($index, $array)) {
+                throw new InitializeServiceMasterTokenException('Incomplete information!');
+            }
+        }
+        if (TokenType::SERVICE_MASTER !== $array['type']) {
+            throw new InitializeServiceMasterTokenException('Type mismatch!');
+        }
+        $token = new ServiceMasterToken();
+        $token->setAuthIdentification($array['auth_identification']);
+        $token->aliveUntil = Carbon::parse($array['alive_until']);
+
+        return $token;
     }
 
 }

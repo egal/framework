@@ -1,10 +1,9 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Egal\Model;
 
 use Illuminate\Support\ServiceProvider as IlluminateServiceProvider;
+use \Egal\Model\Facades\ModelMetadataManager as ModelMetadataManagerFacade;
 
 /**
  * @package Egal\Model
@@ -16,6 +15,7 @@ class ServiceProvider extends IlluminateServiceProvider
      * Указывает, отложена ли загрузка провайдера.
      *
      * @noinspection PhpUnusedPropertyInspection
+     * @var bool
      */
     protected bool $defer = true;
 
@@ -32,7 +32,7 @@ class ServiceProvider extends IlluminateServiceProvider
             $this->commands([]);
         }
 
-        $this->app->singleton('modelMetadataManager', static fn () => new ModelMetadataManager());
+        $this->app->singleton('modelMetadataManager', fn () => new ModelMetadataManager());
 
         $this->commands([]);
     }

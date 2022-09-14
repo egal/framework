@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Egal\Auth\Tokens;
 
 use Egal\Auth\Exceptions\InitializeUserMasterTokenException;
@@ -12,9 +10,15 @@ class UserMasterToken extends Token
 
     protected string $type = TokenType::USER_MASTER;
 
-    private string|int $authIdentification;
+    /**
+     * @var string|int
+     */
+    private $authIdentification;
 
-    public function getAuthIdentification(): int|string
+    /**
+     * @return int|string
+     */
+    public function getAuthIdentification()
     {
         return $this->authIdentification;
     }
@@ -32,31 +36,28 @@ class UserMasterToken extends Token
         return [
             'type' => $this->type,
             'auth_identification' => $this->authIdentification,
-            'alive_until' => $this->aliveUntil->toISOString(),
+            'alive_until' => $this->aliveUntil->toISOString()
         ];
     }
 
     /**
-     * @throws \Egal\Auth\Exceptions\InitializeUserMasterTokenException
+     * @throws InitializeUserMasterTokenException
      */
     public static function fromArray(array $array): Token
     {
-        foreach (            ['type', 'auth_identification'] as $index
+        foreach (
+            ['type', 'auth_identification'] as $index
         ) {
             if (!array_key_exists($index, $array)) {
                 throw new InitializeUserMasterTokenException('Incomplete information!');
             }
         }
-
         $token = new UserMasterToken();
-
-        if ($array['type'] !== TokenType::USER_MASTER) {
+        if (TokenType::USER_MASTER !== $array['type']) {
             throw new InitializeUserMasterTokenException('Type mismatch!');
         }
-
         $token->setAuthIdentification($array['auth_identification']);
         $token->aliveUntil = Carbon::parse($array['alive_until']);
-
         return $token;
     }
 
