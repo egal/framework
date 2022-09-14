@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Egal\Model\Enums\FieldType;
+use Egal\Model\Metadata\ActionMetadata;
 use Egal\Model\Metadata\FieldMetadata;
 use Egal\Model\Metadata\ModelMetadata;
 use Egal\Model\Model;
@@ -44,18 +45,18 @@ class Employee extends Model
                     ->numeric()
                 ,
                 FieldMetadata::make('created_at', FieldType::DATETIME),
-                FieldMetadata::make('updated_at', FieldType::DATETIME)
+                FieldMetadata::make('updated_at', FieldType::DATETIME),
             ])
             ->addFakeFields([
-                FieldMetadata::make('height',  FieldType::FLOAT)
+                FieldMetadata::make('height',  FieldType::NUMERIC)
                     ->sometimes()
                     ->required()
                     ->numeric()
             ])
             ->addActions([
-                'getItems',
-                'create',
-                'update'
+                ActionMetadata::make('getItems'),
+                ActionMetadata::make('create'),
+                ActionMetadata::make('update'),
             ]);
     }
 

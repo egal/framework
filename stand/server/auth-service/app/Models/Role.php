@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Egal\Model\Enums\FieldType;
 use Egal\Model\Enums\RelationType;
+use Egal\Model\Metadata\ActionMetadata;
 use Egal\Model\Metadata\FieldMetadata;
 use Egal\Model\Metadata\ModelMetadata;
 use Egal\Model\Metadata\RelationMetadata;
@@ -82,11 +83,11 @@ class Role extends Model
                 )
             ])
             ->addActions([
-                'getItem',
-                'getItems',
-                'create',
-                'update',
-                'delete'
+                ActionMetadata::make('getItem'),
+                ActionMetadata::make('getItems'),
+                ActionMetadata::make('create'),
+                ActionMetadata::make('update'),
+                ActionMetadata::make('delete'),
             ]);
     }
 

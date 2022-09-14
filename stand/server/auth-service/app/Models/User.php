@@ -10,6 +10,7 @@ use Egal\AuthServiceDependencies\Exceptions\LoginException;
 use Egal\AuthServiceDependencies\Models\User as BaseUser;
 use Egal\Model\Enums\FieldType;
 use Egal\Model\Enums\RelationType;
+use Egal\Model\Metadata\ActionMetadata;
 use Egal\Model\Metadata\FieldMetadata;
 use Egal\Model\Metadata\ModelMetadata;
 use Egal\Model\Metadata\RelationMetadata;
@@ -146,10 +147,10 @@ class User extends BaseUser
                 )
             ])
             ->addActions([
-                'register',
-                'login',
-                'loginToService',
-                'refreshUserMasterToken'
+                ActionMetadata::make('register'),
+                ActionMetadata::make('login'),
+                ActionMetadata::make('loginToService'),
+                ActionMetadata::make('refreshUserMasterToken'),
             ]);
     }
 
