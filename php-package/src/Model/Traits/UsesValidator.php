@@ -77,18 +77,11 @@ trait UsesValidator
     {
         $primaryKey = $this->getModelMetadata()->getPrimaryKey()->getName();
 
-        if ($primaryKey === null) {
-            $validator = Validator::make(
-                [$this->getKeyName() => $keyValue],
-                [$this->getKeyName() => [$this->getKeyType()]]
-            );
-        } else {
-            $validationRules = $this->getModelMetadata()->getPrimaryKey()->getValidationRules();
-            $validator = Validator::make(
-                [$primaryKey => $keyValue],
-                [$primaryKey => $validationRules === [] ? [$this->getKeyType()] : $validationRules]
-            );
-        }
+        $validationRules = $this->getModelMetadata()->getPrimaryKey()->getValidationRules();
+        $validator = Validator::make(
+            [$primaryKey => $keyValue],
+            [$primaryKey => $validationRules === [] ? [$this->getKeyType()] : $validationRules]
+        );
 
         if ($validator->fails()) {
             $exception = new ValidateException();

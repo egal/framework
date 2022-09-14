@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Egal\Model\Traits;
 
 use Egal\Model\Facades\ModelMetadataManager;
+use Egal\Model\Metadata\FieldMetadata;
 use Egal\Model\Metadata\ModelMetadata;
 
 /**
@@ -13,6 +14,17 @@ use Egal\Model\Metadata\ModelMetadata;
 trait UsesModelMetadata
 {
 
+    private ModelMetadata $modelMetadata;
+
+    private array $validationRules;
+
+    public function initializeUsesModelMetadata(): void
+    {
+        $this->modelMetadata = ModelMetadataManager::getModelMetadata(static::class);
+
+        $this->getValidationRules();
+    }
+
     public abstract static function constructMetadata(): ModelMetadata;
 
     public final function getModelMetadata(): ModelMetadata
@@ -20,6 +32,7 @@ trait UsesModelMetadata
         return ModelMetadataManager::getModelMetadata(static::class);
     }
 
+    // TODO: протестировать реализацию
     public function getRelations(): array
     {
         return $this->getModelMetadata()->getRelations();
@@ -27,7 +40,31 @@ trait UsesModelMetadata
 
     public function getValidationRules(): array
     {
-        return ModelMetadataManager::getModelMetadata(static::class)->getValidationRules();
+        $this->getValidationRule($this->modelMetadata->getPrimaryKey());
+
+        foreach ($this->modelMetadata->getFields() as $field) {
+            $this->getValidationRule($field);
+        }
+
+        foreach ($this->modelMetadata->getFakeFields() as $field) {
+            $this->getValidationRule($field);
+        }
+
+        return $this->validationRules;
+    }
+
+    public function getValidationRule(FieldMetadata $field): void
+    {
+        $fieldValidationRules = $field->getValidationRules();
+        $fieldType = $field->getType()->value;
+
+        $this->validationRules[$field->getName()] = $fieldValidationRules;
+
+        if (in_array($fieldType, $fieldValidationRules)) {
+            return;
+        }
+
+        $this->validationRules[$field->getName()] = $fieldType;
     }
 
 }

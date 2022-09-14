@@ -69,6 +69,8 @@ class SimpleFilterConditionApplier extends FilterConditionApplier
         foreach ($types as $type) {
             $relationModelMetadata = (new $type())->getModelMetadata();
             $relationModelMetadata->fieldExistOrFail($field);
+// TODO: валидировать поле по указанному типу
+//            $relationModelMetadata->validateFieldValueType($field, $value);
         }
 
         $clause = static function (Builder $query) use ($field, $operator, $value): void {
@@ -122,9 +124,11 @@ class SimpleFilterConditionApplier extends FilterConditionApplier
         [$relation, $field, $model] = [$matches[1], $matches[2], $builder->getModel()];
         $model->getModelMetadata()->relationExistOrFail($relation);
         $relationName = camel_case($relation);
+        // TODO: протестировать
         $relationModelMetadata = $model->$relationName()->getQuery()->getModel()->getModelMetadata();
         $relationModelMetadata->fieldExistOrFail($field);
-        $relationModelMetadata->validateFieldValueType($field, $value);
+// TODO: реализовать
+//        $relationModelMetadata->validateFieldValueType($field, $value);
         $clause = static function (Builder $query) use ($field, $operator, $value): void {
             $query->where($field, $operator, $value);
         };
@@ -147,6 +151,8 @@ class SimpleFilterConditionApplier extends FilterConditionApplier
         // For condition field like `field`.
         [$field, $modelMetadata] = [$condition->getField(), $builder->getModel()->getModelMetadata()];
         $modelMetadata->fieldExistOrFail($field);
+//  TODO: реализовать
+//        $modelMetadata->validateFieldValueType($field, $value);
         $builder->where($condition->getField(), $operator, $value, $boolean);
     }
 

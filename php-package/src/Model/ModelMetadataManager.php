@@ -4,6 +4,7 @@ namespace Egal\Model;
 
 use Egal\Core\Exceptions\ModelNotFoundException;
 use Egal\Model\Metadata\ModelMetadata;
+use Mockery\Exception;
 
 class ModelMetadataManager
 {
@@ -76,11 +77,17 @@ class ModelMetadataManager
     {
         $classShortName = get_class_short_name($class);
 
-        if (empty($this->modelsMetadata[$classShortName])) {
+        if (! empty($this->modelsMetadata[$classShortName])) {
             return;
         }
 
-        $this->modelsMetadata[$classShortName] = call_user_func(array($class, 'constructMetadata'))->toArray();
+        $model = new $class;
+
+        if (! ($model instanceof Model)) {
+            throw new Exception();
+        }
+
+        $this->modelsMetadata[$classShortName] = $model->constructMetadata();
     }
 
 }

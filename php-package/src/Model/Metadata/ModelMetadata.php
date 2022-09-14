@@ -2,6 +2,8 @@
 
 namespace Egal\Model\Metadata;
 
+use Egal\Model\Enums\ValidationRules;
+use Egal\Model\Exceptions\ActionNotFoundException;
 use Egal\Model\Exceptions\FieldNotFoundException;
 use Egal\Model\Exceptions\RelationNotFoundException;
 
@@ -26,6 +28,9 @@ class ModelMetadata
 
     protected array $fakeFields = [];
 
+    /**
+     * @var ActionMetadata[]
+     */
     protected array $actions = [];
 
     public static function make(string $modelClass, ?FieldMetadata $key = null): self
@@ -45,7 +50,6 @@ class ModelMetadata
         $modelMetadata = [
             'model_short_name' => $this->modelShortName,
             'primary_key'   => $this->primaryKey->toArray(),
-            'actions' => $this->actions,
         ];
 
         foreach ($this->fields as $field) {
@@ -59,6 +63,11 @@ class ModelMetadata
         foreach ($this->relations as $relation) {
             $modelMetadata['relations'] = $relation->toArray();
         }
+
+        foreach ($this->actions as $action) {
+            $modelMetadata['actions'] = $action->toArray();
+        }
+
         return $modelMetadata;
     }
 
@@ -92,6 +101,9 @@ class ModelMetadata
         return $this;
     }
 
+    /**
+     * @param ActionMetadata[] $actions
+     */
     public function addActions(array $actions): self
     {
         $this->actions = array_merge($this->actions, $actions);
@@ -170,21 +182,26 @@ class ModelMetadata
         return $this->$this->modelClass;
     }
 
+    /**
+     * @return ActionMetadata[]
+     */
     public function getActions(): array
     {
         return $this->actions;
     }
 
-    public function getValidationRules(): array
+    /**
+     * @throws ActionNotFoundException
+     */
+    public function getAction(string $actionName): ActionMetadata
     {
-        $fields =  array_merge($this->getFields(), $this->getFakeFields());
+        $action = $this->actions[$actionName] ?? null;
 
-        $validationRules = [];
-
-        foreach ($fields as $field) {
-            $validationRules[$field->getName()] = $field->getValidationRules();
+        if ($action) {
+            return $action;
         }
-        return $validationRules;
+
+        throw ActionNotFoundException::make($this->modelClass, $actionName);
     }
 
 }
