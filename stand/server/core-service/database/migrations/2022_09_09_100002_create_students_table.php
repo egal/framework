@@ -14,6 +14,10 @@ class CreateStudentsTable extends Migration
             $table->string('name');
             $table->string('surname');
             $table->uuid('user_id');
+            $table->uuid('school_id');
+            $table->foreign('school_id')
+                ->references('id')
+                ->on('schools');
             $table->timestamps();
         });
     }

@@ -3,8 +3,10 @@
 namespace App\Models;
 
 use Egal\Model\Enums\FieldTypeEnum;
+use Egal\Model\Enums\RelationTypeEnum;
 use Egal\Model\Metadata\FieldMetadata;
 use Egal\Model\Metadata\ModelMetadata;
+use Egal\Model\Metadata\RelationMetadata;
 use Egal\Model\Model;
 use Egal\Model\Traits\UsesUuidKey;
 use ReflectionException;
@@ -29,9 +31,6 @@ class Student extends Model
         'user_id'
     ];
 
-    /**
-     * @throws ReflectionException
-     */
     public static function constructMetadata(): ModelMetadata
     {
         return ModelMetadata::make(self::class, FieldMetadata::make('id', FieldTypeEnum::STRING))
@@ -49,7 +48,7 @@ class Student extends Model
                     ->string()
                 ,
                 FieldMetadata::make('school_id', FieldTypeEnum::UUID)
-                    ->addValidationRule('uuid')
+                    ->uuid()
                     ->addValidationRule('exists:schools,id')
                     ->required()
                 ,
@@ -57,7 +56,16 @@ class Student extends Model
                 FieldMetadata::make('updated_at', FieldTypeEnum::DATETIME)
             ])
             ->addRelations([
-                'school' => fn() => $this->belongsTo(School::class),
+                RelationMetadata::make(
+                    'school',
+                    RelationTypeEnum::BELONGS_TO,
+                    fn() => $this->belongsTo(School::class)
+                )
+            ])
+            ->addActions([
+                'getItems',
+                'create',
+                'update'
             ]);
     }
 }

@@ -12,10 +12,12 @@ class DebugCommand extends Command
 
     public function handle(): void
     {
-        $country = new Country();
-        $country->setAttribute('name', 'new_school');
-        $country->save();
-        $country->getModelMetadata();
+        $model = new Country();
+        $model->setAttribute('name', 'AmericaCountry');
+        $model->setAttribute('id', 'USA');
+        $model->save();
+        $metadata = $model->getModelMetadata();
+        var_dump($metadata);
     }
 
 }

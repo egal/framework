@@ -15,8 +15,10 @@ class CreateWorkingTimesTable extends Migration
     {
         Schema::create('working_times', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('speaker_id')
-                ->constrained()
+            $table->uuid('speaker_id');
+            $table->foreign('speaker_id')
+                ->references('id')
+                ->on('speakers')
                 ->onDelete('cascade');
             $table->timestamp('starts_at');
             $table->timestamp('ends_at');

@@ -17,25 +17,27 @@ class AdditionalSpeakerLanguage extends Model
         'speaker_id'
     ];
 
-    /**
-     * @throws ReflectionException
-     */
     public static function constructMetadata(): ModelMetadata
     {
         return ModelMetadata::make(self::class, FieldMetadata::make('id', FieldTypeEnum::INTEGER))
             ->addFields([
                 FieldMetadata::make('language_id', FieldTypeEnum::STRING)
-                    ->required()
-                    ->addValidationRule('exists:languages,id')
                     ->string()
+                    ->addValidationRule('exists:languages,id')
+                    ->required()
                 ,
                 FieldMetadata::make('speaker_id', FieldTypeEnum::UUID)
-                    ->addValidationRule('uuid')
+                    ->uuid()
                     ->addValidationRule('exists:speakers,id')
                     ->required()
                 ,
                 FieldMetadata::make('created_at', FieldTypeEnum::DATETIME),
                 FieldMetadata::make('updated_at', FieldTypeEnum::DATETIME)
+            ])
+            ->addActions([
+                'getItems',
+                'create',
+                'update'
             ]);
     }
 }

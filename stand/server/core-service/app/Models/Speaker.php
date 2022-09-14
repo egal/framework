@@ -3,8 +3,10 @@
 namespace App\Models;
 
 use Egal\Model\Enums\FieldTypeEnum;
+use Egal\Model\Enums\RelationTypeEnum;
 use Egal\Model\Metadata\FieldMetadata;
 use Egal\Model\Metadata\ModelMetadata;
+use Egal\Model\Metadata\RelationMetadata;
 use Egal\Model\Model as EgalModel;
 use Egal\Model\Traits\UsesUuidKey;
 use ReflectionException;
@@ -32,15 +34,12 @@ class Speaker extends EgalModel
         'user_id'
     ];
 
-    /**
-     * @throws ReflectionException
-     */
     public static function constructMetadata(): ModelMetadata
     {
         return ModelMetadata::make(self::class, FieldMetadata::make('id', FieldTypeEnum::STRING))
             ->addFields([
                 FieldMetadata::make('user_id', FieldTypeEnum::UUID)
-                    ->addValidationRule('uuid')
+                    ->uuid()
                     ->required()
                 ,
                 FieldMetadata::make('name', FieldTypeEnum::STRING)
@@ -59,15 +58,28 @@ class Speaker extends EgalModel
                 ,
                 FieldMetadata::make('country_id', FieldTypeEnum::STRING)
                     ->string()
-                    ->addValidationRule('exists:country,id')
+                    ->addValidationRule('exists:countries,id')
                     ->required()
                 ,
                 FieldMetadata::make('created_at', FieldTypeEnum::DATETIME),
                 FieldMetadata::make('updated_at', FieldTypeEnum::DATETIME)
             ])
             ->addRelations([
-                'country' => fn() => $this->belongsTo(Country::class),
-                'languages' => fn() => $this->hasManyThrough(Language::class, AdditionalSpeakerLanguage::class)
+                RelationMetadata::make(
+                    'country',
+                    RelationTypeEnum::BELONGS_TO,
+                    fn() => $this->belongsTo(Country::class)
+                ),
+                RelationMetadata::make(
+                    'languages',
+                    RelationTypeEnum::BELONGS_TO,//TODO Поменять на hasManyThrough
+                    fn() => $this->hasManyThrough(Language::class, AdditionalSpeakerLanguage::class)
+                ),
+            ])
+            ->addActions([
+                'getItems',
+                'create',
+                'update'
             ]);
     }
 }

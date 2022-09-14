@@ -3,8 +3,10 @@
 namespace App\Models;
 
 use Egal\Model\Enums\FieldTypeEnum;
+use Egal\Model\Enums\RelationTypeEnum;
 use Egal\Model\Metadata\FieldMetadata;
 use Egal\Model\Metadata\ModelMetadata;
+use Egal\Model\Metadata\RelationMetadata;
 use Egal\Model\Model;
 use ReflectionException;
 
@@ -19,20 +21,17 @@ class LessonRequest extends Model
         'supposedly_lesson_starts_at'
     ];
 
-    /**
-     * @throws ReflectionException
-     */
     public static function constructMetadata(): ModelMetadata
     {
         return ModelMetadata::make(self::class, FieldMetadata::make('id', FieldTypeEnum::INTEGER))
             ->addFields([
                 FieldMetadata::make('speaker_id', FieldTypeEnum::UUID)
-                    ->addValidationRule('uuid')
+                    ->uuid()
                     ->addValidationRule('exists:speakers,id')
                     ->required()
                 ,
                 FieldMetadata::make('school_id', FieldTypeEnum::UUID)
-                    ->addValidationRule('uuid')
+                    ->uuid()
                     ->addValidationRule('exists:schools,id')
                     ->required()
                 ,
@@ -45,8 +44,21 @@ class LessonRequest extends Model
                 FieldMetadata::make('updated_at', FieldTypeEnum::DATETIME),
             ])
             ->addRelations([
-                'speaker' => fn() => $this->belongsTo(Speaker::class),
-                'school' => fn() => $this->belongsTo(School::class),
+                RelationMetadata::make(
+                    'school',
+                    RelationTypeEnum::BELONGS_TO,
+                    fn() => $this->belongsTo(School::class)
+                ),
+                RelationMetadata::make(
+                    'speaker',
+                    RelationTypeEnum::BELONGS_TO,
+                    fn() => $this->belongsTo(Speaker::class)
+                )
+            ])
+            ->addActions([
+                'getItems',
+                'create',
+                'update'
             ]);
     }
 

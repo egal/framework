@@ -10,9 +10,7 @@ class CreateSpeakersTable extends Migration
     public function up()
     {
         Schema::create('speakers', function (Blueprint $table) {
-            $table->id();
-            $table->uuid('uid')
-                ->unique();
+            $table->uuid('id')->primary();
             $table->string('name');
             $table->string('surname');
             $table->string('avatar')
