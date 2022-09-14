@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use Egal\Model\Enums\FieldTypeEnum;
+use Egal\Model\Enums\FieldType;
 use Egal\Model\Metadata\FieldMetadata;
 use Egal\Model\Metadata\ModelMetadata;
 use Egal\Model\Model;
@@ -24,30 +24,30 @@ class Employee extends Model
 
     public static function constructMetadata(): ModelMetadata
     {
-        return ModelMetadata::make(Employee::class, FieldMetadata::make('id',FieldTypeEnum::UUID))
+        return ModelMetadata::make(Employee::class, FieldMetadata::make('id',FieldType::UUID))
             ->addFields([
-                FieldMetadata::make('address', FieldTypeEnum::STRING)
+                FieldMetadata::make('address', FieldType::STRING)
                     ->required()
                     ->string()
                 ,
-                FieldMetadata::make('phone', FieldTypeEnum::INTEGER)
+                FieldMetadata::make('phone', FieldType::INTEGER)
                     ->required()
                     ->integer()
                     ->addValidationRule('unique:employees,phone')
                 ,
-                FieldMetadata::make('adult', FieldTypeEnum::BOOLEAN)
+                FieldMetadata::make('adult', FieldType::BOOLEAN)
                     ->required()
                     ->boolean()
                 ,
-                FieldMetadata::make('weight', FieldTypeEnum::NUMERIC)
+                FieldMetadata::make('weight', FieldType::NUMERIC)
                     ->required()
                     ->numeric()
                 ,
-                FieldMetadata::make('created_at', FieldTypeEnum::DATETIME),
-                FieldMetadata::make('updated_at', FieldTypeEnum::DATETIME)
+                FieldMetadata::make('created_at', FieldType::DATETIME),
+                FieldMetadata::make('updated_at', FieldType::DATETIME)
             ])
             ->addFakeFields([
-                FieldMetadata::make('height',  FieldTypeEnum::FLOAT)
+                FieldMetadata::make('height',  FieldType::FLOAT)
                     ->sometimes()
                     ->required()
                     ->numeric()

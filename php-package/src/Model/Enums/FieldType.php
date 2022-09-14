@@ -1,8 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Egal\Model\Enums;
 
-enum FieldTypeEnum: string
+enum FieldType: string
 {
 
     case STRING     = 'string';

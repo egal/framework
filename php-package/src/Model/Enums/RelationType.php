@@ -1,8 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Egal\Model\Enums;
 
-enum RelationTypeEnum: string
+enum RelationType: string
 {
 
     case HAS_ONE            = 'hasOne';

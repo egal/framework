@@ -3,7 +3,7 @@
 namespace Egal\Model\Metadata;
 
 use Egal\Model\Traits\FieldValidationRules;
-use Egal\Model\Enums\FieldTypeEnum;
+use Egal\Model\Enums\FieldType;
 
 class FieldMetadata
 {
@@ -12,19 +12,19 @@ class FieldMetadata
 
     protected string $name;
 
-    protected FieldTypeEnum $type;
+    protected FieldType $type;
 
     /**
      * @var string[]
      */
     protected array $validationRules = [];
 
-    public static function make(string $name, FieldTypeEnum $type): self
+    public static function make(string $name, FieldType $type): self
     {
         return new static($name, $type);
     }
 
-    protected function __construct(string $name, FieldTypeEnum $type)
+    protected function __construct(string $name, FieldType $type)
     {
         $this->name = $name;
         $this->type = $type;
@@ -46,7 +46,7 @@ class FieldMetadata
         return $this;
     }
 
-    public function setType(FieldTypeEnum $type): self
+    public function setType(FieldType $type): self
     {
         $this->type = $type;
 
@@ -65,7 +65,7 @@ class FieldMetadata
         return $this->name;
     }
 
-    public function getType(): FieldTypeEnum
+    public function getType(): FieldType
     {
         return $this->type;
     }

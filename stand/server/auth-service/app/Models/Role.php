@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use Egal\Model\Enums\FieldTypeEnum;
-use Egal\Model\Enums\RelationTypeEnum;
+use Egal\Model\Enums\FieldType;
+use Egal\Model\Enums\RelationType;
 use Egal\Model\Metadata\FieldMetadata;
 use Egal\Model\Metadata\ModelMetadata;
 use Egal\Model\Metadata\RelationMetadata;
@@ -60,25 +60,25 @@ class Role extends Model
 
     public static function constructMetadata(): ModelMetadata
     {
-        return ModelMetadata::make(Role::class, FieldMetadata::make('id', FieldTypeEnum::STRING))
+        return ModelMetadata::make(Role::class, FieldMetadata::make('id', FieldType::STRING))
             ->addFields([
-                FieldMetadata::make('name', FieldTypeEnum::STRING)
+                FieldMetadata::make('name', FieldType::STRING)
                     ->required()
                     ->string()
                     ->addValidationRule('unique:roles,name')
                 ,
-                FieldMetadata::make('is_default', FieldTypeEnum::BOOLEAN)
+                FieldMetadata::make('is_default', FieldType::BOOLEAN)
                     ->required()
                     ->boolean()
                 ,
-                FieldMetadata::make('created_at', FieldTypeEnum::DATETIME),
-                FieldMetadata::make('updated_at', FieldTypeEnum::DATETIME)
+                FieldMetadata::make('created_at', FieldType::DATETIME),
+                FieldMetadata::make('updated_at', FieldType::DATETIME)
             ])
             ->addRelations([
                 RelationMetadata::make(
                     'permissions',
-                    RelationTypeEnum::HAS_MANY,
-                    fn(Role $role) => $role->hasMany(Permission::class, 'role_id', 'id')
+                    RelationType::HAS_MANY,
+                    fn (Role $role) => $role->hasMany(Permission::class, 'role_id', 'id')
                 )
             ])
             ->addActions([

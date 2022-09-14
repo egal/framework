@@ -8,8 +8,8 @@ use Egal\Auth\Tokens\UserMasterRefreshToken;
 use Egal\Auth\Tokens\UserMasterToken;
 use Egal\AuthServiceDependencies\Exceptions\LoginException;
 use Egal\AuthServiceDependencies\Models\User as BaseUser;
-use Egal\Model\Enums\FieldTypeEnum;
-use Egal\Model\Enums\RelationTypeEnum;
+use Egal\Model\Enums\FieldType;
+use Egal\Model\Enums\RelationType;
 use Egal\Model\Metadata\FieldMetadata;
 use Egal\Model\Metadata\ModelMetadata;
 use Egal\Model\Metadata\RelationMetadata;
@@ -124,24 +124,24 @@ class User extends BaseUser
 
     public static function constructMetadata(): ModelMetadata
     {
-        return ModelMetadata::make(User::class, FieldMetadata::make('id',FieldTypeEnum::UUID))
+        return ModelMetadata::make(User::class, FieldMetadata::make('id',FieldType::UUID))
             ->addFields([
-                FieldMetadata::make('email', FieldTypeEnum::STRING)
+                FieldMetadata::make('email', FieldType::STRING)
                     ->required()
                     ->string()
                     ->addValidationRule('unique:users,email')
                 ,
-                FieldMetadata::make('password', FieldTypeEnum::INTEGER)
+                FieldMetadata::make('password', FieldType::INTEGER)
                     ->required()
                     ->string()
                 ,
-                FieldMetadata::make('created_at', FieldTypeEnum::DATETIME),
-                FieldMetadata::make('updated_at', FieldTypeEnum::DATETIME)
+                FieldMetadata::make('created_at', FieldType::DATETIME),
+                FieldMetadata::make('updated_at', FieldType::DATETIME)
             ])
             ->addRelations([
                 RelationMetadata::make(
                     'roles',
-                    RelationTypeEnum::HAS_MANY,
+                    RelationType::HAS_MANY,
                     fn(User $user) => $user->hasMany(UserRole::class, 'user_id', 'id')
                 )
             ])
