@@ -18,7 +18,6 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\RelationNotFoundException;
 use Illuminate\Database\Eloquent\Relations\Relation;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 /**
@@ -181,7 +180,7 @@ class Builder extends EloquentBuilder
         if ($array === []) {
             return $this;
         }
-        Log::info('with Builder');
+
         foreach (Collection::fromArray($array)->getRelations() as $relation) {
             if (!$relation->isFilterExists()) {
                 $this->with($relation->getName());
