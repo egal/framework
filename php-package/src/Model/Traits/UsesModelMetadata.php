@@ -65,4 +65,14 @@ trait UsesModelMetadata
         $this->validationRules[$field->getName()] = $fieldType;
     }
 
+    /**
+     * Get the key type.
+     *
+     * @return string
+     */
+    public function getKeyType()
+    {
+        return $this->modelMetadata->getPrimaryKey()->getType()->value;
+    }
+
 }
