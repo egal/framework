@@ -11,11 +11,6 @@ use Egal\Model\Model;
 class UserRole extends Model
 {
 
-    protected $hidden = [
-        'created_at',
-        'updated_at',
-    ];
-
     public static function constructMetadata(): ModelMetadata
     {
         return ModelMetadata::make(UserRole::class, FieldMetadata::make('id', FieldType::INTEGER))
