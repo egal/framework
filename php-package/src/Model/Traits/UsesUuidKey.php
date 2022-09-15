@@ -17,11 +17,6 @@ trait UsesUuidKey
         return false;
     }
 
-    public function getKeyType(): string
-    {
-        return 'string';
-    }
-
     protected static function bootUsesUuidKey(): void
     {
         static::creating(static function ($model): void {
