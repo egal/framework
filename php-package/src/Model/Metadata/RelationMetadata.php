@@ -14,18 +14,16 @@ class RelationMetadata
 
     protected RelationType $type;
 
-    protected Closure $closure;
 
-    protected function __construct(string $name, RelationType $type, Closure $closure)
+    protected function __construct(string $name, RelationType $type)
     {
         $this->name = $name;
         $this->type = $type;
-        $this->closure = $closure;
     }
 
-    public static function make(string $name, RelationType $type, Closure $closure): self
+    public static function make(string $name, RelationType $type): self
     {
-        return new static($name, $type, $closure);
+        return new static($name, $type);
     }
 
     public function toArray(): array
@@ -50,13 +48,6 @@ class RelationMetadata
         return $this;
     }
 
-    public function setClosure(Closure $closure): self
-    {
-        $this->closure = $closure;
-
-        return $this;
-    }
-
     public function getName(): string
     {
         return $this->name;
@@ -65,11 +56,6 @@ class RelationMetadata
     public function getType(): RelationType
     {
         return $this->type;
-    }
-
-    public function getClosure(): Closure
-    {
-        return $this->closure;
     }
 
 }

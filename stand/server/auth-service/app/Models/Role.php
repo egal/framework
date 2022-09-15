@@ -78,9 +78,8 @@ class Role extends Model
             ->addRelations([
                 RelationMetadata::make(
                     'permissions',
-                    RelationType::HAS_MANY,
-                    fn (Role $role) => $role->hasMany(Permission::class, 'role_id', 'id'),
-                )
+                    RelationType::HAS_MANY
+                ),
             ])
             ->addActions([
                 ActionMetadata::make('getItem'),

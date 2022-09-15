@@ -143,8 +143,7 @@ class User extends BaseUser
                 RelationMetadata::make(
                     'roles',
                     RelationType::HAS_MANY,
-                    fn() => (new User)->hasMany(UserRole::class, 'user_id', 'id'),
-                )
+                ),
             ])
             ->addActions([
                 ActionMetadata::make('register'),
