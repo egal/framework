@@ -11,5 +11,6 @@ enum RelationType: string
     case HAS_MANY = 'hasMany';
     case BELONGS_TO = 'belongsTo';
     case BELONGS_TO_MANY = 'belongsToMany';
+    case HAS_MANY_DEEP = 'hasManyDeep';
 
 }

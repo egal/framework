@@ -119,6 +119,23 @@ abstract class Model extends EloquentModel
     }
 
     /**
+     * Begin querying a model with eager loading.
+     *
+     * @param array|string $relations
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public static function with($relations)
+    {
+        $instance = new static();
+        if (is_string($relations)) {
+            $relation = $instance->getRelation($relations);
+            return static::query()->with($relation->getName(), $relation->getClosure());
+        }
+
+        return $instance->newQuery()->setWithFromArray($relations);
+    }
+
+    /**
      * Getting a array of entities
      *
      * @param mixed[]|null $pagination Entity pagination array.

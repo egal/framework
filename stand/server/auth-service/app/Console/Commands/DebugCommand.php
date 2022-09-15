@@ -2,7 +2,6 @@
 
 namespace App\Console\Commands;
 
-use App\Models\User;
 use Illuminate\Console\Command;
 
 class DebugCommand extends Command
@@ -12,10 +11,7 @@ class DebugCommand extends Command
 
     public function handle(): void
     {
-        $model = new User();
-        $relation =
-        $relationName = camel_case('role');
-        dump($model->$relationName()->getQuery()->getModel()->getModelMetadata());
+        //
     }
 
 }

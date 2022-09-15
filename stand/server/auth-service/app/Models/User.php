@@ -86,10 +86,10 @@ class User extends BaseUser
         ];
     }
 
-    public function roles(): BelongsToMany
-    {
-        return $this->belongsToMany(Role::class, 'user_roles');
-    }
+//    public function roles(): BelongsToMany
+//    {
+//        return $this->belongsToMany(Role::class, 'user_roles');
+//    }
 
     public function permissions(): HasManyDeep
     {
@@ -141,10 +141,20 @@ class User extends BaseUser
             ])
             ->addRelations([
                 RelationMetadata::make(
-                    'roles',
-                    RelationType::HAS_MANY,
-                    fn() => (new User)->hasMany(UserRole::class, 'user_id', 'id'),
-                )
+                    'userRoles',
+                    RelationType::BELONGS_TO_MANY,
+                    fn() => (new User)->belongsToMany(Role::class, 'user_roles'),
+                ),
+                RelationMetadata::make(
+                    'permissions',
+                    RelationType::HAS_MANY_DEEP,
+                    fn() => (new User)->hasManyDeep(
+                        Permission::class,
+                        [UserRole::class, Role::class, RolePermission::class],
+                        ['user_id', 'id', 'role_id', 'id'],
+                        ['id', 'role_id', 'id', 'permission_id']
+                    )
+                ),
             ])
             ->addActions([
                 ActionMetadata::make('register'),
