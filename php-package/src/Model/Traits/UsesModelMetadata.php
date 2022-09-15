@@ -94,4 +94,20 @@ trait UsesModelMetadata
         $this->validationRules[$field->getName()] = $fieldType;
     }
 
+
+    /**
+     * @param array|string $relations
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public static function with($relations)
+    {
+        $instance = new static();
+        if (is_string($relations)) {
+            $relation = $instance->getRelation($relations);
+            dump($relation->getName());
+            return static::query()->with($relation->getName(), $relation->getClosure());
+        }
+        Log::info('with');
+    }
+
 }

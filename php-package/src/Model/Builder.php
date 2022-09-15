@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Egal\Model;
 
-use BadMethodCallException;
 use Egal\Model\Exceptions\FilterException;
 use Egal\Model\Exceptions\OrderException;
 use Egal\Model\Exceptions\UnsupportedFilterConditionException;
@@ -18,8 +17,8 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\RelationNotFoundException;
 use Illuminate\Database\Eloquent\Relations\Relation;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use ReflectionMethod;
 
 /**
  * Класс формирования запросов к БД.
@@ -37,8 +36,11 @@ class Builder extends EloquentBuilder
     /**
      * Получите экземпляр отношения для данного имени отношения.
      *
-     * Метод {@see EloquentBuilder::getRelation()} переопределенный для использования стрелочных функций из метаданных
-     * модели вместо указываемых ранее методов модели.
+     * Метод {@see EloquentBuilder::getRelation()} дополненный более точной проверкой наличия запрашиваемого отношения.
+     * Список дополнительных проверок:
+     * проверка на наличие метода,
+     * должно быть указано возвращаемое значение на уровне PHP,
+     * тип возвращаемого значения должен быть потомком {@see Relation}.
      *
      * @param string $name Название отношения.
      * @return \Illuminate\Database\Eloquent\Relations\Relation
@@ -49,27 +51,25 @@ class Builder extends EloquentBuilder
         $name = Str::camel($name);
 
         $model = $this->getModel();
+        $modelClass = get_class($model);
 
-        $relation = $model->getRelation($name);
-
-        $relation = Relation::noConstraints(function () use ($relation) {
-            try {
-                return $relation->getClosure()();
-            } catch (BadMethodCallException $e) {
-                throw RelationNotFoundException::make($this->getModel(), $name);
-            }
-        });
-
-        $nested = $this->relationsNestedUnder($name);
-
-        // If there are nested relationships set on the query, we will put those onto
-        // the query instances so that they can be handled after this relationship
-        // is loaded. In this way they will all trickle down as they are loaded.
-        if (count($nested) > 0) {
-            $relation->getQuery()->with($nested);
+        if (!method_exists($modelClass, $name)) {
+            throw RelationNotFoundException::make($model, $name);
         }
 
-        return $relation;
+        $refMethod = new ReflectionMethod($modelClass, $name);
+
+        if ($refMethod->getReturnType() === null) {
+            throw RelationNotFoundException::make($model, $name);
+        }
+
+        $returnTypeName = $refMethod->getReturnType()->getName();
+
+        if (!class_exists($returnTypeName) || !is_a($returnTypeName, Relation::class, true)) {
+            throw RelationNotFoundException::make($model, $name);
+        }
+
+        return parent::getRelation($name);
     }
 
     /**
@@ -181,7 +181,7 @@ class Builder extends EloquentBuilder
         if ($array === []) {
             return $this;
         }
-        Log::info('with Builder');
+
         foreach (Collection::fromArray($array)->getRelations() as $relation) {
             if (!$relation->isFilterExists()) {
                 $this->with($relation->getName());
