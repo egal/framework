@@ -21,10 +21,6 @@ use Illuminate\Support\Collection;
 use Staudenmeir\EloquentHasManyDeep\HasManyDeep;
 use Staudenmeir\EloquentHasManyDeep\HasRelationships;
 
-/**
- * @property Collection $roles          {@property-type relation}
- * @property Collection $permissions    {@property-type relation}
- */
 class User extends BaseUser
 {
 
@@ -116,7 +112,7 @@ class User extends BaseUser
 
     public static function constructMetadata(): ModelMetadata
     {
-        return ModelMetadata::make(User::class, FieldMetadata::make('id',FieldType::UUID))
+        return ModelMetadata::make(User::class, FieldMetadata::make('id',FieldType::STRING))
             ->addFields([
                 FieldMetadata::make('email', FieldType::STRING)
                     ->required()

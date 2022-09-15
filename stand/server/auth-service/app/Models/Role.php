@@ -17,24 +17,6 @@ class Role extends Model
 
     use HasFactory;
 
-    protected $keyType = 'string';
-
-    protected $fillable = [
-        'id',
-        'name',
-        'is_default'
-    ];
-
-    protected $guarded = [
-        'created_at',
-        'updated_at',
-    ];
-
-    protected $hidden = [
-        'created_at',
-        'updated_at',
-    ];
-
     protected static function boot()
     {
         parent::boot();
@@ -61,19 +43,27 @@ class Role extends Model
 
     public static function constructMetadata(): ModelMetadata
     {
-        return ModelMetadata::make(Role::class, FieldMetadata::make('id', FieldType::STRING))
+        return ModelMetadata::make(Role::class, FieldMetadata::make('id', FieldType::STRING)->fillable())
             ->addFields([
                 FieldMetadata::make('name', FieldType::STRING)
                     ->required()
                     ->string()
+                    ->fillable()
                     ->addValidationRule('unique:roles,name')
                 ,
                 FieldMetadata::make('is_default', FieldType::BOOLEAN)
                     ->required()
                     ->boolean()
+                    ->fillable()
                 ,
-                FieldMetadata::make('created_at', FieldType::DATETIME),
-                FieldMetadata::make('updated_at', FieldType::DATETIME),
+                FieldMetadata::make('created_at', FieldType::DATETIME)
+                    ->hidden()
+                    ->guarded()
+                ,
+                FieldMetadata::make('updated_at', FieldType::DATETIME)
+                    ->hidden()
+                    ->guarded()
+                ,
             ])
             ->addRelations([
                 RelationMetadata::make(
