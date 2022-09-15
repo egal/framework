@@ -124,7 +124,6 @@ class SimpleFilterConditionApplier extends FilterConditionApplier
         [$relation, $field, $model] = [$matches[1], $matches[2], $builder->getModel()];
         $model->getModelMetadata()->relationExistOrFail($relation);
         $relationName = camel_case($relation);
-        // TODO: протестировать
         $relationModelMetadata = $model->$relationName()->getQuery()->getModel()->getModelMetadata();
         $relationModelMetadata->fieldExistOrFail($field);
 // TODO: реализовать
@@ -192,8 +191,9 @@ class SimpleFilterConditionApplier extends FilterConditionApplier
 
     /**
      * @param mixed $value
+     * @return mixed
      */
-    private static function getPreparedValue(string $operator, $value): mixed
+    private static function getPreparedValue(string $operator, $value)
     {
         switch ($operator) {
             case self::CONTAIN_OPERATOR:

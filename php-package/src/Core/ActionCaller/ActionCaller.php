@@ -11,7 +11,6 @@ use Egal\Core\Session\Session;
 use Egal\Model\Facades\ModelMetadataManager;
 use Egal\Model\Metadata\ActionMetadata;
 use Egal\Model\Metadata\ModelMetadata;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 /**
