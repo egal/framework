@@ -16,6 +16,7 @@ use Egal\Model\Metadata\ModelMetadata;
 use Egal\Model\Metadata\RelationMetadata;
 use Egal\Model\Traits\UsesUuidKey;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Facades\Log;
 use Staudenmeir\EloquentHasManyDeep\HasRelationships;
 
 class User extends BaseUser
