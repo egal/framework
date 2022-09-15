@@ -143,7 +143,7 @@ class User extends BaseUser
                 RelationMetadata::make(
                     'roles',
                     RelationType::HAS_MANY,
-                    fn(User $user) => $user->hasMany(UserRole::class, 'user_id', 'id'),
+                    fn() => (new User)->hasMany(UserRole::class, 'user_id', 'id'),
                 )
             ])
             ->addActions([
@@ -151,6 +151,7 @@ class User extends BaseUser
                 ActionMetadata::make('login'),
                 ActionMetadata::make('loginToService'),
                 ActionMetadata::make('refreshUserMasterToken'),
+                ActionMetadata::make('getItems'),
             ]);
     }
 

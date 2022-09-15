@@ -185,7 +185,7 @@ class ModelMetadata
 
     public function getModelClass(): string
     {
-        return $this->$this->modelClass;
+        return $this->modelClass;
     }
 
     /**
@@ -201,10 +201,10 @@ class ModelMetadata
      */
     public function getAction(string $actionName): ActionMetadata
     {
-        $action = $this->actions[$actionName] ?? null;
-
-        if ($action) {
-            return $action;
+        foreach ($this->actions as $action) {
+            if ($action->getName() === $actionName) {
+                return $action;
+            }
         }
 
         throw ActionNotFoundException::make($this->modelClass, $actionName);

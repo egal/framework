@@ -11,6 +11,7 @@ use Egal\Core\Session\Session;
 use Egal\Model\Facades\ModelMetadataManager;
 use Egal\Model\Metadata\ActionMetadata;
 use Egal\Model\Metadata\ModelMetadata;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 /**
@@ -67,10 +68,10 @@ class ActionCaller
         return call_user_func_array(
             [
                 $this->modelMetadata->getModelClass(),
-                $this->modelActionMetadata->getActionMethodName(),
+                $this->modelActionMetadata->getMethodName(),
             ],
             $this->actionParameters
-            // TODO:           $this->getValidActionParameters()
+            // TODO: $this->actionParameters --> $this->getValidActionParameters()
         );
     }
 

@@ -17,11 +17,11 @@ class ActionMetadata
     // TODO: добавить примеры запроса-ответа
     public const METHOD_NAME_PREFIX = 'action';
 
-    protected string $actionName;
+    protected string $name;
 
     protected function __construct(string $name)
     {
-        $this->actionName = $name;
+        $this->name = $name;
     }
 
     public static function make(string $name): self
@@ -35,24 +35,24 @@ class ActionMetadata
     public function toArray(): array
     {
         $actionMetadata = [];
-        $actionMetadata['action_name'] = $this->actionName;
+        $actionMetadata['action_name'] = $this->name;
 
         return $actionMetadata;
     }
 
-    public function getActionName(): string
+    public function getName(): string
     {
-        return $this->actionName;
+        return $this->name;
     }
 
-    public function getActionMethodName(): string
+    public function getMethodName(): string
     {
-        return self::METHOD_NAME_PREFIX . ucwords($this->actionName);
+        return self::METHOD_NAME_PREFIX . ucwords($this->name);
     }
 
-    public function setActionName(string $actionName): void
+    public function setName(string $name): void
     {
-        $this->actionName = $actionName;
+        $this->name = $name;
     }
 
     /**

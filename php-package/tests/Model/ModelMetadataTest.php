@@ -48,7 +48,7 @@ class ModelMetadataTest extends TestCase
                 IncorrectCaseOfPropertyVariableNameException::class,
             ],
             [
-                fn() => (new ModelMetadata(ModelMetadataTestThird::class))->getAction('getMetadata')->getActionName(),
+                fn() => (new ModelMetadata(ModelMetadataTestThird::class))->getAction('getMetadata')->getName(),
                 'getMetadata',
                 null,
             ],

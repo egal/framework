@@ -19,22 +19,17 @@ class ModelMetadataManager
 
     public function __construct() { }
 
-    public function getInstance(): ModelMetadataManager
-    {
-        return app(self::class);
-    }
-
     /**
      * @throws ModelNotFoundException
      */
     public function getModelMetadata(string $class): ModelMetadata
     {
         if (class_exists($class)) {
-            return $this->getInstance()->modelsMetadata[get_class_short_name($class)] ?? call_user_func([$class, 'constructMetadata']);
+            return $this->modelsMetadata[get_class_short_name($class)] ?? call_user_func([$class, 'constructMetadata']);
         }
 
-        if (isset(self::getInstance()->modelsMetadata[$class])) {
-            return self::getInstance()->modelsMetadata[$class];
+        if (isset($this->modelsMetadata[$class])) {
+            return $this->modelsMetadata[$class];
         }
 
         throw ModelNotFoundException::make($class);
