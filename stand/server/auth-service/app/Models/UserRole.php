@@ -19,20 +19,16 @@ class UserRole extends Model
                     ->required()
                     ->uuid()
                     ->fillable()
-                    ->addValidationRule('exists:users')
-                ,
+                    ->addValidationRule('exists:users'),
                 FieldMetadata::make('role_id', FieldType::STRING)
                     ->required()
                     ->string()
                     ->fillable()
-                    ->addValidationRule('exists:roles')
-                ,
+                    ->addValidationRule('exists:roles'),
                 FieldMetadata::make('created_at', FieldType::DATETIME)
-                    ->hidden()
-                ,
+                    ->hidden(),
                 FieldMetadata::make('updated_at', FieldType::DATETIME)
-                    ->hidden()
-                ,
+                    ->hidden(),
             ])
             ->addActions([
                 ActionMetadata::make('getItem'),
