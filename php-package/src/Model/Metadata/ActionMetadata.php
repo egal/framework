@@ -55,18 +55,4 @@ class ActionMetadata
         $this->name = $name;
     }
 
-    /**
-     * Получение корректного названия метода у модели.
-     *
-     * @return string
-     *
-     * TODO: Убрать ответственность с других классов от определения метода по названию
-     */
-    public static function getCurrentActionName(string $actionName): string
-    {
-        return str_contains($actionName, self::METHOD_NAME_PREFIX)
-            ? $actionName
-            : self::METHOD_NAME_PREFIX . ucwords($actionName);
-    }
-
 }

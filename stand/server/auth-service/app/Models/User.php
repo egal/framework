@@ -32,15 +32,6 @@ class User extends BaseUser
     use HasFactory;
     use HasRelationships;
 
-    protected $hidden = [
-        'password',
-    ];
-
-    protected $guarded = [
-        'created_at',
-        'updated_at',
-    ];
-
     public static function actionRegister(string $email, string $password): User
     {
         if (!$password) {
@@ -135,6 +126,8 @@ class User extends BaseUser
                 FieldMetadata::make('password', FieldType::INTEGER)
                     ->required()
                     ->string()
+                    ->hidden()
+                    ->guarded()
                 ,
                 FieldMetadata::make('created_at', FieldType::DATETIME),
                 FieldMetadata::make('updated_at', FieldType::DATETIME),

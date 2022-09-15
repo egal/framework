@@ -17,3 +17,6 @@ up-dependencies-detach:
 
 up: generate-dot-env-file up-dependencies-detach
 	docker-compose up auth-service web-service
+
+run-auth-service:
+	docker-compose run --rm --no-deps auth-service sh -c "php artisan egal:run"

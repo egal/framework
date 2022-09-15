@@ -14,6 +14,12 @@ class FieldMetadata
 
     protected FieldType $type;
 
+    protected bool $hidden = false;
+
+    protected bool $guarded = false;
+
+    protected bool $fillable = false;
+
     /**
      * @var string[]
      */
@@ -35,7 +41,10 @@ class FieldMetadata
         return [
             'name' => $this->name,
             'type' => $this->type->value,
-            'validationRules' => $this->validationRules
+            'validationRules' => $this->validationRules,
+            'hidden' => $this->hidden,
+            'guarded' => $this->guarded,
+            'fillable' => $this->fillable,
         ];
     }
 
@@ -75,4 +84,39 @@ class FieldMetadata
         return $this->validationRules;
     }
 
+    public function hidden(): self
+    {
+        $this->hidden = true;
+
+        return $this;
+    }
+
+    public function guarded(): self
+    {
+        $this->guarded = true;
+
+        return $this;
+    }
+
+    public function fillable(): self
+    {
+        $this->fillable = true;
+
+        return $this;
+    }
+
+    public function isHidden(): bool
+    {
+        return $this->hidden;
+    }
+
+    public function isGuarded(): bool
+    {
+        return $this->guarded;
+    }
+
+    public function isFillable(): bool
+    {
+        return $this->fillable;
+    }
 }

@@ -196,6 +196,21 @@ class ModelMetadata
         return $this->actions;
     }
 
+    public function getHidden(): array
+    {
+        return array_map(fn($field) => $field->getName(), array_filter($this->fields, fn($field) => $field->isHidden()));
+    }
+
+    public function getFillable(): array
+    {
+        return array_map(fn($field) => $field->getName(), array_filter($this->fields, fn($field) => $field->isFillable()));
+    }
+
+    public function getGuarded(): array
+    {
+        return array_map(fn($field) => $field->getName(), array_filter($this->fields, fn($field) => $field->isGuarded()));
+    }
+
     /**
      * @throws ActionNotFoundException
      */

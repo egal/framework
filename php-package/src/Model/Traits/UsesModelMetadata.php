@@ -23,6 +23,10 @@ trait UsesModelMetadata
         $this->modelMetadata = ModelMetadataManager::getModelMetadata(static::class);
 
         $this->getValidationRules();
+
+        $this->mergeFillable($this->modelMetadata->getFillable());
+        $this->mergeGuarded($this->modelMetadata->getGuarded());
+        $this->makeHidden($this->modelMetadata->getHidden());
     }
 
     public abstract static function constructMetadata(): ModelMetadata;
