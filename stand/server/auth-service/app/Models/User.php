@@ -16,9 +16,15 @@ use Egal\Model\Metadata\ModelMetadata;
 use Egal\Model\Metadata\RelationMetadata;
 use Egal\Model\Traits\UsesUuidKey;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Support\Collection;
+use Staudenmeir\EloquentHasManyDeep\HasManyDeep;
 use Staudenmeir\EloquentHasManyDeep\HasRelationships;
 
+/**
+ * @property Collection $roles          {@property-type relation}
+ * @property Collection $permissions    {@property-type relation}
+ */
 class User extends BaseUser
 {
 
@@ -78,6 +84,21 @@ class User extends BaseUser
             'user_master_token' => $umt->generateJWT(),
             'user_master_refresh_token' => $umrt->generateJWT()
         ];
+    }
+
+//    public function roles(): BelongsToMany
+//    {
+//        return $this->belongsToMany(Role::class, 'user_roles');
+//    }
+
+    public function permissions(): HasManyDeep
+    {
+        return $this->hasManyDeep(
+            Permission::class,
+            [UserRole::class, Role::class, RolePermission::class],
+            ['user_id', 'id', 'role_id', 'id'],
+            ['id', 'role_id', 'id', 'permission_id']
+        );
     }
 
     protected static function boot()
