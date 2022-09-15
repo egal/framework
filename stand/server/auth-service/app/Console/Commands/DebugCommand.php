@@ -2,7 +2,6 @@
 
 namespace App\Console\Commands;
 
-use App\Models\User;
 use Illuminate\Console\Command;
 
 class DebugCommand extends Command
@@ -12,9 +11,7 @@ class DebugCommand extends Command
 
     public function handle(): void
     {
-        $model = new User();
-//        dump($model->getModelMetadata()->getHidden());
-        dump($model->getModelMetadata()->getHidden());
+        //
     }
 
 }
