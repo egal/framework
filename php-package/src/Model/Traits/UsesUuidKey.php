@@ -12,11 +12,6 @@ use Illuminate\Support\Str;
 trait UsesUuidKey
 {
 
-    public function getIncrementing(): bool
-    {
-        return false;
-    }
-
     protected static function bootUsesUuidKey(): void
     {
         static::creating(static function ($model): void {

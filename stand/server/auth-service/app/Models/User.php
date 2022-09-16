@@ -41,7 +41,6 @@ class User extends BaseUser
         if (!$hashedPassword) {
             throw new PasswordHashException();
         }
-
         $user->setAttribute('password', $hashedPassword);
         $user->save();
 
@@ -98,6 +97,9 @@ class User extends BaseUser
             $user->roles()
                 ->attach($defaultRoles->pluck('id'));
         });
+        static::creating(static function ($model): void {
+            dump('creating event');
+        });
     }
 
     protected function getRoles(): array
@@ -112,7 +114,7 @@ class User extends BaseUser
 
     public static function constructMetadata(): ModelMetadata
     {
-        return ModelMetadata::make(User::class, FieldMetadata::make('id',FieldType::STRING))
+        return ModelMetadata::make(User::class, FieldMetadata::make('id',FieldType::UUID))
             ->addFields([
                 FieldMetadata::make('email', FieldType::STRING)
                     ->required()

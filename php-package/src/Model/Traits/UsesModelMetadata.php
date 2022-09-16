@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Egal\Model\Traits;
 
+use Egal\Model\Enums\FieldType;
 use Egal\Model\Facades\ModelMetadataManager;
 use Egal\Model\Metadata\FieldMetadata;
 use Egal\Model\Metadata\ModelMetadata;
@@ -18,18 +19,14 @@ trait UsesModelMetadata
 
     private array $validationRules;
 
-    private $keyType;
-
     private string $keyName;
-
-    private $incrementing = true;
 
     public function initializeUsesModelMetadata(): void
     {
         $this->modelMetadata = ModelMetadataManager::getModelMetadata(static::class);
         $this->keyType = $this->modelMetadata->getKey()->getType()->value;
         $this->keyName = $this->modelMetadata->getKey()->getName();
-        $this->incrementing = $this->keyType
+        $this->incrementing = $this->keyType === FieldType::INTEGER;
 
         $this->setValidationRules();
 
@@ -85,8 +82,6 @@ trait UsesModelMetadata
     {
         return $this->keyType;
     }
-
-
 
     public function getIncrementing(): bool
     {

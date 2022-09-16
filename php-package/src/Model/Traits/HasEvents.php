@@ -77,6 +77,7 @@ trait HasEvents
 
     protected function fireModelEvent($event, $halt = true)
     {
+        dump(['fireModelEvent()', $event]);
         if ($this->isInstanceForAction) {
             $this->fireActionEvent($event, $halt);
         }

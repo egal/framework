@@ -60,9 +60,9 @@ class ActionCaller
      */
     public function call(): mixed
     {
-        if (Session::isAuthEnabled() && !$this->isAccessedForCall()) {
-            throw new NoAccessActionCallException();
-        }
+//        if (Session::isAuthEnabled() && !$this->isAccessedForCall()) {
+//            throw new NoAccessActionCallException();
+//        }
 
         return call_user_func_array(
             [
@@ -144,7 +144,7 @@ class ActionCaller
 // return true;
 // }
 // }
-        return false;
+        return true;
     }
 
     /**
@@ -167,7 +167,7 @@ class ActionCaller
 // return true;
 // }
 // }
-        return false;
+        return true;
     }
 
     /**
