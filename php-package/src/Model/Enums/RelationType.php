@@ -7,10 +7,10 @@ namespace Egal\Model\Enums;
 enum RelationType: string
 {
 
-    case HAS_ONE = 'hasOne';
-    case HAS_MANY = 'hasMany';
-    case BELONGS_TO = 'belongsTo';
-    case BELONGS_TO_MANY = 'belongsToMany';
-    case HAS_MANY_DEEP = 'hasManyDeep';
+    case HAS_ONE = 'has_one';
+    case HAS_MANY = 'has_many';
+    case BELONGS_TO = 'belongs_to';
+    case BELONGS_TO_MANY = 'belongs_to_many';
+    case HAS_MANY_DEEP = 'has_many_deep';
 
 }

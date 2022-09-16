@@ -15,7 +15,7 @@ class AppServiceProvider extends IlluminateServiceProvider
      */
     public function register(): void
     {
-        ModelMetadataManagerFacade::registerDir('/app/app/Models/', 'App\Models\\');
+        ModelMetadataManagerFacade::registerDirectory('/app/app/Models/', 'App\Models\\');
     }
 
 }

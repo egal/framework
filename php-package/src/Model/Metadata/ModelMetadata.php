@@ -15,7 +15,7 @@ class ModelMetadata
 
     protected string $modelShortName;
 
-    protected ?FieldMetadata $primaryKey;
+    protected ?FieldMetadata $key;
 
     /**
      * @var FieldMetadata[]
@@ -38,7 +38,7 @@ class ModelMetadata
     {
         $this->modelClass = $modelClass;
         $this->modelShortName = get_class_short_name($modelClass);
-        $this->primaryKey = $key;
+        $this->key = $key;
     }
 
     public static function make(string $modelClass, ?FieldMetadata $key = null): self
@@ -50,7 +50,7 @@ class ModelMetadata
     {
         $modelMetadata = [
             'model_short_name' => $this->modelShortName,
-            'primary_key' => $this->primaryKey->toArray(),
+            'primary_key' => $this->key->toArray(),
         ];
 
         $modelMetadata['fields'] = array_map(fn($field) => $field->toArray(), $this->fields);
@@ -152,9 +152,9 @@ class ModelMetadata
         return $this->modelShortName;
     }
 
-    public function getPrimaryKey(): FieldMetadata
+    public function getKey(): FieldMetadata
     {
-        return $this->primaryKey;
+        return $this->key;
     }
 
     public function getFields(): array
@@ -185,17 +185,26 @@ class ModelMetadata
         return $this->actions;
     }
 
-    public function getHidden(): array
+    /**
+     * @return string[]
+     */
+    public function getHiddenFieldsNames(): array
     {
         return array_map(fn($field) => $field->getName(), array_filter($this->fields, fn($field) => $field->isHidden()));
     }
 
-    public function getFillable(): array
+    /**
+     * @return string[]
+     */
+    public function getFillableFieldsNames(): array
     {
         return array_map(fn($field) => $field->getName(), array_filter($this->fields, fn($field) => $field->isFillable()));
     }
 
-    public function getGuarded(): array
+    /**
+     * @return string[]
+     */
+    public function getGuardedFieldsNames(): array
     {
         return array_map(fn($field) => $field->getName(), array_filter($this->fields, fn($field) => $field->isGuarded()));
     }

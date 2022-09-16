@@ -40,7 +40,7 @@ class ModelMetadataManager
         return $this->modelsMetadata;
     }
 
-    public function registerDir(string $dir, string $modelsNamespace): void
+    public function registerDirectory(string $dir, string $modelsNamespace): void
     {
         foreach (scandir($dir) as $dirItem) {
             $itemPath = str_replace('//', '/', $dir . '/' . $dirItem);
@@ -55,7 +55,7 @@ class ModelMetadataManager
                 $itemNamespace = str_replace('/', '\\', $itemNamespace);
                 $itemNamespace = ucfirst($itemNamespace);
 
-                $this->registerDir($itemPath, $itemNamespace);
+                $this->registerDirectory($itemPath, $itemNamespace);
             }
 
             if (!str_contains($dirItem, '.php')) {

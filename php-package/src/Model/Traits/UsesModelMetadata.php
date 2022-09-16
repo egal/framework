@@ -18,40 +18,43 @@ trait UsesModelMetadata
 
     private array $validationRules;
 
+    private $keyType;
+
+    private string $keyName;
+
+    private $incrementing = true;
+
     public function initializeUsesModelMetadata(): void
     {
         $this->modelMetadata = ModelMetadataManager::getModelMetadata(static::class);
+        $this->keyType = $this->modelMetadata->getKey()->getType()->value;
+        $this->keyName = $this->modelMetadata->getKey()->getName();
+        $this->incrementing = $this->keyType
 
-        $this->getValidationRules();
+        $this->setValidationRules();
 
-        $this->mergeFillable($this->modelMetadata->getFillable());
-        $this->mergeGuarded($this->modelMetadata->getGuarded());
-        $this->makeHidden($this->modelMetadata->getHidden());
+        $this->mergeFillable($this->modelMetadata->getFillableFieldsNames());
+        $this->mergeGuarded($this->modelMetadata->getGuardedFieldsNames());
+        $this->makeHidden($this->modelMetadata->getHiddenFieldsNames());
     }
 
     public abstract static function constructMetadata(): ModelMetadata;
 
-    public final function getModelMetadata(): ModelMetadata
+    public function setValidationRules(): void
     {
-        return ModelMetadataManager::getModelMetadata(static::class);
-    }
-
-    public function getValidationRules(): array
-    {
-        $this->getValidationRule($this->modelMetadata->getPrimaryKey());
+        dump('validationRules');
+        $this->setValidationRule($this->modelMetadata->getKey());
 
         foreach ($this->modelMetadata->getFields() as $field) {
-            $this->getValidationRule($field);
+            $this->setValidationRule($field);
         }
 
         foreach ($this->modelMetadata->getFakeFields() as $field) {
-            $this->getValidationRule($field);
+            $this->setValidationRule($field);
         }
-
-        return $this->validationRules;
     }
 
-    public function getValidationRule(FieldMetadata $field): void
+    public function setValidationRule(FieldMetadata $field): void
     {
         $fieldValidationRules = $field->getValidationRules();
         $fieldType = $field->getType()->value;
@@ -65,14 +68,29 @@ trait UsesModelMetadata
         $this->validationRules[$field->getName()] = $fieldType;
     }
 
+    public final function getModelMetadata(): ModelMetadata
+    {
+        return ModelMetadataManager::getModelMetadata(static::class);
+    }
+
+    public function getValidationRules(): array
+    {
+        return $this->validationRules;
+    }
+
     /**
-     * Get the key type.
-     *
      * @return string
      */
     public function getKeyType()
     {
-        return $this->modelMetadata->getPrimaryKey()->getType()->value;
+        return $this->keyType;
+    }
+
+
+
+    public function getIncrementing(): bool
+    {
+        return $this->incrementing;
     }
 
 }
