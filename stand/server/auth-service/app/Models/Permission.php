@@ -34,21 +34,17 @@ class Permission extends Model
                     ->required()
                     ->string()
                     ->fillable()
-                    ->addValidationRule('unique:roles,name')
-                ,
+                    ->addValidationRule('unique:roles,name'),
                 FieldMetadata::make('is_default', FieldType::BOOLEAN)
                     ->required()
                     ->boolean()
-                    ->fillable()
-                ,
+                    ->fillable(),
                 FieldMetadata::make('created_at', FieldType::DATETIME)
                     ->guarded()
-                    ->hidden()
-                ,
+                    ->hidden(),
                 FieldMetadata::make('updated_at', FieldType::DATETIME)
                     ->guarded()
-                    ->hidden()
-                ,
+                    ->hidden(),
             ])
             ->addActions([
                 ActionMetadata::make('getItem'),

@@ -17,19 +17,15 @@ class RolePermission extends Model
                 FieldMetadata::make('role_id', FieldType::STRING)
                     ->required()
                     ->string()
-                    ->fillable()
-                ,
+                    ->fillable(),
                 FieldMetadata::make('permission_id', FieldType::INTEGER)
                     ->required()
                     ->string()
-                    ->fillable()
-                ,
+                    ->fillable(),
                 FieldMetadata::make('created_at', FieldType::DATETIME)
-                    ->hidden()
-                ,
+                    ->hidden(),
                 FieldMetadata::make('updated_at', FieldType::DATETIME)
-                    ->hidden()
-                ,
+                    ->hidden(),
             ])
             ->addActions([
                 ActionMetadata::make('getItem'),

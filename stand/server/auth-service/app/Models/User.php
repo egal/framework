@@ -117,14 +117,12 @@ class User extends BaseUser
                 FieldMetadata::make('email', FieldType::STRING)
                     ->required()
                     ->string()
-                    ->addValidationRule('unique:users,email')
-                ,
+                    ->addValidationRule('unique:users,email'),
                 FieldMetadata::make('password', FieldType::INTEGER)
                     ->required()
                     ->string()
                     ->hidden()
-                    ->guarded()
-                ,
+                    ->guarded(),
                 FieldMetadata::make('created_at', FieldType::DATETIME),
                 FieldMetadata::make('updated_at', FieldType::DATETIME),
             ])

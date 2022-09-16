@@ -25,32 +25,26 @@ class Employee extends Model
                 FieldMetadata::make('address', FieldType::STRING)
                     ->required()
                     ->string()
-                    ->fillable()
-                ,
+                    ->fillable(),
                 FieldMetadata::make('phone', FieldType::INTEGER)
                     ->required()
                     ->integer()
                     ->fillable()
-                    ->addValidationRule('unique:employees,phone')
-                ,
+                    ->addValidationRule('unique:employees,phone'),
                 FieldMetadata::make('adult', FieldType::BOOLEAN)
                     ->required()
                     ->boolean()
-                    ->fillable()
-                ,
+                    ->fillable(),
                 FieldMetadata::make('weight', FieldType::NUMERIC)
                     ->required()
                     ->numeric()
-                    ->fillable()
-                ,
+                    ->fillable(),
                 FieldMetadata::make('created_at', FieldType::DATETIME)
                     ->guarded()
-                    ->fillable()
-                ,
+                    ->fillable(),
                 FieldMetadata::make('updated_at', FieldType::DATETIME)
                     ->guarded()
-                    ->fillable()
-                ,
+                    ->fillable(),
             ])
             ->addFakeFields([
                 FieldMetadata::make('height',  FieldType::NUMERIC)
