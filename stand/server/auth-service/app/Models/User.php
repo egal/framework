@@ -41,6 +41,7 @@ class User extends BaseUser
         if (!$hashedPassword) {
             throw new PasswordHashException();
         }
+
         $user->setAttribute('password', $hashedPassword);
         $user->save();
 
@@ -96,9 +97,6 @@ class User extends BaseUser
                 ->get();
             $user->roles()
                 ->attach($defaultRoles->pluck('id'));
-        });
-        static::creating(static function ($model): void {
-            dump('creating event');
         });
     }
 

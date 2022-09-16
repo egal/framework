@@ -58,19 +58,19 @@ class ActionCaller
      * @return mixed Result of action execution.
      * @throws \Exception|\ReflectionException|\Egal\Core\Exceptions\ActionCallException|\Egal\Core\Exceptions\NoAccessActionCallException
      */
-    public function call(): mixed
+    public function call()
     {
-//        if (Session::isAuthEnabled() && !$this->isAccessedForCall()) {
-//            throw new NoAccessActionCallException();
-//        }
+        if (Session::isAuthEnabled() && !$this->isAccessedForCall()) {
+            throw new NoAccessActionCallException();
+        }
 
         return call_user_func_array(
             [
                 $this->modelMetadata->getModelClass(),
                 $this->modelActionMetadata->getMethodName(),
             ],
-            $this->actionParameters
-            // TODO: $this->actionParameters --> $this->getValidActionParameters()
+//            $this->actionParameters
+            $this->getValidActionParameters()
         );
     }
 
@@ -81,12 +81,16 @@ class ActionCaller
      */
     private function isAccessedForCall(): bool
     {
-        $authStatus = Session::getAuthStatus();
+//        $authStatus = Session::getAuthStatus();
+        $authStatus = StatusAccess::GUEST;
 
-        // TODO: валидация logged|guest
         // For user and service we check if it guest.
-        // TODO:  return $this->isServiceAccess() || $this->isUserAccess()
-        return true;
+        if ($authStatus === StatusAccess::GUEST) {
+//            return in_array($authStatus, $this->modelActionMetadata->getStatusesAccess());
+            return true;
+        }
+
+        return $this->isServiceAccess() || $this->isUserAccess();
     }
 
     /**
@@ -102,8 +106,7 @@ class ActionCaller
 
         $serviceName = Session::getServiceServiceToken()->getServiceName();
 
-        // TODO:  return in_array($serviceName, $this->modelActionMetadata->getServicesAccess())
-        return true;
+        return in_array($serviceName, $this->modelActionMetadata->getServicesAccess());
     }
 
     /**
@@ -117,11 +120,9 @@ class ActionCaller
             return false;
         }
 
-// TODO:
-// return in_array(Session::getAuthStatus(), $this->modelActionMetadata->getStatusesAccess())
-// && $this->userHasAccessWithCurrentRoles()
-// && $this->userHasAccessWithCurrentPermissions();
-        return true;
+        return in_array(Session::getAuthStatus(), $this->modelActionMetadata->getStatusesAccess())
+            && $this->userHasAccessWithCurrentRoles()
+            && $this->userHasAccessWithCurrentPermissions();
     }
 
     /**
@@ -129,22 +130,22 @@ class ActionCaller
      *
      * @throws \Exception
      * TODO: Переименовать!
-     * TODO: реализовать
      */
     private function userHasAccessWithCurrentRoles(): bool
     {
-// if (count($this->modelActionMetadata->getRolesAccess()) === 0) {
-// return true;
-// }
-//
-// foreach ($this->modelActionMetadata->getRolesAccess() as $rolesAccess) {
-// $userRoles = Session::getUserServiceToken()->getRoles();
-//
-// if (count(array_intersect($userRoles, $rolesAccess)) === count($rolesAccess)) {
-// return true;
-// }
-// }
-        return true;
+        if (count($this->modelActionMetadata->getRolesAccess()) === 0) {
+            return true;
+        }
+
+        foreach ($this->modelActionMetadata->getRolesAccess() as $rolesAccess) {
+            $userRoles = Session::getUserServiceToken()->getRoles();
+
+            if (count(array_intersect($userRoles, $rolesAccess)) === count($rolesAccess)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -152,29 +153,28 @@ class ActionCaller
      *
      * @throws \Exception
      * TODO: Переименовать!
-     * TODO: реализовать
      */
     private function userHasAccessWithCurrentPermissions(): bool
     {
-// if (count($this->modelActionMetadata->getPermissionsAccess()) === 0) {
-// return true;
-// }
-//
-// foreach ($this->modelActionMetadata->getPermissionsAccess() as $permissionsAccess) {
-// $userPermissions = Session::getUserServiceToken()->getPermissions();
-//
-// if (count(array_intersect($userPermissions, $permissionsAccess)) === count($permissionsAccess)) {
-// return true;
-// }
-// }
-        return true;
+        if (count($this->modelActionMetadata->getPermissionsAccess()) === 0) {
+            return true;
+        }
+
+        foreach ($this->modelActionMetadata->getPermissionsAccess() as $permissionsAccess) {
+            $userPermissions = Session::getUserServiceToken()->getPermissions();
+
+            if (count(array_intersect($userPermissions, $permissionsAccess)) === count($permissionsAccess)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
      * Формирует из {@see \Egal\Core\ActionCaller\ActionCaller::modelActionMetadata} валидные параметры.
      *
      * If it is impossible to generate valid parameters, an exception is thrown.
-     * TODO: реализовать в новой схеме
      *
      * @return array
      * @throws \ReflectionException|\Egal\Core\Exceptions\ActionCallException
@@ -182,25 +182,26 @@ class ActionCaller
     private function getValidActionParameters(): array
     {
         $newActionParameters = [];
+        return $this->actionParameters;
 
-//        foreach ($this->modelActionMetadata->getParameters() as $reflectionParameter) {
-//            $actionParameterKey = Str::snake($reflectionParameter->getName());
-//            $newActionParameterKey = $reflectionParameter->getPosition();
-//
-//            if (!array_key_exists($actionParameterKey, $this->actionParameters)) {
-//                if ($reflectionParameter->isDefaultValueAvailable()) {
-//                    $newActionParameters[$newActionParameterKey] = $reflectionParameter->getDefaultValue();
-//                } elseif ($reflectionParameter->allowsNull()) {
-//                    $newActionParameters[$newActionParameterKey] = null;
-//                } else {
-//                    throw new ActionCallException('Parameter value ' . $actionParameterKey . ' necessarily!');
-//                }
-//            } else {
-//                $newActionParameters[$newActionParameterKey] = $this->actionParameters[$actionParameterKey];
-//            }
-//        }
+        foreach ($this->modelActionMetadata->getParameters() as $reflectionParameter) {
+            $actionParameterKey = Str::snake($reflectionParameter->getName());
+            $newActionParameterKey = $reflectionParameter->getPosition();
 
-        return $newActionParameters;
+            if (!array_key_exists($actionParameterKey, $this->actionParameters)) {
+                if ($reflectionParameter->isDefaultValueAvailable()) {
+                    $newActionParameters[$newActionParameterKey] = $reflectionParameter->getDefaultValue();
+                } elseif ($reflectionParameter->allowsNull()) {
+                    $newActionParameters[$newActionParameterKey] = null;
+                } else {
+                    throw new ActionCallException('Parameter value ' . $actionParameterKey . ' necessarily!');
+                }
+            } else {
+                $newActionParameters[$newActionParameterKey] = $this->actionParameters[$actionParameterKey];
+            }
+        }
+
+        return $this->actionParameters;
     }
 
 }

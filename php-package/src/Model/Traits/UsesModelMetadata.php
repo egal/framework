@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Egal\Model\Traits;
 
+use Egal\Core\Session\Session;
 use Egal\Model\Enums\FieldType;
 use Egal\Model\Facades\ModelMetadataManager;
 use Egal\Model\Metadata\FieldMetadata;
@@ -26,7 +27,9 @@ trait UsesModelMetadata
         $this->modelMetadata = ModelMetadataManager::getModelMetadata(static::class);
         $this->keyType = $this->modelMetadata->getKey()->getType()->value;
         $this->keyName = $this->modelMetadata->getKey()->getName();
+        dump($this->incrementing);
         $this->incrementing = $this->keyType === FieldType::INTEGER;
+        dump($this->incrementing);
 
         $this->setValidationRules();
 

@@ -26,7 +26,9 @@ WORKDIR /app
 # Preparing code base
 COPY . .
 
-# Cleanup before run
-RUN if [ $DEBUG == 'false' ]; then rm /usr/bin/composer; fi
+RUN apk --no-cache add pcre-dev ${PHPIZE_DEPS} \
+  && pecl install xdebug \
+  && docker-php-ext-enable xdebug \
+  && apk del pcre-dev ${PHPIZE_DEPS}
 
 CMD /wait && php artisan migrate --force --seed && php artisan egal:run
