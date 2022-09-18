@@ -17,7 +17,6 @@ use Egal\Model\Metadata\RelationMetadata;
 use Egal\Model\Traits\UsesUuidKey;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Support\Collection;
 use Staudenmeir\EloquentHasManyDeep\HasManyDeep;
 use Staudenmeir\EloquentHasManyDeep\HasRelationships;
 
@@ -118,7 +117,7 @@ class User extends BaseUser
                     ->required()
                     ->string()
                     ->addValidationRule('unique:users,email'),
-                FieldMetadata::make('password', FieldType::INTEGER)
+                FieldMetadata::make('password', FieldType::STRING)
                     ->required()
                     ->string()
                     ->hidden()

@@ -40,6 +40,9 @@ services:
     build:
       context: server/auth-service
     restart: unless-stopped
+    depends_on:
+      - rabbitmq
+      - postgres
     environment:
       APP_NAME: ${PROJECT_NAME}
       APP_SERVICE_NAME: auth

@@ -27,9 +27,7 @@ trait UsesModelMetadata
         $this->modelMetadata = ModelMetadataManager::getModelMetadata(static::class);
         $this->keyType = $this->modelMetadata->getKey()->getType()->value;
         $this->keyName = $this->modelMetadata->getKey()->getName();
-        dump($this->incrementing);
         $this->incrementing = $this->keyType === FieldType::INTEGER;
-        dump($this->incrementing);
 
         $this->setValidationRules();
 
@@ -42,7 +40,6 @@ trait UsesModelMetadata
 
     public function setValidationRules(): void
     {
-        dump('validationRules');
         $this->setValidationRule($this->modelMetadata->getKey());
 
         foreach ($this->modelMetadata->getFields() as $field) {

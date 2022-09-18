@@ -2,22 +2,18 @@
 
 namespace App\Providers;
 
-use App\Models\User;
-use Egal\Model\Facades\ModelMetadataManager as ModelMetadataManagerFacade;
+use Egal\Model\Facades\ModelMetadataManager;
 use Illuminate\Support\ServiceProvider as IlluminateServiceProvider;
 
 class AppServiceProvider extends IlluminateServiceProvider
 {
 
     /**
-     * Register any application services.
-     *
-     * @return void
+     * Bootstrap any application services.
      */
-    public function register(): void
+    public function boot(): void
     {
-//        ModelMetadataManagerFacade::registerDirectory('/app/app/Models/', 'App\Models\\');
-        ModelMetadataManagerFacade::registerModel(User::class);
+        ModelMetadataManager::registerDirectory('/app/app/Models/', 'App\Models\\');
     }
 
 }

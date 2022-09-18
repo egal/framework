@@ -3,7 +3,6 @@
 namespace Egal\Model;
 
 use Illuminate\Support\ServiceProvider as IlluminateServiceProvider;
-use \Egal\Model\Facades\ModelMetadataManager as ModelMetadataManagerFacade;
 
 /**
  * @package Egal\Model

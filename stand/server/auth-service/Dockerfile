@@ -1,4 +1,4 @@
-FROM alpine/git:v2.32.0 as wait
+FROM alpine/git:v2.36.2 as wait
 ADD https://github.com/ufoscout/docker-compose-wait/releases/download/2.8.0/wait /wait
 
 
@@ -26,9 +26,9 @@ WORKDIR /app
 # Preparing code base
 COPY . .
 
-RUN apk --no-cache add pcre-dev ${PHPIZE_DEPS} \
-  && pecl install xdebug \
-  && docker-php-ext-enable xdebug \
-  && apk del pcre-dev ${PHPIZE_DEPS}
+#RUN apk --no-cache add pcre-dev ${PHPIZE_DEPS} \
+#  && pecl install xdebug \
+#  && docker-php-ext-enable xdebug \
+#  && apk del pcre-dev ${PHPIZE_DEPS}
 
 CMD /wait && php artisan migrate --force --seed && php artisan egal:run

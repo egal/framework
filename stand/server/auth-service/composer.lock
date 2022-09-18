@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "046a1d5849e84e9de236e4b8ad135d16",
+    "content-hash": "85a921bcdfcb5541246272e64d518641",
     "packages": [
         {
             "name": "aws/aws-crt-php",
@@ -58,16 +58,16 @@
         },
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.235.9",
+            "version": "3.235.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "103d38254ef7fc6659ecb08f4b18bc1299011f8a"
+                "reference": "943f96f50d19244584675c34fb3e4c8aa3eaddce"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/103d38254ef7fc6659ecb08f4b18bc1299011f8a",
-                "reference": "103d38254ef7fc6659ecb08f4b18bc1299011f8a",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/943f96f50d19244584675c34fb3e4c8aa3eaddce",
+                "reference": "943f96f50d19244584675c34fb3e4c8aa3eaddce",
                 "shasum": ""
             },
             "require": {
@@ -146,9 +146,9 @@
             "support": {
                 "forum": "https://forums.aws.amazon.com/forum.jspa?forumID=80",
                 "issues": "https://github.com/aws/aws-sdk-php/issues",
-                "source": "https://github.com/aws/aws-sdk-php/tree/3.235.9"
+                "source": "https://github.com/aws/aws-sdk-php/tree/3.235.10"
             },
-            "time": "2022-09-15T18:22:15+00:00"
+            "time": "2022-09-16T18:18:42+00:00"
         },
         {
             "name": "brick/math",
@@ -486,22 +486,22 @@
             "dist": {
                 "type": "path",
                 "url": "/dependencies/php-package",
-                "reference": "589dcc9342fe6c5704427837197992b0225bde7a"
+                "reference": "9dd1fe1e7ffba90e7d9962a8f2617def10865463"
             },
             "require": {
                 "centrifugal/phpcent": "~4.0",
                 "ext-json": "*",
                 "ext-pcntl": "*",
-                "firebase/php-jwt": "^5.5.0",
+                "firebase/php-jwt": "^v5.5.1",
                 "laravel/helpers": "^1.5",
                 "laravel/lumen-framework": "v9.1.2",
                 "league/flysystem-aws-s3-v3": "^1",
-                "php": "^7.4|^8.1",
-                "php-amqplib/php-amqplib": "^3.2",
-                "phpdocumentor/reflection-docblock": "^5.2"
+                "php": "^8.1",
+                "php-amqplib/php-amqplib": "^v3.2",
+                "phpdocumentor/reflection-docblock": "^5.3"
             },
             "require-dev": {
-                "mockery/mockery": "^1.4.2",
+                "mockery/mockery": "^1.5.1",
                 "phpunit/phpunit": "^8.5.8|^9.3.3",
                 "slevomat/coding-standard": "^8.4",
                 "squizlabs/php_codesniffer": "^3.7"
