@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { Link } from 'react-router-dom';
+import { Box, Button } from 'grommet';
 
 export interface MenuItemLinkProps {
   header: string;
@@ -10,9 +11,11 @@ export interface MenuItemLinkProps {
 export default class MenuItemLink extends React.Component<MenuItemLinkProps> {
   render() {
     return (
-      <li key={this.props.liKey}>
-        <Link to={this.props.path}>{this.props.header}</Link>
-      </li>
+      <Box pad="xsmall">
+        <Link to={this.props.path}>
+          <Button gap="xsmall" alignSelf="start" plain label={this.props.header} />
+        </Link>
+      </Box>
     );
   }
 }

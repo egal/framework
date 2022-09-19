@@ -1,14 +1,22 @@
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
+import { FakerError } from '@faker-js/faker';
+import { strict } from 'assert';
 
-export type GetItemsResult = {
+export type ActionGetItemsResult = {
   current_page: number;
   total_count: number;
   per_page: number;
-  items: [];
+  items: any[];
 };
 
-export type Error = {
+export type ActionUpdateResult = any; // TODO: Make normal type.
+export type ActionDeleteResult = any; // TODO: Make normal type.
+
+export type ActionErrorCode = 'ERR_UNDEFINED' | 'ERR_NETWORK' | string;
+
+export type ActionError = {
   message: string;
+  code: ActionErrorCode;
 };
 
 export type ActionGetItemsParams = {
@@ -24,7 +32,9 @@ export type ActionResultPromise<T, F = any> = {
   ): Promise<T | TResult>;
 } & Promise<T>;
 
-export type ActionGetItemsPromise = ActionResultPromise<GetItemsResult, Error>;
+export type ActionGetItemsPromise = ActionResultPromise<ActionGetItemsResult, ActionError>;
+export type ActionUpdatePromise = ActionResultPromise<ActionUpdateResult, ActionError>;
+export type ActionDeletePromise = ActionResultPromise<ActionDeleteResult, ActionError>;
 
 export class DataProvider {
   serverUrl: string = 'http://localhost:8080';
@@ -36,11 +46,43 @@ export class DataProvider {
     this.modelName = modelName;
   }
 
+  // TODO: Base axios query.
   getItems(params: ActionGetItemsParams): ActionGetItemsPromise {
     return new Promise((resolve, reject) => {
-      axios.post(`${this.serverUrl}/${this.serviceName}/${this.modelName}/getItems`, params).then((res) => {
-        resolve(res.data.action_result.data);
-      });
+      axios
+        .post(`${this.serverUrl}/${this.serviceName}/${this.modelName}/getItems`, params)
+        .then((res) => resolve(res.data.action_result.data))
+        .catch((error: AxiosError) => {
+          if (error.code === undefined) {
+            reject({
+              code: 'ERR_UNDEFINED',
+              message: 'Undefined Error'
+            } as ActionError);
+          } else if (error.code === 'ERR_NETWORK') {
+            reject({
+              code: error.code,
+              message: error.message
+            } as ActionError);
+          } else {
+            throw new Error('Unsupported type of error');
+          }
+        });
+    });
+  }
+
+  update(attributes: any): ActionUpdatePromise {
+    return new Promise((resolve, reject) => {
+      axios
+        .post(`${this.serverUrl}/${this.serviceName}/${this.modelName}/update`, { attributes: attributes })
+        .then((res) => resolve(res.data.action_result.data));
+    });
+  }
+
+  delete(key: any): ActionDeletePromise {
+    return new Promise((resolve, reject) => {
+      axios
+        .post(`${this.serverUrl}/${this.serviceName}/${this.modelName}/delete`, { id: key })
+        .then((res) => resolve(res.data.action_result.data));
     });
   }
 }

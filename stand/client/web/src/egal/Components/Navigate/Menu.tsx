@@ -1,8 +1,9 @@
-import React, { ReactElement } from 'react';
-import styled from 'styled-components';
+import React from 'react';
 import { MenuItemConfig, MenuConfig as MenuProps } from '../App';
 import MenuItemGroup from './MenuItemGroup';
 import MenuItemLink from './MenuItemLink';
+import { Button, Nav, Sidebar } from 'grommet';
+import { Logout } from 'grommet-icons';
 
 export default class Menu extends React.Component<MenuProps> {
   constructor(props: MenuProps) {
@@ -14,12 +15,7 @@ export default class Menu extends React.Component<MenuProps> {
     if (item.render !== undefined) {
       return item.render;
     } else if (item.items !== undefined) {
-      return React.createElement(MenuItemGroup, {
-        header: item.header,
-        liKey: key,
-        key: key,
-        items: <div key={key}>{item.items.map(this.renderMenuItem)}</div>
-      });
+      return <MenuItemGroup header={item.header} key={key} items={<>{item.items.map(this.renderMenuItem)}</>} />;
     } else if (item.path !== undefined) {
       return <MenuItemLink liKey={key} key={key} path={item.path} header={item.header} />;
     } else {
@@ -27,32 +23,19 @@ export default class Menu extends React.Component<MenuProps> {
     }
   }
 
+  // TODO: https://storybook.grommet.io/?path=/story/utilities-collapsible-nested--nested
   render(): React.ReactElement {
-    const Container = styled.div`
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      height: 100vh;
-      width: 256px;
-      background: #ffffff;
-      border-right: 1px solid #e2e8f0;
-    `;
-
-    const Body = styled.ul`
-      margin-top: 40px;
-    `;
-
     return (
-      <Container>
-        <div>
-          {this.props.logotype ? <img src={this.props.logotype} alt="logotype" /> : null}
-          <Body>{this.props.items.map(this.renderMenuItem)}</Body>
-        </div>
-        <div>
-          <button>X Exit</button>
-        </div>
-      </Container>
+      <Sidebar
+        responsive={false}
+        background="light-2"
+        header={this.props.logotype ? <img src={this.props.logotype} alt="logotype" /> : null}
+        footer={<Button icon={<Logout />} label={'Exit'} />}
+        pad={'medium'}>
+        <Nav gap="xsmall" responsive={false}>
+          {this.props.items.map(this.renderMenuItem)}
+        </Nav>
+      </Sidebar>
     );
   }
 }

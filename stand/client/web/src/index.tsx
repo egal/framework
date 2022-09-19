@@ -5,57 +5,80 @@ import logo from './assets/logo.svg';
 import App from './egal/Components/App';
 import Layout from './egal/Components/Layout';
 import NotFound from './egal/Components/NotFound';
-import {
-  Box as GrommetBox,
-  DataTable as GrommetDataTable,
-  Grommet,
-  Meter as GrommetMeter,
-  Text as GrommetText
-} from 'grommet';
+import { Meter as GrommetMeter } from 'grommet';
 import { DataTable } from './egal/Components/DataTable';
 
+import { grommet as grommetTheme } from 'grommet/themes';
+import { deepMerge } from 'grommet/utils';
+
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
-  <React.StrictMode>
-    <App
-      layout={Layout}
-      menu={{
-        logotype: logo,
-        items: [
-          { header: 'Home', path: '/', element: <h1>Home page</h1> },
-          {
-            header: 'Home',
-            items: [
-              { header: 'Home', path: '/', element: <h1>Home page</h1> },
-              { header: 'Home', path: '/', element: <h1>Home page</h1> }
-            ]
-          },
-          {
-            header: 'Users',
-            path: '/users',
-            element: (
-              <DataTable
-                serviceName={'auth'}
-                modelName={'Employee'}
-                primaryKey={'id'}
-                columns={[
-                  { property: 'address', header: 'Address', primary: true },
-                  { property: 'adult', header: 'Adult', primary: true },
-                  { property: 'phone', header: 'Phone', primary: true },
-                  {
-                    property: 'weight',
-                    header: 'Complete',
-                    render: (item) => <GrommetMeter values={[{ value: item.weight }]} thickness="small" size="small" />
-                  }
-                ]}
-              />
-            )
+  <App
+    theme={deepMerge(grommetTheme, {
+      table: {
+        footer: {
+          background: {
+            color: 'background-back'
           }
-        ]
-      }}
-      additionalRoutes={[
-        { path: '*', element: <NotFound /> },
-        { path: '/custom', element: <h1>Custom route!</h1> }
-      ]}
-    />
-  </React.StrictMode>
+        }
+      },
+      dataTable: {
+        pinned: {
+          header: {
+            background: {
+              opacity: '0.9',
+              color: 'background-front'
+            }
+          }
+        }
+      }
+    })}
+    layout={Layout}
+    menu={{
+      logotype: logo,
+      items: [
+        { header: 'Home', path: '/', element: <h1>Home page</h1> },
+        {
+          header: 'Home',
+          items: [
+            { header: 'Home', path: '/', element: <h1>Home page</h1> },
+            { header: 'Home', path: '/', element: <h1>Home page</h1> },
+            {
+              header: 'Home',
+              items: [
+                { header: 'Home', path: '/', element: <h1>Home page</h1> },
+                { header: 'Home', path: '/', element: <h1>Home page</h1> }
+              ]
+            }
+          ]
+        },
+        {
+          header: 'Employees',
+          path: '/employees',
+          element: (
+            <DataTable
+              serviceName={'auth'}
+              modelName={'Employee'}
+              primaryKey={'id'}
+              perPage={10}
+              columns={[
+                { property: 'id', header: 'ID', primary: true },
+                { property: 'address', header: 'Address' },
+                { property: 'adult', header: 'Adult' },
+                { property: 'phone', header: 'Phone' },
+                {
+                  property: 'weight',
+                  header: 'Weight',
+                  render: (item) => <GrommetMeter values={[{ value: item.weight }]} thickness="small" size="small" />
+                }
+              ]}
+            />
+          )
+        }
+      ]
+    }}
+    additionalRoutes={[
+      { path: '*', element: <NotFound /> },
+      { path: '/custom', element: <h1>Custom route!</h1> }
+    ]}
+  />
 );
