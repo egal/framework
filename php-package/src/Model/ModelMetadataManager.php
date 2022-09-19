@@ -1,9 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Egal\Model;
 
+use Egal\AuthServiceDependencies\Models\Service;
 use Egal\Core\Exceptions\ModelNotFoundException;
 use Egal\Model\Metadata\ModelMetadata;
+use Mockery\Exception;
 
 class ModelMetadataManager
 {
@@ -15,22 +19,17 @@ class ModelMetadataManager
 
     public function __construct() { }
 
-    public function getInstance(): ModelMetadataManager
-    {
-        return app(self::class);
-    }
-
     /**
      * @throws ModelNotFoundException
      */
     public function getModelMetadata(string $class): ModelMetadata
     {
         if (class_exists($class)) {
-            return $this->getInstance()->modelsMetadata[get_class_short_name($class)] ?? call_user_func(array($class, 'constructMetadata'));
+            return $this->modelsMetadata[get_class_short_name($class)] ?? call_user_func([$class, 'constructMetadata']);
         }
 
-        if (isset(self::getInstance()->modelsMetadata[$class])) {
-            return self::getInstance()->modelsMetadata[$class];
+        if (isset($this->modelsMetadata[$class])) {
+            return $this->modelsMetadata[$class];
         }
 
         throw ModelNotFoundException::make($class);
@@ -41,10 +40,11 @@ class ModelMetadataManager
         return $this->modelsMetadata;
     }
 
-    public function registerDir(string $dir, string $modelsNamespace): void
+    public function registerDirectory(string $dir, string $modelsNamespace): void
     {
         foreach (scandir($dir) as $dirItem) {
             $itemPath = str_replace('//', '/', $dir . '/' . $dirItem);
+
             if ($dirItem === '.' || $dirItem === '..') {
                 continue;
             }
@@ -52,10 +52,10 @@ class ModelMetadataManager
             if (is_dir($itemPath)) {
                 $itemNamespace = str_replace('/app/', '', $itemPath);
                 $itemNamespace = str_replace($itemPath, '', $itemNamespace);
-                $itemNamespace =  str_replace('/', '\\', $itemNamespace);
+                $itemNamespace = str_replace('/', '\\', $itemNamespace);
                 $itemNamespace = ucfirst($itemNamespace);
 
-                $this->registerDir($itemPath, $itemNamespace);
+                $this->registerDirectory($itemPath, $itemNamespace);
             }
 
             if (!str_contains($dirItem, '.php')) {
@@ -76,11 +76,17 @@ class ModelMetadataManager
     {
         $classShortName = get_class_short_name($class);
 
-        if (empty($this->modelsMetadata[$classShortName])) {
+        if (! empty($this->modelsMetadata[$classShortName])) {
             return;
         }
 
-        $this->modelsMetadata[$classShortName] = call_user_func(array($class, 'constructMetadata'))->toArray();
+        $model = new $class();
+
+        if (! ($model instanceof Model || $model instanceof Service)) {
+            throw new Exception();
+        }
+
+        $this->modelsMetadata[$classShortName] = $model->constructMetadata();
     }
 
 }

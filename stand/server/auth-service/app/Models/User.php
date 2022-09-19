@@ -8,37 +8,22 @@ use Egal\Auth\Tokens\UserMasterRefreshToken;
 use Egal\Auth\Tokens\UserMasterToken;
 use Egal\AuthServiceDependencies\Exceptions\LoginException;
 use Egal\AuthServiceDependencies\Models\User as BaseUser;
-use Egal\Model\Enums\FieldTypeEnum;
-use Egal\Model\Enums\RelationTypeEnum;
+use Egal\Model\Enums\FieldType;
+use Egal\Model\Enums\RelationType;
+use Egal\Model\Metadata\ActionMetadata;
 use Egal\Model\Metadata\FieldMetadata;
 use Egal\Model\Metadata\ModelMetadata;
 use Egal\Model\Metadata\RelationMetadata;
-use Egal\Model\Traits\UsesUuidKey;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Support\Collection;
 use Staudenmeir\EloquentHasManyDeep\HasManyDeep;
 use Staudenmeir\EloquentHasManyDeep\HasRelationships;
 
-/**
- * @property Collection $roles          {@property-type relation}
- * @property Collection $permissions    {@property-type relation}
- */
 class User extends BaseUser
 {
 
-    use UsesUuidKey;
     use HasFactory;
     use HasRelationships;
-
-    protected $hidden = [
-        'password',
-    ];
-
-    protected $guarded = [
-        'created_at',
-        'updated_at',
-    ];
 
     public static function actionRegister(string $email, string $password): User
     {
@@ -124,32 +109,32 @@ class User extends BaseUser
 
     public static function constructMetadata(): ModelMetadata
     {
-        return ModelMetadata::make(User::class, FieldMetadata::make('id',FieldTypeEnum::UUID))
+        return ModelMetadata::make(User::class, FieldMetadata::make('id',FieldType::UUID))
             ->addFields([
-                FieldMetadata::make('email', FieldTypeEnum::STRING)
+                FieldMetadata::make('email', FieldType::STRING)
                     ->required()
                     ->string()
-                    ->addValidationRule('unique:users,email')
-                ,
-                FieldMetadata::make('password', FieldTypeEnum::INTEGER)
+                    ->addValidationRule('unique:users,email'),
+                FieldMetadata::make('password', FieldType::STRING)
                     ->required()
                     ->string()
-                ,
-                FieldMetadata::make('created_at', FieldTypeEnum::DATETIME),
-                FieldMetadata::make('updated_at', FieldTypeEnum::DATETIME)
+                    ->hidden()
+                    ->guarded(),
+                FieldMetadata::make('created_at', FieldType::DATETIME),
+                FieldMetadata::make('updated_at', FieldType::DATETIME),
             ])
             ->addRelations([
                 RelationMetadata::make(
                     'roles',
-                    RelationTypeEnum::HAS_MANY,
-                    fn(User $user) => $user->hasMany(UserRole::class, 'user_id', 'id')
-                )
+                    RelationType::HAS_MANY,
+                ),
             ])
             ->addActions([
-                'register',
-                'login',
-                'loginToService',
-                'refreshUserMasterToken'
+                ActionMetadata::make('register'),
+                ActionMetadata::make('login'),
+                ActionMetadata::make('loginToService'),
+                ActionMetadata::make('refreshUserMasterToken'),
+                ActionMetadata::make('getItems'),
             ]);
     }
 

@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Egal\Model\Enums\FieldTypeEnum;
-use Egal\Model\Enums\RelationTypeEnum;
+use Egal\Model\Enums\FieldType;
+use Egal\Model\Enums\RelationType;
+use Egal\Model\Metadata\ActionMetadata;
 use Egal\Model\Metadata\FieldMetadata;
 use Egal\Model\Metadata\ModelMetadata;
 use Egal\Model\Metadata\RelationMetadata;
@@ -15,24 +16,6 @@ class Role extends Model
 {
 
     use HasFactory;
-
-    protected $keyType = 'string';
-
-    protected $fillable = [
-        'id',
-        'name',
-        'is_default'
-    ];
-
-    protected $guarded = [
-        'created_at',
-        'updated_at',
-    ];
-
-    protected $hidden = [
-        'created_at',
-        'updated_at',
-    ];
 
     protected static function boot()
     {
@@ -60,33 +43,36 @@ class Role extends Model
 
     public static function constructMetadata(): ModelMetadata
     {
-        return ModelMetadata::make(Role::class, FieldMetadata::make('id', FieldTypeEnum::STRING))
+        return ModelMetadata::make(Role::class, FieldMetadata::make('id', FieldType::STRING)->fillable())
             ->addFields([
-                FieldMetadata::make('name', FieldTypeEnum::STRING)
+                FieldMetadata::make('name', FieldType::STRING)
                     ->required()
                     ->string()
-                    ->addValidationRule('unique:roles,name')
-                ,
-                FieldMetadata::make('is_default', FieldTypeEnum::BOOLEAN)
+                    ->fillable()
+                    ->addValidationRule('unique:roles,name'),
+                FieldMetadata::make('is_default', FieldType::BOOLEAN)
                     ->required()
                     ->boolean()
-                ,
-                FieldMetadata::make('created_at', FieldTypeEnum::DATETIME),
-                FieldMetadata::make('updated_at', FieldTypeEnum::DATETIME)
+                    ->fillable(),
+                FieldMetadata::make('created_at', FieldType::DATETIME)
+                    ->hidden()
+                    ->guarded(),
+                FieldMetadata::make('updated_at', FieldType::DATETIME)
+                    ->hidden()
+                    ->guarded(),
             ])
             ->addRelations([
                 RelationMetadata::make(
                     'permissions',
-                    RelationTypeEnum::HAS_MANY,
-                    fn(Role $role) => $role->hasMany(Permission::class, 'role_id', 'id')
-                )
+                    RelationType::HAS_MANY
+                ),
             ])
             ->addActions([
-                'getItem',
-                'getItems',
-                'create',
-                'update',
-                'delete'
+                ActionMetadata::make('getItem'),
+                ActionMetadata::make('getItems'),
+                ActionMetadata::make('create'),
+                ActionMetadata::make('update'),
+                ActionMetadata::make('delete'),
             ]);
     }
 

@@ -2,41 +2,17 @@
 
 namespace App\Models;
 
-use Egal\Model\Enums\FieldTypeEnum;
+use Egal\Model\Enums\FieldType;
+use Egal\Model\Metadata\ActionMetadata;
 use Egal\Model\Metadata\FieldMetadata;
 use Egal\Model\Metadata\ModelMetadata;
 use Egal\Model\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-/**
- * @action getItem  {@statuses-access guest|logged}
- * @action getItems {@statuses-access guest|logged}
- * @action create   {@statuses-access guest|logged}
- * @action update   {@statuses-access guest|logged}
- * @action delete   {@statuses-access guest|logged}
- */
 class Permission extends Model
 {
 
     use HasFactory;
-
-    protected $keyType = 'string';
-
-    protected $fillable = [
-        'id',
-        'name',
-        'is_default'
-    ];
-
-    protected $guarded = [
-        'created_at',
-        'updated_at',
-    ];
-
-    protected $hidden = [
-        'created_at',
-        'updated_at',
-    ];
 
     protected static function boot()
     {
@@ -52,26 +28,30 @@ class Permission extends Model
 
     public static function constructMetadata(): ModelMetadata
     {
-        return ModelMetadata::make(Permission::class, FieldMetadata::make('id',FieldTypeEnum::STRING))
+        return ModelMetadata::make(Permission::class, FieldMetadata::make('id',FieldType::STRING)->fillable())
             ->addFields([
-                FieldMetadata::make('name', FieldTypeEnum::STRING)
+                FieldMetadata::make('name', FieldType::STRING)
                     ->required()
                     ->string()
-                    ->addValidationRule('unique:roles,name')
-                ,
-                FieldMetadata::make('is_default', FieldTypeEnum::BOOLEAN)
+                    ->fillable()
+                    ->addValidationRule('unique:roles,name'),
+                FieldMetadata::make('is_default', FieldType::BOOLEAN)
                     ->required()
                     ->boolean()
-                ,
-                FieldMetadata::make('created_at', FieldTypeEnum::DATETIME),
-                FieldMetadata::make('updated_at', FieldTypeEnum::DATETIME)
+                    ->fillable(),
+                FieldMetadata::make('created_at', FieldType::DATETIME)
+                    ->guarded()
+                    ->hidden(),
+                FieldMetadata::make('updated_at', FieldType::DATETIME)
+                    ->guarded()
+                    ->hidden(),
             ])
             ->addActions([
-                'getItem',
-                'getItems',
-                'create',
-                'update',
-                'delete'
+                ActionMetadata::make('getItem'),
+                ActionMetadata::make('getItems'),
+                ActionMetadata::make('create'),
+                ActionMetadata::make('update'),
+                ActionMetadata::make('delete'),
             ]);
     }
 

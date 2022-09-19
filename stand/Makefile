@@ -1,5 +1,4 @@
 DOT_ENV_FILE_PATH:=.env
-SERVICES:=auth-service core-service
 
 generate-dot-env-file:
 	test -f $(DOT_ENV_FILE_PATH) || cp "$(DOT_ENV_FILE_PATH).example" "$(DOT_ENV_FILE_PATH)"
@@ -18,6 +17,9 @@ up-dependencies-detach:
 
 up: generate-dot-env-file up-dependencies-detach
 	docker-compose up auth-service web-service
+
+run-auth-service:
+	docker-compose run --rm --no-deps auth-service sh -c "php artisan egal:run"
 
 services-build: generate-dot-env-file
 	for service in $(SERVICES); \

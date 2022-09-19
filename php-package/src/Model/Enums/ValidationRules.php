@@ -1,8 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Egal\Model\Enums;
 
-enum ValidationRulesEnum: string
+enum ValidationRules: string
 {
 
     case SOMETIMES = 'sometimes';

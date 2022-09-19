@@ -1,218 +1,220 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Egal\Model\Traits;
 
-use Egal\Model\Enums\ValidationRulesEnum;
+use Egal\Model\Enums\ValidationRules;
 
 trait FieldValidationRules
 {
 
     public function required(): self
     {
-        $this->validationRules[] = ValidationRulesEnum::REQUIRED->value;
+        $this->validationRules[] = ValidationRules::REQUIRED->value;
 
         return $this;
     }
 
     public function sometimes(): self
     {
-        $this->validationRules[] = ValidationRulesEnum::SOMETIMES->value;
+        $this->validationRules[] = ValidationRules::SOMETIMES->value;
 
         return $this;
     }
 
     public function nullable(): self
     {
-        $this->validationRules[] = ValidationRulesEnum::NULLABLE->value;
+        $this->validationRules[] = ValidationRules::NULLABLE->value;
 
         return $this;
     }
 
     public function string(): self
     {
-        $this->validationRules[] = ValidationRulesEnum::STRING->value;
+        $this->validationRules[] = ValidationRules::STRING->value;
 
         return $this;
     }
 
     public function boolean(): self
     {
-        $this->validationRules[] = ValidationRulesEnum::BOOLEAN->value;
+        $this->validationRules[] = ValidationRules::BOOLEAN->value;
 
         return $this;
     }
 
     public function numeric(): self
     {
-        $this->validationRules[] = ValidationRulesEnum::NUMERIC->value;
+        $this->validationRules[] = ValidationRules::NUMERIC->value;
 
         return $this;
     }
 
     public function accepted(): self
     {
-        $this->validationRules[] = ValidationRulesEnum::ACCEPTED->value;
+        $this->validationRules[] = ValidationRules::ACCEPTED->value;
 
         return $this;
     }
 
     public function activeUrl(): self
     {
-        $this->validationRules[] = ValidationRulesEnum::ACTIVE_URL->value;
+        $this->validationRules[] = ValidationRules::ACTIVE_URL->value;
 
         return $this;
     }
 
     public function alpha(): self
     {
-        $this->validationRules[] = ValidationRulesEnum::ALPHA->value;
+        $this->validationRules[] = ValidationRules::ALPHA->value;
 
         return $this;
     }
 
     public function alphaDash(): self
     {
-        $this->validationRules[] = ValidationRulesEnum::ALPHA_DASH->value;
+        $this->validationRules[] = ValidationRules::ALPHA_DASH->value;
 
         return $this;
     }
 
     public function alphaNum(): self
     {
-        $this->validationRules[] = ValidationRulesEnum::ALPHA_NUM->value;
+        $this->validationRules[] = ValidationRules::ALPHA_NUM->value;
 
         return $this;
     }
 
     public function array(): self
     {
-        $this->validationRules[] = ValidationRulesEnum::ARRAY->value;
+        $this->validationRules[] = ValidationRules::ARRAY->value;
 
         return $this;
     }
 
     public function bail(): self
     {
-        $this->validationRules[] = ValidationRulesEnum::BAIL->value;
+        $this->validationRules[] = ValidationRules::BAIL->value;
 
         return $this;
     }
 
     public function confirmed(): self
     {
-        $this->validationRules[] = ValidationRulesEnum::CONFIRMED->value;
+        $this->validationRules[] = ValidationRules::CONFIRMED->value;
 
         return $this;
     }
 
     public function date(): self
     {
-        $this->validationRules[] = ValidationRulesEnum::DATE->value;
+        $this->validationRules[] = ValidationRules::DATE->value;
 
         return $this;
     }
 
     public function declined(): self
     {
-        $this->validationRules[] = ValidationRulesEnum::DECLINED->value;
+        $this->validationRules[] = ValidationRules::DECLINED->value;
 
         return $this;
     }
 
     public function exclude(): self
     {
-        $this->validationRules[] = ValidationRulesEnum::EXCLUDE->value;
+        $this->validationRules[] = ValidationRules::EXCLUDE->value;
 
         return $this;
     }
 
     public function file(): self
     {
-        $this->validationRules[] = ValidationRulesEnum::FILE->value;
+        $this->validationRules[] = ValidationRules::FILE->value;
 
         return $this;
     }
 
     public function filled(): self
     {
-        $this->validationRules[] = ValidationRulesEnum::FILLED->value;
+        $this->validationRules[] = ValidationRules::FILLED->value;
 
         return $this;
     }
 
     public function image(): self
     {
-        $this->validationRules[] = ValidationRulesEnum::IMAGE->value;
+        $this->validationRules[] = ValidationRules::IMAGE->value;
 
         return $this;
     }
 
     public function integer(): self
     {
-        $this->validationRules[] = ValidationRulesEnum::INTEGER->value;
+        $this->validationRules[] = ValidationRules::INTEGER->value;
 
         return $this;
     }
 
     public function ip(): self
     {
-        $this->validationRules[] = ValidationRulesEnum::IP->value;
+        $this->validationRules[] = ValidationRules::IP->value;
 
         return $this;
     }
 
     public function ipv4(): self
     {
-        $this->validationRules[] = ValidationRulesEnum::IPV4->value;
+        $this->validationRules[] = ValidationRules::IPV4->value;
 
         return $this;
     }
 
     public function ipv6(): self
     {
-        $this->validationRules[] = ValidationRulesEnum::IPV6->value;
+        $this->validationRules[] = ValidationRules::IPV6->value;
 
         return $this;
     }
 
     public function mac_address(): self
     {
-        $this->validationRules[] = ValidationRulesEnum::MAC_ADDRESS->value;
+        $this->validationRules[] = ValidationRules::MAC_ADDRESS->value;
 
         return $this;
     }
 
     public function present(): self
     {
-        $this->validationRules[] = ValidationRulesEnum::PRESENT->value;
+        $this->validationRules[] = ValidationRules::PRESENT->value;
 
         return $this;
     }
 
     public function prohibited(): self
     {
-        $this->validationRules[] = ValidationRulesEnum::PROHIBITED->value;
+        $this->validationRules[] = ValidationRules::PROHIBITED->value;
 
         return $this;
     }
 
     public function timezone(): self
     {
-        $this->validationRules[] = ValidationRulesEnum::TIMEZONE->value;
+        $this->validationRules[] = ValidationRules::TIMEZONE->value;
 
         return $this;
     }
 
     public function url(): self
     {
-        $this->validationRules[] = ValidationRulesEnum::URL->value;
+        $this->validationRules[] = ValidationRules::URL->value;
 
         return $this;
     }
 
     public function uuid(): self
     {
-        $this->validationRules[] = ValidationRulesEnum::UUID->value;
+        $this->validationRules[] = ValidationRules::UUID->value;
 
         return $this;
     }

@@ -3,7 +3,7 @@
 namespace Egal\Model\Metadata;
 
 use Egal\Model\Traits\FieldValidationRules;
-use Egal\Model\Enums\FieldTypeEnum;
+use Egal\Model\Enums\FieldType;
 
 class FieldMetadata
 {
@@ -12,19 +12,25 @@ class FieldMetadata
 
     protected string $name;
 
-    protected FieldTypeEnum $type;
+    protected FieldType $type;
+
+    protected bool $hidden = false;
+
+    protected bool $guarded = false;
+
+    protected bool $fillable = false;
 
     /**
      * @var string[]
      */
     protected array $validationRules = [];
 
-    public static function make(string $name, FieldTypeEnum $type): self
+    public static function make(string $name, FieldType $type): self
     {
         return new static($name, $type);
     }
 
-    protected function __construct(string $name, FieldTypeEnum $type)
+    protected function __construct(string $name, FieldType $type)
     {
         $this->name = $name;
         $this->type = $type;
@@ -35,7 +41,10 @@ class FieldMetadata
         return [
             'name' => $this->name,
             'type' => $this->type->value,
-            'validationRules' => $this->validationRules
+            'validationRules' => $this->validationRules,
+            'hidden' => $this->hidden,
+            'guarded' => $this->guarded,
+            'fillable' => $this->fillable,
         ];
     }
 
@@ -46,7 +55,7 @@ class FieldMetadata
         return $this;
     }
 
-    public function setType(FieldTypeEnum $type): self
+    public function setType(FieldType $type): self
     {
         $this->type = $type;
 
@@ -65,7 +74,7 @@ class FieldMetadata
         return $this->name;
     }
 
-    public function getType(): FieldTypeEnum
+    public function getType(): FieldType
     {
         return $this->type;
     }
@@ -73,6 +82,42 @@ class FieldMetadata
     public function getValidationRules(): array
     {
         return $this->validationRules;
+    }
+
+    public function hidden(): self
+    {
+        $this->hidden = true;
+
+        return $this;
+    }
+
+    public function guarded(): self
+    {
+        $this->guarded = true;
+
+        return $this;
+    }
+
+    public function fillable(): self
+    {
+        $this->fillable = true;
+
+        return $this;
+    }
+
+    public function isHidden(): bool
+    {
+        return $this->hidden;
+    }
+
+    public function isGuarded(): bool
+    {
+        return $this->guarded;
+    }
+
+    public function isFillable(): bool
+    {
+        return $this->fillable;
     }
 
 }

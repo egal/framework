@@ -58,7 +58,7 @@ class MigrationCreateMakeCommand extends MakeCommand
 
         $this->validationRules = $modelMetadata->getValidationRules();
         $this->fieldsTypes = $modelMetadata->getFieldsWithTypes();
-        $this->primaryKey = $modelMetadata->getPrimaryKey();
+        $this->primaryKey = $modelMetadata->getKey()->getName();
         $this->className = 'Create' . Str::plural($modelName) . 'Table';
         $this->fileBaseName = Str::snake(date('Y_m_d_His') . $this->className);
         $this->filePath = base_path('database/migrations') . '/' . $this->fileBaseName . '.php';

@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Egal\Model\Metadata;
 
+use Egal\Model\Exceptions\ActionNotFoundException;
 use Egal\Model\Exceptions\FieldNotFoundException;
 use Egal\Model\Exceptions\RelationNotFoundException;
 
@@ -12,7 +15,9 @@ class ModelMetadata
 
     protected string $modelShortName;
 
-    protected ?FieldMetadata $primaryKey;
+    protected ?FieldMetadata $key;
+
+    protected array $fakeFields = [];
 
     /**
      * @var FieldMetadata[]
@@ -24,41 +29,35 @@ class ModelMetadata
      */
     protected array $relations = [];
 
-    protected array $fakeFields = [];
-
+    /**
+     * @var ActionMetadata[]
+     */
     protected array $actions = [];
+
+    public function __construct(string $modelClass, ?FieldMetadata $key)
+    {
+        $this->modelClass = $modelClass;
+        $this->modelShortName = get_class_short_name($modelClass);
+        $this->key = $key ?? null;
+    }
 
     public static function make(string $modelClass, ?FieldMetadata $key = null): self
     {
         return new static($modelClass, $key);
     }
 
-    public function __construct(string $modelClass, FieldMetadata $key)
-    {
-        $this->modelClass = $modelClass;
-        $this->modelShortName = get_class_short_name($modelClass);
-        $this->primaryKey = $key;
-    }
-
     public function toArray(): array
     {
         $modelMetadata = [
             'model_short_name' => $this->modelShortName,
-            'primary_key'   => $this->primaryKey->toArray(),
-            'actions' => $this->actions,
+            'primary_key' => $this->key->toArray(),
         ];
 
-        foreach ($this->fields as $field) {
-            $modelMetadata['fields'][] = $field->toArray();
-        }
+        $modelMetadata['fields'] = array_map(fn($field) => $field->toArray(), $this->fields);
+        $modelMetadata['fake_fields'] = array_map(fn($field) => $field->toArray(), $this->fakeFields);
+        $modelMetadata['relations'] = array_map(fn($relation) => $relation->toArray(), $this->relations);
+        $modelMetadata['actions'] = array_map(fn($action) => $action->toArray(), $this->actions);
 
-        foreach ($this->fakeFields as $field) {
-            $modelMetadata['fake_fields'][] = $field->toArray();
-        }
-
-        foreach ($this->relations as $relation) {
-            $modelMetadata['relations'] = $relation->toArray();
-        }
         return $modelMetadata;
     }
 
@@ -92,6 +91,9 @@ class ModelMetadata
         return $this;
     }
 
+    /**
+     * @param ActionMetadata[] $actions
+     */
     public function addActions(array $actions): self
     {
         $this->actions = array_merge($this->actions, $actions);
@@ -145,9 +147,14 @@ class ModelMetadata
         return true;
     }
 
-    public function getPrimaryKey(): FieldMetadata
+    public function getModelShortName(): string
     {
-        return $this->primaryKey;
+        return $this->modelShortName;
+    }
+
+    public function getKey(): FieldMetadata
+    {
+        return $this->key;
     }
 
     public function getFields(): array
@@ -167,24 +174,53 @@ class ModelMetadata
 
     public function getModelClass(): string
     {
-        return $this->$this->modelClass;
+        return $this->modelClass;
     }
 
+    /**
+     * @return ActionMetadata[]
+     */
     public function getActions(): array
     {
         return $this->actions;
     }
 
-    public function getValidationRules(): array
+    /**
+     * @return string[]
+     */
+    public function getHiddenFieldsNames(): array
     {
-        $fields =  array_merge($this->getFields(), $this->getFakeFields());
+        return array_map(fn($field) => $field->getName(), array_filter($this->fields, fn($field) => $field->isHidden()));
+    }
 
-        $validationRules = [];
+    /**
+     * @return string[]
+     */
+    public function getFillableFieldsNames(): array
+    {
+        return array_map(fn($field) => $field->getName(), array_filter($this->fields, fn($field) => $field->isFillable()));
+    }
 
-        foreach ($fields as $field) {
-            $validationRules[$field->getName()] = $field->getValidationRules();
+    /**
+     * @return string[]
+     */
+    public function getGuardedFieldsNames(): array
+    {
+        return array_map(fn($field) => $field->getName(), array_filter($this->fields, fn($field) => $field->isGuarded()));
+    }
+
+    /**
+     * @throws ActionNotFoundException
+     */
+    public function getAction(string $actionName): ActionMetadata
+    {
+        foreach ($this->actions as $action) {
+            if ($action->getName() === $actionName) {
+                return $action;
+            }
         }
-        return $validationRules;
+
+        throw ActionNotFoundException::make($this->modelClass, $actionName);
     }
 
 }

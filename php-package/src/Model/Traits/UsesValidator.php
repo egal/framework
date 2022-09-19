@@ -75,7 +75,7 @@ trait UsesValidator
      */
     protected function validateKey($keyValue): void
     {
-        $primaryKey = $this->getModelMetadata()->getPrimaryKey()->getName();
+        $primaryKey = $this->getModelMetadata()->getKey()->getName();
 
         if ($primaryKey === null) {
             $validator = Validator::make(
@@ -83,7 +83,7 @@ trait UsesValidator
                 [$this->getKeyName() => [$this->getKeyType()]]
             );
         } else {
-            $validationRules = $this->getModelMetadata()->getPrimaryKey()->getValidationRules();
+            $validationRules = $this->getModelMetadata()->getKey()->getValidationRules();
             $validator = Validator::make(
                 [$primaryKey => $keyValue],
                 [$primaryKey => $validationRules === [] ? [$this->getKeyType()] : $validationRules]

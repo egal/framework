@@ -160,7 +160,7 @@ abstract class Model extends EloquentModel
     }
 
     /**
-     * Get count entityes.
+     * Get count entities.
      *
      * @param mixed[] $filter
      */

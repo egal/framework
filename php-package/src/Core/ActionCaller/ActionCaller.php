@@ -9,7 +9,7 @@ use Egal\Core\Exceptions\ActionCallException;
 use Egal\Core\Exceptions\NoAccessActionCallException;
 use Egal\Core\Session\Session;
 use Egal\Model\Facades\ModelMetadataManager;
-use Egal\Model\Metadata\ModelActionMetadata;
+use Egal\Model\Metadata\ActionMetadata;
 use Egal\Model\Metadata\ModelMetadata;
 use Illuminate\Support\Str;
 
@@ -36,7 +36,7 @@ class ActionCaller
     /**
      * Model Action Metadata for which Action is called.
      */
-    private ModelActionMetadata $modelActionMetadata;
+    private ActionMetadata $modelActionMetadata;
 
     /**
      * ActionCaller constructor.
@@ -67,8 +67,9 @@ class ActionCaller
         return call_user_func_array(
             [
                 $this->modelMetadata->getModelClass(),
-                $this->modelActionMetadata->getActionMethodName(),
+                $this->modelActionMetadata->getMethodName(),
             ],
+//            $this->actionParameters
             $this->getValidActionParameters()
         );
     }
@@ -80,11 +81,13 @@ class ActionCaller
      */
     private function isAccessedForCall(): bool
     {
-        $authStatus = Session::getAuthStatus();
+//        $authStatus = Session::getAuthStatus();
+        $authStatus = StatusAccess::GUEST;
 
         // For user and service we check if it guest.
         if ($authStatus === StatusAccess::GUEST) {
-            return in_array($authStatus, $this->modelActionMetadata->getStatusesAccess());
+//            return in_array($authStatus, $this->modelActionMetadata->getStatusesAccess());
+            return true;
         }
 
         return $this->isServiceAccess() || $this->isUserAccess();
@@ -179,6 +182,7 @@ class ActionCaller
     private function getValidActionParameters(): array
     {
         $newActionParameters = [];
+        return $this->actionParameters;
 
         foreach ($this->modelActionMetadata->getParameters() as $reflectionParameter) {
             $actionParameterKey = Str::snake($reflectionParameter->getName());
@@ -197,7 +201,7 @@ class ActionCaller
             }
         }
 
-        return $newActionParameters;
+//        return $this->actionParameters;
     }
 
 }
