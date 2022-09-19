@@ -69,7 +69,6 @@ class ActionCaller
                 $this->modelMetadata->getModelClass(),
                 $this->modelActionMetadata->getMethodName(),
             ],
-//            $this->actionParameters
             $this->getValidActionParameters()
         );
     }
@@ -81,12 +80,12 @@ class ActionCaller
      */
     private function isAccessedForCall(): bool
     {
-//        $authStatus = Session::getAuthStatus();
+        // TODO: подключить авторизацию при реализации Политик:       $authStatus = Session::getAuthStatus();
         $authStatus = StatusAccess::GUEST;
 
         // For user and service we check if it guest.
         if ($authStatus === StatusAccess::GUEST) {
-//            return in_array($authStatus, $this->modelActionMetadata->getStatusesAccess());
+        // TODO: реализовать проверку соответствия $authStatus и указанного в action доступа по статусу
             return true;
         }
 
@@ -106,6 +105,7 @@ class ActionCaller
 
         $serviceName = Session::getServiceServiceToken()->getServiceName();
 
+        // TODO: разиловать проверку выданного сервису доступа до эндпоинта
         return in_array($serviceName, $this->modelActionMetadata->getServicesAccess());
     }
 
@@ -120,6 +120,7 @@ class ActionCaller
             return false;
         }
 
+        // TODO: реализовать проверку выданного пользователю доступа до эндпоинта по статусу, по роли, по permission
         return in_array(Session::getAuthStatus(), $this->modelActionMetadata->getStatusesAccess())
             && $this->userHasAccessWithCurrentRoles()
             && $this->userHasAccessWithCurrentPermissions();
@@ -130,6 +131,7 @@ class ActionCaller
      *
      * @throws \Exception
      * TODO: Переименовать!
+     * TODO: Реализовать
      */
     private function userHasAccessWithCurrentRoles(): bool
     {
@@ -153,6 +155,7 @@ class ActionCaller
      *
      * @throws \Exception
      * TODO: Переименовать!
+     * TODO: реализовать
      */
     private function userHasAccessWithCurrentPermissions(): bool
     {
@@ -175,33 +178,13 @@ class ActionCaller
      * Формирует из {@see \Egal\Core\ActionCaller\ActionCaller::modelActionMetadata} валидные параметры.
      *
      * If it is impossible to generate valid parameters, an exception is thrown.
-     *
+     * TODO: реализовать проверку на: isDefaultValueAvailable(), allowsNull() - для случаев, когда не передается необходимый для action параметр
      * @return array
      * @throws \ReflectionException|\Egal\Core\Exceptions\ActionCallException
      */
     private function getValidActionParameters(): array
     {
-        $newActionParameters = [];
         return $this->actionParameters;
-
-        foreach ($this->modelActionMetadata->getParameters() as $reflectionParameter) {
-            $actionParameterKey = Str::snake($reflectionParameter->getName());
-            $newActionParameterKey = $reflectionParameter->getPosition();
-
-            if (!array_key_exists($actionParameterKey, $this->actionParameters)) {
-                if ($reflectionParameter->isDefaultValueAvailable()) {
-                    $newActionParameters[$newActionParameterKey] = $reflectionParameter->getDefaultValue();
-                } elseif ($reflectionParameter->allowsNull()) {
-                    $newActionParameters[$newActionParameterKey] = null;
-                } else {
-                    throw new ActionCallException('Parameter value ' . $actionParameterKey . ' necessarily!');
-                }
-            } else {
-                $newActionParameters[$newActionParameterKey] = $this->actionParameters[$actionParameterKey];
-            }
-        }
-
-//        return $this->actionParameters;
     }
 
 }

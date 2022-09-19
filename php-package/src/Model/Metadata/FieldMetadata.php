@@ -81,6 +81,17 @@ class FieldMetadata
 
     public function getValidationRules(): array
     {
+        if (in_array($this->type->value, $this->validationRules)) {
+            return $this->validationRules;
+        }
+
+        switch ($this->type) {
+            case FieldType::DATETIME:
+                break;
+            default:
+                $this->validationRules[] = $this->type->value;
+        }
+
         return $this->validationRules;
     }
 
