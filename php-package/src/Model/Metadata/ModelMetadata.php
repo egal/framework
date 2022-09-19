@@ -17,6 +17,8 @@ class ModelMetadata
 
     protected ?FieldMetadata $key;
 
+    protected array $fakeFields = [];
+
     /**
      * @var FieldMetadata[]
      */
@@ -27,8 +29,6 @@ class ModelMetadata
      */
     protected array $relations = [];
 
-    protected array $fakeFields = [];
-
     /**
      * @var ActionMetadata[]
      */
@@ -38,7 +38,7 @@ class ModelMetadata
     {
         $this->modelClass = $modelClass;
         $this->modelShortName = get_class_short_name($modelClass);
-        $this->key = $key;
+        $this->key = $key ?? null;
     }
 
     public static function make(string $modelClass, ?FieldMetadata $key = null): self

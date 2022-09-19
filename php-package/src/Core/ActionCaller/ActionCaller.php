@@ -201,7 +201,7 @@ class ActionCaller
             }
         }
 
-        return $this->actionParameters;
+//        return $this->actionParameters;
     }
 
 }

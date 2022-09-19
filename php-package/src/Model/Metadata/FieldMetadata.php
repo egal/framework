@@ -119,4 +119,5 @@ class FieldMetadata
     {
         return $this->fillable;
     }
+
 }

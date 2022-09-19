@@ -38,8 +38,6 @@ trait UsesModelMetadata
         $this->makeHidden($this->modelMetadata->getHiddenFieldsNames());
     }
 
-    public abstract static function constructMetadata(): ModelMetadata;
-
     private function setKeyProperties(): void
     {
         switch ($this->keyType) {
@@ -54,6 +52,8 @@ trait UsesModelMetadata
                 $this->incrementing = false;
         }
     }
+
+    public abstract static function constructMetadata(): ModelMetadata;
 
     public function setValidationRules(): void
     {

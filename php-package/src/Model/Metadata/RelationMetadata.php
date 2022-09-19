@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Egal\Model\Metadata;
 
-use Closure;
 use Egal\Model\Enums\RelationType;
 
 class RelationMetadata
@@ -13,7 +12,6 @@ class RelationMetadata
     protected string $name;
 
     protected RelationType $type;
-
 
     protected function __construct(string $name, RelationType $type)
     {
