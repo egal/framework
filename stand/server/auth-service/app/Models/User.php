@@ -14,7 +14,6 @@ use Egal\Model\Metadata\ActionMetadata;
 use Egal\Model\Metadata\FieldMetadata;
 use Egal\Model\Metadata\ModelMetadata;
 use Egal\Model\Metadata\RelationMetadata;
-use Egal\Model\Traits\UsesUuidKey;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Staudenmeir\EloquentHasManyDeep\HasManyDeep;
@@ -23,7 +22,6 @@ use Staudenmeir\EloquentHasManyDeep\HasRelationships;
 class User extends BaseUser
 {
 
-    use UsesUuidKey;
     use HasFactory;
     use HasRelationships;
 

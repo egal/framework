@@ -9,6 +9,8 @@ use Egal\Model\Enums\FieldType;
 use Egal\Model\Facades\ModelMetadataManager;
 use Egal\Model\Metadata\FieldMetadata;
 use Egal\Model\Metadata\ModelMetadata;
+use Egal\Model\Model;
+use Illuminate\Support\Str;
 
 /**
  * @package Egal\Model
@@ -27,8 +29,8 @@ trait UsesModelMetadata
         $this->modelMetadata = ModelMetadataManager::getModelMetadata(static::class);
         $this->keyType = $this->modelMetadata->getKey()->getType()->value;
         $this->keyName = $this->modelMetadata->getKey()->getName();
-        $this->incrementing = $this->keyType === FieldType::INTEGER;
 
+        $this->setKeyProperties();
         $this->setValidationRules();
 
         $this->mergeFillable($this->modelMetadata->getFillableFieldsNames());
@@ -37,6 +39,21 @@ trait UsesModelMetadata
     }
 
     public abstract static function constructMetadata(): ModelMetadata;
+
+    private function setKeyProperties(): void
+    {
+        switch ($this->keyType) {
+            case FieldType::INTEGER->value:
+                $this->incrementing = true;
+                return;
+            case FieldType::UUID->value:
+                static::creating(static function (Model $model): void {
+                    $model->setAttribute($model->keyName, (string) Str::uuid());
+                });
+            default:
+                $this->incrementing = false;
+        }
+    }
 
     public function setValidationRules(): void
     {

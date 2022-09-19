@@ -7,14 +7,12 @@ use Egal\Model\Metadata\ActionMetadata;
 use Egal\Model\Metadata\FieldMetadata;
 use Egal\Model\Metadata\ModelMetadata;
 use Egal\Model\Model;
-use Egal\Model\Traits\UsesUuidKey;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Staudenmeir\EloquentHasManyDeep\HasRelationships;
 
 class Employee extends Model
 {
 
-    use UsesUuidKey;
     use HasFactory;
     use HasRelationships;
 
