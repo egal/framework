@@ -184,9 +184,11 @@ export class DataTable extends React.Component<Props, State> {
             </FormField>
           );
         })}
-        <Box gap="small" align={'center'} pad={{ top: 'small' }}>
+        <Box direction={'row'} justify={'center'} gap="small" pad={{ top: 'small' }}>
           <Button type="submit" primary label="Submit" />
           <Button type="reset" label="Reset" />
+        </Box>
+        <Box direction={'row'} justify={'center'} gap="small" pad={{ top: 'small' }}>
           <Button
             type="button"
             label="Delete"
