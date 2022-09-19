@@ -5,213 +5,116 @@ declare(strict_types=1);
 namespace Egal\Model\Metadata;
 
 use Egal\Model\Exceptions\ActionNotFoundException;
-use Egal\Model\Exceptions\DuplicatePrimaryKeyModelMetadataException;
 use Egal\Model\Exceptions\FieldNotFoundException;
-use Egal\Model\Exceptions\IncorrectCaseOfPropertyVariableNameException;
-use Egal\Model\Exceptions\ModelMetadataException;
 use Egal\Model\Exceptions\RelationNotFoundException;
-use Egal\Model\Exceptions\UnsupportedFilterValueTypeException;
-use Egal\Model\Exceptions\UnsupportedModelMetadataPropertyTypeException;
-use Illuminate\Validation\Concerns\ValidatesAttributes;
-use phpDocumentor\Reflection\DocBlock;
-use phpDocumentor\Reflection\DocBlockFactory;
-use ReflectionClass;
 
-/**
- * TODO: Получать из $this->validationRules с выборкой именно fields
- */
 class ModelMetadata
 {
-
-    use ValidatesAttributes;
 
     protected string $modelClass;
 
     protected string $modelShortName;
 
+    protected ?FieldMetadata $key;
+
+    protected array $fakeFields = [];
+
     /**
-     * @var string[]
+     * @var FieldMetadata[]
      */
     protected array $fields = [];
 
     /**
-     * @var mixed[]
-     */
-    protected array $fieldsWithTypes = [];
-
-    /**
-     * @var string[]
-     */
-    protected array $fakeFields = [];
-
-    /**
-     * @var string[]
+     * @var RelationMetadata[]
      */
     protected array $relations = [];
 
     /**
-     * @var string[]
+     * @var ActionMetadata[]
      */
-    protected array $validationRules = [];
+    protected array $actions = [];
 
-    /**
-     * @var \Egal\Model\Metadata\ModelActionMetadata[]
-     */
-    protected array $actionsMetadata = [];
-
-    private ?string $primaryKey = null;
-
-    /**
-     * @throws \ReflectionException
-     * @throws \Exception
-     */
-    public function __construct(string $modelClass)
+    public function __construct(string $modelClass, ?FieldMetadata $key)
     {
         $this->modelClass = $modelClass;
-        $modelReflectionClass = new ReflectionClass($this->modelClass);
-        $this->modelShortName = $modelReflectionClass->getShortName();
-        $docComment = $modelReflectionClass->getDocComment();
-
-        if (!$docComment) {
-            return;
-        }
-
-        $docBlock = DocBlockFactory::createInstance()->create($docComment);
-        $this->scanProperties($docBlock);
-        $this->scanActionsFromClassDocBlock($modelReflectionClass, $docBlock);
+        $this->modelShortName = get_class_short_name($modelClass);
+        $this->key = $key ?? null;
     }
 
-    /**
-     * TODO: Remove 'database_fields' from v2.0.0.
-     * TODO: Remove 'primary_keys' from v2.0.0.
-     *
-     * @return mixed[]
-     * @throws \ReflectionException
-     */
+    public static function make(string $modelClass, ?FieldMetadata $key = null): self
+    {
+        return new static($modelClass, $key);
+    }
+
     public function toArray(): array
     {
-        $result = [
-            'model_class' => $this->modelClass,
+        $modelMetadata = [
             'model_short_name' => $this->modelShortName,
-            'database_fields' => $this->fields,
-            'fields' => $this->fields,
-            'fields_with_types' => $this->fieldsWithTypes,
-            'fake_fields' => $this->fakeFields,
-            'relations' => $this->relations,
-            'validation_rules' => $this->validationRules,
-            'primary_key' => $this->getPrimaryKey(),
-            'actions_metadata' => [],
+            'primary_key' => $this->key->toArray(),
         ];
 
-        foreach ($this->actionsMetadata as $key => $actionMetadata) {
-            $result['actions_metadata'][$key] = $actionMetadata->toArray();
-        }
+        $modelMetadata['fields'] = array_map(fn($field) => $field->toArray(), $this->fields);
+        $modelMetadata['fake_fields'] = array_map(fn($field) => $field->toArray(), $this->fakeFields);
+        $modelMetadata['relations'] = array_map(fn($relation) => $relation->toArray(), $this->relations);
+        $modelMetadata['actions'] = array_map(fn($action) => $action->toArray(), $this->actions);
 
-        return $result;
+        return $modelMetadata;
     }
 
     /**
-     * @return array
+     * @param FieldMetadata[] $fields
      */
-    public function getRelations(): array
+    public function addFields(array $fields): self
     {
-        return $this->relations;
-    }
-
-    /**
-     * @return array
-     * @depricated from v2.0.0
-     */
-    public function getPrimaryKeys(): array
-    {
-        return [$this->primaryKey];
-    }
-
-    /**
-     * @return array
-     */
-    public function getFieldsWithTypes(): array
-    {
-        return $this->fieldsWithTypes;
-    }
-
-    public function getModelShortName(): string
-    {
-        return $this->modelShortName;
-    }
-
-    public function getModelClass(): string
-    {
-        return $this->modelClass;
-    }
-
-    public function setModelClass(string $modelClass): void
-    {
-        $this->modelClass = $modelClass;
-    }
-
-    /**
-     * @return string[]
-     */
-    public function getFields(): array
-    {
-        return $this->fields;
-    }
-
-    /**
-     * @return mixed[]
-     */
-    public function getValidationRules(?string $propertyName = null): array
-    {
-        if ($propertyName) {
-            $this->fieldExistOrFail($propertyName);
-
-            return $this->validationRules[$propertyName] ?? [];
-        }
-
-        return $this->validationRules;
-    }
-
-    /**
-     * @param mixed[] $validationRules
-     * @return $this
-     */
-    public function setValidationRules(array $validationRules): self
-    {
-        $this->validationRules = $validationRules;
+        $this->fields = array_merge($this->fields, $fields);
 
         return $this;
     }
 
     /**
-     * @return $this
+     * @param FieldMetadata[] $fakeFields
      */
-    public function addValidationRules(string $propertyName, string ...$propertyValidationRules): ModelMetadata
+    public function addFakeFields(array $fakeFields): self
     {
-        $this->validationRules[$propertyName] = isset($this->validationRules[$propertyName])
-            ? array_merge($this->validationRules[$propertyName], $propertyValidationRules)
-            : $propertyValidationRules;
+        $this->fakeFields = array_merge($this->fakeFields, $fakeFields);
 
         return $this;
     }
 
     /**
-     * @throws \Egal\Model\Exceptions\ActionNotFoundException
+     * @param RelationMetadata[] $relations
      */
-    public function getAction(string $actionName): ModelActionMetadata
+    public function addRelations(array $relations): self
     {
-        if (isset($this->actionsMetadata[$actionName])) {
-            return $this->actionsMetadata[$actionName];
-        }
+        $this->relations = array_merge($this->relations, $relations);
 
-        throw ActionNotFoundException::make($this->modelClass, $actionName);
+        return $this;
+    }
+
+    /**
+     * @param ActionMetadata[] $actions
+     */
+    public function addActions(array $actions): self
+    {
+        $this->actions = array_merge($this->actions, $actions);
+
+        return $this;
     }
 
     public function fieldExist(string $fieldName): bool
     {
-        return in_array($fieldName, $this->fields);
+        foreach ($this->fields as $field) {
+            if ($field->getName() === $fieldName) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
+    /**
+     * @throws FieldNotFoundException
+     */
     public function fieldExistOrFail(string $fieldName): bool
     {
         if (!$this->fieldExist($fieldName)) {
@@ -221,173 +124,103 @@ class ModelMetadata
         return true;
     }
 
-    public function relationExist(string $relation): bool
+    public function relationExist(string $relationName): bool
     {
-        return in_array($relation, $this->relations);
+        foreach ($this->relations as $relation) {
+            if ($relation->getName() === $relationName) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
-     * @throws \Egal\Model\Exceptions\RelationNotFoundException
+     * @throws RelationNotFoundException
      */
-    public function relationExistOrFail(string $relation): bool
+    public function relationExistOrFail(string $relationName): bool
     {
-        if (!$this->relationExist($relation)) {
-            throw RelationNotFoundException::make($relation);
+        if (!$this->relationExist($relationName)) {
+            throw RelationNotFoundException::make($relationName);
         }
 
         return true;
     }
 
-    public function getPrimaryKey(): ?string
+    public function getModelShortName(): string
     {
-        return $this->primaryKey;
+        return $this->modelShortName;
     }
 
-    public function validateFieldValueType(string $field, $value): void
+    public function getKey(): FieldMetadata
     {
-        $allTypeValidationRules = [
-            'integer',
-            'boolean',
-            'date',
-            'string',
-            'numeric',
-            'array',
-            'json',
-        ];
-        $fieldTypeValidationRules = array_intersect($allTypeValidationRules, $this->getValidationRules($field));
-
-        foreach ($fieldTypeValidationRules as $fieldTypeValidationRule) {
-            $validationMethod = camel_case('validate' . $fieldTypeValidationRule);
-            $fieldValidated = $this->$validationMethod($field, $value);
-
-            if (!$fieldValidated) {
-                throw UnsupportedFilterValueTypeException::make($field, $fieldTypeValidationRule);
-            }
-        }
+        return $this->key;
     }
 
-    protected function scanActions(): void
+    public function getFields(): array
     {
-        // TODO: Implement functionality!
+        return $this->fields;
+    }
+
+    public function getFakeFields(): array
+    {
+        return $this->fakeFields;
+    }
+
+    public function getRelations(): array
+    {
+        return $this->relations;
+    }
+
+    public function getModelClass(): string
+    {
+        return $this->modelClass;
     }
 
     /**
-     * Разбирает все property в phpDoc и отбирает field, relation и правила валидации
-     *
-     * @throws \Egal\Model\Exceptions\IncorrectCaseOfPropertyVariableNameException
+     * @return ActionMetadata[]
      */
-    protected function scanProperties(DocBlock $docBlock): void
+    public function getActions(): array
     {
-        /** @var \phpDocumentor\Reflection\DocBlock\Tags\Property $property */
-        foreach ($docBlock->getTagsByName('property') as $property) {
-            $propertyTags = $property->getDescription()->getTags();
-            $propertyVariableName = $property->getVariableName();
-
-            if ($propertyVariableName !== snake_case($propertyVariableName)) {
-                throw IncorrectCaseOfPropertyVariableNameException::make($this->modelClass, $propertyVariableName);
-            }
-
-            /** @var \phpDocumentor\Reflection\DocBlock\Tags\Generic $propertyTag */
-            foreach ($propertyTags as $propertyTag) {
-                $this->scanPropertyTag($propertyTag, $propertyVariableName, $property);
-            }
-        }
+        return $this->actions;
     }
 
     /**
-     * @throws \Egal\Model\Exceptions\ModelActionMetadataException|\Egal\Model\Exceptions\ModelMetadataException
+     * @return string[]
      */
-    protected function scanActionsFromClassDocBlock(ReflectionClass $modelReflectionClass, DocBlock $docBlock): void
+    public function getHiddenFieldsNames(): array
     {
-        /** @var \phpDocumentor\Reflection\DocBlock\Tags\Generic $tag */
-        foreach ($docBlock->getTagsByName('action') as $tag) {
-            $actionName = $tag->getDescription()->getBodyTemplate();
-            $actionName = str_replace(
-                [' ', '%', '$', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10'],
-                '#',
-                $actionName
-            );
-            $actionNameExtra = stristr($actionName, '#');
-            $actionName = str_replace($actionNameExtra, '', $actionName);
-            $actionCurrentName = ModelActionMetadata::getCurrentActionName($actionName);
-
-            if (!$modelReflectionClass->hasMethod($actionCurrentName)) {
-                continue;
-            }
-
-            $reflectionMethod = $modelReflectionClass->getMethod($actionCurrentName);
-
-            if (!$reflectionMethod->isStatic()) {
-                throw new ModelMetadataException('All actions methods of the model must be static!');
-            }
-
-            $modelActionMetadata = new ModelActionMetadata();
-            $modelActionMetadata->setActionName($actionName);
-            $modelActionMetadata->setParameters($reflectionMethod->getParameters());
-
-            /** @var \phpDocumentor\Reflection\DocBlock\Tags\Generic $actionTag */
-            foreach ($tag->getDescription()->getTags() as $actionTag) {
-                $modelActionMetadata->supplementFromTag($actionTag);
-            }
-
-            $this->addActionMetadata($modelActionMetadata);
-        }
-    }
-
-    protected function addActionMetadata(ModelActionMetadata $modelActionMetadata): void
-    {
-        if (isset($this->actionsMetadata[$modelActionMetadata->getActionName()])) {
-            return;
-        }
-
-        $this->actionsMetadata[$modelActionMetadata->getActionName()] = $modelActionMetadata;
+        return array_map(fn($field) => $field->getName(), array_filter($this->fields, fn($field) => $field->isHidden()));
     }
 
     /**
-     * @throws \Egal\Model\Exceptions\DuplicatePrimaryKeyModelMetadataException
-     * @throws \Egal\Model\Exceptions\UnsupportedModelMetadataPropertyTypeException
+     * @return string[]
      */
-    protected function scanPropertyTag(
-        DocBlock\Tag $propertyTag,
-        ?string $propertyVariableName,
-        DocBlock\Tags\Property $property
-    ): void {
-        $bodyTemplate = $propertyTag->getDescription()
-            ? $propertyTag->getDescription()->getBodyTemplate()
-            : '';
-        $tagName = $propertyTag->getName();
+    public function getFillableFieldsNames(): array
+    {
+        return array_map(fn($field) => $field->getName(), array_filter($this->fields, fn($field) => $field->isFillable()));
+    }
 
-        switch ($tagName) {
-            case 'validation-rules':
-                $this->validationRules[$propertyVariableName] = explode('|', $bodyTemplate);
+    /**
+     * @return string[]
+     */
+    public function getGuardedFieldsNames(): array
+    {
+        return array_map(fn($field) => $field->getName(), array_filter($this->fields, fn($field) => $field->isGuarded()));
+    }
 
-                break;
-            case 'primary-key':
-                if (isset($this->primaryKey)) {
-                    throw new DuplicatePrimaryKeyModelMetadataException();
-                }
-
-                if ($propertyVariableName) {
-                    $this->primaryKey = (string) $propertyVariableName;
-                }
-
-                break;
-            case 'property-type':
-                if ($bodyTemplate === 'field') {
-                    $this->fields[] = $propertyVariableName;
-                    $this->fieldsWithTypes[$propertyVariableName] = $property->getType();
-                } elseif ($bodyTemplate === 'relation') {
-                    $this->relations[] = $propertyVariableName;
-                } elseif ($bodyTemplate === 'fake-field') {
-                    $this->fakeFields[] = $propertyVariableName;
-                } else {
-                    throw UnsupportedModelMetadataPropertyTypeException::make($bodyTemplate);
-                }
-
-                break;
-            default:
-                break;
+    /**
+     * @throws ActionNotFoundException
+     */
+    public function getAction(string $actionName): ActionMetadata
+    {
+        foreach ($this->actions as $action) {
+            if ($action->getName() === $actionName) {
+                return $action;
+            }
         }
+
+        throw ActionNotFoundException::make($this->modelClass, $actionName);
     }
 
 }

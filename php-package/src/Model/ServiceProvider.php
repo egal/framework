@@ -25,21 +25,13 @@ class ServiceProvider extends IlluminateServiceProvider
      */
     protected array $commands = [];
 
-    /**
-     * @throws \Egal\Model\Exceptions\LoadModelImpossiblyException
-     * @throws \ReflectionException
-     */
     public function register(): void
     {
         if ($this->app->runningInConsole()) {
             $this->commands([]);
         }
 
-        $this->app->singleton(ModelManager::class, function (): ModelManager {
-            return new ModelManager();
-        });
-
-        ModelManager::loadModel(ModelManager::class);
+        $this->app->singleton('ModelMetadataManager', fn () => new ModelMetadataManager());
 
         $this->commands([]);
     }

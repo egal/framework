@@ -2,48 +2,20 @@
 
 namespace App\Models;
 
+use Egal\Model\Enums\FieldType;
+use Egal\Model\Enums\RelationType;
+use Egal\Model\Metadata\ActionMetadata;
+use Egal\Model\Metadata\FieldMetadata;
+use Egal\Model\Metadata\ModelMetadata;
+use Egal\Model\Metadata\RelationMetadata;
 use Egal\Model\Model;
-use DateTime;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-/**
- * @property string     $id            {@primary-key}          {@property-type field} {@validation-rules required|string|unique:role}
- * @property string     $name          {@property-type field}  {@validation-rules required|string|unique:permissions}
- * @property bool       $is_default    {@property-type field}  {@validation-rules bool}
- * @property DateTime   $created_at    {@property-type field}
- * @property DateTime   $updated_at    {@property-type field}
- *
- * @property Permission[] $permissions {@property-type relation}
- *
- * @action getItem  {@statuses-access guest|logged}
- * @action getItems {@statuses-access guest|logged}
- * @action create   {@statuses-access guest|logged}
- * @action update   {@statuses-access guest|logged}
- * @action delete   {@statuses-access guest|logged}
- */
 class Role extends Model
 {
 
     use HasFactory;
-
-    protected $keyType = 'string';
-
-    protected $fillable = [
-        'id',
-        'name',
-        'is_default'
-    ];
-
-    protected $guarded = [
-        'created_at',
-        'updated_at',
-    ];
-
-    protected $hidden = [
-        'created_at',
-        'updated_at',
-    ];
 
     protected static function boot()
     {
@@ -67,6 +39,39 @@ class Role extends Model
     public function permissions(): BelongsToMany
     {
         return $this->belongsToMany(Permission::class, 'role_permissions');
+    }
+
+    public static function constructMetadata(): ModelMetadata
+    {
+        return ModelMetadata::make(Role::class, FieldMetadata::make('id', FieldType::STRING)->fillable())
+            ->addFields([
+                FieldMetadata::make('name', FieldType::STRING)
+                    ->required()
+                    ->fillable()
+                    ->addValidationRule('unique:roles,name'),
+                FieldMetadata::make('is_default', FieldType::BOOLEAN)
+                    ->required()
+                    ->fillable(),
+                FieldMetadata::make('created_at', FieldType::DATETIME)
+                    ->hidden()
+                    ->guarded(),
+                FieldMetadata::make('updated_at', FieldType::DATETIME)
+                    ->hidden()
+                    ->guarded(),
+            ])
+            ->addRelations([
+                RelationMetadata::make(
+                    'permissions',
+                    RelationType::HAS_MANY
+                ),
+            ])
+            ->addActions([
+                ActionMetadata::make('getItem'),
+                ActionMetadata::make('getItems'),
+                ActionMetadata::make('create'),
+                ActionMetadata::make('update'),
+                ActionMetadata::make('delete'),
+            ]);
     }
 
 }
