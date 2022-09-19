@@ -43,10 +43,11 @@ class LessonRequest extends Model
                     ->required()
                     ->fillable()
                 ,
-                FieldMetadata::make('supposedly_lesson_starts_at', FieldType::DATE)
+                FieldMetadata::make('supposedly_lesson_starts_at', FieldType::DATETIME)
+                    ->date()
                     ->fillable(),
-                FieldMetadata::make('created_at', FieldType::DATE),
-                FieldMetadata::make('updated_at', FieldType::DATE),
+                FieldMetadata::make('created_at', FieldType::DATETIME),
+                FieldMetadata::make('updated_at', FieldType::DATETIME),
             ])
             ->addRelations([
                 RelationMetadata::make(

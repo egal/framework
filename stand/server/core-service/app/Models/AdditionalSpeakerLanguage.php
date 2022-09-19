@@ -23,8 +23,8 @@ class AdditionalSpeakerLanguage extends Model
                     ->addValidationRule('exists:speakers,id')
                     ->required()
                     ->fillable(),
-                FieldMetadata::make('created_at', FieldType::DATE),
-                FieldMetadata::make('updated_at', FieldType::DATE),
+                FieldMetadata::make('created_at', FieldType::DATETIME),
+                FieldMetadata::make('updated_at', FieldType::DATETIME),
             ])
             ->addActions([
                 ActionMetadata::make('getItems'),

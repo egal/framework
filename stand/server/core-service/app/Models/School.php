@@ -29,8 +29,8 @@ class School extends Model
                     ->fillable(),
                 FieldMetadata::make('avatar', FieldType::STRING)
                     ->fillable(),
-                FieldMetadata::make('created_at', FieldType::DATE),
-                FieldMetadata::make('updated_at', FieldType::DATE),
+                FieldMetadata::make('created_at', FieldType::DATETIME),
+                FieldMetadata::make('updated_at', FieldType::DATETIME),
             ])
             ->addRelations([
                 RelationMetadata::make(

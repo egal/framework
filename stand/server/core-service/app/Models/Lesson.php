@@ -46,10 +46,11 @@ class Lesson extends Model
                 FieldMetadata::make('lesson_request_id', FieldType::INTEGER)
                     ->fillable()
                     ->addValidationRule('exists:lesson_requests,id'),
-                FieldMetadata::make('starts_at', FieldType::DATE)
+                FieldMetadata::make('starts_at', FieldType::DATETIME)
+                    ->date()
                     ->fillable(),
-                FieldMetadata::make('created_at', FieldType::DATE),
-                FieldMetadata::make('updated_at', FieldType::DATE),
+                FieldMetadata::make('created_at', FieldType::DATETIME),
+                FieldMetadata::make('updated_at', FieldType::DATETIME),
             ])
             ->addRelations([
                 RelationMetadata::make(
