@@ -6,7 +6,7 @@ services:
     environment:
       POSTGRES_USER: ${DB_USERNAME}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
-      POSTGRES_MULTIPLE_DATABASES: auth
+      POSTGRES_MULTIPLE_DATABASES: auth,core
     healthcheck:
       test: pg_isready --username=${DB_USERNAME} --dbname=auth && pg_isready --username=${DB_USERNAME}
         --dbname=auth
@@ -47,7 +47,27 @@ services:
       APP_NAME: ${PROJECT_NAME}
       APP_SERVICE_NAME: auth
       APP_SERVICE_KEY: ${AUTH_SERVICE_KEY}
-      APP_SERVICES: ${AUTH_SERVICE_ENVIRONMENT_APP_SERVICES}
+      APP_SERVICES: "core:${CORE_SERVICE_KEY}"
+      DB_HOST: postgres
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_USER: ${RABBITMQ_USER}
+      RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD}
+      WAIT_HOSTS: rabbitmq:5672,postgres:5432
+    volumes:
+      - ../php-package:/dependencies/php-package
+  core-service:
+    build:
+      context: server/core-service
+    restart: unless-stopped
+    depends_on:
+      - rabbitmq
+      - postgres
+    environment:
+      APP_NAME: ${PROJECT_NAME}
+      APP_SERVICE_NAME: core
+      APP_SERVICE_KEY: ${CORE_SERVICE_KEY}
       DB_HOST: postgres
       DB_USERNAME: ${DB_USERNAME}
       DB_PASSWORD: ${DB_PASSWORD}

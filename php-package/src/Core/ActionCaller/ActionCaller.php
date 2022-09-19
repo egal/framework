@@ -8,9 +8,9 @@ use Egal\Auth\Accesses\StatusAccess;
 use Egal\Core\Exceptions\ActionCallException;
 use Egal\Core\Exceptions\NoAccessActionCallException;
 use Egal\Core\Session\Session;
-use Egal\Model\Metadata\ModelActionMetadata;
+use Egal\Model\Facades\ModelMetadataManager;
+use Egal\Model\Metadata\ActionMetadata;
 use Egal\Model\Metadata\ModelMetadata;
-use Egal\Model\ModelManager;
 use Illuminate\Support\Str;
 
 /**
@@ -36,7 +36,7 @@ class ActionCaller
     /**
      * Model Action Metadata for which Action is called.
      */
-    private ModelActionMetadata $modelActionMetadata;
+    private ActionMetadata $modelActionMetadata;
 
     /**
      * ActionCaller constructor.
@@ -45,7 +45,7 @@ class ActionCaller
      */
     public function __construct(string $modelName, string $actionName, array $actionParameters = [])
     {
-        $this->modelMetadata = ModelManager::getModelMetadata($modelName);
+        $this->modelMetadata = ModelMetadataManager::getModelMetadata($modelName);
         $this->modelActionMetadata = $this->modelMetadata->getAction($actionName);
         $this->actionParameters = $actionParameters;
     }
@@ -67,7 +67,7 @@ class ActionCaller
         return call_user_func_array(
             [
                 $this->modelMetadata->getModelClass(),
-                $this->modelActionMetadata->getActionMethodName(),
+                $this->modelActionMetadata->getMethodName(),
             ],
             $this->getValidActionParameters()
         );
@@ -80,11 +80,13 @@ class ActionCaller
      */
     private function isAccessedForCall(): bool
     {
-        $authStatus = Session::getAuthStatus();
+        // TODO: подключить авторизацию при реализации Политик:       $authStatus = Session::getAuthStatus();
+        $authStatus = StatusAccess::GUEST;
 
         // For user and service we check if it guest.
         if ($authStatus === StatusAccess::GUEST) {
-            return in_array($authStatus, $this->modelActionMetadata->getStatusesAccess());
+        // TODO: реализовать проверку соответствия $authStatus и указанного в action доступа по статусу
+            return true;
         }
 
         return $this->isServiceAccess() || $this->isUserAccess();
@@ -103,6 +105,7 @@ class ActionCaller
 
         $serviceName = Session::getServiceServiceToken()->getServiceName();
 
+        // TODO: разиловать проверку выданного сервису доступа до эндпоинта
         return in_array($serviceName, $this->modelActionMetadata->getServicesAccess());
     }
 
@@ -117,6 +120,7 @@ class ActionCaller
             return false;
         }
 
+        // TODO: реализовать проверку выданного пользователю доступа до эндпоинта по статусу, по роли, по permission
         return in_array(Session::getAuthStatus(), $this->modelActionMetadata->getStatusesAccess())
             && $this->userHasAccessWithCurrentRoles()
             && $this->userHasAccessWithCurrentPermissions();
@@ -127,6 +131,7 @@ class ActionCaller
      *
      * @throws \Exception
      * TODO: Переименовать!
+     * TODO: Реализовать
      */
     private function userHasAccessWithCurrentRoles(): bool
     {
@@ -150,6 +155,7 @@ class ActionCaller
      *
      * @throws \Exception
      * TODO: Переименовать!
+     * TODO: реализовать
      */
     private function userHasAccessWithCurrentPermissions(): bool
     {
@@ -172,32 +178,13 @@ class ActionCaller
      * Формирует из {@see \Egal\Core\ActionCaller\ActionCaller::modelActionMetadata} валидные параметры.
      *
      * If it is impossible to generate valid parameters, an exception is thrown.
-     *
+     * TODO: реализовать проверку на: isDefaultValueAvailable(), allowsNull() - для случаев, когда не передается необходимый для action параметр
      * @return array
      * @throws \ReflectionException|\Egal\Core\Exceptions\ActionCallException
      */
     private function getValidActionParameters(): array
     {
-        $newActionParameters = [];
-
-        foreach ($this->modelActionMetadata->getParameters() as $reflectionParameter) {
-            $actionParameterKey = Str::snake($reflectionParameter->getName());
-            $newActionParameterKey = $reflectionParameter->getPosition();
-
-            if (!array_key_exists($actionParameterKey, $this->actionParameters)) {
-                if ($reflectionParameter->isDefaultValueAvailable()) {
-                    $newActionParameters[$newActionParameterKey] = $reflectionParameter->getDefaultValue();
-                } elseif ($reflectionParameter->allowsNull()) {
-                    $newActionParameters[$newActionParameterKey] = null;
-                } else {
-                    throw new ActionCallException('Parameter value ' . $actionParameterKey . ' necessarily!');
-                }
-            } else {
-                $newActionParameters[$newActionParameterKey] = $this->actionParameters[$actionParameterKey];
-            }
-        }
-
-        return $newActionParameters;
+        return $this->actionParameters;
     }
 
 }

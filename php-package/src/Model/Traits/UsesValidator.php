@@ -44,8 +44,7 @@ trait UsesValidator
     }
 
     /**
-     * @throws \Egal\Model\Exceptions\ValidateException
-     * @throws \ReflectionException
+     * @throws ValidateException
      */
     protected function validate(): void
     {
@@ -71,12 +70,11 @@ trait UsesValidator
     }
 
     /**
-     * @param mixed $keyValue
-     * @throws \Egal\Model\Exceptions\ValidateException
+     * @throws ValidateException
      */
-    protected function validateKey($keyValue): void
+    protected function validateKey(mixed $keyValue): void
     {
-        $primaryKey = $this->getModelMetadata()->getPrimaryKey();
+        $primaryKey = $this->getModelMetadata()->getKey()->getName();
 
         if ($primaryKey === null) {
             $validator = Validator::make(
@@ -84,7 +82,7 @@ trait UsesValidator
                 [$this->getKeyName() => [$this->getKeyType()]]
             );
         } else {
-            $validationRules = $this->getModelMetadata()->getValidationRules($primaryKey);
+            $validationRules = $this->getModelMetadata()->getKey()->getValidationRules();
             $validator = Validator::make(
                 [$primaryKey => $keyValue],
                 [$primaryKey => $validationRules === [] ? [$this->getKeyType()] : $validationRules]
@@ -100,7 +98,7 @@ trait UsesValidator
     }
 
     /**
-     * @throws \Egal\Model\Exceptions\ValidateException
+     * @throws ValidateException
      * @throws \ReflectionException
      */
     protected static function bootUsesValidator(): void

@@ -8,45 +8,22 @@ use Egal\Auth\Tokens\UserMasterRefreshToken;
 use Egal\Auth\Tokens\UserMasterToken;
 use Egal\AuthServiceDependencies\Exceptions\LoginException;
 use Egal\AuthServiceDependencies\Models\User as BaseUser;
-use Egal\Model\Traits\UsesUuidKey;
-use DateTime;
+use Egal\Model\Enums\FieldType;
+use Egal\Model\Enums\RelationType;
+use Egal\Model\Metadata\ActionMetadata;
+use Egal\Model\Metadata\FieldMetadata;
+use Egal\Model\Metadata\ModelMetadata;
+use Egal\Model\Metadata\RelationMetadata;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Support\Collection;
-use Ramsey\Uuid\Uuid;
 use Staudenmeir\EloquentHasManyDeep\HasManyDeep;
 use Staudenmeir\EloquentHasManyDeep\HasRelationships;
 
-/**
- * @property uuid       $id            {@property-type field}  {@primary-key}
- * @property string     $email         {@property-type field}  {@validation-rules required|string|email|unique:users,email}
- * @property string     $password      {@property-type field}  {@validation-rules required|string}
- * @property DateTime   $created_at    {@property-type field}
- * @property DateTime   $updated_at    {@property-type field}
- *
- * @property Collection $roles          {@property-type relation}
- * @property Collection $permissions    {@property-type relation}
- *
- * @action register                     {@statuses-access guest}
- * @action login                        {@statuses-access guest}
- * @action loginToService               {@statuses-access guest}
- * @action refreshUserMasterToken       {@statuses-access guest}
- */
 class User extends BaseUser
 {
 
-    use UsesUuidKey;
     use HasFactory;
     use HasRelationships;
-
-    protected $hidden = [
-        'password',
-    ];
-
-    protected $guarded = [
-        'created_at',
-        'updated_at',
-    ];
 
     public static function actionRegister(string $email, string $password): User
     {
@@ -128,6 +105,35 @@ class User extends BaseUser
     protected function getPermissions(): array
     {
         return array_unique($this->permissions->pluck('id')->toArray());
+    }
+
+    public static function constructMetadata(): ModelMetadata
+    {
+        return ModelMetadata::make(User::class, FieldMetadata::make('id',FieldType::UUID))
+            ->addFields([
+                FieldMetadata::make('email', FieldType::STRING)
+                    ->required()
+                    ->addValidationRule('unique:users,email'),
+                FieldMetadata::make('password', FieldType::STRING)
+                    ->required()
+                    ->hidden()
+                    ->guarded(),
+                FieldMetadata::make('created_at', FieldType::DATETIME),
+                FieldMetadata::make('updated_at', FieldType::DATETIME),
+            ])
+            ->addRelations([
+                RelationMetadata::make(
+                    'roles',
+                    RelationType::HAS_MANY,
+                ),
+            ])
+            ->addActions([
+                ActionMetadata::make('register'),
+                ActionMetadata::make('login'),
+                ActionMetadata::make('loginToService'),
+                ActionMetadata::make('refreshUserMasterToken'),
+                ActionMetadata::make('getItems'),
+            ]);
     }
 
 }

@@ -4,8 +4,13 @@ declare(strict_types=1);
 
 namespace Egal\Model\Traits;
 
+use Egal\Core\Session\Session;
+use Egal\Model\Enums\FieldType;
+use Egal\Model\Facades\ModelMetadataManager;
+use Egal\Model\Metadata\FieldMetadata;
 use Egal\Model\Metadata\ModelMetadata;
-use Egal\Model\ModelManager;
+use Egal\Model\Model;
+use Illuminate\Support\Str;
 
 /**
  * @package Egal\Model
@@ -13,44 +18,82 @@ use Egal\Model\ModelManager;
 trait UsesModelMetadata
 {
 
-    /**
-     * @throws \ReflectionException
-     */
-    public function getModelMetadata(): ModelMetadata
+    private ModelMetadata $modelMetadata;
+
+    private array $validationRules;
+
+    private string $keyName;
+
+    public function initializeUsesModelMetadata(): void
     {
-        return ModelManager::getModelMetadata(static::class);
+        $this->modelMetadata = ModelMetadataManager::getModelMetadata(static::class);
+        $this->keyType = $this->modelMetadata->getKey()->getType()->value;
+        $this->keyName = $this->modelMetadata->getKey()->getName();
+
+        $this->setKeyProperties();
+        $this->setValidationRules();
+
+        $this->mergeFillable($this->modelMetadata->getFillableFieldsNames());
+        $this->mergeGuarded($this->modelMetadata->getGuardedFieldsNames());
+        $this->makeHidden($this->modelMetadata->getHiddenFieldsNames());
+    }
+
+    private function setKeyProperties(): void
+    {
+        switch ($this->keyType) {
+            case FieldType::INTEGER->value:
+                $this->incrementing = true;
+                return;
+            case FieldType::UUID->value:
+                static::creating(static function (Model $model): void {
+                    $model->setAttribute($model->keyName, (string) Str::uuid());
+                });
+            default:
+                $this->incrementing = false;
+        }
+    }
+
+    public abstract static function constructMetadata(): ModelMetadata;
+
+    public function setValidationRules(): void
+    {
+        $this->setValidationRule($this->modelMetadata->getKey());
+
+        foreach ($this->modelMetadata->getFields() as $field) {
+            $this->setValidationRule($field);
+        }
+
+        foreach ($this->modelMetadata->getFakeFields() as $field) {
+            $this->setValidationRule($field);
+        }
+    }
+
+    public function setValidationRule(FieldMetadata $field): void
+    {
+        $this->validationRules[$field->getName()] = $field->getValidationRules();
+    }
+
+    public final function getModelMetadata(): ModelMetadata
+    {
+        return ModelMetadataManager::getModelMetadata(static::class);
+    }
+
+    public function getValidationRules(): array
+    {
+        return $this->validationRules;
     }
 
     /**
-     * @return array[]
-     * @throws \ReflectionException
+     * @return string
      */
-    protected function getValidationRules(): array
+    public function getKeyType()
     {
-        return $this->getModelMetadata()->getValidationRules();
+        return $this->keyType;
     }
 
-    /**
-     * @param string[] $validationRules
-     * @return $this
-     * @throws \ReflectionException
-     */
-    protected function setValidationRules(array $validationRules): self
+    public function getIncrementing(): bool
     {
-        $this->getModelMetadata()->setValidationRules($validationRules);
-
-        return $this;
-    }
-
-    /**
-     * @return $this
-     * @throws \ReflectionException
-     */
-    protected function addValidationRules(string $propertyName, string ...$validationRules): self
-    {
-        $this->getModelMetadata()->addValidationRules($propertyName, ...$validationRules);
-
-        return $this;
+        return $this->incrementing;
     }
 
 }

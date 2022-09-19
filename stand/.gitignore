@@ -1,3 +1,5 @@
 .env
 .idea
 egal-installer*
+**/vendor
+**/*.log
