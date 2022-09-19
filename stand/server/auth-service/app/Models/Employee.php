@@ -34,13 +34,6 @@ class Employee extends Model
     use HasFactory;
     use HasRelationships;
 
-    protected $fillable = [
-        'address',
-        'phone',
-        'adult',
-        'weight',
-    ];
-
     protected $guarded = [
         'created_at',
         'updated_at',
