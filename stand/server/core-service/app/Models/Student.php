@@ -2,70 +2,55 @@
 
 namespace App\Models;
 
-use Egal\Model\Enums\FieldTypeEnum;
-use Egal\Model\Enums\RelationTypeEnum;
+use Egal\Model\Enums\FieldType;
+use Egal\Model\Enums\RelationType;
+use Egal\Model\Metadata\ActionMetadata;
 use Egal\Model\Metadata\FieldMetadata;
 use Egal\Model\Metadata\ModelMetadata;
 use Egal\Model\Metadata\RelationMetadata;
 use Egal\Model\Model;
-use Egal\Model\Traits\UsesUuidKey;
-use ReflectionException;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Student extends Model
 {
-    use UsesUuidKey;
 
-    protected $table = 'students';
-
-    protected $fillable = [
-        'name',
-        'surname',
-        'school_id'
-    ];
-
-    protected $hidden = [
-        'user_id'
-    ];
-
-    protected $guarded = [
-        'user_id'
-    ];
+    public function school(): BelongsTo
+    {
+        return $this->belongsTo(School::class);
+    }
 
     public static function constructMetadata(): ModelMetadata
     {
-        return ModelMetadata::make(self::class, FieldMetadata::make('id', FieldTypeEnum::STRING))
+        return ModelMetadata::make(self::class, FieldMetadata::make('id', FieldType::UUID))
             ->addFields([
-                FieldMetadata::make('user_id', FieldTypeEnum::UUID)
-                    ->addValidationRule('uuid')
+                FieldMetadata::make('user_id', FieldType::UUID)
                     ->required()
-                ,
-                FieldMetadata::make('name', FieldTypeEnum::STRING)
+                    ->hidden()
+                    ->fillable(),
+                FieldMetadata::make('name', FieldType::STRING)
                     ->required()
-                    ->string()
-                ,
-                FieldMetadata::make('surname', FieldTypeEnum::STRING)
+                    ->fillable(),
+                FieldMetadata::make('surname', FieldType::STRING)
                     ->required()
-                    ->string()
-                ,
-                FieldMetadata::make('school_id', FieldTypeEnum::UUID)
-                    ->uuid()
+                    ->fillable(),
+                FieldMetadata::make('school_id', FieldType::UUID)
                     ->addValidationRule('exists:schools,id')
                     ->required()
-                ,
-                FieldMetadata::make('created_at', FieldTypeEnum::DATETIME),
-                FieldMetadata::make('updated_at', FieldTypeEnum::DATETIME)
+                    ->fillable(),
+                FieldMetadata::make('created_at', FieldType::DATE),
+                FieldMetadata::make('updated_at', FieldType::DATE),
             ])
             ->addRelations([
                 RelationMetadata::make(
                     'school',
-                    RelationTypeEnum::BELONGS_TO,
-                    fn() => $this->belongsTo(School::class)
+                    RelationType::BELONGS_TO,
                 )
             ])
             ->addActions([
-                'getItems',
-                'create',
-                'update'
+                ActionMetadata::make('getItems'),
+                ActionMetadata::make('create'),
+                ActionMetadata::make('update'),
             ]);
     }
+
 }

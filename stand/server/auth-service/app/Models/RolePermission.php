@@ -10,17 +10,16 @@ use Egal\Model\Model;
 
 class RolePermission extends Model
 {
+
     public static function constructMetadata(): ModelMetadata
     {
         return ModelMetadata::make(RolePermission::class, FieldMetadata::make('id', FieldType::INTEGER))
             ->addFields([
                 FieldMetadata::make('role_id', FieldType::STRING)
                     ->required()
-                    ->string()
                     ->fillable(),
-                FieldMetadata::make('permission_id', FieldType::INTEGER)
+                FieldMetadata::make('permission_id', FieldType::STRING)
                     ->required()
-                    ->string()
                     ->fillable(),
                 FieldMetadata::make('created_at', FieldType::DATETIME)
                     ->hidden(),

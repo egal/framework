@@ -47,12 +47,10 @@ class Role extends Model
             ->addFields([
                 FieldMetadata::make('name', FieldType::STRING)
                     ->required()
-                    ->string()
                     ->fillable()
                     ->addValidationRule('unique:roles,name'),
                 FieldMetadata::make('is_default', FieldType::BOOLEAN)
                     ->required()
-                    ->boolean()
                     ->fillable(),
                 FieldMetadata::make('created_at', FieldType::DATETIME)
                     ->hidden()

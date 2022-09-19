@@ -2,49 +2,48 @@
 
 namespace App\Models;
 
-use Egal\Model\Enums\FieldTypeEnum;
-use Egal\Model\Enums\RelationTypeEnum;
+use Egal\Model\Enums\FieldType;
+use Egal\Model\Enums\RelationType;
+use Egal\Model\Metadata\ActionMetadata;
 use Egal\Model\Metadata\FieldMetadata;
 use Egal\Model\Metadata\ModelMetadata;
 use Egal\Model\Metadata\RelationMetadata;
 use Egal\Model\Model;
-use ReflectionException;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class WorkingTime extends Model
 {
-    protected $table = 'working_times';
 
-    protected $fillable = [
-        'speaker_id',
-        'starts_at',
-        'ends_at'
-    ];
+    public function school(): BelongsTo
+    {
+        return $this->belongsTo(School::class);
+    }
 
     public static function constructMetadata(): ModelMetadata
     {
-        return ModelMetadata::make(self::class, FieldMetadata::make('id', FieldTypeEnum::INTEGER))
+        return ModelMetadata::make(self::class, FieldMetadata::make('id', FieldType::INTEGER))
             ->addFields([
-                FieldMetadata::make('speaker_id', FieldTypeEnum::UUID)
-                    ->uuid()
+                FieldMetadata::make('speaker_id', FieldType::UUID)
                     ->addValidationRule('exists:speakers,id')
                     ->required()
-                ,
-                FieldMetadata::make('starts_at', FieldTypeEnum::DATETIME),
-                FieldMetadata::make('ends_at', FieldTypeEnum::DATETIME),
-                FieldMetadata::make('created_at', FieldTypeEnum::DATETIME),
-                FieldMetadata::make('updated_at', FieldTypeEnum::DATETIME),
+                    ->fillable(),
+                FieldMetadata::make('starts_at', FieldType::DATE)
+                    ->fillable(),
+                FieldMetadata::make('ends_at', FieldType::DATE)
+                    ->fillable(),
+                FieldMetadata::make('created_at', FieldType::DATE),
+                FieldMetadata::make('updated_at', FieldType::DATE),
             ])
             ->addRelations([
                 RelationMetadata::make(
                     'school',
-                    RelationTypeEnum::BELONGS_TO,
-                    fn() => $this->belongsTo(School::class)
+                    RelationType::BELONGS_TO,
                 )
             ])
             ->addActions([
-                'getItems',
-                'create',
-                'update'
+                ActionMetadata::make('getItems'),
+                ActionMetadata::make('create'),
+                ActionMetadata::make('update'),
             ]);
     }
 

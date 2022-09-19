@@ -113,11 +113,9 @@ class User extends BaseUser
             ->addFields([
                 FieldMetadata::make('email', FieldType::STRING)
                     ->required()
-                    ->string()
                     ->addValidationRule('unique:users,email'),
                 FieldMetadata::make('password', FieldType::STRING)
                     ->required()
-                    ->string()
                     ->hidden()
                     ->guarded(),
                 FieldMetadata::make('created_at', FieldType::DATETIME),

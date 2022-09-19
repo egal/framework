@@ -2,47 +2,45 @@
 
 namespace App\Models;
 
-use Egal\Model\Enums\FieldTypeEnum;
-use Egal\Model\Enums\RelationTypeEnum;
+use Egal\Model\Enums\FieldType;
+use Egal\Model\Enums\RelationType;
+use Egal\Model\Metadata\ActionMetadata;
 use Egal\Model\Metadata\FieldMetadata;
 use Egal\Model\Metadata\ModelMetadata;
 use Egal\Model\Metadata\RelationMetadata;
 use Egal\Model\Model;
-use ReflectionException;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Country extends Model
 {
-    protected $keyType = 'string';
 
-    protected $table = 'countries';
-
-    protected $fillable = [
-        'name'
-    ];
+    public function speakers(): HasMany
+    {
+        return $this->hasMany(Speaker::class);
+    }
 
     public static function constructMetadata(): ModelMetadata
     {
-        return ModelMetadata::make(self::class, FieldMetadata::make('id', FieldTypeEnum::STRING))
+        return ModelMetadata::make(self::class, FieldMetadata::make('id', FieldType::STRING))
             ->addFields([
-                FieldMetadata::make('name', FieldTypeEnum::STRING)
+                FieldMetadata::make('name', FieldType::STRING)
                     ->required()
                     ->addValidationRule('unique:countries,name')
-                    ->string()
-                ,
-                FieldMetadata::make('created_at', FieldTypeEnum::DATETIME),
-                FieldMetadata::make('updated_at', FieldTypeEnum::DATETIME)
+                    ->fillable(),
+                FieldMetadata::make('created_at', FieldType::DATE),
+                FieldMetadata::make('updated_at', FieldType::DATE),
             ])
             ->addRelations([
                 RelationMetadata::make(
                     'speakers',
-                    RelationTypeEnum::HAS_MANY,
-                    fn() => $this->hasMany(Speaker::class)
+                    RelationType::HAS_MANY,
                 )
             ])
             ->addActions([
-                'getItems',
-                'create',
-                'update'
+                ActionMetadata::make('getItems'),
+                ActionMetadata::make('create'),
+                ActionMetadata::make('update'),
             ]);
     }
+
 }

@@ -2,47 +2,45 @@
 
 namespace App\Models;
 
-use Egal\Model\Enums\FieldTypeEnum;
-use Egal\Model\Enums\RelationTypeEnum;
+use Egal\Model\Enums\FieldType;
+use Egal\Model\Enums\RelationType;
+use Egal\Model\Metadata\ActionMetadata;
 use Egal\Model\Metadata\FieldMetadata;
 use Egal\Model\Metadata\ModelMetadata;
 use Egal\Model\Metadata\RelationMetadata;
 use Egal\Model\Model;
-use ReflectionException;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 class Language extends Model
 {
-    protected $keyType = 'string';
 
-    protected $table = 'languages';
-
-    protected $fillable = [
-        'name'
-    ];
+    public function speakers(): HasManyThrough
+    {
+        return $this->hasManyThrough(Speaker::class, AdditionalSpeakerLanguage::class);
+    }
 
     public static function constructMetadata(): ModelMetadata
     {
-        return ModelMetadata::make(self::class, FieldMetadata::make('id', FieldTypeEnum::STRING))
+        return ModelMetadata::make(self::class, FieldMetadata::make('id', FieldType::STRING))
             ->addFields([
-                FieldMetadata::make('name', FieldTypeEnum::STRING)
+                FieldMetadata::make('name', FieldType::STRING)
                     ->required()
                     ->addValidationRule('unique:languages,name')
-                    ->string()
-                ,
-                FieldMetadata::make('created_at', FieldTypeEnum::DATETIME),
-                FieldMetadata::make('updated_at', FieldTypeEnum::DATETIME)
+                    ->fillable(),
+                FieldMetadata::make('created_at', FieldType::DATE),
+                FieldMetadata::make('updated_at', FieldType::DATE),
             ])
             ->addRelations([
                 RelationMetadata::make(
                     'speakers',
-                    RelationTypeEnum::BELONGS_TO,//TODO Поменять на hasManyThrough
-                    fn() => $this->hasManyThrough(Speaker::class, AdditionalSpeakerLanguage::class)
+                    RelationType::HAS_MANY_THROUGH,
                 ),
             ])
             ->addActions([
-                'getItems',
-                'create',
-                'update'
+                ActionMetadata::make('getItems'),
+                ActionMetadata::make('create'),
+                ActionMetadata::make('update'),
             ]);
     }
+
 }

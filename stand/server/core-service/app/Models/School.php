@@ -2,52 +2,47 @@
 
 namespace App\Models;
 
-use Egal\Model\Enums\FieldTypeEnum;
-use Egal\Model\Enums\RelationTypeEnum;
+use Egal\Model\Enums\FieldType;
+use Egal\Model\Enums\RelationType;
+use Egal\Model\Metadata\ActionMetadata;
 use Egal\Model\Metadata\FieldMetadata;
 use Egal\Model\Metadata\ModelMetadata;
 use Egal\Model\Metadata\RelationMetadata;
 use Egal\Model\Model;
-use Egal\Model\Traits\UsesUuidKey;
-use ReflectionException;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class School extends Model
 {
-    use UsesUuidKey;
 
-    protected $table = 'schools';
-
-    protected $fillable = [
-        'name',
-        'avatar'
-    ];
+    public function students(): HasMany
+    {
+        return $this->hasMany(Student::class);
+    }
 
     public static function constructMetadata(): ModelMetadata
     {
-        return ModelMetadata::make(self::class, FieldMetadata::make('id', FieldTypeEnum::UUID))
+        return ModelMetadata::make(self::class, FieldMetadata::make('id', FieldType::UUID))
             ->addFields([
-                FieldMetadata::make('name', FieldTypeEnum::STRING)
+                FieldMetadata::make('name', FieldType::STRING)
                     ->required()
                     ->addValidationRule('unique:schools,name')
-                    ->string()
-                ,
-                FieldMetadata::make('avatar', FieldTypeEnum::STRING)
-                    ->string()
-                ,
-                FieldMetadata::make('created_at', FieldTypeEnum::DATETIME),
-                FieldMetadata::make('updated_at', FieldTypeEnum::DATETIME)
+                    ->fillable(),
+                FieldMetadata::make('avatar', FieldType::STRING)
+                    ->fillable(),
+                FieldMetadata::make('created_at', FieldType::DATE),
+                FieldMetadata::make('updated_at', FieldType::DATE),
             ])
             ->addRelations([
                 RelationMetadata::make(
                     'students',
-                    RelationTypeEnum::HAS_MANY,
-                    fn() => $this->hasMany(Student::class)
+                    RelationType::HAS_MANY,
                 )
             ])
             ->addActions([
-                'getItems',
-                'create',
-                'update'
+                ActionMetadata::make('getItems'),
+                ActionMetadata::make('create'),
+                ActionMetadata::make('update'),
             ]);
     }
+
 }

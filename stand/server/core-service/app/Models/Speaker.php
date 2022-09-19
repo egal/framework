@@ -2,84 +2,69 @@
 
 namespace App\Models;
 
-use Egal\Model\Enums\FieldTypeEnum;
-use Egal\Model\Enums\RelationTypeEnum;
+use Egal\Model\Enums\FieldType;
+use Egal\Model\Enums\RelationType;
+use Egal\Model\Metadata\ActionMetadata;
 use Egal\Model\Metadata\FieldMetadata;
 use Egal\Model\Metadata\ModelMetadata;
 use Egal\Model\Metadata\RelationMetadata;
 use Egal\Model\Model as EgalModel;
-use Egal\Model\Traits\UsesUuidKey;
-use ReflectionException;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 class Speaker extends EgalModel
 {
-    use UsesUuidKey;
 
-    protected $table = 'speakers';
+    public function countries(): BelongsTo
+    {
+        return $this->belongsTo(Country::class);
+    }
 
-    protected $fillable = [
-        'user_id',
-        'name',
-        'surname',
-        'country_id',
-        'avatar',
-        'video'
-    ];
-
-    protected $hidden = [
-        'user_id'
-    ];
-
-    protected $guarded = [
-        'user_id'
-    ];
+    public function languages(): HasManyThrough
+    {
+        return $this->hasManyThrough(Language::class, AdditionalSpeakerLanguage::class);
+    }
 
     public static function constructMetadata(): ModelMetadata
     {
-        return ModelMetadata::make(self::class, FieldMetadata::make('id', FieldTypeEnum::STRING))
+        return ModelMetadata::make(self::class, FieldMetadata::make('id', FieldType::UUID))
             ->addFields([
-                FieldMetadata::make('user_id', FieldTypeEnum::UUID)
-                    ->uuid()
+                FieldMetadata::make('user_id', FieldType::UUID)
                     ->required()
-                ,
-                FieldMetadata::make('name', FieldTypeEnum::STRING)
+                    ->fillable()
+                    ->hidden(),
+                FieldMetadata::make('name', FieldType::STRING)
                     ->required()
-                    ->string()
-                ,
-                FieldMetadata::make('surname', FieldTypeEnum::STRING)
+                    ->fillable(),
+                FieldMetadata::make('surname', FieldType::STRING)
                     ->required()
-                    ->string()
-                ,
-                FieldMetadata::make('avatar', FieldTypeEnum::STRING)
-                    ->string()
-                ,
-                FieldMetadata::make('video', FieldTypeEnum::STRING)
-                    ->string()
-                ,
-                FieldMetadata::make('country_id', FieldTypeEnum::STRING)
-                    ->string()
+                    ->fillable(),
+                FieldMetadata::make('avatar', FieldType::STRING)
+                    ->fillable(),
+                FieldMetadata::make('video', FieldType::STRING)
+                    ->fillable(),
+                FieldMetadata::make('country_id', FieldType::STRING)
                     ->addValidationRule('exists:countries,id')
                     ->required()
-                ,
-                FieldMetadata::make('created_at', FieldTypeEnum::DATETIME),
-                FieldMetadata::make('updated_at', FieldTypeEnum::DATETIME)
+                    ->fillable(),
+                FieldMetadata::make('created_at', FieldType::DATE),
+                FieldMetadata::make('updated_at', FieldType::DATE),
             ])
             ->addRelations([
                 RelationMetadata::make(
                     'country',
-                    RelationTypeEnum::BELONGS_TO,
-                    fn() => $this->belongsTo(Country::class)
+                    RelationType::BELONGS_TO,
                 ),
                 RelationMetadata::make(
                     'languages',
-                    RelationTypeEnum::BELONGS_TO,//TODO Поменять на hasManyThrough
-                    fn() => $this->hasManyThrough(Language::class, AdditionalSpeakerLanguage::class)
+                    RelationType::HAS_MANY_THROUGH,
                 ),
             ])
             ->addActions([
-                'getItems',
-                'create',
-                'update'
+                ActionMetadata::make('getItems'),
+                ActionMetadata::make('create'),
+                ActionMetadata::make('update'),
             ]);
     }
+
 }

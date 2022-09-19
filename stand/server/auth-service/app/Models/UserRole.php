@@ -17,12 +17,10 @@ class UserRole extends Model
             ->addFields([
                 FieldMetadata::make('user_id', FieldType::UUID)
                     ->required()
-                    ->uuid()
                     ->fillable()
                     ->addValidationRule('exists:users'),
                 FieldMetadata::make('role_id', FieldType::STRING)
                     ->required()
-                    ->string()
                     ->fillable()
                     ->addValidationRule('exists:roles'),
                 FieldMetadata::make('created_at', FieldType::DATETIME)

@@ -1,4 +1,5 @@
 DOT_ENV_FILE_PATH:=.env
+SERVICES:=auth-service core-service
 
 generate-dot-env-file:
 	test -f $(DOT_ENV_FILE_PATH) || cp "$(DOT_ENV_FILE_PATH).example" "$(DOT_ENV_FILE_PATH)"

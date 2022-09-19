@@ -2,42 +2,35 @@
 
 namespace App\Models;
 
-use Egal\Model\Enums\FieldTypeEnum;
+use Egal\Model\Enums\FieldType;
+use Egal\Model\Metadata\ActionMetadata;
 use Egal\Model\Metadata\FieldMetadata;
 use Egal\Model\Metadata\ModelMetadata;
 use Egal\Model\Model;
-use ReflectionException;
 
 class AdditionalSpeakerLanguage extends Model
 {
-    protected $table = 'additional_speaker_languages';
-
-    protected $fillable = [
-        'language_id',
-        'speaker_id'
-    ];
 
     public static function constructMetadata(): ModelMetadata
     {
-        return ModelMetadata::make(self::class, FieldMetadata::make('id', FieldTypeEnum::INTEGER))
+        return ModelMetadata::make(self::class, FieldMetadata::make('id', FieldType::INTEGER))
             ->addFields([
-                FieldMetadata::make('language_id', FieldTypeEnum::STRING)
-                    ->string()
-                    ->addValidationRule('exists:languages,id')
+                FieldMetadata::make('language_id', FieldType::STRING)
                     ->required()
-                ,
-                FieldMetadata::make('speaker_id', FieldTypeEnum::UUID)
-                    ->uuid()
+                    ->addValidationRule('exists:languages,id')
+                    ->fillable(),
+                FieldMetadata::make('speaker_id', FieldType::UUID)
                     ->addValidationRule('exists:speakers,id')
                     ->required()
-                ,
-                FieldMetadata::make('created_at', FieldTypeEnum::DATETIME),
-                FieldMetadata::make('updated_at', FieldTypeEnum::DATETIME)
+                    ->fillable(),
+                FieldMetadata::make('created_at', FieldType::DATE),
+                FieldMetadata::make('updated_at', FieldType::DATE),
             ])
             ->addActions([
-                'getItems',
-                'create',
-                'update'
+                ActionMetadata::make('getItems'),
+                ActionMetadata::make('create'),
+                ActionMetadata::make('update'),
             ]);
     }
+
 }
