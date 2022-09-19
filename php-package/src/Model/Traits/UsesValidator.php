@@ -70,10 +70,9 @@ trait UsesValidator
     }
 
     /**
-     * @param mixed $keyValue
      * @throws ValidateException
      */
-    protected function validateKey($keyValue): void
+    protected function validateKey(mixed $keyValue): void
     {
         $primaryKey = $this->getModelMetadata()->getKey()->getName();
 

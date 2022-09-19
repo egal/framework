@@ -42,6 +42,8 @@ class ModelMetadataManager
 
     public function registerDirectory(string $dir, string $modelsNamespace): void
     {
+        $dir = base_path() . '/' . $dir;
+
         foreach (scandir($dir) as $dirItem) {
             $itemPath = str_replace('//', '/', $dir . '/' . $dirItem);
 

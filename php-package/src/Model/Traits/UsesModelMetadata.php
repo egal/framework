@@ -70,16 +70,7 @@ trait UsesModelMetadata
 
     public function setValidationRule(FieldMetadata $field): void
     {
-        $fieldValidationRules = $field->getValidationRules();
-        $fieldType = $field->getType()->value;
-
-        $this->validationRules[$field->getName()] = $fieldValidationRules;
-
-        if (in_array($fieldType, $fieldValidationRules)) {
-            return;
-        }
-
-        $this->validationRules[$field->getName()] = $fieldType;
+        $this->validationRules[$field->getName()] = $field->getValidationRules();
     }
 
     public final function getModelMetadata(): ModelMetadata
