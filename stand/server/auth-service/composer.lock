@@ -486,7 +486,7 @@
             "dist": {
                 "type": "path",
                 "url": "/dependencies/php-package",
-                "reference": "9dd1fe1e7ffba90e7d9962a8f2617def10865463"
+                "reference": "1d151358809cc55a4fbe0a978d2fa27d7b990451"
             },
             "require": {
                 "centrifugal/phpcent": "~4.0",
@@ -494,7 +494,7 @@
                 "ext-pcntl": "*",
                 "firebase/php-jwt": "^v5.5.1",
                 "laravel/helpers": "^1.5",
-                "laravel/lumen-framework": "v9.1.2",
+                "laravel/lumen-framework": "^9",
                 "league/flysystem-aws-s3-v3": "^1",
                 "php": "^8.1",
                 "php-amqplib/php-amqplib": "^v3.2",

@@ -7,7 +7,7 @@
         "php": "^8.1",
         "ext-json": "*",
         "ext-pcntl": "*",
-        "laravel/lumen-framework": "v9.1.2",
+        "laravel/lumen-framework": "^9",
         "laravel/helpers": "^1.5",
         "phpdocumentor/reflection-docblock": "^5.3",
         "php-amqplib/php-amqplib": "^v3.2",
