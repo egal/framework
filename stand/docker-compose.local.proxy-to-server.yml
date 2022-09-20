@@ -4,6 +4,8 @@ services:
     image: nginx:stable-alpine
     ports:
       - "8080:80"
+    depends_on:
+      - web-service
     environment:
       CONF: |
         upstream api {
