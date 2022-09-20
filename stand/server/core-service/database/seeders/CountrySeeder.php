@@ -35,7 +35,7 @@ class CountrySeeder extends Seeder
                     }
 
                     foreach ($languages as $language) {
-                        AdditionalSpeakerLanguage::factory(3)->state([
+                        AdditionalSpeakerLanguage::factory(2)->state([
                             'speaker_id' => $speaker->id,
                             'language_id' => $language->id,
                         ])->create();
