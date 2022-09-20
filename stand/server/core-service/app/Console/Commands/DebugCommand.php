@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\Country;
+use App\Models\Speaker;
 use Illuminate\Console\Command;
 
 class DebugCommand extends Command
@@ -12,12 +13,10 @@ class DebugCommand extends Command
 
     public function handle(): void
     {
-        $model = new Country();
-        $model->setAttribute('name', 'AmericaCountry');
-        $model->setAttribute('id', 'USA');
-        $model->save();
-        $metadata = $model->getModelMetadata();
-        var_dump($metadata);
+        $speaker_ids = Speaker::all(['id'])->toArray();
+        foreach ($speaker_ids as $id) {
+            dd(['speakers', $id['id']]);
+        }
     }
 
 }

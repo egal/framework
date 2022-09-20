@@ -7,9 +7,12 @@ use Egal\Model\Metadata\ActionMetadata;
 use Egal\Model\Metadata\FieldMetadata;
 use Egal\Model\Metadata\ModelMetadata;
 use Egal\Model\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class AdditionalSpeakerLanguage extends Model
 {
+
+    use HasFactory;
 
     public static function constructMetadata(): ModelMetadata
     {
