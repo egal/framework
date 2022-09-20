@@ -9,10 +9,12 @@ use Egal\Model\Metadata\FieldMetadata;
 use Egal\Model\Metadata\ModelMetadata;
 use Egal\Model\Metadata\RelationMetadata;
 use Egal\Model\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 class Language extends Model
 {
+    use HasFactory;
 
     public function speakers(): HasManyThrough
     {
