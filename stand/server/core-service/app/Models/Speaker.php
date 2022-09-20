@@ -67,6 +67,7 @@ class Speaker extends EgalModel
                 ActionMetadata::make('getItems'),
                 ActionMetadata::make('create'),
                 ActionMetadata::make('update'),
+                ActionMetadata::make('getMetadata'),
             ]);
     }
 

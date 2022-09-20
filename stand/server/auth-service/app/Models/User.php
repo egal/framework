@@ -133,6 +133,7 @@ class User extends BaseUser
                 ActionMetadata::make('loginToService'),
                 ActionMetadata::make('refreshUserMasterToken'),
                 ActionMetadata::make('getItems'),
+                ActionMetadata::make('getMetadata'),
             ]);
     }
 
