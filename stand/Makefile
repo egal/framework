@@ -12,14 +12,20 @@ auth-service-composer-install: generate-dot-env-file auth-service-build
 auth-service-composer-update: generate-dot-env-file
 	docker-compose run --rm --no-deps auth-service composer update
 
-up-dependencies-detach:
-	docker-compose up --detach rabbitmq postgres
+generate-service-key: generate-dot-env-file
+	docker-compose run --rm --no-deps auth-service sh -c "php artisan egal:key:generate --show"
 
-up-proxy-detach:
-	docker-compose up --detach proxy
+core-service-composer-install: generate-dot-env-file auth-service-build
+	docker-compose run --rm --no-deps core-service composer install
+
+core-service-composer-update: generate-dot-env-file
+	docker-compose run --rm --no-deps core-service composer update
+
+up-dependencies-detach:
+	docker-compose up --detach rabbitmq postgres web-service proxy
 
 up: generate-dot-env-file up-dependencies-detach
-	docker-compose up auth-service web-service
+	docker-compose up auth-service core-service
 
 down:
 	docker-compose down -t 0
