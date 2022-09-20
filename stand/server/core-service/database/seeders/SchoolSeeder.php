@@ -14,6 +14,10 @@ class SchoolSeeder extends Seeder
 
     public function run()
     {
+        if (School::count() !== 0) {
+            return;
+        }
+
         School::factory(20)->create()->each(function ($school) {
             Student::factory(5)->state(['school_id' => $school->id])->create();
 

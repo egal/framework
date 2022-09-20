@@ -18,10 +18,15 @@ class CountrySeeder extends Seeder
     public function run()
     {
         Country::unsetEventDispatcher();
+
+        if (Country::count() !== 0) {
+            return;
+        }
+
         foreach (range(1, self::COUNT_COUNTRY_SEED) as $i) {
             Country::factory()->create()->each(function ($country) {
                 Speaker::factory(6)->state(['country_id' => $country->id])->create()->each(function ($speaker) {
-                    WorkingTime::factory(6)->state(['speaker_id' => $speaker->id])->create();
+                    WorkingTime::factory(3)->state(['speaker_id' => $speaker->id])->create();
 
                     /** @var Language $languages */
                     $languages = [];
@@ -30,7 +35,7 @@ class CountrySeeder extends Seeder
                     }
 
                     foreach ($languages as $language) {
-                        AdditionalSpeakerLanguage::factory(6)->state([
+                        AdditionalSpeakerLanguage::factory(3)->state([
                             'speaker_id' => $speaker->id,
                             'language_id' => $language->id,
                         ])->create();
