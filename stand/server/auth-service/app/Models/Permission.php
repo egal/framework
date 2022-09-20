@@ -50,6 +50,7 @@ class Permission extends Model
                 ActionMetadata::make('create'),
                 ActionMetadata::make('update'),
                 ActionMetadata::make('delete'),
+                ActionMetadata::make('getMetadata'),
             ]);
     }
 

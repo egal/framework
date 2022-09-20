@@ -53,6 +53,7 @@ class Student extends Model
                 ActionMetadata::make('getItems'),
                 ActionMetadata::make('create'),
                 ActionMetadata::make('update'),
+                ActionMetadata::make('getMetadata'),
             ]);
     }
 
