@@ -9,10 +9,13 @@ use Egal\Model\Metadata\FieldMetadata;
 use Egal\Model\Metadata\ModelMetadata;
 use Egal\Model\Metadata\RelationMetadata;
 use Egal\Model\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class WorkingTime extends Model
 {
+
+    use HasFactory;
 
     public function school(): BelongsTo
     {
