@@ -14,7 +14,7 @@ class EmployeeSeeder extends Seeder
             return;
         }
 
-        Employee::factory(100)->create();
+        Employee::factory(20)->create();
     }
 
 }

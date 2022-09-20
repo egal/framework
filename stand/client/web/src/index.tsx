@@ -58,7 +58,7 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
             <DataTable
               serviceName={'auth'}
               modelName={'Employee'}
-              primaryKey={'id'}
+              keyFieldName={'id'}
               perPage={10}
               columns={[
                 { property: 'id', header: 'ID', primary: true },

@@ -26,13 +26,12 @@ interface ColumnConfig<TRowType = any> extends GrommetColumnConfig<TRowType> {
   someone?: undefined;
 }
 
-interface Props<TRowType = any> extends GrommetDataTableProps<TRowType> {
+interface Props<TRowType = any> {
   modelName: string;
   serviceName: string;
   perPage: number;
-  data?: undefined;
   columns: ColumnConfig<TRowType>[];
-  primaryKey: string;
+  keyFieldName: string;
 }
 
 type State = {
@@ -149,6 +148,7 @@ export class DataTable extends React.Component<Props, State> {
   }
 
   renderDataTable() {
+    // TODO: How to get rid of next `if`?
     if (this.state.items === null) {
       throw new Error();
     }
@@ -160,7 +160,7 @@ export class DataTable extends React.Component<Props, State> {
       onClickRow: this.openEditForm,
       resizeable: true,
       key: Date.now(), // TODO: Crutch.
-      ...this.props
+      columns: this.props.columns
     });
   }
 
@@ -210,7 +210,6 @@ export class DataTable extends React.Component<Props, State> {
   }
 
   editFormOnChangeCallback(newValue: any) {
-    // TODO: How to get rid of next `if`?
     if (this.state.edit === null) {
       throw new Error();
     }
@@ -250,7 +249,7 @@ export class DataTable extends React.Component<Props, State> {
     }
 
     this.action()
-      .delete(this.state.edit.attributes[this.props.primaryKey])
+      .delete(this.state.edit.attributes[this.props.keyFieldName])
       .then(() => {
         this.reloadData();
         this.manipulateLayerOnCloseCallback();
