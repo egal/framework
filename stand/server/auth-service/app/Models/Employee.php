@@ -18,7 +18,7 @@ class Employee extends Model
 
     public static function constructMetadata(): ModelMetadata
     {
-        return ModelMetadata::make(Employee::class, FieldMetadata::make('id',FieldType::STRING))
+        return ModelMetadata::make(Employee::class, FieldMetadata::make('id',FieldType::UUID))
             ->addFields([
                 FieldMetadata::make('address', FieldType::STRING)
                     ->required()
@@ -46,10 +46,17 @@ class Employee extends Model
                     ->required()
             ])
             ->addActions([
-                ActionMetadata::make('getItems'),
                 ActionMetadata::make('create'),
                 ActionMetadata::make('update'),
                 ActionMetadata::make('getMetadata'),
+                ActionMetadata::make('getItems'),
+                ActionMetadata::make('delete'),
+                ActionMetadata::make('getItem'),
+                ActionMetadata::make('getCount'),
+                ActionMetadata::make('createMany'),
+                ActionMetadata::make('updateMany'),
+                ActionMetadata::make('updateManyRaw'),
+                ActionMetadata::make('deleteMany'),
             ]);
     }
 
