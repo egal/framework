@@ -9,10 +9,12 @@ use Egal\Model\Metadata\FieldMetadata;
 use Egal\Model\Metadata\ModelMetadata;
 use Egal\Model\Metadata\RelationMetadata;
 use Egal\Model\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 class Language extends Model
 {
+    use HasFactory;
 
     public function speakers(): HasManyThrough
     {
@@ -37,9 +39,17 @@ class Language extends Model
                 ),
             ])
             ->addActions([
-                ActionMetadata::make('getItems'),
                 ActionMetadata::make('create'),
                 ActionMetadata::make('update'),
+                ActionMetadata::make('getMetadata'),
+                ActionMetadata::make('getItems'),
+                ActionMetadata::make('delete'),
+                ActionMetadata::make('getItem'),
+                ActionMetadata::make('getCount'),
+                ActionMetadata::make('createMany'),
+                ActionMetadata::make('updateMany'),
+                ActionMetadata::make('updateManyRaw'),
+                ActionMetadata::make('deleteMany'),
             ]);
     }
 

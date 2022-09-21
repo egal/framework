@@ -1,6 +1,5 @@
 import axios, { AxiosError } from 'axios';
-import { FakerError } from '@faker-js/faker';
-import { strict } from 'assert';
+import { Model as ModelMetadata } from '../Utils/Metadata';
 
 export type ActionGetItemsResult = {
   current_page: number;
@@ -11,6 +10,7 @@ export type ActionGetItemsResult = {
 
 export type ActionUpdateResult = any; // TODO: Make normal type.
 export type ActionDeleteResult = any; // TODO: Make normal type.
+export type ActionCreateResult = any; // TODO: Make normal type.
 
 export type ActionErrorCode = 'ERR_UNDEFINED' | 'ERR_NETWORK' | string;
 
@@ -32,8 +32,10 @@ export type ActionResultPromise<T, F = any> = {
   ): Promise<T | TResult>;
 } & Promise<T>;
 
+export type ActionGetModelMetadataPromise = ActionResultPromise<ModelMetadata, ActionError>;
 export type ActionGetItemsPromise = ActionResultPromise<ActionGetItemsResult, ActionError>;
 export type ActionUpdatePromise = ActionResultPromise<ActionUpdateResult, ActionError>;
+export type ActionCreatePromise = ActionResultPromise<ActionCreateResult, ActionError>;
 export type ActionDeletePromise = ActionResultPromise<ActionDeleteResult, ActionError>;
 
 export class DataProvider {
@@ -78,10 +80,26 @@ export class DataProvider {
     });
   }
 
+  create(attributes: any): ActionCreatePromise {
+    return new Promise((resolve, reject) => {
+      axios
+        .post(`${this.serverUrl}/${this.serviceName}/${this.modelName}/create`, { attributes: attributes })
+        .then((res) => resolve(res.data.action_result.data));
+    });
+  }
+
   delete(key: any): ActionDeletePromise {
     return new Promise((resolve, reject) => {
       axios
         .post(`${this.serverUrl}/${this.serviceName}/${this.modelName}/delete`, { id: key })
+        .then((res) => resolve(res.data.action_result.data));
+    });
+  }
+
+  getModelMetadata(): ActionGetModelMetadataPromise {
+    return new Promise((resolve, reject) => {
+      axios
+        .post(`${this.serverUrl}/${this.serviceName}/${this.modelName}/getMetadata`)
         .then((res) => resolve(res.data.action_result.data));
     });
   }

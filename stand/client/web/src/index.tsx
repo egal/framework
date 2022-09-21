@@ -58,17 +58,19 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
             <DataTable
               serviceName={'auth'}
               modelName={'Employee'}
-              primaryKey={'id'}
+              keyFieldName={'id'}
               perPage={10}
-              columns={[
-                { property: 'id', header: 'ID', primary: true },
-                { property: 'address', header: 'Address' },
-                { property: 'adult', header: 'Adult' },
-                { property: 'phone', header: 'Phone' },
+              fields={[
+                { name: 'id', header: 'ID' },
+                { name: 'address', header: 'Address' },
+                { name: 'adult', header: 'Adult', renderType: 'toggle' },
+                { name: 'phone', header: 'Phone' },
                 {
-                  property: 'weight',
+                  name: 'weight',
                   header: 'Weight',
-                  render: (item) => <GrommetMeter values={[{ value: item.weight }]} thickness="small" size="small" />
+                  renderDataTable: (item) => (
+                    <GrommetMeter values={[{ value: item.weight }]} thickness="small" size="small" />
+                  )
                 }
               ]}
             />

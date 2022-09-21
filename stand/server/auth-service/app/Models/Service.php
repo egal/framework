@@ -15,6 +15,17 @@ class Service extends BaseService
             ->addActions([
                 ActionMetadata::make('login'),
                 ActionMetadata::make('loginToService'),
+                ActionMetadata::make('create'),
+                ActionMetadata::make('update'),
+                ActionMetadata::make('getMetadata'),
+                ActionMetadata::make('getItems'),
+                ActionMetadata::make('delete'),
+                ActionMetadata::make('getItem'),
+                ActionMetadata::make('getCount'),
+                ActionMetadata::make('createMany'),
+                ActionMetadata::make('updateMany'),
+                ActionMetadata::make('updateManyRaw'),
+                ActionMetadata::make('deleteMany'),
             ]);
     }
 

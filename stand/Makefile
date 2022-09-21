@@ -29,3 +29,6 @@ up: generate-dot-env-file up-dependencies-detach
 
 down:
 	docker-compose down -t 0
+
+down-with-volumes:
+	docker-compose down -t 0 --volumes
