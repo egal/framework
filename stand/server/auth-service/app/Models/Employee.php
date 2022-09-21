@@ -18,7 +18,7 @@ class Employee extends Model
 
     public static function constructMetadata(): ModelMetadata
     {
-        return ModelMetadata::make(Employee::class, FieldMetadata::make('id',FieldType::STRING))
+        return ModelMetadata::make(Employee::class, FieldMetadata::make('id',FieldType::UUID))
             ->addFields([
                 FieldMetadata::make('address', FieldType::STRING)
                     ->required()
