@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use Egal\Model\Enums\FieldType;
+use Egal\Model\Enums\AttributeType;
 use Egal\Model\Enums\RelationType;
 use Egal\Model\Metadata\ActionMetadata;
 use Egal\Model\Metadata\FieldMetadata;
@@ -29,28 +29,28 @@ class LessonRequest extends Model
 
     public static function constructMetadata(): ModelMetadata
     {
-        return ModelMetadata::make(self::class, FieldMetadata::make('id', FieldType::INTEGER))
+        return ModelMetadata::make(self::class, FieldMetadata::make('id', AttributeType::INTEGER))
             ->addFields([
-                FieldMetadata::make('speaker_id', FieldType::UUID)
+                FieldMetadata::make('speaker_id', AttributeType::UUID)
                     ->addValidationRule('exists:speakers,id')
                     ->required()
                     ->fillable()
                 ,
-                FieldMetadata::make('school_id', FieldType::UUID)
+                FieldMetadata::make('school_id', AttributeType::UUID)
                     ->addValidationRule('exists:schools,id')
                     ->required()
                     ->fillable()
                 ,
-                FieldMetadata::make('stage', FieldType::STRING)
+                FieldMetadata::make('stage', AttributeType::STRING)
                     ->string()
                     ->required()
                     ->fillable()
                 ,
-                FieldMetadata::make('supposedly_lesson_starts_at', FieldType::DATETIME)
+                FieldMetadata::make('supposedly_lesson_starts_at', AttributeType::DATETIME)
                     ->date()
                     ->fillable(),
-                FieldMetadata::make('created_at', FieldType::DATETIME),
-                FieldMetadata::make('updated_at', FieldType::DATETIME),
+                FieldMetadata::make('created_at', AttributeType::DATETIME),
+                FieldMetadata::make('updated_at', AttributeType::DATETIME),
             ])
             ->addRelations([
                 RelationMetadata::make(

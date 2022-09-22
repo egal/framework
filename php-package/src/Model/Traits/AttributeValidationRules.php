@@ -6,7 +6,7 @@ namespace Egal\Model\Traits;
 
 use Egal\Model\Enums\ValidationRules;
 
-trait FieldValidationRules
+trait AttributeValidationRules
 {
 
     public function required(): self

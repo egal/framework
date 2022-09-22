@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use Egal\Model\Enums\FieldType;
+use Egal\Model\Enums\AttributeType;
 use Egal\Model\Enums\RelationType;
 use Egal\Model\Metadata\ActionMetadata;
 use Egal\Model\Metadata\FieldMetadata;
@@ -24,20 +24,20 @@ class WorkingTime extends Model
 
     public static function constructMetadata(): ModelMetadata
     {
-        return ModelMetadata::make(self::class, FieldMetadata::make('id', FieldType::INTEGER))
+        return ModelMetadata::make(self::class, FieldMetadata::make('id', AttributeType::INTEGER))
             ->addFields([
-                FieldMetadata::make('speaker_id', FieldType::UUID)
+                FieldMetadata::make('speaker_id', AttributeType::UUID)
                     ->addValidationRule('exists:speakers,id')
                     ->required()
                     ->fillable(),
-                FieldMetadata::make('starts_at', FieldType::DATETIME)
+                FieldMetadata::make('starts_at', AttributeType::DATETIME)
                     ->date()
                     ->fillable(),
-                FieldMetadata::make('ends_at', FieldType::DATETIME)
+                FieldMetadata::make('ends_at', AttributeType::DATETIME)
                     ->date()
                     ->fillable(),
-                FieldMetadata::make('created_at', FieldType::DATETIME),
-                FieldMetadata::make('updated_at', FieldType::DATETIME),
+                FieldMetadata::make('created_at', AttributeType::DATETIME),
+                FieldMetadata::make('updated_at', AttributeType::DATETIME),
             ])
             ->addRelations([
                 RelationMetadata::make(

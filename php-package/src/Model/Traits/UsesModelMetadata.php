@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Egal\Model\Traits;
 
 use Egal\Core\Session\Session;
-use Egal\Model\Enums\FieldType;
+use Egal\Model\Enums\AttributeType;
 use Egal\Model\Facades\ModelMetadataManager;
 use Egal\Model\Metadata\FieldMetadata;
 use Egal\Model\Metadata\ModelMetadata;
@@ -41,10 +41,10 @@ trait UsesModelMetadata
     private function setKeyProperties(): void
     {
         switch ($this->keyType) {
-            case FieldType::INTEGER->value:
+            case AttributeType::INTEGER->value:
                 $this->incrementing = true;
                 return;
-            case FieldType::UUID->value:
+            case AttributeType::UUID->value:
                 static::creating(static function (Model $model): void {
                     $model->setAttribute($model->keyName, (string) Str::uuid());
                 });
@@ -57,18 +57,18 @@ trait UsesModelMetadata
 
     public function setValidationRules(): void
     {
-        $this->setValidationRule($this->modelMetadata->getKey());
+        $this->setParameterValidationRule($this->modelMetadata->getKey());
 
         foreach ($this->modelMetadata->getFields() as $field) {
-            $this->setValidationRule($field);
+            $this->setParameterValidationRule($field);
         }
 
         foreach ($this->modelMetadata->getFakeFields() as $field) {
-            $this->setValidationRule($field);
+            $this->setParameterValidationRule($field);
         }
     }
 
-    public function setValidationRule(FieldMetadata $field): void
+    public function setParameterValidationRule(FieldMetadata $field): void
     {
         $this->validationRules[$field->getName()] = $field->getValidationRules();
     }

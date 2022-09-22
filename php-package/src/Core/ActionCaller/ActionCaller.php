@@ -5,13 +5,16 @@ declare(strict_types=1);
 namespace Egal\Core\ActionCaller;
 
 use Egal\Auth\Accesses\StatusAccess;
-use Egal\Core\Exceptions\ActionCallException;
 use Egal\Core\Exceptions\NoAccessActionCallException;
 use Egal\Core\Session\Session;
+use Egal\Model\Exceptions\NoValidActionParametersException;
+use Egal\Model\Exceptions\ValidateException;
 use Egal\Model\Facades\ModelMetadataManager;
 use Egal\Model\Metadata\ActionMetadata;
+use Egal\Model\Metadata\ActionParameterMetadata;
 use Egal\Model\Metadata\ModelMetadata;
-use Illuminate\Support\Str;
+use Egal\Model\Model;
+use Illuminate\Support\Facades\Validator;
 
 /**
  * Class ActionCaller.
@@ -85,7 +88,7 @@ class ActionCaller
 
         // For user and service we check if it guest.
         if ($authStatus === StatusAccess::GUEST) {
-        // TODO: реализовать проверку соответствия $authStatus и указанного в action доступа по статусу
+            // TODO: реализовать проверку соответствия $authStatus и указанного в action доступа по статусу
             return true;
         }
 
@@ -174,17 +177,72 @@ class ActionCaller
         return false;
     }
 
+    public function setValidationRules(): void
+    {
+        $this->setValidationRule($this->modelMetadata->getKey());
+
+        foreach ($this->modelMetadata->getFields() as $field) {
+            $this->setValidationRule($field);
+        }
+
+        foreach ($this->modelMetadata->getFakeFields() as $field) {
+            $this->setValidationRule($field);
+        }
+    }
+
+    public function setValidationRule(Ac $field): void
+    {
+        $this->validationRules[$field->getName()] = $field->getValidationRules();
+    }
+
     /**
      * Формирует из {@see \Egal\Core\ActionCaller\ActionCaller::modelActionMetadata} валидные параметры.
      *
      * If it is impossible to generate valid parameters, an exception is thrown.
      * TODO: реализовать проверку на: isDefaultValueAvailable(), allowsNull() - для случаев, когда не передается необходимый для action параметр
+     * TODO: вернуть приват
+     * TODO: вынести в функцию заполнения дефолтами
      * @return array
      * @throws \ReflectionException|\Egal\Core\Exceptions\ActionCallException
+     * @throws NoValidActionParametersException
      */
-    private function getValidActionParameters(): array
+    public function getValidActionParameters(): array
     {
-        return $this->actionParameters;
+        /** @var Model $model */
+        $model = new ($this->modelMetadata->getModelClass())();
+        $parametersValidationRules = $model->getParametersValidationRules();
+        $actionParameters = $this->actionParameters;
+
+        $missingParameters = array_filter($this->modelActionMetadata->getParameters(), function (ActionParameterMetadata $parameter) use ($actionParameters) {
+            return !array_key_exists($parameter->getName(), $actionParameters);
+        });
+        $defaultParameters = [];
+        /** @var ActionParameterMetadata $parameter */
+        foreach ($missingParameters as $parameter) {
+            if ($this->isDefaultValueAvailable($parameter)) {
+                $defaultParameters[$parameter->getName()] = $parameter->getDefaultValue();
+            };
+        }
+        $actionParameters = array_merge($actionParameters, $defaultParameters);
+
+        $validator = Validator::make($actionParameters, $parametersValidationRules);
+        $validated = $validator->validated();
+        if (!$validated) {
+            throw new NoValidActionParametersException();
+        }
+        return $validated;
     }
 
+    private function isDefaultValueAvailable(ActionParameterMetadata $parameter): bool
+    {
+        if (!$parameter->getDefaultValue() && !$this->allowsNull($parameter)) {
+            return false;
+        };
+        return true;
+    }
+
+    private function allowsNull(ActionParameterMetadata $parameter): bool
+    {
+        return in_array('nullable', $parameter->getValidationRules());
+    }
 }

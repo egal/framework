@@ -8,7 +8,7 @@ use Egal\Auth\Tokens\UserMasterRefreshToken;
 use Egal\Auth\Tokens\UserMasterToken;
 use Egal\AuthServiceDependencies\Exceptions\LoginException;
 use Egal\AuthServiceDependencies\Models\User as BaseUser;
-use Egal\Model\Enums\FieldType;
+use Egal\Model\Enums\AttributeType;
 use Egal\Model\Enums\RelationType;
 use Egal\Model\Metadata\ActionMetadata;
 use Egal\Model\Metadata\FieldMetadata;
@@ -109,17 +109,17 @@ class User extends BaseUser
 
     public static function constructMetadata(): ModelMetadata
     {
-        return ModelMetadata::make(User::class, FieldMetadata::make('id',FieldType::UUID))
+        return ModelMetadata::make(User::class, FieldMetadata::make('id',AttributeType::UUID))
             ->addFields([
-                FieldMetadata::make('email', FieldType::STRING)
+                FieldMetadata::make('email', AttributeType::STRING)
                     ->required()
                     ->addValidationRule('unique:users,email'),
-                FieldMetadata::make('password', FieldType::STRING)
+                FieldMetadata::make('password', AttributeType::STRING)
                     ->required()
                     ->hidden()
                     ->guarded(),
-                FieldMetadata::make('created_at', FieldType::DATETIME),
-                FieldMetadata::make('updated_at', FieldType::DATETIME),
+                FieldMetadata::make('created_at', AttributeType::DATETIME),
+                FieldMetadata::make('updated_at', AttributeType::DATETIME),
             ])
             ->addRelations([
                 RelationMetadata::make(

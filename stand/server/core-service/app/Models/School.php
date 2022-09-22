@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use Egal\Model\Enums\FieldType;
+use Egal\Model\Enums\AttributeType;
 use Egal\Model\Enums\RelationType;
 use Egal\Model\Metadata\ActionMetadata;
 use Egal\Model\Metadata\FieldMetadata;
@@ -24,16 +24,16 @@ class School extends Model
 
     public static function constructMetadata(): ModelMetadata
     {
-        return ModelMetadata::make(self::class, FieldMetadata::make('id', FieldType::UUID))
+        return ModelMetadata::make(self::class, FieldMetadata::make('id', AttributeType::UUID))
             ->addFields([
-                FieldMetadata::make('name', FieldType::STRING)
+                FieldMetadata::make('name', AttributeType::STRING)
                     ->required()
                     ->addValidationRule('unique:schools,name')
                     ->fillable(),
-                FieldMetadata::make('avatar', FieldType::STRING)
+                FieldMetadata::make('avatar', AttributeType::STRING)
                     ->fillable(),
-                FieldMetadata::make('created_at', FieldType::DATETIME),
-                FieldMetadata::make('updated_at', FieldType::DATETIME),
+                FieldMetadata::make('created_at', AttributeType::DATETIME),
+                FieldMetadata::make('updated_at', AttributeType::DATETIME),
             ])
             ->addRelations([
                 RelationMetadata::make(

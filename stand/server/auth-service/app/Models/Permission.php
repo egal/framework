@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use Egal\Model\Enums\FieldType;
+use Egal\Model\Enums\AttributeType;
 use Egal\Model\Metadata\ActionMetadata;
 use Egal\Model\Metadata\FieldMetadata;
 use Egal\Model\Metadata\ModelMetadata;
@@ -28,19 +28,19 @@ class Permission extends Model
 
     public static function constructMetadata(): ModelMetadata
     {
-        return ModelMetadata::make(Permission::class, FieldMetadata::make('id',FieldType::STRING)->fillable())
+        return ModelMetadata::make(Permission::class, FieldMetadata::make('id',AttributeType::STRING)->fillable())
             ->addFields([
-                FieldMetadata::make('name', FieldType::STRING)
+                FieldMetadata::make('name', AttributeType::STRING)
                     ->required()
                     ->fillable()
                     ->addValidationRule('unique:roles,name'),
-                FieldMetadata::make('is_default', FieldType::BOOLEAN)
+                FieldMetadata::make('is_default', AttributeType::BOOLEAN)
                     ->required()
                     ->fillable(),
-                FieldMetadata::make('created_at', FieldType::DATETIME)
+                FieldMetadata::make('created_at', AttributeType::DATETIME)
                     ->guarded()
                     ->hidden(),
-                FieldMetadata::make('updated_at', FieldType::DATETIME)
+                FieldMetadata::make('updated_at', AttributeType::DATETIME)
                     ->guarded()
                     ->hidden(),
             ])
