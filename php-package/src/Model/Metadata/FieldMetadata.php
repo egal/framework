@@ -89,7 +89,7 @@ class FieldMetadata
             case FieldType::DATETIME:
                 break;
             default:
-                $this->validationRules[] = $this->type->value;
+                array_unshift($this->validationRules, $this->type->value);
         }
 
         return $this->validationRules;
