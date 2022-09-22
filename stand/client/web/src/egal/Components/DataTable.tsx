@@ -54,13 +54,6 @@ type State = {
   };
   modelMetadata: null | ModelMetadata; // TODO: Make not nullable.
   undefinedErrorDetected: boolean;
-  chooseActionContextMenu:
-    | false
-    | {
-        datum: any;
-        clickXPosition: number;
-        clickYPosition: number;
-      };
 };
 
 export class DataTable extends React.Component<Props, State> {
@@ -73,14 +66,12 @@ export class DataTable extends React.Component<Props, State> {
     modelMetadata: null,
     edit: null,
     create: null,
-    undefinedErrorDetected: false,
-    chooseActionContextMenu: false
+    undefinedErrorDetected: false
   };
 
   constructor(props: Props) {
     super(props);
 
-    this.reloadData = this.reloadData.bind(this);
     this.dataTableOnClickRowCallback = this.dataTableOnClickRowCallback.bind(this);
     this.paginationOnChangeCallback = this.paginationOnChangeCallback.bind(this);
     this.manipulateLayerOnCloseCallback = this.manipulateLayerOnCloseCallback.bind(this);
@@ -89,6 +80,8 @@ export class DataTable extends React.Component<Props, State> {
     this.editFormOnChangeCallback = this.editFormOnChangeCallback.bind(this);
     this.editFormOnDeleteCallback = this.editFormOnDeleteCallback.bind(this);
     this.createButtonOnClickCallback = this.createButtonOnClickCallback.bind(this);
+    this.createFromOnChangeCallback = this.createFromOnChangeCallback.bind(this);
+    this.createFromOnSubmitCallback = this.createFromOnSubmitCallback.bind(this);
   }
 
   componentDidMount(): void {
@@ -275,7 +268,7 @@ export class DataTable extends React.Component<Props, State> {
         {fields.map((field, key) => {
           return (
             <FormField name={field.name} htmlFor={field.name} label={`${field.header}`} key={key}>
-              {this.renderFormInput(field)}
+              {field.renderFormInput ? field.renderFormInput() : this.renderFormInput(field)}
             </FormField>
           );
         })}
@@ -353,32 +346,30 @@ export class DataTable extends React.Component<Props, State> {
     );
   }
 
+  createFromOnChangeCallback(newValue: any) {
+    this.setState({ create: { attributes: newValue } });
+  }
+  createFromOnSubmitCallback() {
+    if (this.state.create === null) {
+      throw new Error();
+    }
+
+    this.action()
+      .create(this.state.create.attributes)
+      .then(() => {
+        this.setState({ create: null });
+        this.reloadData();
+      });
+  }
+
   renderCreateForm() {
     if (this.state.create === null) {
       throw new Error();
     }
 
     return (
-      <Form
-        onChange={(newValue) => {
-          this.setState({ create: { attributes: newValue } });
-        }}
-        onSubmit={() => {
-          if (this.state.create === null) {
-            throw new Error();
-          }
-          this.action()
-            .create(this.state.create.attributes)
-            .then(() => {
-              this.setState({ create: null });
-              this.reloadData();
-            });
-        }}>
-        {this.renderFormFields(
-          this.props.fields.filter((field) => {
-            return this.getFieldMetadata(field.name).fillable;
-          })
-        )}
+      <Form onChange={this.createFromOnChangeCallback} onSubmit={this.createFromOnSubmitCallback}>
+        {this.renderFormFields(this.props.fields.filter((field) => this.getFieldMetadata(field.name).fillable))}
         <Box direction={'row'} justify={'center'} gap="small" pad={{ top: 'small' }}>
           <Button type="submit" primary label="Create" />
         </Box>
