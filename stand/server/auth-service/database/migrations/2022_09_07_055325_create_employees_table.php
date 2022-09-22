@@ -11,7 +11,7 @@ class CreateEmployeesTable extends Migration
         Schema::create('employees', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->string('address');
-            $table->integer('phone')->unique();
+            $table->integer('phone')->unique()->nullable();
             $table->boolean('adult');
             $table->float('weight');
 

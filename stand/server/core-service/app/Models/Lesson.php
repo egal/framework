@@ -33,25 +33,19 @@ class Lesson extends Model
             ->addFields([
                 FieldMetadata::make('speaker_id', FieldType::UUID)
                     ->required()
-                    ->addValidationRule('exists:speakers,id')
-                    ->fillable(),
+                    ->addValidationRule('exists:speakers,id'),
                 FieldMetadata::make('school_id', FieldType::UUID)
                     ->required()
-                    ->addValidationRule('exists:schools,id')
-                    ->fillable(),
+                    ->addValidationRule('exists:schools,id'),
                 FieldMetadata::make('stage', FieldType::STRING)
-                    ->required()
-                    ->fillable(),
+                    ->required(),
                 FieldMetadata::make('chat_id', FieldType::UUID)
                     ->addValidationRule('unique:lessons,chat_id')
-                    ->nullable()
-                    ->fillable(),
+                    ->nullable(),
                 FieldMetadata::make('lesson_request_id', FieldType::INTEGER)
-                    ->fillable()
                     ->addValidationRule('exists:lesson_requests,id'),
                 FieldMetadata::make('starts_at', FieldType::DATETIME)
-                    ->date()
-                    ->fillable(),
+                    ->date(),
                 FieldMetadata::make('created_at', FieldType::DATETIME),
                 FieldMetadata::make('updated_at', FieldType::DATETIME),
             ])

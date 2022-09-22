@@ -21,24 +21,18 @@ class Employee extends Model
         return ModelMetadata::make(Employee::class, FieldMetadata::make('id',FieldType::UUID))
             ->addFields([
                 FieldMetadata::make('address', FieldType::STRING)
-                    ->required()
-                    ->fillable(),
+                    ->default('Home Address'),
                 FieldMetadata::make('phone', FieldType::INTEGER)
-                    ->required()
-                    ->fillable()
+                    ->nullable()
                     ->addValidationRule('unique:employees,phone'),
                 FieldMetadata::make('adult', FieldType::BOOLEAN)
-                    ->required()
-                    ->fillable(),
+                    ->required(),
                 FieldMetadata::make('weight', FieldType::NUMERIC)
-                    ->required()
-                    ->fillable(),
+                    ->required(),
                 FieldMetadata::make('created_at', FieldType::DATETIME)
-                    ->guarded()
-                    ->fillable(),
+                    ->guarded(),
                 FieldMetadata::make('updated_at', FieldType::DATETIME)
-                    ->guarded()
-                    ->fillable(),
+                    ->guarded(),
             ])
             ->addFakeFields([
                 FieldMetadata::make('height',  FieldType::NUMERIC)

@@ -11,11 +11,11 @@ use Egal\Model\Exceptions\RelationNotFoundException;
 class ModelMetadata
 {
 
-    protected string $modelClass;
+    protected readonly string $modelClass;
 
-    protected string $modelShortName;
+    protected readonly string $modelShortName;
 
-    protected ?FieldMetadata $key;
+    protected readonly ?FieldMetadata $key;
 
     protected array $fakeFields = [];
 
@@ -191,14 +191,6 @@ class ModelMetadata
     public function getHiddenFieldsNames(): array
     {
         return array_map(fn($field) => $field->getName(), array_filter($this->fields, fn($field) => $field->isHidden()));
-    }
-
-    /**
-     * @return string[]
-     */
-    public function getFillableFieldsNames(): array
-    {
-        return array_map(fn($field) => $field->getName(), array_filter($this->fields, fn($field) => $field->isFillable()));
     }
 
     /**

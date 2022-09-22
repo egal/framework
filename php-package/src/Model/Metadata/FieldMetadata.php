@@ -2,33 +2,33 @@
 
 namespace Egal\Model\Metadata;
 
+use Egal\Model\Enums\ValidationRules;
 use Egal\Model\Traits\FieldValidationRules;
 use Egal\Model\Enums\FieldType;
+use Egal\Validation\Rules\Rule as EgalRule;
+use Illuminate\Contracts\Validation\Rule;
 
 class FieldMetadata
 {
 
     use FieldValidationRules;
 
-    protected string $name;
+    protected readonly string $name;
 
-    protected FieldType $type;
+    protected readonly FieldType $type;
 
     protected bool $hidden = false;
 
     protected bool $guarded = false;
 
-    protected bool $fillable = false;
+    protected mixed $default = null;
+
+    protected bool $nullable = false;
 
     /**
-     * @var string[]
+     * @var array<string, Rule, EgalRule>
      */
     protected array $validationRules = [];
-
-    public static function make(string $name, FieldType $type): self
-    {
-        return new static($name, $type);
-    }
 
     protected function __construct(string $name, FieldType $type)
     {
@@ -36,30 +36,22 @@ class FieldMetadata
         $this->type = $type;
     }
 
+    public static function make(string $name, FieldType $type): self
+    {
+        return new static($name, $type);
+    }
+
     public function toArray(): array
     {
         return [
             'name' => $this->name,
             'type' => $this->type->value,
-            'validationRules' => $this->validationRules,
             'hidden' => $this->hidden,
             'guarded' => $this->guarded,
-            'fillable' => $this->fillable,
+            'default' => $this->default,
+            'nullable' => $this->nullable,
+            'validationRules' => $this->validationRules,
         ];
-    }
-
-    public function setName(string $name): self
-    {
-        $this->name = $name;
-
-        return $this;
-    }
-
-    public function setType(FieldType $type): self
-    {
-        $this->type = $type;
-
-        return $this;
     }
 
     public function addValidationRule(string $validationRule): self
@@ -67,6 +59,55 @@ class FieldMetadata
         $this->validationRules[] = $validationRule;
 
         return $this;
+    }
+
+    public function hidden(): self
+    {
+        $this->hidden = true;
+
+        return $this;
+    }
+
+    public function guarded(): self
+    {
+        $this->guarded = true;
+
+        return $this;
+    }
+
+    public function default(mixed $defaultValue): self
+    {
+        $this->default = $defaultValue;
+
+        return $this;
+    }
+
+    public function nullable(): self
+    {
+        $this->nullable = true;
+        $this->validationRules[] = ValidationRules::NULLABLE->value;
+
+        return $this;
+    }
+
+    public function isHidden(): bool
+    {
+        return $this->hidden;
+    }
+
+    public function isGuarded(): bool
+    {
+        return $this->guarded;
+    }
+
+    public function isNullable(): bool
+    {
+        return $this->nullable;
+    }
+
+    public function getDefault(): mixed
+    {
+        return $this->default;
     }
 
     public function getName(): string
@@ -93,42 +134,6 @@ class FieldMetadata
         }
 
         return $this->validationRules;
-    }
-
-    public function hidden(): self
-    {
-        $this->hidden = true;
-
-        return $this;
-    }
-
-    public function guarded(): self
-    {
-        $this->guarded = true;
-
-        return $this;
-    }
-
-    public function fillable(): self
-    {
-        $this->fillable = true;
-
-        return $this;
-    }
-
-    public function isHidden(): bool
-    {
-        return $this->hidden;
-    }
-
-    public function isGuarded(): bool
-    {
-        return $this->guarded;
-    }
-
-    public function isFillable(): bool
-    {
-        return $this->fillable;
     }
 
 }

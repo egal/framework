@@ -28,8 +28,7 @@ class Country extends Model
             ->addFields([
                 FieldMetadata::make('name', FieldType::STRING)
                     ->required()
-                    ->addValidationRule('unique:countries,name')
-                    ->fillable(),
+                    ->addValidationRule('unique:countries,name'),
                 FieldMetadata::make('created_at', FieldType::DATETIME),
                 FieldMetadata::make('updated_at', FieldType::DATETIME),
             ])
