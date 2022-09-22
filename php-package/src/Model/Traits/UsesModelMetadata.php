@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Egal\Model\Traits;
 
-use Egal\Core\Session\Session;
 use Egal\Model\Enums\FieldType;
 use Egal\Model\Facades\ModelMetadataManager;
 use Egal\Model\Metadata\FieldMetadata;
@@ -20,7 +19,7 @@ trait UsesModelMetadata
 
     private ModelMetadata $modelMetadata;
 
-    private array $validationRules;
+    private array $validationRules = [];
 
     private string $keyName;
 
@@ -55,7 +54,7 @@ trait UsesModelMetadata
 
     public abstract static function constructMetadata(): ModelMetadata;
 
-    public function setValidationRules(): void
+    private function setValidationRules(): void
     {
         $this->setValidationRule($this->modelMetadata->getKey());
 
@@ -68,7 +67,7 @@ trait UsesModelMetadata
         }
     }
 
-    public function setValidationRule(FieldMetadata $field): void
+    private function setValidationRule(FieldMetadata $field): void
     {
         $this->validationRules[$field->getName()] = $field->getValidationRules();
     }
@@ -83,10 +82,7 @@ trait UsesModelMetadata
         return $this->validationRules;
     }
 
-    /**
-     * @return string
-     */
-    public function getKeyType()
+    public function getKeyType(): string
     {
         return $this->keyType;
     }

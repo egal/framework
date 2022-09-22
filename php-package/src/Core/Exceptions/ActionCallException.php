@@ -8,6 +8,7 @@ class ActionCallException extends Exception
 {
 
     protected $message = 'Action call error!';
+
     protected $code = 400;
 
 }
