@@ -7,9 +7,12 @@ use Egal\Model\Metadata\ActionMetadata;
 use Egal\Model\Metadata\FieldMetadata;
 use Egal\Model\Metadata\ModelMetadata;
 use Egal\Model\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class AdditionalSpeakerLanguage extends Model
 {
+
+    use HasFactory;
 
     public static function constructMetadata(): ModelMetadata
     {
@@ -27,9 +30,17 @@ class AdditionalSpeakerLanguage extends Model
                 FieldMetadata::make('updated_at', FieldType::DATETIME),
             ])
             ->addActions([
-                ActionMetadata::make('getItems'),
                 ActionMetadata::make('create'),
                 ActionMetadata::make('update'),
+                ActionMetadata::make('getMetadata'),
+                ActionMetadata::make('getItems'),
+                ActionMetadata::make('delete'),
+                ActionMetadata::make('getItem'),
+                ActionMetadata::make('getCount'),
+                ActionMetadata::make('createMany'),
+                ActionMetadata::make('updateMany'),
+                ActionMetadata::make('updateManyRaw'),
+                ActionMetadata::make('deleteMany'),
             ]);
     }
 

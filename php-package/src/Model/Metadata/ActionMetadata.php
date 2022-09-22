@@ -35,7 +35,7 @@ class ActionMetadata
     public function toArray(): array
     {
         $actionMetadata = [];
-        $actionMetadata['action_name'] = $this->name;
+        $actionMetadata['name'] = $this->name;
 
         return $actionMetadata;
     }
