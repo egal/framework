@@ -76,7 +76,8 @@ export class DataProvider {
     return new Promise((resolve, reject) => {
       axios
         .post(`${this.serverUrl}/${this.serviceName}/${this.modelName}/update`, { attributes: attributes })
-        .then((res) => resolve(res.data.action_result.data));
+        .then((res) => resolve(res.data.action_result.data))
+        .catch((err) => reject(err.response.data.action_error));
     });
   }
 
@@ -84,7 +85,8 @@ export class DataProvider {
     return new Promise((resolve, reject) => {
       axios
         .post(`${this.serverUrl}/${this.serviceName}/${this.modelName}/create`, { attributes: attributes })
-        .then((res) => resolve(res.data.action_result.data));
+        .then((res) => resolve(res.data.action_result.data))
+        .catch((err) => reject(err.response.data.action_error));
     });
   }
 
@@ -92,7 +94,8 @@ export class DataProvider {
     return new Promise((resolve, reject) => {
       axios
         .post(`${this.serverUrl}/${this.serviceName}/${this.modelName}/delete`, { id: key })
-        .then((res) => resolve(res.data.action_result.data));
+        .then((res) => resolve(res.data.action_result.data))
+        .catch((err) => reject(err.response.data.action_error));
     });
   }
 

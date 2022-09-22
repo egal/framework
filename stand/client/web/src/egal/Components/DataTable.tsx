@@ -54,6 +54,9 @@ type State = {
   };
   modelMetadata: null | ModelMetadata; // TODO: Make not nullable.
   undefinedErrorDetected: boolean;
+
+  // form state
+  formApiError: string;
 };
 
 export class DataTable extends React.Component<Props, State> {
@@ -66,7 +69,10 @@ export class DataTable extends React.Component<Props, State> {
     modelMetadata: null,
     edit: null,
     create: null,
-    undefinedErrorDetected: false
+    undefinedErrorDetected: false,
+
+    // form state
+    formApiError: ''
   };
 
   constructor(props: Props) {
@@ -146,7 +152,8 @@ export class DataTable extends React.Component<Props, State> {
   manipulateLayerOnCloseCallback() {
     this.setState({
       edit: null,
-      create: null
+      create: null,
+      formApiError: ''
     });
   }
 
@@ -293,7 +300,8 @@ export class DataTable extends React.Component<Props, State> {
       edit: {
         attributes: this.state.edit.originalAttributes,
         originalAttributes: this.state.edit.originalAttributes
-      }
+      },
+      formApiError: ''
     });
   }
 
@@ -307,6 +315,10 @@ export class DataTable extends React.Component<Props, State> {
       .then(() => {
         this.reloadData();
         this.manipulateLayerOnCloseCallback();
+        this.setState({ formApiError: '' });
+      })
+      .catch((error) => {
+        this.setState({ formApiError: this.getErrorByInternalCode(error) });
       });
   }
 
@@ -320,6 +332,10 @@ export class DataTable extends React.Component<Props, State> {
       .then(() => {
         this.reloadData();
         this.manipulateLayerOnCloseCallback();
+        this.setState({ formApiError: '' });
+      })
+      .catch((error) => {
+        this.setState({ formApiError: this.getErrorByInternalCode(error) });
       });
   }
 
@@ -335,6 +351,7 @@ export class DataTable extends React.Component<Props, State> {
         onReset={this.editFormOnResetCallback}
         onSubmit={this.editFormOnSubmitCallback}>
         {this.renderFormFields(this.props.fields)}
+        {this.renderFormApiError(this.state.formApiError)}
         <Box direction={'row'} justify={'center'} gap="small" pad={{ top: 'small' }}>
           <Button type="submit" primary label="Update" />
           <Button type="reset" label="Reset" />
@@ -357,8 +374,11 @@ export class DataTable extends React.Component<Props, State> {
     this.action()
       .create(this.state.create.attributes)
       .then(() => {
-        this.setState({ create: null });
+        this.setState({ create: null, formApiError: '' });
         this.reloadData();
+      })
+      .catch((error) => {
+        this.setState({ formApiError: this.getErrorByInternalCode(error) });
       });
   }
 
@@ -370,11 +390,27 @@ export class DataTable extends React.Component<Props, State> {
     return (
       <Form onChange={this.createFromOnChangeCallback} onSubmit={this.createFromOnSubmitCallback}>
         {this.renderFormFields(this.props.fields.filter((field) => this.getFieldMetadata(field.name).fillable))}
+        {this.renderFormApiError(this.state.formApiError)}
         <Box direction={'row'} justify={'center'} gap="small" pad={{ top: 'small' }}>
           <Button type="submit" primary label="Create" />
         </Box>
       </Form>
     );
+  }
+
+  renderFormApiError(error: string) {
+    return error ? (
+      <Box direction={'row'} justify={'center'} pad={'xsmall'} background={'status-error'}>
+        {error}
+      </Box>
+    ) : null;
+  }
+
+  getErrorByInternalCode(error: any): string {
+    switch (error.internal_code) {
+      default:
+        return error.message;
+    }
   }
 
   renderManipulateLayer(child: React.ReactElement) {
