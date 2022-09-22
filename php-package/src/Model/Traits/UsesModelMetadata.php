@@ -20,7 +20,7 @@ trait UsesModelMetadata
 
     private ModelMetadata $modelMetadata;
 
-    private array $validationRules;
+    private array $validationRules = [];
 
     private string $keyName;
 
@@ -55,20 +55,20 @@ trait UsesModelMetadata
 
     public abstract static function constructMetadata(): ModelMetadata;
 
-    public function setValidationRules(): void
+    private function setValidationRules(): void
     {
-        $this->setParameterValidationRule($this->modelMetadata->getKey());
+        $this->setValidationRule($this->modelMetadata->getKey());
 
         foreach ($this->modelMetadata->getFields() as $field) {
-            $this->setParameterValidationRule($field);
+            $this->setValidationRule($field);
         }
 
         foreach ($this->modelMetadata->getFakeFields() as $field) {
-            $this->setParameterValidationRule($field);
+            $this->setValidationRule($field);
         }
     }
 
-    public function setParameterValidationRule(FieldMetadata $field): void
+    private function setValidationRule(FieldMetadata $field): void
     {
         $this->validationRules[$field->getName()] = $field->getValidationRules();
     }
@@ -83,10 +83,7 @@ trait UsesModelMetadata
         return $this->validationRules;
     }
 
-    /**
-     * @return string
-     */
-    public function getKeyType()
+    public function getKeyType(): string
     {
         return $this->keyType;
     }

@@ -11,6 +11,7 @@ use Egal\Model\Exceptions\ActionParameterNotFoundException;
  */
 class ActionMetadata
 {
+
     // TODO: добавить метаданные доступов
     // TODO: добавить генерацию входных параметров
     // TODO: добавить обработку дефолтных значений параметров
@@ -79,8 +80,8 @@ class ActionMetadata
     public function toArray(): array
     {
         $actionMetadata = [];
-        $actionMetadata['action_name'] = $this->name;
         $actionMetadata['parameters'] = array_map(fn($parameter) => $parameter->toArray(), $this->parameters);
+        $actionMetadata['name'] = $this->name;
 
         return $actionMetadata;
     }

@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Egal\Model\Enums\AttributeType;
 use Egal\Model\Enums\RelationType;
-use Egal\Model\Exceptions\ValidateException;
 use Egal\Model\Metadata\ActionMetadata;
 use Egal\Model\Metadata\ActionParameterMetadata;
 use Egal\Model\Metadata\FieldMetadata;
@@ -24,9 +23,6 @@ class Country extends Model
         return $this->hasMany(Speaker::class);
     }
 
-    /**
-     * @throws ValidateException
-     */
     public static function constructMetadata(): ModelMetadata
     {
         return ModelMetadata::make(self::class, FieldMetadata::make('id', AttributeType::STRING))
@@ -45,7 +41,6 @@ class Country extends Model
                 )
             ])
             ->addActions([
-                ActionMetadata::make('getItems'),
                 ActionMetadata::make('create')
                     ->addParameters(
                         [
@@ -53,10 +48,18 @@ class Country extends Model
                                 ->required(),
                             ActionParameterMetadata::make('id',  AttributeType::STRING)
                                 ->required()
-                                ->setDefaultValue('22')
                         ]
                     ),
                 ActionMetadata::make('update'),
+                ActionMetadata::make('getMetadata'),
+                ActionMetadata::make('getItems'),
+                ActionMetadata::make('delete'),
+                ActionMetadata::make('getItem'),
+                ActionMetadata::make('getCount'),
+                ActionMetadata::make('createMany'),
+                ActionMetadata::make('updateMany'),
+                ActionMetadata::make('updateManyRaw'),
+                ActionMetadata::make('deleteMany'),
             ]);
     }
 

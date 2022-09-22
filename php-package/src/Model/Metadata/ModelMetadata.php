@@ -53,10 +53,10 @@ class ModelMetadata
             'primary_key' => $this->key->toArray(),
         ];
 
-        $modelMetadata['fields'] = array_map(fn($field) => $field->toArray(), $this->fields);
-        $modelMetadata['fake_fields'] = array_map(fn($field) => $field->toArray(), $this->fakeFields);
-        $modelMetadata['relations'] = array_map(fn($relation) => $relation->toArray(), $this->relations);
-        $modelMetadata['actions'] = array_map(fn($action) => $action->toArray(), $this->actions);
+        $modelMetadata['fields'] = array_map(fn(FieldMetadata $field) => $field->toArray(), $this->fields);
+        $modelMetadata['fake_fields'] = array_map(fn(FieldMetadata $field) => $field->toArray(), $this->fakeFields);
+        $modelMetadata['relations'] = array_map(fn(RelationMetadata $relation) => $relation->toArray(), $this->relations);
+        $modelMetadata['actions'] = array_map(fn(ActionMetadata $action) => $action->toArray(), $this->actions);
 
         return $modelMetadata;
     }

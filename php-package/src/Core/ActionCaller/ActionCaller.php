@@ -177,36 +177,16 @@ class ActionCaller
         return false;
     }
 
-    public function setValidationRules(): void
-    {
-        $this->setValidationRule($this->modelMetadata->getKey());
-
-        foreach ($this->modelMetadata->getFields() as $field) {
-            $this->setValidationRule($field);
-        }
-
-        foreach ($this->modelMetadata->getFakeFields() as $field) {
-            $this->setValidationRule($field);
-        }
-    }
-
-    public function setValidationRule(Ac $field): void
-    {
-        $this->validationRules[$field->getName()] = $field->getValidationRules();
-    }
-
     /**
      * Формирует из {@see \Egal\Core\ActionCaller\ActionCaller::modelActionMetadata} валидные параметры.
      *
      * If it is impossible to generate valid parameters, an exception is thrown.
      * TODO: реализовать проверку на: isDefaultValueAvailable(), allowsNull() - для случаев, когда не передается необходимый для action параметр
-     * TODO: вернуть приват
-     * TODO: вынести в функцию заполнения дефолтами
      * @return array
      * @throws \ReflectionException|\Egal\Core\Exceptions\ActionCallException
      * @throws NoValidActionParametersException
      */
-    public function getValidActionParameters(): array
+    private function getValidActionParameters(): array
     {
         /** @var Model $model */
         $model = new ($this->modelMetadata->getModelClass())();
