@@ -9,9 +9,9 @@ use Egal\Model\Enums\RelationType;
 class RelationMetadata
 {
 
-    protected string $name;
+    protected readonly string $name;
 
-    protected RelationType $type;
+    protected readonly RelationType $type;
 
     protected function __construct(string $name, RelationType $type)
     {
@@ -30,20 +30,6 @@ class RelationMetadata
             'name' => $this->name,
             'type' => $this->type->value,
         ];
-    }
-
-    public function setName(string $name): self
-    {
-        $this->name = $name;
-
-        return $this;
-    }
-
-    public function setType(RelationType $type): self
-    {
-        $this->type = $type;
-
-        return $this;
     }
 
     public function getName(): string

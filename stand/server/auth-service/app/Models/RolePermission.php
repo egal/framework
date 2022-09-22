@@ -16,11 +16,9 @@ class RolePermission extends Model
         return ModelMetadata::make(RolePermission::class, FieldMetadata::make('id', FieldType::INTEGER))
             ->addFields([
                 FieldMetadata::make('role_id', FieldType::STRING)
-                    ->required()
-                    ->fillable(),
+                    ->required(),
                 FieldMetadata::make('permission_id', FieldType::STRING)
-                    ->required()
-                    ->fillable(),
+                    ->required(),
                 FieldMetadata::make('created_at', FieldType::DATETIME)
                     ->hidden(),
                 FieldMetadata::make('updated_at', FieldType::DATETIME)

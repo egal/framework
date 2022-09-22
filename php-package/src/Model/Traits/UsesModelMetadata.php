@@ -21,7 +21,7 @@ trait UsesModelMetadata
 
     private array $validationRules = [];
 
-    private string $keyName;
+    private readonly string $keyName;
 
     public function initializeUsesModelMetadata(): void
     {
@@ -32,7 +32,6 @@ trait UsesModelMetadata
         $this->setKeyProperties();
         $this->setValidationRules();
 
-        $this->mergeFillable($this->modelMetadata->getFillableFieldsNames());
         $this->mergeGuarded($this->modelMetadata->getGuardedFieldsNames());
         $this->makeHidden($this->modelMetadata->getHiddenFieldsNames());
     }

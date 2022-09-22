@@ -10,15 +10,15 @@ class FieldMetadata
 
     use FieldValidationRules;
 
-    protected string $name;
+    protected readonly string $name;
 
-    protected FieldType $type;
+    protected readonly FieldType $type;
 
     protected bool $hidden = false;
 
     protected bool $guarded = false;
 
-    protected bool $fillable = false;
+
 
     /**
      * @var string[]
@@ -41,10 +41,9 @@ class FieldMetadata
         return [
             'name' => $this->name,
             'type' => $this->type->value,
-            'validationRules' => $this->validationRules,
             'hidden' => $this->hidden,
             'guarded' => $this->guarded,
-            'fillable' => $this->fillable,
+            'validationRules' => $this->validationRules,
         ];
     }
 
