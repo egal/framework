@@ -1,8 +1,6 @@
 import * as React from 'react';
-import { Box, Button } from 'grommet';
-
-import groupMenuItemArrowSvg from '../../../assets/group_menu_item_arrow.svg';
-import groupMenuItemArrow from '../../../assets/group_menu_item_arrow.svg';
+import { Box, Button, Collapsible } from 'grommet';
+import { FormDown, FormNext } from 'grommet-icons';
 
 export interface MenuItemGroupProps {
   header: string;
@@ -23,16 +21,7 @@ export default class MenuItemGroup extends React.Component<MenuItemGroupProps> {
   };
 
   render() {
-    const groupMenuItemArrow = this.state.isOpen ? (
-      <img
-        src={groupMenuItemArrowSvg}
-        style={{
-          transform: 'scaleY(-1)'
-        }}
-      />
-    ) : (
-      <img src={groupMenuItemArrowSvg} />
-    );
+    const ArrowIcon = this.state.isOpen ? FormDown : FormNext;
 
     return (
       <>
@@ -40,11 +29,13 @@ export default class MenuItemGroup extends React.Component<MenuItemGroupProps> {
           <Button onClick={this.switchIsOpenState}>
             <Box direction="row" justify="between">
               <div>{this.props.header}</div>
-              <div>{groupMenuItemArrow}</div>
+              <ArrowIcon />
             </Box>
           </Button>
         </Box>
-        {this.state.isOpen ? <Box pad={{ left: 'small' }}>{this.props.items}</Box> : null}
+        <Collapsible open={this.state.isOpen}>
+          <Box margin={{ left: 'small' }}>{this.props.items}</Box>
+        </Collapsible>
       </>
     );
   }
