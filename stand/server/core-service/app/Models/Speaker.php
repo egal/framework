@@ -34,22 +34,16 @@ class Speaker extends EgalModel
             ->addFields([
                 FieldMetadata::make('user_id', FieldType::UUID)
                     ->required()
-                    ->fillable()
                     ->hidden(),
                 FieldMetadata::make('name', FieldType::STRING)
-                    ->required()
-                    ->fillable(),
+                    ->required(),
                 FieldMetadata::make('surname', FieldType::STRING)
-                    ->required()
-                    ->fillable(),
-                FieldMetadata::make('avatar', FieldType::STRING)
-                    ->fillable(),
-                FieldMetadata::make('video', FieldType::STRING)
-                    ->fillable(),
+                    ->required(),
+                FieldMetadata::make('avatar', FieldType::STRING),
+                FieldMetadata::make('video', FieldType::STRING),
                 FieldMetadata::make('country_id', FieldType::STRING)
                     ->addValidationRule('exists:countries,id')
-                    ->required()
-                    ->fillable(),
+                    ->required(),
                 FieldMetadata::make('created_at', FieldType::DATETIME),
                 FieldMetadata::make('updated_at', FieldType::DATETIME),
             ])

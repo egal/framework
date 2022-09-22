@@ -27,8 +27,7 @@ class Language extends Model
             ->addFields([
                 FieldMetadata::make('name', FieldType::STRING)
                     ->required()
-                    ->addValidationRule('unique:languages,name')
-                    ->fillable(),
+                    ->addValidationRule('unique:languages,name'),
                 FieldMetadata::make('created_at', FieldType::DATETIME),
                 FieldMetadata::make('updated_at', FieldType::DATETIME),
             ])

@@ -28,18 +28,14 @@ class Student extends Model
             ->addFields([
                 FieldMetadata::make('user_id', FieldType::UUID)
                     ->required()
-                    ->hidden()
-                    ->fillable(),
+                    ->hidden(),
                 FieldMetadata::make('name', FieldType::STRING)
-                    ->required()
-                    ->fillable(),
+                    ->required(),
                 FieldMetadata::make('surname', FieldType::STRING)
-                    ->required()
-                    ->fillable(),
+                    ->required(),
                 FieldMetadata::make('school_id', FieldType::UUID)
                     ->addValidationRule('exists:schools,id')
-                    ->required()
-                    ->fillable(),
+                    ->required(),
                 FieldMetadata::make('created_at', FieldType::DATETIME),
                 FieldMetadata::make('updated_at', FieldType::DATETIME),
             ])

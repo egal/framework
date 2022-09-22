@@ -20,12 +20,10 @@ class AdditionalSpeakerLanguage extends Model
             ->addFields([
                 FieldMetadata::make('language_id', FieldType::STRING)
                     ->required()
-                    ->addValidationRule('exists:languages,id')
-                    ->fillable(),
+                    ->addValidationRule('exists:languages,id'),
                 FieldMetadata::make('speaker_id', FieldType::UUID)
                     ->addValidationRule('exists:speakers,id')
-                    ->required()
-                    ->fillable(),
+                    ->required(),
                 FieldMetadata::make('created_at', FieldType::DATETIME),
                 FieldMetadata::make('updated_at', FieldType::DATETIME),
             ])

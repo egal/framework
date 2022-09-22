@@ -17,7 +17,7 @@ class ActionMetadata
     // TODO: добавить примеры запроса-ответа
     public const METHOD_NAME_PREFIX = 'action';
 
-    protected string $name;
+    protected readonly string $name;
 
     protected function __construct(string $name)
     {
@@ -48,11 +48,6 @@ class ActionMetadata
     public function getMethodName(): string
     {
         return self::METHOD_NAME_PREFIX . ucwords($this->name);
-    }
-
-    public function setName(string $name): void
-    {
-        $this->name = $name;
     }
 
 }
