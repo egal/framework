@@ -84,6 +84,7 @@ class SimpleFilterConditionApplier extends FilterConditionApplier
      * @param mixed $value
      * @throws \Egal\Model\Exceptions\UnsupportedFilterConditionException
      * @throws \Egal\Model\Exceptions\UnsupportedFilterValueTypeException
+     * @throws \Egal\Model\Exceptions\RelationNotFoundException
      */
     protected static function filterByExistsRelation(
         $matches,
@@ -150,66 +151,45 @@ class SimpleFilterConditionApplier extends FilterConditionApplier
         // For condition field like `field`.
         [$field, $modelMetadata] = [$condition->getField(), $builder->getModel()->getModelMetadata()];
         $modelMetadata->fieldExistOrFail($field);
-// TODO: валидировать поле по указанному типу - перенесено в общие правила валидации
-// $modelMetadata->validateFieldValueType($field, $value);
+        $modelMetadata->validateFieldValueType($field, $value);
         $builder->where($condition->getField(), $operator, $value, $boolean);
     }
 
+    /**
+     * @throws FilterException
+     */
     private static function getSqlOperator(string $operator): string
     {
-        switch ($operator) {
-            case self::EQUAL_OPERATOR:
-                return '=';
-            case self::NOT_EQUAL_OPERATOR:
-                return '!=';
-            case self::GREATER_THEN_OPERATOR:
-                return '>';
-            case self::LESS_THEN_OPERATOR:
-                return '<';
-            case self::GREATER_OR_EQUAL_OPERATOR:
-                return '>=';
-            case self::LESS_OR_EQUAL_OPERATOR:
-                return '<=';
-            case self::CONTAIN_OPERATOR:
-            case self::START_WITH_OPERATOR:
-            case self::END_WITH_OPERATOR:
-                return 'LIKE';
-            case self::NOT_CONTAIN_OPERATOR:
-                return 'NOT LIKE';
-            case self::EQUAL_IGNORE_CASE_OPERATOR:
-            case self::CONTAIN_IGNORE_CASE_OPERATOR:
-            case self::START_WITH_IGNORE_CASE_OPERATOR:
-            case self::END_WITH_IGNORE_CASE_OPERATOR:
-                return 'ILIKE';
-            case self::NOT_EQUAL_IGNORE_CASE_OPERATOR:
-            case self::NOT_CONTAIN_IGNORE_CASE_OPERATOR:
-                return 'NOT ILIKE';
-            default:
-                throw new FilterException('Incorrect operator!');
-        }
+        return match ($operator) {
+            self::EQUAL_OPERATOR => '=',
+            self::NOT_EQUAL_OPERATOR => '!=',
+            self::GREATER_THEN_OPERATOR => '>',
+            self::LESS_THEN_OPERATOR => '<',
+            self::GREATER_OR_EQUAL_OPERATOR => '>=',
+            self::LESS_OR_EQUAL_OPERATOR => '<=',
+            self::CONTAIN_OPERATOR,self::START_WITH_OPERATOR, self::END_WITH_OPERATOR => 'LIKE',
+            self::NOT_CONTAIN_OPERATOR => 'NOT LIKE',
+            self::EQUAL_IGNORE_CASE_OPERATOR,
+                self::CONTAIN_IGNORE_CASE_OPERATOR,
+                self::START_WITH_IGNORE_CASE_OPERATOR,
+                self::END_WITH_IGNORE_CASE_OPERATOR => 'ILIKE',
+            self::NOT_EQUAL_IGNORE_CASE_OPERATOR, self::NOT_CONTAIN_IGNORE_CASE_OPERATOR => 'NOT ILIKE',
+            default => throw new FilterException('Incorrect operator!'),
+        };
     }
 
     /**
      * @param mixed $value
-     * @return mixed
      */
-    private static function getPreparedValue(string $operator, $value)
+    private static function getPreparedValue(string $operator, $value): mixed
     {
-        switch ($operator) {
-            case self::CONTAIN_OPERATOR:
-            case self::CONTAIN_IGNORE_CASE_OPERATOR:
-            case self::NOT_CONTAIN_OPERATOR:
-            case self::NOT_CONTAIN_IGNORE_CASE_OPERATOR:
-                return '%' . $value . '%';
-            case self::START_WITH_OPERATOR:
-            case self::START_WITH_IGNORE_CASE_OPERATOR:
-                return $value . '%';
-            case self::END_WITH_OPERATOR:
-            case self::END_WITH_IGNORE_CASE_OPERATOR:
-                return '%' . $value;
-            default:
-                return $value;
-        }
+        return match ($operator) {
+            self::CONTAIN_OPERATOR, self::CONTAIN_IGNORE_CASE_OPERATOR, self::NOT_CONTAIN_OPERATOR,
+                self::NOT_CONTAIN_IGNORE_CASE_OPERATOR => '%' . $value . '%',
+            self::START_WITH_OPERATOR, self::START_WITH_IGNORE_CASE_OPERATOR => $value . '%',
+            self::END_WITH_OPERATOR, self::END_WITH_IGNORE_CASE_OPERATOR => '%' . $value,
+            default => $value,
+        };
     }
 
 }
