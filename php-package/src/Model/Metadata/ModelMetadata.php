@@ -107,26 +107,18 @@ class ModelMetadata
 
     public function fieldExist(string $fieldName): bool
     {
-        return isset($this->getFields()[$fieldName]);
+        return array_filter(
+                [...$this->fields, ...$this->fakeFields, $this->getKey()],
+                fn (FieldMetadata $field) => $field->getName() === $fieldName
+            ) !== [];
     }
-
-    public function fakeFieldExist(string $fakeFieldName): bool
-    {
-        return isset($this->getFakeFields()[$fakeFieldName]);
-    }
-
-    public function keyExist(string $keyName): bool
-    {
-        return $keyName === $this->getKey()->getName();
-    }
-
 
     /**
      * @throws FieldNotFoundException
      */
     public function fieldExistOrFail(string $fieldName): bool
     {
-        return $this->fieldExist($fieldName) || $this->fakeFieldExist($fieldName) || $this->keyExist($fieldName)
+        return $this->fieldExist($fieldName)
             ? true
             : throw FieldNotFoundException::make($fieldName);
     }
@@ -153,11 +145,16 @@ class ModelMetadata
      */
     public function validateFieldValueType(string $fieldName, mixed $value): void
     {
-        $field = $this->getFields()[$fieldName] ?? $this->getFakeFields()[$fieldName] ?? $this->getKey();
+        $field = array_filter(
+            [...$this->fields, ...$this->fakeFields, $this->getKey()],
+            fn (FieldMetadata $field) => $field->getName() === $fieldName
+        );
+        $field = reset($field);
+
         $validationMethod = 'validate' . ucfirst($field->getType()->value);
         $fieldValidated = $this->$validationMethod($fieldName, $value);
 
-        if (! $fieldValidated) {
+        if (!$fieldValidated) {
             throw UnsupportedFilterValueTypeException::make($fieldName, $field->getType()->value);
         }
     }
