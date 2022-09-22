@@ -1,50 +1,49 @@
 import * as React from 'react';
-import {
-  ColumnConfig as GrommetColumnConfig,
-  DataTable as GrommetDataTable,
-  DataTableExtendedProps as GrommetDataTableProps
-} from 'grommet/components/DataTable';
-import { ActionGetItemsParams, DataProvider, ActionGetItemsResult, ActionError } from '../Providers/DataProvider';
+import { ColumnConfig as GrommetColumnConfig, DataTable as GrommetDataTable } from 'grommet/components/DataTable';
+import { ActionError, ActionGetItemsParams, ActionGetItemsResult, DataProvider } from '../Providers/DataProvider';
 import {
   Box,
   Button,
-  Layer,
-  Pagination,
+  CheckBox,
   Form,
   FormField,
-  TextInput,
-  Spinner,
   Heading,
+  Layer,
+  Pagination,
   Paragraph,
-  List,
-  Text,
-  Menu,
-  CheckBox
+  Spinner,
+  TextInput
 } from 'grommet';
-import { Close, StatusWarning, MoreVertical, Edit, Trash } from 'grommet-icons';
+import { Close, StatusWarning, Filter } from 'grommet-icons';
+import { deepMerge } from 'grommet/utils';
+import { Field as FieldMetadata, Model as ModelMetadata } from '../Utils/Metadata';
 
-import { Model as ModelMetadata, Field as FieldMetadata } from '../Utils/Metadata';
+// TODO: Implementation of primary and secondary filters.
+// eslint-disable-next-line @typescript-eslint/ban-types
+type FilterConfig = {};
 
-interface FieldConfig<TRowType = any> {
+interface FieldConfig {
   name: string;
   header: string;
   renderType?: 'boolean' | 'checkbox' | 'toggle';
-  renderDataTable?: (datum: TRowType) => React.ReactNode;
+  renderDataTable?: (datum: any) => React.ReactNode;
   formInputEnabled?: boolean;
   renderFormInput?: () => React.ReactNode; // TODO: Нормальные параметры.
-  dataTableColumnAdditionalProps?: any | GrommetColumnConfig<TRowType>;
+  dataTableColumnAdditionalProps?: any | GrommetColumnConfig<any>;
+  filter?: boolean | FilterConfig;
 }
 
-interface Props<TRowType = any> {
+interface Props {
   modelName: string;
   serviceName: string;
   perPage: number;
-  fields: FieldConfig<TRowType>[];
+  fields: FieldConfig[];
   keyFieldName: string;
 }
 
 type State = {
   items: null | ActionGetItemsResult; // TODO: Make not nullable.
+  actionGetItemsParams: ActionGetItemsParams;
   edit: null | {
     attributes: any;
     originalAttributes: any;
@@ -54,9 +53,8 @@ type State = {
   };
   modelMetadata: null | ModelMetadata; // TODO: Make not nullable.
   undefinedErrorDetected: boolean;
-
-  // form state
-  formApiError: string;
+  filterEdit: boolean;
+  filterValue: any;
 };
 
 export class DataTable extends React.Component<Props, State> {
@@ -70,9 +68,14 @@ export class DataTable extends React.Component<Props, State> {
     edit: null,
     create: null,
     undefinedErrorDetected: false,
-
-    // form state
-    formApiError: ''
+    filterEdit: false,
+    filterValue: {},
+    actionGetItemsParams: {
+      pagination: {
+        per_page: this.props.perPage,
+        page: 1
+      }
+    }
   };
 
   constructor(props: Props) {
@@ -91,8 +94,8 @@ export class DataTable extends React.Component<Props, State> {
   }
 
   componentDidMount(): void {
-    this.actionGetItems({ pagination: { per_page: this.props.perPage, page: 1 } });
     this.actionGetModelMetadata();
+    this.actionGetItems(this.state.actionGetItemsParams);
   }
 
   action(): DataProvider {
@@ -141,19 +144,13 @@ export class DataTable extends React.Component<Props, State> {
   }
 
   reloadData(): void {
-    this.actionGetItems({
-      pagination: {
-        per_page: this.props.perPage,
-        page: this.state.items === null ? 1 : this.state.items.current_page
-      }
-    });
+    this.actionGetItems(this.state.actionGetItemsParams);
   }
 
   manipulateLayerOnCloseCallback() {
     this.setState({
       edit: null,
-      create: null,
-      formApiError: ''
+      create: null
     });
   }
 
@@ -255,10 +252,7 @@ export class DataTable extends React.Component<Props, State> {
   renderFormInput(field: FieldConfig) {
     const fieldMetadata = this.getFieldMetadata(field.name);
     const renderType = field.renderType ?? fieldMetadata.type;
-    const enabled =
-      (field.formInputEnabled === undefined || field.formInputEnabled) &&
-      fieldMetadata.fillable &&
-      !fieldMetadata.guarded;
+    const enabled = (field.formInputEnabled === undefined || field.formInputEnabled) && !fieldMetadata.guarded;
     switch (renderType) {
       case 'checkbox':
       case 'boolean':
@@ -300,8 +294,7 @@ export class DataTable extends React.Component<Props, State> {
       edit: {
         attributes: this.state.edit.originalAttributes,
         originalAttributes: this.state.edit.originalAttributes
-      },
-      formApiError: ''
+      }
     });
   }
 
@@ -315,10 +308,6 @@ export class DataTable extends React.Component<Props, State> {
       .then(() => {
         this.reloadData();
         this.manipulateLayerOnCloseCallback();
-        this.setState({ formApiError: '' });
-      })
-      .catch((error) => {
-        this.setState({ formApiError: this.getErrorByInternalCode(error) });
       });
   }
 
@@ -332,10 +321,6 @@ export class DataTable extends React.Component<Props, State> {
       .then(() => {
         this.reloadData();
         this.manipulateLayerOnCloseCallback();
-        this.setState({ formApiError: '' });
-      })
-      .catch((error) => {
-        this.setState({ formApiError: this.getErrorByInternalCode(error) });
       });
   }
 
@@ -351,7 +336,6 @@ export class DataTable extends React.Component<Props, State> {
         onReset={this.editFormOnResetCallback}
         onSubmit={this.editFormOnSubmitCallback}>
         {this.renderFormFields(this.props.fields)}
-        {this.renderFormApiError(this.state.formApiError)}
         <Box direction={'row'} justify={'center'} gap="small" pad={{ top: 'small' }}>
           <Button type="submit" primary label="Update" />
           <Button type="reset" label="Reset" />
@@ -374,11 +358,8 @@ export class DataTable extends React.Component<Props, State> {
     this.action()
       .create(this.state.create.attributes)
       .then(() => {
-        this.setState({ create: null, formApiError: '' });
+        this.setState({ create: null });
         this.reloadData();
-      })
-      .catch((error) => {
-        this.setState({ formApiError: this.getErrorByInternalCode(error) });
       });
   }
 
@@ -389,28 +370,12 @@ export class DataTable extends React.Component<Props, State> {
 
     return (
       <Form onChange={this.createFromOnChangeCallback} onSubmit={this.createFromOnSubmitCallback}>
-        {this.renderFormFields(this.props.fields.filter((field) => this.getFieldMetadata(field.name).fillable))}
-        {this.renderFormApiError(this.state.formApiError)}
+        {this.renderFormFields(this.props.fields.filter((field) => !this.getFieldMetadata(field.name).guarded))}
         <Box direction={'row'} justify={'center'} gap="small" pad={{ top: 'small' }}>
           <Button type="submit" primary label="Create" />
         </Box>
       </Form>
     );
-  }
-
-  renderFormApiError(error: string) {
-    return error ? (
-      <Box direction={'row'} justify={'center'} pad={'xsmall'} background={'status-error'}>
-        {error}
-      </Box>
-    ) : null;
-  }
-
-  getErrorByInternalCode(error: any): string {
-    switch (error.internal_code) {
-      default:
-        return error.message;
-    }
   }
 
   renderManipulateLayer(child: React.ReactElement) {
@@ -424,6 +389,51 @@ export class DataTable extends React.Component<Props, State> {
             <Button icon={<Close />} hoverIndicator onClick={this.manipulateLayerOnCloseCallback} />
           </Box>
           {child}
+        </Box>
+      </Layer>
+    );
+  }
+
+  renderSecondaryFiltersLayer() {
+    return (
+      <Layer
+        onEsc={() => this.setState({ filterEdit: false })}
+        onClickOutside={() => this.setState({ filterEdit: false })}
+        full="vertical"
+        position="right">
+        <Box direction={'column'} pad={'medium'} width={'30vw'} overflow="auto" gap={'medium'}>
+          <Box width={'100%'} justify={'between'} direction={'row'}>
+            <Heading level={2}>Filters</Heading>
+            <Button icon={<Close />} hoverIndicator onClick={() => this.setState({ filterEdit: false })} />
+          </Box>
+          <Box overflow={'auto'}>
+            <Form
+              value={this.state.filterValue}
+              onChange={(newValue) => {
+                const fieldsNames = Object.keys(newValue);
+
+                const res = fieldsNames.flatMap((key, index) => {
+                  const condition = [key, 'co', newValue[key]];
+
+                  return index + 1 === fieldsNames.length ? [condition] : [condition, 'AND'];
+                });
+
+                const actionGetItemsParams = this.state.actionGetItemsParams;
+                actionGetItemsParams.filter = res;
+
+                this.setState({
+                  filterValue: newValue,
+                  actionGetItemsParams: actionGetItemsParams
+                });
+                this.reloadData();
+              }}>
+              {this.renderFormFields(
+                this.props.fields.filter((field) => {
+                  return field.filter !== undefined && field.filter !== false;
+                })
+              )}
+            </Form>
+          </Box>
         </Box>
       </Layer>
     );
@@ -444,8 +454,15 @@ export class DataTable extends React.Component<Props, State> {
       <>
         {this.state.edit !== null && this.renderManipulateLayer(this.renderEditForm())}
         {this.state.create !== null && this.renderManipulateLayer(this.renderCreateForm())}
+        {this.state.filterEdit && this.renderSecondaryFiltersLayer()}
         <Box pad={'small'} height={'100%'} width={'100%'} justify={'between'} gap={'small'}>
           <Box width={'100%'} direction={'row'} justify={'between'}>
+            <Button
+              icon={<Filter />}
+              onClick={() => {
+                this.setState({ filterEdit: true });
+              }}
+            />
             <Button label={'Create'} onClick={this.createButtonOnClickCallback} />
           </Box>
           <Box height={'100%'} width={'100%'} overflow="auto">

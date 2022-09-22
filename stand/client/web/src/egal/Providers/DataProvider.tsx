@@ -24,6 +24,7 @@ export type ActionGetItemsParams = {
     per_page: number;
     page: number;
   };
+  filter?: any; // TODO: Normalize.
 };
 
 export type ActionResultPromise<T, F = any> = {
