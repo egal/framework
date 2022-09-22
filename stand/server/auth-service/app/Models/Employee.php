@@ -21,9 +21,9 @@ class Employee extends Model
         return ModelMetadata::make(Employee::class, FieldMetadata::make('id',FieldType::UUID))
             ->addFields([
                 FieldMetadata::make('address', FieldType::STRING)
-                    ->required(),
+                    ->default('Home Address'),
                 FieldMetadata::make('phone', FieldType::INTEGER)
-                    ->required()
+                    ->nullable()
                     ->addValidationRule('unique:employees,phone'),
                 FieldMetadata::make('adult', FieldType::BOOLEAN)
                     ->required(),

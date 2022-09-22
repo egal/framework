@@ -31,6 +31,7 @@ trait UsesModelMetadata
 
         $this->setKeyProperties();
         $this->setValidationRules();
+        $this->setDefaultAttributes();
 
         $this->mergeGuarded($this->modelMetadata->getGuardedFieldsNames());
         $this->makeHidden($this->modelMetadata->getHiddenFieldsNames());
@@ -49,6 +50,21 @@ trait UsesModelMetadata
             default:
                 $this->incrementing = false;
         }
+    }
+
+    private function setDefaultAttributes(): void
+    {
+        static::creating(static function (Model $model): void {
+            foreach ($model->getModelMetadata()->getFields() as $field) {
+                if (! $field->isNullable() && is_null($field->getDefault())) {
+                    continue;
+                }
+
+                if (! $model->getAttribute($field->getName())) {
+                    $model->setAttribute($field->getName(), $field->getDefault());
+                }
+            }
+        });
     }
 
     public abstract static function constructMetadata(): ModelMetadata;
