@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Egal\Model\Enums\AttributeType;
 use Egal\Model\Metadata\ActionMetadata;
+use Egal\Model\Metadata\ActionParameterMetadata;
 use Egal\Model\Metadata\FieldMetadata;
 use Egal\Model\Metadata\ModelMetadata;
 use Egal\Model\Model;
@@ -30,7 +31,17 @@ class AdditionalSpeakerLanguage extends Model
                 FieldMetadata::make('updated_at', AttributeType::DATETIME),
             ])
             ->addActions([
-                ActionMetadata::make('create'),
+                ActionMetadata::make('create')->addParameters(
+                    [
+                        ActionParameterMetadata::make('language_id', AttributeType::STRING)
+                            ->required()
+                            ->setDefaultValue('en'),
+                        ActionParameterMetadata::make('speaker_id', AttributeType::STRING)
+                            ->required()
+                            ->addValidationRule('exists:speakers,id')
+                    ],
+
+                ),
                 ActionMetadata::make('update'),
                 ActionMetadata::make('getMetadata'),
                 ActionMetadata::make('getItems'),
