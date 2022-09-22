@@ -310,7 +310,7 @@ export class DataTable extends React.Component<Props, State> {
       throw new Error();
     }
 
-    return this.action()
+    this.action()
       .update(this.state.edit.attributes)
       .then(() => {
         this.reloadData();
