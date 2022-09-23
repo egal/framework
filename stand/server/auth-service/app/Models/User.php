@@ -92,8 +92,7 @@ class User extends BaseUser
             $defaultRoles = Role::query()
                 ->where('is_default', true)
                 ->get();
-            $user->roles()
-                ->attach($defaultRoles->pluck('id'));
+            $user->roles()->attach($defaultRoles->pluck('id'));
         });
     }
 

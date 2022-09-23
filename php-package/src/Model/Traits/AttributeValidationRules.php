@@ -23,13 +23,6 @@ trait AttributeValidationRules
         return $this;
     }
 
-    public function nullable(): self
-    {
-        $this->validationRules[] = ValidationRules::NULLABLE->value;
-
-        return $this;
-    }
-
     public function string(): self
     {
         $this->validationRules[] = ValidationRules::STRING->value;

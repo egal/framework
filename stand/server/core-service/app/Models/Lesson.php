@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use Egal\Model\Enums\AttributeType;
+use Egal\Model\Enums\FieldType;
 use Egal\Model\Enums\RelationType;
 use Egal\Model\Metadata\ActionMetadata;
 use Egal\Model\Metadata\FieldMetadata;
@@ -29,31 +29,25 @@ class Lesson extends Model
 
     public static function constructMetadata(): ModelMetadata
     {
-        return ModelMetadata::make(self::class, FieldMetadata::make('id', AttributeType::INTEGER))
+        return ModelMetadata::make(self::class, FieldMetadata::make('id', FieldType::INTEGER))
             ->addFields([
-                FieldMetadata::make('speaker_id', AttributeType::UUID)
+                FieldMetadata::make('speaker_id', FieldType::UUID)
                     ->required()
-                    ->addValidationRule('exists:speakers,id')
-                    ->fillable(),
-                FieldMetadata::make('school_id', AttributeType::UUID)
+                    ->addValidationRule('exists:speakers,id'),
+                FieldMetadata::make('school_id', FieldType::UUID)
                     ->required()
-                    ->addValidationRule('exists:schools,id')
-                    ->fillable(),
-                FieldMetadata::make('stage', AttributeType::STRING)
-                    ->required()
-                    ->fillable(),
-                FieldMetadata::make('chat_id', AttributeType::UUID)
+                    ->addValidationRule('exists:schools,id'),
+                FieldMetadata::make('stage', FieldType::STRING)
+                    ->required(),
+                FieldMetadata::make('chat_id', FieldType::UUID)
                     ->addValidationRule('unique:lessons,chat_id')
-                    ->nullable()
-                    ->fillable(),
-                FieldMetadata::make('lesson_request_id', AttributeType::INTEGER)
-                    ->fillable()
+                    ->nullable(),
+                FieldMetadata::make('lesson_request_id', FieldType::INTEGER)
                     ->addValidationRule('exists:lesson_requests,id'),
-                FieldMetadata::make('starts_at', AttributeType::DATETIME)
-                    ->date()
-                    ->fillable(),
-                FieldMetadata::make('created_at', AttributeType::DATETIME),
-                FieldMetadata::make('updated_at', AttributeType::DATETIME),
+                FieldMetadata::make('starts_at', FieldType::DATETIME)
+                    ->date(),
+                FieldMetadata::make('created_at', FieldType::DATETIME),
+                FieldMetadata::make('updated_at', FieldType::DATETIME),
             ])
             ->addRelations([
                 RelationMetadata::make(

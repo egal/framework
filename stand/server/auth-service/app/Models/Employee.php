@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use Egal\Model\Enums\AttributeType;
+use Egal\Model\Enums\FieldType;
 use Egal\Model\Metadata\ActionMetadata;
 use Egal\Model\Metadata\FieldMetadata;
 use Egal\Model\Metadata\ModelMetadata;
@@ -18,30 +18,24 @@ class Employee extends Model
 
     public static function constructMetadata(): ModelMetadata
     {
-        return ModelMetadata::make(Employee::class, FieldMetadata::make('id',AttributeType::STRING))
+        return ModelMetadata::make(Employee::class, FieldMetadata::make('id',FieldType::UUID))
             ->addFields([
-                FieldMetadata::make('address', AttributeType::STRING)
-                    ->required()
-                    ->fillable(),
-                FieldMetadata::make('phone', AttributeType::INTEGER)
-                    ->required()
-                    ->fillable()
+                FieldMetadata::make('address', FieldType::STRING)
+                    ->default('Home Address'),
+                FieldMetadata::make('phone', FieldType::INTEGER)
+                    ->nullable()
                     ->addValidationRule('unique:employees,phone'),
-                FieldMetadata::make('adult', AttributeType::BOOLEAN)
-                    ->required()
-                    ->fillable(),
-                FieldMetadata::make('weight', AttributeType::NUMERIC)
-                    ->required()
-                    ->fillable(),
-                FieldMetadata::make('created_at', AttributeType::DATETIME)
-                    ->guarded()
-                    ->fillable(),
-                FieldMetadata::make('updated_at', AttributeType::DATETIME)
-                    ->guarded()
-                    ->fillable(),
+                FieldMetadata::make('adult', FieldType::BOOLEAN)
+                    ->required(),
+                FieldMetadata::make('weight', FieldType::NUMERIC)
+                    ->required(),
+                FieldMetadata::make('created_at', FieldType::DATETIME)
+                    ->guarded(),
+                FieldMetadata::make('updated_at', FieldType::DATETIME)
+                    ->guarded(),
             ])
             ->addFakeFields([
-                FieldMetadata::make('height',  AttributeType::NUMERIC)
+                FieldMetadata::make('height',  FieldType::NUMERIC)
                     ->sometimes()
                     ->required()
             ])

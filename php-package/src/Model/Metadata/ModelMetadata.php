@@ -7,15 +7,19 @@ namespace Egal\Model\Metadata;
 use Egal\Model\Exceptions\ActionNotFoundException;
 use Egal\Model\Exceptions\FieldNotFoundException;
 use Egal\Model\Exceptions\RelationNotFoundException;
+use Egal\Model\Exceptions\UnsupportedFilterValueTypeException;
+use Illuminate\Validation\Concerns\ValidatesAttributes;
 
 class ModelMetadata
 {
 
-    protected string $modelClass;
+    use ValidatesAttributes;
 
-    protected string $modelShortName;
+    protected readonly string $modelClass;
 
-    protected ?FieldMetadata $key;
+    protected readonly string $modelShortName;
+
+    protected readonly ?FieldMetadata $key;
 
     protected array $fakeFields = [];
 
@@ -103,13 +107,10 @@ class ModelMetadata
 
     public function fieldExist(string $fieldName): bool
     {
-        foreach ($this->fields as $field) {
-            if ($field->getName() === $fieldName) {
-                return true;
-            }
-        }
-
-        return false;
+        return array_filter(
+                [...$this->fields, ...$this->fakeFields, $this->getKey()],
+                fn (FieldMetadata $field) => $field->getName() === $fieldName
+            ) !== [];
     }
 
     /**
@@ -117,22 +118,14 @@ class ModelMetadata
      */
     public function fieldExistOrFail(string $fieldName): bool
     {
-        if (!$this->fieldExist($fieldName)) {
-            throw FieldNotFoundException::make($fieldName);
-        }
-
-        return true;
+        return $this->fieldExist($fieldName)
+            ? true
+            : throw FieldNotFoundException::make($fieldName);
     }
 
     public function relationExist(string $relationName): bool
     {
-        foreach ($this->relations as $relation) {
-            if ($relation->getName() === $relationName) {
-                return true;
-            }
-        }
-
-        return false;
+        return isset($this->getRelations()[$relationName]);
     }
 
     /**
@@ -145,6 +138,25 @@ class ModelMetadata
         }
 
         return true;
+    }
+
+    /**
+     * @throws UnsupportedFilterValueTypeException
+     */
+    public function validateFieldValueType(string $fieldName, mixed $value): void
+    {
+        $field = array_filter(
+            [...$this->fields, ...$this->fakeFields, $this->getKey()],
+            fn (FieldMetadata $field) => $field->getName() === $fieldName
+        );
+        $field = reset($field);
+
+        $validationMethod = 'validate' . ucfirst($field->getType()->value);
+        $fieldValidated = $this->$validationMethod($fieldName, $value);
+
+        if (!$fieldValidated) {
+            throw UnsupportedFilterValueTypeException::make($fieldName, $field->getType()->value);
+        }
     }
 
     public function getModelShortName(): string
@@ -191,14 +203,6 @@ class ModelMetadata
     public function getHiddenFieldsNames(): array
     {
         return array_map(fn($field) => $field->getName(), array_filter($this->fields, fn($field) => $field->isHidden()));
-    }
-
-    /**
-     * @return string[]
-     */
-    public function getFillableFieldsNames(): array
-    {
-        return array_map(fn($field) => $field->getName(), array_filter($this->fields, fn($field) => $field->isFillable()));
     }
 
     /**

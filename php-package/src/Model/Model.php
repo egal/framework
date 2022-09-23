@@ -68,17 +68,6 @@ abstract class Model extends EloquentModel
     ];
 
     /**
-     * The attributes that are mass assignable.
-     *
-     * @var string[]
-     */
-    protected $fillable = [
-        'id',
-        'name',
-        'is_default',
-    ];
-
-    /**
      * @var string[]
      */
     protected $hidden = [

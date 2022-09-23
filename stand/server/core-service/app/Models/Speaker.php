@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use Egal\Model\Enums\AttributeType;
+use Egal\Model\Enums\FieldType;
 use Egal\Model\Enums\RelationType;
 use Egal\Model\Metadata\ActionMetadata;
 use Egal\Model\Metadata\FieldMetadata;
@@ -30,28 +30,22 @@ class Speaker extends EgalModel
 
     public static function constructMetadata(): ModelMetadata
     {
-        return ModelMetadata::make(self::class, FieldMetadata::make('id', AttributeType::UUID))
+        return ModelMetadata::make(self::class, FieldMetadata::make('id', FieldType::UUID))
             ->addFields([
-                FieldMetadata::make('user_id', AttributeType::UUID)
+                FieldMetadata::make('user_id', FieldType::UUID)
                     ->required()
-                    ->fillable()
                     ->hidden(),
-                FieldMetadata::make('name', AttributeType::STRING)
-                    ->required()
-                    ->fillable(),
-                FieldMetadata::make('surname', AttributeType::STRING)
-                    ->required()
-                    ->fillable(),
-                FieldMetadata::make('avatar', AttributeType::STRING)
-                    ->fillable(),
-                FieldMetadata::make('video', AttributeType::STRING)
-                    ->fillable(),
-                FieldMetadata::make('country_id', AttributeType::STRING)
+                FieldMetadata::make('name', FieldType::STRING)
+                    ->required(),
+                FieldMetadata::make('surname', FieldType::STRING)
+                    ->required(),
+                FieldMetadata::make('avatar', FieldType::STRING),
+                FieldMetadata::make('video', FieldType::STRING),
+                FieldMetadata::make('country_id', FieldType::STRING)
                     ->addValidationRule('exists:countries,id')
-                    ->required()
-                    ->fillable(),
-                FieldMetadata::make('created_at', AttributeType::DATETIME),
-                FieldMetadata::make('updated_at', AttributeType::DATETIME),
+                    ->required(),
+                FieldMetadata::make('created_at', FieldType::DATETIME),
+                FieldMetadata::make('updated_at', FieldType::DATETIME),
             ])
             ->addRelations([
                 RelationMetadata::make(
