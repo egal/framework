@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace Egal\Model\Filter\FilterConditions;
 
 use Egal\Model\Builder;
+use Egal\Model\Exceptions\FieldNotFoundException;
 use Egal\Model\Exceptions\FilterException;
+use Egal\Model\Exceptions\RelationNotFoundException;
 use Egal\Model\Exceptions\UnsupportedFieldPatternInFilterConditionException;
 use Egal\Model\Exceptions\UnsupportedFilterConditionException;
 use Egal\Model\Exceptions\UnsupportedFilterValueTypeException;
@@ -31,6 +33,15 @@ class SimpleFilterConditionApplier extends FilterConditionApplier
     private const END_WITH_OPERATOR = 'ew';
     private const END_WITH_IGNORE_CASE_OPERATOR = 'ewi';
 
+    /**
+     * @throws FieldNotFoundException
+     * @throws UnsupportedFilterConditionException
+     * @throws RelationNotFoundException
+     * @throws UnsupportedFieldPatternInFilterConditionException
+     * @throws UnsupportedFilterValueTypeException
+     * @throws FilterException
+     * @throws \ReflectionException
+     */
     public static function apply(Builder &$builder, FilterCondition $condition, string $boolean): void
     {
         $operator = static::getSqlOperator($condition->getOperator());
@@ -69,7 +80,7 @@ class SimpleFilterConditionApplier extends FilterConditionApplier
         foreach ($types as $type) {
             $relationModelMetadata = (new $type())->getModelMetadata();
             $relationModelMetadata->fieldExistOrFail($field);
-// TODO: валидировать поле по указанному типу - перенесено в общие правила валидации
+// TODO: выяснить предмет валидации - зачем, непонятно
 // $relationModelMetadata->validateFieldValueType($field, $value);
         }
 
@@ -127,7 +138,7 @@ class SimpleFilterConditionApplier extends FilterConditionApplier
         $relationName = camel_case($relation);
         $relationModelMetadata = $model->$relationName()->getQuery()->getModel()->getModelMetadata();
         $relationModelMetadata->fieldExistOrFail($field);
-// TODO: валидировать поле по указанному типу - перенесено в общие правила валидации
+// TODO: выяснить предмет валидации - зачем, непонятно
 // $relationModelMetadata->validateFieldValueType($field, $value);
         $clause = static function (Builder $query) use ($field, $operator, $value): void {
             $query->where($field, $operator, $value);
