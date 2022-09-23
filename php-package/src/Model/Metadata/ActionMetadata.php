@@ -79,8 +79,8 @@ class ActionMetadata
     public function toArray(): array
     {
         $actionMetadata = [];
-        $actionMetadata['parameters'] = array_map(fn($parameter) => $parameter->toArray(), $this->parameters);
         $actionMetadata['name'] = $this->name;
+        $actionMetadata['parameters'] = array_map(fn(ActionParameterMetadata $parameter) => $parameter->toArray(), $this->parameters);
 
         return $actionMetadata;
     }

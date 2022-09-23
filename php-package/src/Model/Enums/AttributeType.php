@@ -15,5 +15,6 @@ enum AttributeType: string
     case JSON       = 'json';
     case BOOLEAN    = 'boolean';
     case NUMERIC    = 'numeric';
+    case ARRAY      = 'array';
 
 }

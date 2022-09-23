@@ -2,9 +2,10 @@
 
 namespace App\Models;
 
-use Egal\Model\Enums\FieldType;
+use Egal\Model\Enums\AttributeType;
 use Egal\Model\Enums\RelationType;
 use Egal\Model\Metadata\ActionMetadata;
+use Egal\Model\Metadata\ActionParameterMetadata;
 use Egal\Model\Metadata\FieldMetadata;
 use Egal\Model\Metadata\ModelMetadata;
 use Egal\Model\Metadata\RelationMetadata;
@@ -30,22 +31,22 @@ class Speaker extends EgalModel
 
     public static function constructMetadata(): ModelMetadata
     {
-        return ModelMetadata::make(self::class, FieldMetadata::make('id', FieldType::UUID))
+        return ModelMetadata::make(self::class, FieldMetadata::make('id', AttributeType::UUID))
             ->addFields([
-                FieldMetadata::make('user_id', FieldType::UUID)
+                FieldMetadata::make('user_id', AttributeType::UUID)
                     ->required()
                     ->hidden(),
-                FieldMetadata::make('name', FieldType::STRING)
+                FieldMetadata::make('name', AttributeType::STRING)
                     ->required(),
-                FieldMetadata::make('surname', FieldType::STRING)
+                FieldMetadata::make('surname', AttributeType::STRING)
                     ->required(),
-                FieldMetadata::make('avatar', FieldType::STRING),
-                FieldMetadata::make('video', FieldType::STRING),
-                FieldMetadata::make('country_id', FieldType::STRING)
+                FieldMetadata::make('avatar', AttributeType::STRING),
+                FieldMetadata::make('video', AttributeType::STRING),
+                FieldMetadata::make('country_id', AttributeType::STRING)
                     ->addValidationRule('exists:countries,id')
                     ->required(),
-                FieldMetadata::make('created_at', FieldType::DATETIME),
-                FieldMetadata::make('updated_at', FieldType::DATETIME),
+                FieldMetadata::make('created_at', AttributeType::DATETIME),
+                FieldMetadata::make('updated_at', AttributeType::DATETIME),
             ])
             ->addRelations([
                 RelationMetadata::make(
@@ -59,11 +60,29 @@ class Speaker extends EgalModel
             ])
             ->addActions([
                 ActionMetadata::make('create'),
-                ActionMetadata::make('update'),
+                ActionMetadata::make('update')->addParameters(
+                    [
+                        ActionParameterMetadata::make('id', AttributeType::UUID)
+                            ->required()
+                            ->addValidationRule('exists:speakers,id')
+                    ]
+                ),
                 ActionMetadata::make('getMetadata'),
                 ActionMetadata::make('getItems'),
-                ActionMetadata::make('delete'),
-                ActionMetadata::make('getItem'),
+                ActionMetadata::make('delete')->addParameters(
+                    [
+                        ActionParameterMetadata::make('id', AttributeType::UUID)
+                            ->required()
+                            ->addValidationRule('exists:speakers,id')
+                    ]
+                ),
+                ActionMetadata::make('getItem')->addParameters(
+                    [
+                        ActionParameterMetadata::make('id', AttributeType::UUID)
+                            ->required()
+                            ->addValidationRule('exists:speakers,id')
+                    ]
+                ),
                 ActionMetadata::make('getCount'),
                 ActionMetadata::make('createMany'),
                 ActionMetadata::make('updateMany'),

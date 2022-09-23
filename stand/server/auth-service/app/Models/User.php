@@ -11,6 +11,7 @@ use Egal\AuthServiceDependencies\Models\User as BaseUser;
 use Egal\Model\Enums\AttributeType;
 use Egal\Model\Enums\RelationType;
 use Egal\Model\Metadata\ActionMetadata;
+use Egal\Model\Metadata\ActionParameterMetadata;
 use Egal\Model\Metadata\FieldMetadata;
 use Egal\Model\Metadata\ModelMetadata;
 use Egal\Model\Metadata\RelationMetadata;
@@ -127,16 +128,45 @@ class User extends BaseUser
                 ),
             ])
             ->addActions([
-                ActionMetadata::make('register'),
-                ActionMetadata::make('login'),
+                ActionMetadata::make('register')->addParameters(
+                    [
+                        ActionParameterMetadata::make('password', AttributeType::STRING)
+                            ->required()
+                    ]
+                ),
+                ActionMetadata::make('login')->addParameters(
+                    [
+                        ActionParameterMetadata::make('email', AttributeType::STRING)
+                            ->required()
+                            ->addValidationRule('exists:users,email'),
+                    ]
+                ),
                 ActionMetadata::make('loginToService'),
                 ActionMetadata::make('refreshUserMasterToken'),
                 ActionMetadata::make('create'),
-                ActionMetadata::make('update'),
+                ActionMetadata::make('update')->addParameters(
+                    [
+                        ActionParameterMetadata::make('id', AttributeType::UUID)
+                            ->required()
+                            ->addValidationRule('exists:users,id')
+                    ]
+                ),
                 ActionMetadata::make('getMetadata'),
                 ActionMetadata::make('getItems'),
-                ActionMetadata::make('delete'),
-                ActionMetadata::make('getItem'),
+                ActionMetadata::make('delete')->addParameters(
+                    [
+                        ActionParameterMetadata::make('id', AttributeType::UUID)
+                            ->required()
+                            ->addValidationRule('exists:users,id')
+                    ]
+                ),
+                ActionMetadata::make('getItem')->addParameters(
+                    [
+                        ActionParameterMetadata::make('id', AttributeType::UUID)
+                            ->required()
+                            ->addValidationRule('exists:users,id')
+                    ]
+                ),
                 ActionMetadata::make('getCount'),
                 ActionMetadata::make('createMany'),
                 ActionMetadata::make('updateMany'),

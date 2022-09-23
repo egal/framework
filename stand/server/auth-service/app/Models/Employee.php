@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Egal\Model\Enums\FieldType;
+use Egal\Model\Enums\AttributeType;
 use Egal\Model\Metadata\ActionMetadata;
+use Egal\Model\Metadata\ActionParameterMetadata;
 use Egal\Model\Metadata\FieldMetadata;
 use Egal\Model\Metadata\ModelMetadata;
 use Egal\Model\Model;
@@ -18,34 +19,52 @@ class Employee extends Model
 
     public static function constructMetadata(): ModelMetadata
     {
-        return ModelMetadata::make(Employee::class, FieldMetadata::make('id',FieldType::UUID))
+        return ModelMetadata::make(Employee::class, FieldMetadata::make('id',AttributeType::UUID))
             ->addFields([
-                FieldMetadata::make('address', FieldType::STRING)
+                FieldMetadata::make('address', AttributeType::STRING)
                     ->default('Home Address'),
-                FieldMetadata::make('phone', FieldType::INTEGER)
+                FieldMetadata::make('phone', AttributeType::INTEGER)
                     ->nullable()
                     ->addValidationRule('unique:employees,phone'),
-                FieldMetadata::make('adult', FieldType::BOOLEAN)
+                FieldMetadata::make('adult', AttributeType::BOOLEAN)
                     ->required(),
-                FieldMetadata::make('weight', FieldType::NUMERIC)
+                FieldMetadata::make('weight', AttributeType::NUMERIC)
                     ->required(),
-                FieldMetadata::make('created_at', FieldType::DATETIME)
+                FieldMetadata::make('created_at', AttributeType::DATETIME)
                     ->guarded(),
-                FieldMetadata::make('updated_at', FieldType::DATETIME)
+                FieldMetadata::make('updated_at', AttributeType::DATETIME)
                     ->guarded(),
             ])
             ->addFakeFields([
-                FieldMetadata::make('height',  FieldType::NUMERIC)
+                FieldMetadata::make('height',  AttributeType::NUMERIC)
                     ->sometimes()
                     ->required()
             ])
             ->addActions([
                 ActionMetadata::make('create'),
-                ActionMetadata::make('update'),
+                ActionMetadata::make('update')->addParameters(
+                    [
+                        ActionParameterMetadata::make('id', AttributeType::UUID)
+                            ->required()
+                            ->addValidationRule('exists:employees,id')
+                    ]
+                ),
                 ActionMetadata::make('getMetadata'),
                 ActionMetadata::make('getItems'),
-                ActionMetadata::make('delete'),
-                ActionMetadata::make('getItem'),
+                ActionMetadata::make('delete')->addParameters(
+                    [
+                        ActionParameterMetadata::make('id', AttributeType::UUID)
+                            ->required()
+                            ->addValidationRule('exists:employees,id')
+                    ]
+                ),
+                ActionMetadata::make('getItem')->addParameters(
+                    [
+                        ActionParameterMetadata::make('id', AttributeType::UUID)
+                            ->required()
+                            ->addValidationRule('exists:employees,id')
+                    ]
+                ),
                 ActionMetadata::make('getCount'),
                 ActionMetadata::make('createMany'),
                 ActionMetadata::make('updateMany'),
