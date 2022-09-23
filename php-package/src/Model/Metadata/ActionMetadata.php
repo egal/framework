@@ -17,9 +17,11 @@ class ActionMetadata
     // TODO: добавить обработку дефолтных значений параметров
     // TODO: добавить правила валидации для action
     // TODO: добавить примеры запроса-ответа
+
     public const METHOD_NAME_PREFIX = 'action';
 
     protected readonly string $name;
+
     /**
      * @var ActionParameterMetadata[]
      */

@@ -19,7 +19,7 @@ class Employee extends Model
 
     public static function constructMetadata(): ModelMetadata
     {
-        return ModelMetadata::make(Employee::class, FieldMetadata::make('id',AttributeType::UUID))
+        return ModelMetadata::make(Employee::class, FieldMetadata::make('id', AttributeType::UUID))
             ->addFields([
                 FieldMetadata::make('address', AttributeType::STRING)
                     ->default('Home Address'),
@@ -36,35 +36,32 @@ class Employee extends Model
                     ->guarded(),
             ])
             ->addFakeFields([
-                FieldMetadata::make('height',  AttributeType::NUMERIC)
+                FieldMetadata::make('height', AttributeType::NUMERIC)
                     ->sometimes()
                     ->required()
             ])
             ->addActions([
                 ActionMetadata::make('create'),
-                ActionMetadata::make('update')->addParameters(
-                    [
+                ActionMetadata::make('update')
+                    ->addParameters([
                         ActionParameterMetadata::make('id', AttributeType::UUID)
                             ->required()
                             ->addValidationRule('exists:employees,id')
-                    ]
-                ),
+                    ]),
                 ActionMetadata::make('getMetadata'),
                 ActionMetadata::make('getItems'),
-                ActionMetadata::make('delete')->addParameters(
-                    [
+                ActionMetadata::make('delete')
+                    ->addParameters([
                         ActionParameterMetadata::make('id', AttributeType::UUID)
                             ->required()
                             ->addValidationRule('exists:employees,id')
-                    ]
-                ),
-                ActionMetadata::make('getItem')->addParameters(
-                    [
+                    ]),
+                ActionMetadata::make('getItem')
+                    ->addParameters([
                         ActionParameterMetadata::make('id', AttributeType::UUID)
                             ->required()
                             ->addValidationRule('exists:employees,id')
-                    ]
-                ),
+                    ]),
                 ActionMetadata::make('getCount'),
                 ActionMetadata::make('createMany'),
                 ActionMetadata::make('updateMany'),

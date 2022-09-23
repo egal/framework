@@ -15,7 +15,7 @@ use Egal\Model\Traits\HasEvents;
 use Egal\Model\Traits\HashGuardable;
 use Egal\Model\Traits\InstanceForAction;
 use Egal\Model\Traits\Pagination;
-use Egal\Model\Traits\UseActionParametersMetadata;
+use Egal\Model\Traits\UseActionParameterMetadata;
 use Egal\Model\Traits\UsesBuilder;
 use Egal\Model\Traits\UsesModelMetadata;
 use Egal\Model\Traits\UsesValidator;
@@ -34,7 +34,7 @@ abstract class Model extends EloquentModel
     use Pagination;
     use UsesBuilder;
     use UsesModelMetadata;
-    use UseActionParametersMetadata;
+    use UseActionParameterMetadata;
     use UsesValidator;
     use XssGuardable;
     use InstanceForAction;

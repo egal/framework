@@ -40,29 +40,26 @@ class Language extends Model
             ])
             ->addActions([
                 ActionMetadata::make('create'),
-                ActionMetadata::make('update')->addParameters(
-                    [
+                ActionMetadata::make('update')
+                    ->addParameters([
                         ActionParameterMetadata::make('id', AttributeType::STRING)
                             ->required()
                             ->addValidationRule('exists:languages,id')
-                    ]
-                ),
+                    ]),
                 ActionMetadata::make('getMetadata'),
                 ActionMetadata::make('getItems'),
-                ActionMetadata::make('delete')->addParameters(
-                    [
+                ActionMetadata::make('delete')
+                    ->addParameters([
                         ActionParameterMetadata::make('id', AttributeType::STRING)
                             ->required()
                             ->addValidationRule('exists:languages,id')
-                    ]
-                ),
-                ActionMetadata::make('getItem')->addParameters(
-                    [
+                    ]),
+                ActionMetadata::make('getItem')
+                    ->addParameters([
                         ActionParameterMetadata::make('id', AttributeType::STRING)
                             ->required()
                             ->addValidationRule('exists:languages,id')
-                    ]
-                ),
+                    ]),
                 ActionMetadata::make('getCount'),
                 ActionMetadata::make('createMany'),
                 ActionMetadata::make('updateMany'),

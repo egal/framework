@@ -8,7 +8,7 @@ use Egal\Model\Facades\ModelMetadataManager;
 use Egal\Model\Metadata\ActionMetadata;
 use Egal\Model\Metadata\ActionParameterMetadata;
 
-trait UseActionParametersMetadata
+trait UseActionParameterMetadata
 {
 
     private array $parametersValidationRules = [];
@@ -18,7 +18,7 @@ trait UseActionParametersMetadata
         $this->setParametersValidationRules();
     }
 
-    public function setParametersValidationRules(): void
+    private function setParametersValidationRules(): void
     {
         $modelMetadata = ModelMetadataManager::getModelMetadata(static::class);
         foreach ($modelMetadata->getActions() as $action) {
@@ -29,7 +29,7 @@ trait UseActionParametersMetadata
 
     }
 
-    public function setParameterValidationRules(ActionMetadata $action, ActionParameterMetadata $parameter): void
+    private function setParameterValidationRules(ActionMetadata $action, ActionParameterMetadata $parameter): void
     {
         $this->parametersValidationRules[$action->getName()][$parameter->getName()] = $parameter->getValidationRules();
     }

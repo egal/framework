@@ -109,7 +109,7 @@ class User extends BaseUser
 
     public static function constructMetadata(): ModelMetadata
     {
-        return ModelMetadata::make(User::class, FieldMetadata::make('id',AttributeType::UUID))
+        return ModelMetadata::make(User::class, FieldMetadata::make('id', AttributeType::UUID))
             ->addFields([
                 FieldMetadata::make('email', AttributeType::STRING)
                     ->required()
@@ -144,29 +144,26 @@ class User extends BaseUser
                 ActionMetadata::make('loginToService'),
                 ActionMetadata::make('refreshUserMasterToken'),
                 ActionMetadata::make('create'),
-                ActionMetadata::make('update')->addParameters(
-                    [
+                ActionMetadata::make('update')
+                    ->addParameters([
                         ActionParameterMetadata::make('id', AttributeType::UUID)
                             ->required()
                             ->addValidationRule('exists:users,id')
-                    ]
-                ),
+                    ]),
                 ActionMetadata::make('getMetadata'),
                 ActionMetadata::make('getItems'),
-                ActionMetadata::make('delete')->addParameters(
-                    [
+                ActionMetadata::make('delete')
+                    ->addParameters([
                         ActionParameterMetadata::make('id', AttributeType::UUID)
                             ->required()
                             ->addValidationRule('exists:users,id')
-                    ]
-                ),
-                ActionMetadata::make('getItem')->addParameters(
-                    [
+                    ]),
+                ActionMetadata::make('getItem')
+                    ->addParameters([
                         ActionParameterMetadata::make('id', AttributeType::UUID)
                             ->required()
                             ->addValidationRule('exists:users,id')
-                    ]
-                ),
+                    ]),
                 ActionMetadata::make('getCount'),
                 ActionMetadata::make('createMany'),
                 ActionMetadata::make('updateMany'),
