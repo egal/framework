@@ -85,11 +85,11 @@ abstract class Model extends EloquentModel
      * Getting entity.
      *
      * @param int|string $id Entity identification.
-     * @param string[] $withs Array of relations displayed for an entity.
+     * @param string[] $relations Array of relations displayed for an entity.
      * @return mixed[] Entity as an associative array.
      * @throws \Egal\Model\Exceptions\ObjectNotFoundException
      */
-    public static function actionGetItem($id, array $withs = []): array
+    public static function actionGetItem($id, array $relations = []): array
     {
         $instance = new static();
         $instance->makeIsInstanceForAction();
@@ -97,7 +97,7 @@ abstract class Model extends EloquentModel
 
         $item = $instance->newQuery()
             ->makeModelIsInstanceForAction()
-            ->with($withs)
+            ->with($relations)
             ->find($id);
 
         if (!$item) {
@@ -111,16 +111,16 @@ abstract class Model extends EloquentModel
      * Getting a array of entities
      *
      * @param mixed[]|null $pagination Entity pagination array.
-     * @param string[] $withs Array of relations displayed for an entity.
+     * @param string[] $relations Array of relations displayed for an entity.
      * @param mixed[] $filter Serialized array from {@see \Egal\Model\Filter\FilterPart}.
      * @param mixed[] $order Sorting array of displayed entities, then converted to {@see \Egal\Model\Order\Order}[].
      * @return mixed[] The result of the query and the paginator as an associative array.
      */
     public static function actionGetItems(
         ?array $pagination = null,
-        array $withs = [],
-        array $filter = [],
-        array $order = []
+        array  $relations = [],
+        array  $filter = [],
+        array  $order = []
     ): array {
         $instance = new static();
         $instance->makeIsInstanceForAction();
@@ -129,7 +129,7 @@ abstract class Model extends EloquentModel
             ->makeModelIsInstanceForAction()
             ->setOrderFromArray($order)
             ->setFilterFromArray($filter)
-            ->setWithFromArray($withs);
+            ->setWithFromArray($relations);
 
         if (isset($pagination)) {
             $paginator = $builder->difficultPaginateFromArray($pagination);
