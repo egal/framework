@@ -24,16 +24,8 @@ import {
 import { Close, StatusWarning, MoreVertical, Edit, Trash } from 'grommet-icons';
 
 import { Model as ModelMetadata, Field as FieldMetadata } from '../Utils/Metadata';
-
-interface FieldConfig<TRowType = any> {
-  name: string;
-  header: string;
-  renderType?: 'boolean' | 'checkbox' | 'toggle';
-  renderDataTable?: (datum: TRowType) => React.ReactNode;
-  formInputEnabled?: boolean;
-  renderFormInput?: () => React.ReactNode; // TODO: Нормальные параметры.
-  dataTableColumnAdditionalProps?: any | GrommetColumnConfig<TRowType>;
-}
+import { FieldConfig } from '../Types/FieldConfigType';
+import { Form as CustomForm } from '../Components/Form';
 
 interface Props<TRowType = any> {
   modelName: string;
@@ -134,6 +126,16 @@ export class DataTable extends React.Component<Props, State> {
     }
 
     return result;
+  }
+
+  getFieldMetadataList(): FieldMetadata[] {
+    if (this.state.modelMetadata === null) return [];
+
+    return [
+      this.state.modelMetadata.primary_key,
+      ...this.state.modelMetadata.fields,
+      ...this.state.modelMetadata.fake_fields
+    ];
   }
 
   paginationOnChangeCallback({ page }: { page: number }): void {
@@ -288,6 +290,7 @@ export class DataTable extends React.Component<Props, State> {
       throw new Error();
     }
 
+    console.log(newValue);
     this.setState({ edit: { attributes: newValue, originalAttributes: this.state.edit.originalAttributes } });
   }
 
@@ -443,7 +446,14 @@ export class DataTable extends React.Component<Props, State> {
     return (
       <>
         {this.state.edit !== null && this.renderManipulateLayer(this.renderEditForm())}
-        {this.state.create !== null && this.renderManipulateLayer(this.renderCreateForm())}
+        {this.state.create !== null &&
+          this.renderManipulateLayer(
+            <CustomForm
+              onSubmit={() => console.log('submit callback')}
+              modelFields={this.getFieldMetadataList()}
+              fieldConfigs={this.props.fields}
+            />
+          )}
         <Box pad={'small'} height={'100%'} width={'100%'} justify={'between'} gap={'small'}>
           <Box width={'100%'} direction={'row'} justify={'between'}>
             <Button label={'Create'} onClick={this.createButtonOnClickCallback} />

@@ -46,7 +46,8 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
               header: 'Home',
               items: [
                 { header: 'Home', path: '/', element: <h1>Home page</h1> },
-                { header: 'Home', path: '/', element: <h1>Home page</h1> }
+                { header: 'Home', path: '/', element: <h1>Home page</h1> },
+                { header: 'New page', path: '/new-page', element: <h1>New page</h1> }
               ]
             }
           ]
