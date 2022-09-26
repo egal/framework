@@ -1,20 +1,19 @@
 import React from 'react';
-import { Box, Button, FormField, Form as GrommetForm } from 'grommet';
+import { Box, FormField, Form as GrommetForm } from 'grommet';
 import { UniversalInput } from './UniversalInput';
 import { FieldConfig } from '../Types/FieldConfigType';
 import { Field } from '../Utils/Metadata';
-import { DataProvider } from '../Providers/DataProvider';
 
 interface Props {
   modelFields: Field[];
   fieldConfigs: FieldConfig[];
   type: 'create' | 'edit';
-  // editOriginal;
-  onSubmit?: () => void;
-  onError?: () => void;
-  onSuccess?: () => void;
-  modelName?: string;
-  serviceName?: string;
+  onlyFillable: boolean;
+  controlPanel?: React.ReactElement;
+  value?: Record<string, unknown>;
+  error?: string;
+  onSubmit?: (attributes: Record<string, unknown>) => void;
+  onChange?: (attributes: Record<string, unknown>) => void;
 }
 
 interface State {
@@ -24,7 +23,8 @@ interface State {
 
 export class Form extends React.Component<Props, State> {
   static defaultProps = {
-    type: 'create'
+    type: 'create',
+    onlyFillable: false
   };
 
   state: State = {
@@ -35,7 +35,13 @@ export class Form extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
 
+    if (this.props.value) {
+      this.state.attributes = this.props.value;
+    }
     this.FormFields = this.FormFields.bind(this);
+    this.FormApiError = this.FormApiError.bind(this);
+    this.onChangeCallback = this.onChangeCallback.bind(this);
+    this.resetState = this.resetState.bind(this);
   }
 
   getMetadata(fieldName: string): Field {
@@ -46,8 +52,9 @@ export class Form extends React.Component<Props, State> {
   }
 
   FormFields() {
-    // eslint-disable-next-line no-debugger
-    const fields = this.props.fieldConfigs.filter((field) => this.getMetadata(field.name).fillable);
+    const fields = this.props.onlyFillable
+      ? this.props.fieldConfigs.filter((field) => this.getMetadata(field.name).fillable)
+      : this.props.fieldConfigs;
 
     return (
       <>
@@ -69,39 +76,43 @@ export class Form extends React.Component<Props, State> {
   }
 
   FormApiError() {
-    const error = 'TEST_ERROR';
-
-    return error ? (
+    return this.props.error ? (
       <Box direction={'row'} justify={'center'} pad={'xsmall'} background={'status-error'}>
-        {error}
+        {this.props.error}
       </Box>
     ) : null;
   }
 
   onChangeCallback(newValue: Record<string, unknown>) {
     this.setState({ attributes: newValue });
+
+    if (this.props.onChange) {
+      this.props.onChange(this.state.attributes);
+    }
   }
-  createFromOnSubmitCallback() {
-    this.action()
-      .create(this.state.create.attributes)
-      .then(() => {
-        this.setState({ create: null, formApiError: '' });
-        this.reloadData();
-      })
-      .catch((error) => {
-        this.setState({ formApiError: this.getErrorByInternalCode(error) });
-      });
+
+  onSubmitCallback() {
+    if (!this.props.onSubmit) return;
+
+    this.props.onSubmit(this.state.attributes);
+  }
+
+  resetState() {
+    if (!this.props.value) return;
+
+    this.setState({ attributes: this.props.value });
   }
 
   render() {
     return (
-      // <div></div>
-      <GrommetForm onChange={this.onChangeCallback} onSubmit={this.props.onSubmit}>
+      <GrommetForm
+        value={this.state.attributes}
+        onReset={this.resetState}
+        onChange={this.onChangeCallback}
+        onSubmit={this.onSubmitCallback}>
         <this.FormFields />
         <this.FormApiError />
-        <Box direction={'row'} justify={'center'} gap="small" pad={{ top: 'small' }}>
-          <Button type="submit" primary label="Create" />
-        </Box>
+        {this.props.controlPanel}
       </GrommetForm>
     );
   }

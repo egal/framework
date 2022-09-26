@@ -39,7 +39,6 @@ type State = {
   items: null | ActionGetItemsResult; // TODO: Make not nullable.
   edit: null | {
     attributes: any;
-    originalAttributes: any;
   };
   create: null | {
     attributes: any;
@@ -74,11 +73,8 @@ export class DataTable extends React.Component<Props, State> {
     this.paginationOnChangeCallback = this.paginationOnChangeCallback.bind(this);
     this.manipulateLayerOnCloseCallback = this.manipulateLayerOnCloseCallback.bind(this);
     this.editFormOnSubmitCallback = this.editFormOnSubmitCallback.bind(this);
-    this.editFormOnResetCallback = this.editFormOnResetCallback.bind(this);
-    this.editFormOnChangeCallback = this.editFormOnChangeCallback.bind(this);
     this.editFormOnDeleteCallback = this.editFormOnDeleteCallback.bind(this);
     this.createButtonOnClickCallback = this.createButtonOnClickCallback.bind(this);
-    this.createFromOnChangeCallback = this.createFromOnChangeCallback.bind(this);
     this.createFromOnSubmitCallback = this.createFromOnSubmitCallback.bind(this);
   }
 
@@ -182,8 +178,7 @@ export class DataTable extends React.Component<Props, State> {
   dataTableOnClickRowCallback({ datum }: { datum: any }) {
     this.setState({
       edit: {
-        attributes: datum,
-        originalAttributes: datum
+        attributes: datum
       }
     });
   }
@@ -254,67 +249,9 @@ export class DataTable extends React.Component<Props, State> {
     );
   }
 
-  renderFormInput(field: FieldConfig) {
-    const fieldMetadata = this.getFieldMetadata(field.name);
-    const renderType = field.renderType ?? fieldMetadata.type;
-    const enabled =
-      (field.formInputEnabled === undefined || field.formInputEnabled) &&
-      fieldMetadata.fillable &&
-      !fieldMetadata.guarded;
-    switch (renderType) {
-      case 'checkbox':
-      case 'boolean':
-      case 'toggle':
-        return <CheckBox name={field.name} toggle={renderType === 'toggle'} disabled={!enabled} />;
-      default:
-        return <TextInput id={field.name} name={field.name} disabled={!enabled} />;
-    }
-  }
-
-  renderFormFields(fields: FieldConfig[]) {
-    return (
-      <>
-        {fields.map((field, key) => {
-          return (
-            <FormField name={field.name} htmlFor={field.name} label={`${field.header}`} key={key}>
-              {field.renderFormInput ? field.renderFormInput() : this.renderFormInput(field)}
-            </FormField>
-          );
-        })}
-      </>
-    );
-  }
-
-  editFormOnChangeCallback(newValue: any) {
-    if (this.state.edit === null) {
-      throw new Error();
-    }
-
-    console.log(newValue);
-    this.setState({ edit: { attributes: newValue, originalAttributes: this.state.edit.originalAttributes } });
-  }
-
-  editFormOnResetCallback() {
-    if (this.state.edit === null) {
-      throw new Error();
-    }
-
-    this.setState({
-      edit: {
-        attributes: this.state.edit.originalAttributes,
-        originalAttributes: this.state.edit.originalAttributes
-      },
-      formApiError: ''
-    });
-  }
-
-  editFormOnSubmitCallback() {
-    if (this.state.edit === null) {
-      throw new Error();
-    }
-
+  editFormOnSubmitCallback(attributes: Record<string, unknown>) {
     this.action()
-      .update(this.state.edit.attributes)
+      .update(attributes)
       .then(() => {
         this.reloadData();
         this.manipulateLayerOnCloseCallback();
@@ -348,34 +285,32 @@ export class DataTable extends React.Component<Props, State> {
     }
 
     return (
-      <Form
+      <CustomForm
+        onSubmit={this.editFormOnSubmitCallback}
+        error={this.state.formApiError}
+        modelFields={this.getFieldMetadataList()}
+        fieldConfigs={this.props.fields}
         value={this.state.edit.attributes}
-        onChange={this.editFormOnChangeCallback}
-        onReset={this.editFormOnResetCallback}
-        onSubmit={this.editFormOnSubmitCallback}>
-        {this.renderFormFields(this.props.fields)}
-        {this.renderFormApiError(this.state.formApiError)}
-        <Box direction={'row'} justify={'center'} gap="small" pad={{ top: 'small' }}>
-          <Button type="submit" primary label="Update" />
-          <Button type="reset" label="Reset" />
-        </Box>
-        <Box direction={'row'} justify={'center'} gap="small" pad={{ top: 'small' }}>
-          <Button label="Delete" color="status-error" onClick={this.editFormOnDeleteCallback} />
-        </Box>
-      </Form>
+        controlPanel={
+          <>
+            <Box direction={'row'} justify={'center'} gap="small" pad={{ top: 'small' }}>
+              <Button type="submit" primary label="Update" />
+              <Button type="reset" label="Reset" />
+            </Box>
+            <Box direction={'row'} justify={'center'} gap="small" pad={{ top: 'small' }}>
+              <Button label="Delete" color="status-error" onClick={this.editFormOnDeleteCallback} />
+            </Box>
+          </>
+        }
+      />
+
+      // </Form>
     );
   }
 
-  createFromOnChangeCallback(newValue: any) {
-    this.setState({ create: { attributes: newValue } });
-  }
-  createFromOnSubmitCallback() {
-    if (this.state.create === null) {
-      throw new Error();
-    }
-
+  createFromOnSubmitCallback(attributes: Record<string, unknown>) {
     this.action()
-      .create(this.state.create.attributes)
+      .create(attributes)
       .then(() => {
         this.setState({ create: null, formApiError: '' });
         this.reloadData();
@@ -391,22 +326,19 @@ export class DataTable extends React.Component<Props, State> {
     }
 
     return (
-      <Form onChange={this.createFromOnChangeCallback} onSubmit={this.createFromOnSubmitCallback}>
-        {this.renderFormFields(this.props.fields.filter((field) => this.getFieldMetadata(field.name).fillable))}
-        {this.renderFormApiError(this.state.formApiError)}
-        <Box direction={'row'} justify={'center'} gap="small" pad={{ top: 'small' }}>
-          <Button type="submit" primary label="Create" />
-        </Box>
-      </Form>
+      <CustomForm
+        onSubmit={this.createFromOnSubmitCallback}
+        error={this.state.formApiError}
+        modelFields={this.getFieldMetadataList()}
+        fieldConfigs={this.props.fields}
+        onlyFillable
+        controlPanel={
+          <Box direction={'row'} justify={'center'} gap="small" pad={{ top: 'small' }}>
+            <Button type="submit" primary label="Create" />
+          </Box>
+        }
+      />
     );
-  }
-
-  renderFormApiError(error: string) {
-    return error ? (
-      <Box direction={'row'} justify={'center'} pad={'xsmall'} background={'status-error'}>
-        {error}
-      </Box>
-    ) : null;
   }
 
   getErrorByInternalCode(error: any): string {
@@ -446,14 +378,7 @@ export class DataTable extends React.Component<Props, State> {
     return (
       <>
         {this.state.edit !== null && this.renderManipulateLayer(this.renderEditForm())}
-        {this.state.create !== null &&
-          this.renderManipulateLayer(
-            <CustomForm
-              onSubmit={() => console.log('submit callback')}
-              modelFields={this.getFieldMetadataList()}
-              fieldConfigs={this.props.fields}
-            />
-          )}
+        {this.state.create !== null && this.renderManipulateLayer(this.renderCreateForm())}
         <Box pad={'small'} height={'100%'} width={'100%'} justify={'between'} gap={'small'}>
           <Box width={'100%'} direction={'row'} justify={'between'}>
             <Button label={'Create'} onClick={this.createButtonOnClickCallback} />
