@@ -32,6 +32,7 @@ trait UsesModelMetadata
         $this->setKeyProperties();
         $this->setValidationRules();
         $this->setDefaultAttributes();
+        $this->mergeCasts($this->modelMetadata->getCasts());
 
         $this->mergeGuarded($this->modelMetadata->getGuardedFieldsNames());
         $this->makeHidden($this->modelMetadata->getHiddenFieldsNames());
@@ -40,13 +41,11 @@ trait UsesModelMetadata
     private function setKeyProperties(): void
     {
         switch ($this->keyType) {
+            case FieldType::UUID->value:
+                $this->mergeCasts(['id' => 'string']);
             case FieldType::INTEGER->value:
                 $this->incrementing = true;
                 return;
-            case FieldType::UUID->value:
-                static::creating(static function (Model $model): void {
-                    $model->setAttribute($model->keyName, (string) Str::uuid());
-                });
             default:
                 $this->incrementing = false;
         }
