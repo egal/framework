@@ -41,6 +41,7 @@ export class Form extends React.Component<Props, State> {
     this.FormFields = this.FormFields.bind(this);
     this.FormApiError = this.FormApiError.bind(this);
     this.onChangeCallback = this.onChangeCallback.bind(this);
+    this.onSubmitCallback = this.onSubmitCallback.bind(this);
     this.resetState = this.resetState.bind(this);
   }
 
