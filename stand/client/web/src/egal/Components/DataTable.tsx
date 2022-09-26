@@ -19,23 +19,7 @@ import { deepMerge } from 'grommet/utils';
 import { Model as ModelMetadata, Field as FieldMetadata } from '../Utils/Metadata';
 import { FieldConfig } from '../Types/FieldConfigType';
 import { Form as CustomForm } from '../Components/Form';
-
-// TODO: Implementation of primary and secondary filters.
-// eslint-disable-next-line @typescript-eslint/ban-types
-type FilterConfig = {};
-
-// Новый fieldConfig
-interface FieldConfig {
-  name: string;
-  header: string;
-  renderType?: 'boolean' | 'checkbox' | 'toggle';
-  renderDataTable?: (datum: any) => React.ReactNode;
-  formInputEnabled?: boolean;
-  renderFormInput?: () => React.ReactNode; // TODO: Нормальные параметры.
-  dataTableColumnAdditionalProps?: any | GrommetColumnConfig<any>;
-  filter?: boolean | FilterConfig;
-}
-
+import { UniversalInput } from './UniversalInput';
 
 interface Props {
   modelName: string;
@@ -366,6 +350,24 @@ export class DataTable extends React.Component<Props, State> {
       default:
         return error.message;
     }
+  }
+
+  renderFormFields(fields: FieldConfig[]) {
+    return (
+      <>
+        {fields.map((field, key) => {
+          return (
+            <FormField name={field.name} htmlFor={field.name} label={`${field.header}`} key={key}>
+              {field.renderFormInput ? (
+                field.renderFormInput()
+              ) : (
+                <UniversalInput fieldConfig={field} modelField={this.getFieldMetadata(field.name)} />
+              )}
+            </FormField>
+          );
+        })}
+      </>
+    );
   }
 
   renderManipulateLayer(child: React.ReactElement) {

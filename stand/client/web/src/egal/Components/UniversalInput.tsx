@@ -17,7 +17,6 @@ export class UniversalInput extends React.Component<Props> {
     const renderType = this.props.fieldConfig.renderType ?? this.props.modelField.type;
     const enabled =
       (this.props.fieldConfig.formInputEnabled === undefined || this.props.fieldConfig.formInputEnabled) &&
-      this.props.modelField.fillable &&
       !this.props.modelField.guarded;
 
     switch (renderType) {

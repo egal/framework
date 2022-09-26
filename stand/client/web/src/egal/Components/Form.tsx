@@ -54,7 +54,7 @@ export class Form extends React.Component<Props, State> {
 
   FormFields() {
     const fields = this.props.onlyFillable
-      ? this.props.fieldConfigs.filter((field) => this.getMetadata(field.name).fillable)
+      ? this.props.fieldConfigs.filter((field) => !this.getMetadata(field.name).guarded)
       : this.props.fieldConfigs;
 
     return (
