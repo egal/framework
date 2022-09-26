@@ -24,6 +24,11 @@ class ModelMetadata
     protected array $fakeFields = [];
 
     /**
+     * @var string[]
+     */
+    protected array $casts = [];
+
+    /**
      * @var FieldMetadata[]
      */
     protected array $fields = [];
@@ -43,6 +48,7 @@ class ModelMetadata
         $this->modelClass = $modelClass;
         $this->modelShortName = get_class_short_name($modelClass);
         $this->key = $key ?? null;
+        $key?->guarded();
     }
 
     public static function make(string $modelClass, ?FieldMetadata $key = null): self
@@ -101,6 +107,16 @@ class ModelMetadata
     public function addActions(array $actions): self
     {
         $this->actions = array_merge($this->actions, $actions);
+
+        return $this;
+    }
+
+    /**
+     * @param string[] $casts
+     */
+    public function addCasts(array $casts): self
+    {
+        $this->casts = array_merge($this->casts, $casts);
 
         return $this;
     }
@@ -202,7 +218,7 @@ class ModelMetadata
      */
     public function getHiddenFieldsNames(): array
     {
-        return array_map(fn($field) => $field->getName(), array_filter($this->fields, fn($field) => $field->isHidden()));
+        return array_map(fn($field) => $field->getName(), array_filter([...$this->fields, ...$this->fakeFields, $this->getKey()], fn($field) => $field->isHidden()));
     }
 
     /**
@@ -210,7 +226,7 @@ class ModelMetadata
      */
     public function getGuardedFieldsNames(): array
     {
-        return array_map(fn($field) => $field->getName(), array_filter($this->fields, fn($field) => $field->isGuarded()));
+        return array_map(fn($field) => $field->getName(), array_filter([...$this->fields, ...$this->fakeFields, $this->getKey()], fn($field) => $field->isGuarded()));
     }
 
     /**
@@ -225,6 +241,11 @@ class ModelMetadata
         }
 
         throw ActionNotFoundException::make($this->modelClass, $actionName);
+    }
+
+    public function getCasts(): array
+    {
+        return $this->casts;
     }
 
 }

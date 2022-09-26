@@ -12,7 +12,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Laravel\Lumen\Application;
 use PHPUnit\Framework\TestCase;
 
-class ModelActionGetItemsFilterWithsTest extends TestCase
+class ModelActionGetItemsFilterRelationsTest extends TestCase
 {
 
     use DatabaseSchema;
@@ -30,10 +30,10 @@ class ModelActionGetItemsFilterWithsTest extends TestCase
             $table->timestamps();
         });
 
-        ModelActionGetItemsFilterWithsTestCategoryStub::create(['id' => 1]);
-        ModelActionGetItemsFilterWithsTestProductStub::create(['id' => 1, 'category_id' => 1]);
-        ModelActionGetItemsFilterWithsTestProductStub::create(['id' => 2, 'category_id' => 1]);
-        ModelActionGetItemsFilterWithsTestProductStub::create(['id' => 3, 'category_id' => 1]);
+        ModelActionGetItemsFilterRelationsTestCategoryStub::create(['id' => 1]);
+        ModelActionGetItemsFilterRelationsTestProductStub::create(['id' => 1, 'category_id' => 1]);
+        ModelActionGetItemsFilterRelationsTestProductStub::create(['id' => 2, 'category_id' => 1]);
+        ModelActionGetItemsFilterRelationsTestProductStub::create(['id' => 3, 'category_id' => 1]);
     }
 
     protected function dropSchema(): void
@@ -42,7 +42,7 @@ class ModelActionGetItemsFilterWithsTest extends TestCase
         $this->schema()->drop('categories');
     }
 
-    public function dataProviderFilterWiths()
+    public function dataProviderFilterRelations(): array
     {
         return [
             [
@@ -83,17 +83,17 @@ class ModelActionGetItemsFilterWithsTest extends TestCase
     }
 
     /**
-     * @dataProvider dataProviderFilterWiths
+     * @dataProvider dataProviderFilterRelations
      */
-    public function testFilterWiths(?array $withs, ?string $expectException, $equalsExpect)
+    public function testFilterRelations(?array $relations, ?string $expectException, $equalsExpect)
     {
         if ($expectException) {
             $this->expectException($expectException);
         }
 
-        $actual = array_column(ModelActionGetItemsFilterWithsTestCategoryStub::actionGetItems(
+        $actual = array_column(ModelActionGetItemsFilterRelationsTestCategoryStub::actionGetItems(
             null,
-            $withs,
+            $relations,
             [['id', 'eq', 1]],
             []
         )['items'][0]['products'], 'id');
@@ -107,12 +107,12 @@ class ModelActionGetItemsFilterWithsTest extends TestCase
 
 /**
  * @property int    $id                           {@property-type field}  {@primary-key}
- * @property ModelActionGetItemsFilterWithsTestProductStub[] $products {@property-type relation}
+ * @property ModelActionGetItemsFilterRelationsTestProductStub[] $products {@property-type relation}
  *
  * @action create         {@statuses-access guest}
  * @action getItems       {@statuses-access guest}
  */
-class ModelActionGetItemsFilterWithsTestCategoryStub extends Model
+class ModelActionGetItemsFilterRelationsTestCategoryStub extends Model
 {
 
     protected $table = 'categories';
@@ -125,7 +125,7 @@ class ModelActionGetItemsFilterWithsTestCategoryStub extends Model
 
     public function products(): HasMany
     {
-        return $this->hasMany(ModelActionGetItemsFilterWithsTestProductStub::class, 'category_id', 'id');
+        return $this->hasMany(ModelActionGetItemsFilterRelationsTestProductStub::class, 'category_id', 'id');
     }
 
 }
@@ -133,12 +133,12 @@ class ModelActionGetItemsFilterWithsTestCategoryStub extends Model
 /**
  * @property int    $id                           {@property-type field}  {@primary-key}
  * @property int    $category_id                  {@property-type field}  {@validation-rules int}
- * @property ModelActionGetItemsFilterWithsTestProductStub[] $products {@property-type relation}
+ * @property ModelActionGetItemsFilterRelationsTestProductStub[] $products {@property-type relation}
  *
  * @action create         {@statuses-access guest}
  * @action getItems       {@statuses-access guest}
  */
-class ModelActionGetItemsFilterWithsTestProductStub extends Model
+class ModelActionGetItemsFilterRelationsTestProductStub extends Model
 {
 
     protected $table = 'products';
@@ -152,7 +152,7 @@ class ModelActionGetItemsFilterWithsTestProductStub extends Model
 
     public function category(): BelongsTo
     {
-        return $this->belongsTo(ModelActionGetItemsFilterWithsTestCategoryStub::class);
+        return $this->belongsTo(ModelActionGetItemsFilterRelationsTestCategoryStub::class);
     }
 
 }

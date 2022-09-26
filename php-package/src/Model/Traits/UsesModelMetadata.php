@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Egal\Model\Traits;
 
-use Egal\Core\Session\Session;
 use Egal\Model\Enums\AttributeType;
 use Egal\Model\Facades\ModelMetadataManager;
 use Egal\Model\Metadata\FieldMetadata;
@@ -33,6 +32,7 @@ trait UsesModelMetadata
         $this->setKeyProperties();
         $this->setValidationRules();
         $this->setDefaultAttributes();
+        $this->mergeCasts($this->modelMetadata->getCasts());
 
         $this->mergeGuarded($this->modelMetadata->getGuardedFieldsNames());
         $this->makeHidden($this->modelMetadata->getHiddenFieldsNames());
@@ -41,13 +41,11 @@ trait UsesModelMetadata
     private function setKeyProperties(): void
     {
         switch ($this->keyType) {
-            case AttributeType::INTEGER->value:
+            case FieldType::UUID->value:
+                $this->mergeCasts(['id' => 'string']);
+            case FieldType::INTEGER->value:
                 $this->incrementing = true;
                 return;
-            case AttributeType::UUID->value:
-                static::creating(static function (Model $model): void {
-                    $model->setAttribute($model->keyName, (string) Str::uuid());
-                });
             default:
                 $this->incrementing = false;
         }
