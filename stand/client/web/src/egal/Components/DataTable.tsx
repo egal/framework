@@ -1,42 +1,53 @@
 import * as React from 'react';
-import {
-  ColumnConfig as GrommetColumnConfig,
-  DataTable as GrommetDataTable,
-  DataTableExtendedProps as GrommetDataTableProps
-} from 'grommet/components/DataTable';
-import { ActionGetItemsParams, DataProvider, ActionGetItemsResult, ActionError } from '../Providers/DataProvider';
+import { ColumnConfig as GrommetColumnConfig, DataTable as GrommetDataTable } from 'grommet/components/DataTable';
+import { ActionError, ActionGetItemsParams, ActionGetItemsResult, DataProvider } from '../Providers/DataProvider';
 import {
   Box,
   Button,
-  Layer,
-  Pagination,
+  CheckBox,
   Form,
   FormField,
-  TextInput,
-  Spinner,
   Heading,
+  Layer,
+  Pagination,
   Paragraph,
-  List,
-  Text,
-  Menu,
-  CheckBox
+  Spinner,
+  TextInput
 } from 'grommet';
-import { Close, StatusWarning, MoreVertical, Edit, Trash } from 'grommet-icons';
-
+import { Close, StatusWarning, Filter } from 'grommet-icons';
+import { deepMerge } from 'grommet/utils';
 import { Model as ModelMetadata, Field as FieldMetadata } from '../Utils/Metadata';
 import { FieldConfig } from '../Types/FieldConfigType';
 import { Form as CustomForm } from '../Components/Form';
 
-interface Props<TRowType = any> {
+// TODO: Implementation of primary and secondary filters.
+// eslint-disable-next-line @typescript-eslint/ban-types
+type FilterConfig = {};
+
+// Новый fieldConfig
+interface FieldConfig {
+  name: string;
+  header: string;
+  renderType?: 'boolean' | 'checkbox' | 'toggle';
+  renderDataTable?: (datum: any) => React.ReactNode;
+  formInputEnabled?: boolean;
+  renderFormInput?: () => React.ReactNode; // TODO: Нормальные параметры.
+  dataTableColumnAdditionalProps?: any | GrommetColumnConfig<any>;
+  filter?: boolean | FilterConfig;
+}
+
+
+interface Props {
   modelName: string;
   serviceName: string;
   perPage: number;
-  fields: FieldConfig<TRowType>[];
+  fields: FieldConfig[];
   keyFieldName: string;
 }
 
 type State = {
   items: null | ActionGetItemsResult; // TODO: Make not nullable.
+  actionGetItemsParams: ActionGetItemsParams;
   edit: null | {
     attributes: any;
   };
@@ -45,6 +56,8 @@ type State = {
   };
   modelMetadata: null | ModelMetadata; // TODO: Make not nullable.
   undefinedErrorDetected: boolean;
+  filterEdit: boolean;
+  filterValue: any;
 
   // form state
   formApiError: string;
@@ -61,6 +74,14 @@ export class DataTable extends React.Component<Props, State> {
     edit: null,
     create: null,
     undefinedErrorDetected: false,
+    filterEdit: false,
+    filterValue: {},
+    actionGetItemsParams: {
+      pagination: {
+        per_page: this.props.perPage,
+        page: 1
+      }
+    },
 
     // form state
     formApiError: ''
@@ -79,8 +100,8 @@ export class DataTable extends React.Component<Props, State> {
   }
 
   componentDidMount(): void {
-    this.actionGetItems({ pagination: { per_page: this.props.perPage, page: 1 } });
     this.actionGetModelMetadata();
+    this.actionGetItems(this.state.actionGetItemsParams);
   }
 
   action(): DataProvider {
@@ -139,12 +160,7 @@ export class DataTable extends React.Component<Props, State> {
   }
 
   reloadData(): void {
-    this.actionGetItems({
-      pagination: {
-        per_page: this.props.perPage,
-        page: this.state.items === null ? 1 : this.state.items.current_page
-      }
-    });
+    this.actionGetItems(this.state.actionGetItemsParams);
   }
 
   manipulateLayerOnCloseCallback() {
@@ -249,6 +265,8 @@ export class DataTable extends React.Component<Props, State> {
     );
   }
 
+  // TODO: REnderFormINput. Убрать fillable
+
   editFormOnSubmitCallback(attributes: Record<string, unknown>) {
     this.action()
       .update(attributes)
@@ -325,6 +343,8 @@ export class DataTable extends React.Component<Props, State> {
       throw new Error();
     }
 
+    // TODO: Поменять fillable на !guarded
+
     return (
       <CustomForm
         onSubmit={this.createFromOnSubmitCallback}
@@ -364,6 +384,51 @@ export class DataTable extends React.Component<Props, State> {
     );
   }
 
+  renderSecondaryFiltersLayer() {
+    return (
+      <Layer
+        onEsc={() => this.setState({ filterEdit: false })}
+        onClickOutside={() => this.setState({ filterEdit: false })}
+        full="vertical"
+        position="right">
+        <Box direction={'column'} pad={'medium'} width={'30vw'} overflow="auto" gap={'medium'}>
+          <Box width={'100%'} justify={'between'} direction={'row'}>
+            <Heading level={2}>Filters</Heading>
+            <Button icon={<Close />} hoverIndicator onClick={() => this.setState({ filterEdit: false })} />
+          </Box>
+          <Box overflow={'auto'}>
+            <Form
+              value={this.state.filterValue}
+              onChange={(newValue) => {
+                const fieldsNames = Object.keys(newValue);
+
+                const res = fieldsNames.flatMap((key, index) => {
+                  const condition = [key, 'co', newValue[key]];
+
+                  return index + 1 === fieldsNames.length ? [condition] : [condition, 'AND'];
+                });
+
+                const actionGetItemsParams = this.state.actionGetItemsParams;
+                actionGetItemsParams.filter = res;
+
+                this.setState({
+                  filterValue: newValue,
+                  actionGetItemsParams: actionGetItemsParams
+                });
+                this.reloadData();
+              }}>
+              {this.renderFormFields(
+                this.props.fields.filter((field) => {
+                  return field.filter !== undefined && field.filter !== false;
+                })
+              )}
+            </Form>
+          </Box>
+        </Box>
+      </Layer>
+    );
+  }
+
   render() {
     // TODO: Crutch, may be.
     if (this.state.undefinedErrorDetected) {
@@ -379,8 +444,15 @@ export class DataTable extends React.Component<Props, State> {
       <>
         {this.state.edit !== null && this.renderManipulateLayer(this.renderEditForm())}
         {this.state.create !== null && this.renderManipulateLayer(this.renderCreateForm())}
+        {this.state.filterEdit && this.renderSecondaryFiltersLayer()}
         <Box pad={'small'} height={'100%'} width={'100%'} justify={'between'} gap={'small'}>
           <Box width={'100%'} direction={'row'} justify={'between'}>
+            <Button
+              icon={<Filter />}
+              onClick={() => {
+                this.setState({ filterEdit: true });
+              }}
+            />
             <Button label={'Create'} onClick={this.createButtonOnClickCallback} />
           </Box>
           <Box height={'100%'} width={'100%'} overflow="auto">

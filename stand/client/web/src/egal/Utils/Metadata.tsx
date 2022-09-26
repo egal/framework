@@ -2,7 +2,6 @@ export type Action = any;
 export type Field = {
   name: string;
   type: string;
-  fillable: boolean;
   guarded: boolean;
   hidden: boolean;
 };

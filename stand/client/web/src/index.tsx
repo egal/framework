@@ -62,8 +62,8 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
               keyFieldName={'id'}
               perPage={10}
               fields={[
-                { name: 'id', header: 'ID' },
-                { name: 'address', header: 'Address' },
+                { name: 'id', header: 'ID', filter: true },
+                { name: 'address', header: 'Address', filter: true },
                 { name: 'adult', header: 'Adult', renderType: 'toggle' },
                 { name: 'phone', header: 'Phone' },
                 {
@@ -72,7 +72,8 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
                   renderDataTable: (item) => (
                     <GrommetMeter values={[{ value: item.weight }]} thickness="small" size="small" />
                   )
-                }
+                },
+                { name: 'created_at', header: 'Created at' }
               ]}
             />
           )

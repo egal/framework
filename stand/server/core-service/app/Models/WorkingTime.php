@@ -28,14 +28,11 @@ class WorkingTime extends Model
             ->addFields([
                 FieldMetadata::make('speaker_id', FieldType::UUID)
                     ->addValidationRule('exists:speakers,id')
-                    ->required()
-                    ->fillable(),
+                    ->required(),
                 FieldMetadata::make('starts_at', FieldType::DATETIME)
-                    ->date()
-                    ->fillable(),
+                    ->date(),
                 FieldMetadata::make('ends_at', FieldType::DATETIME)
-                    ->date()
-                    ->fillable(),
+                    ->date(),
                 FieldMetadata::make('created_at', FieldType::DATETIME),
                 FieldMetadata::make('updated_at', FieldType::DATETIME),
             ])

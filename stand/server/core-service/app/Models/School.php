@@ -28,10 +28,8 @@ class School extends Model
             ->addFields([
                 FieldMetadata::make('name', FieldType::STRING)
                     ->required()
-                    ->addValidationRule('unique:schools,name')
-                    ->fillable(),
-                FieldMetadata::make('avatar', FieldType::STRING)
-                    ->fillable(),
+                    ->addValidationRule('unique:schools,name'),
+                FieldMetadata::make('avatar', FieldType::STRING),
                 FieldMetadata::make('created_at', FieldType::DATETIME),
                 FieldMetadata::make('updated_at', FieldType::DATETIME),
             ])

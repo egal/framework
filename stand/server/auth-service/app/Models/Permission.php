@@ -28,15 +28,13 @@ class Permission extends Model
 
     public static function constructMetadata(): ModelMetadata
     {
-        return ModelMetadata::make(Permission::class, FieldMetadata::make('id',FieldType::STRING)->fillable())
+        return ModelMetadata::make(Permission::class, FieldMetadata::make('id',FieldType::STRING))
             ->addFields([
                 FieldMetadata::make('name', FieldType::STRING)
                     ->required()
-                    ->fillable()
                     ->addValidationRule('unique:roles,name'),
                 FieldMetadata::make('is_default', FieldType::BOOLEAN)
-                    ->required()
-                    ->fillable(),
+                    ->required(),
                 FieldMetadata::make('created_at', FieldType::DATETIME)
                     ->guarded()
                     ->hidden(),
