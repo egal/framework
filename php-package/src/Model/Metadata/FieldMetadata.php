@@ -2,12 +2,12 @@
 
 namespace Egal\Model\Metadata;
 
-use Egal\Model\Traits\Metadata;
+use Egal\Model\Traits\VariableMetadata;
 
 class FieldMetadata
 {
 
-    use Metadata;
+    use VariableMetadata;
 
     protected bool $hidden = false;
 

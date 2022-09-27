@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Egal\Core\ActionCaller;
 
 use Egal\Auth\Accesses\StatusAccess;
-use Egal\Core\Exceptions\ActionParameterValidationException;
+use Egal\Core\Exceptions\ActionParameterValidateException;
 use Egal\Core\Exceptions\NoAccessActionCallException;
 use Egal\Core\Session\Session;
 use Egal\Model\Exceptions\ValidateException;
@@ -183,7 +183,7 @@ class ActionCaller
      * If it is impossible to generate valid parameters, an exception is thrown.
      *
      * @return array
-     * @throws ActionParameterValidationException
+     * @throws ActionParameterValidateException
      */
     private function getValidActionParameters(): array
     {
@@ -209,7 +209,7 @@ class ActionCaller
         $validator = Validator::make($actionParameters, $parametersValidationRules);
 
         if ($validator->fails()) {
-            $exception = new ActionParameterValidationException();
+            $exception = new ActionParameterValidateException();
             $exception->setMessageBag($validator->errors());
 
             throw $exception;

@@ -11,9 +11,9 @@ use Egal\Validation\Rules\Rule as EgalRule;
 use Illuminate\Contracts\Validation\Rule;
 use Illuminate\Support\Facades\Validator;
 
-trait Metadata
+trait VariableMetadata
 {
-    use AttributeValidationRules;
+    use VariableValidationRules;
 
     protected readonly string $name;
 

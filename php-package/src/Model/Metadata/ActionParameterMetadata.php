@@ -2,9 +2,9 @@
 
 namespace Egal\Model\Metadata;
 
-use Egal\Model\Traits\Metadata;
+use Egal\Model\Traits\VariableMetadata;
 
 class ActionParameterMetadata
 {
-    use Metadata;
+    use VariableMetadata;
 }

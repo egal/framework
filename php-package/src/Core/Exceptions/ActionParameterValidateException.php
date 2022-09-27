@@ -7,7 +7,7 @@ namespace Egal\Core\Exceptions;
 use Exception;
 use Illuminate\Support\MessageBag;
 
-class ActionParameterValidationException extends Exception
+class ActionParameterValidateException extends Exception
 {
 
     protected $message = 'Action parameter validation failed!';
