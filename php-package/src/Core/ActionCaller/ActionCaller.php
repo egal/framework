@@ -205,7 +205,6 @@ class ActionCaller
 
             $defaultParameters[$parameter->getName()] = $parameter->getDefault();
         }
-        var_dump($defaultParameters);
 
         $actionParameters = array_merge($actionParameters, $defaultParameters);
         $validator = Validator::make($actionParameters, $parametersValidationRules);

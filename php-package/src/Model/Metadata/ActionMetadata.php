@@ -67,7 +67,7 @@ class ActionMetadata
     /**
      * @throws ActionParameterNotFoundException
      */
-    public function fieldExistOrFail(string $parameterName): bool
+    public function parameterExistOrFail(string $parameterName): bool
     {
         if (!$this->parameterExist($parameterName)) {
             throw ActionParameterNotFoundException::make($parameterName);
