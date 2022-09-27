@@ -12,7 +12,6 @@ use Egal\Model\Facades\ModelMetadataManager;
 use Egal\Model\Metadata\ActionMetadata;
 use Egal\Model\Metadata\ActionParameterMetadata;
 use Egal\Model\Metadata\ModelMetadata;
-use Egal\Model\Model;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
@@ -188,25 +187,29 @@ class ActionCaller
      */
     private function getValidActionParameters(): array
     {
-        /** @var Model $model */
-        $model = new ($this->modelMetadata->getModelClass())();
-        $parametersValidationRules = $model->getParametersValidationRules($this->modelActionMetadata->getName());
+        $parametersValidationRules = $this->modelActionMetadata->getValidationRules();
         $actionParameters = $this->actionParameters;
 
-        $missingParameters = array_filter($this->modelActionMetadata->getParameters(), function (ActionParameterMetadata $parameter) use ($actionParameters) {
-            return !array_key_exists($parameter->getName(), $actionParameters);
-        });
+        $missingParameters = array_filter(
+            $this->modelActionMetadata->getParameters(),
+            fn (ActionParameterMetadata $parameter) => !array_key_exists($parameter->getName(), $actionParameters)
+        );
         $notValidatedParams = array_diff_key($actionParameters, $parametersValidationRules);
         $defaultParameters = [];
+
         /** @var ActionParameterMetadata $parameter */
         foreach ($missingParameters as $parameter) {
-            if ($this->isDefaultValueAvailable($parameter)) {
-                $defaultParameters[$parameter->getName()] = $parameter->getDefault();
-            };
-        }
-        $actionParameters = array_merge($actionParameters, $defaultParameters);
+            if (!$this->isDefaultValueAvailable($parameter)) {
+                continue;
+            }
 
+            $defaultParameters[$parameter->getName()] = $parameter->getDefault();
+        }
+        var_dump($defaultParameters);
+
+        $actionParameters = array_merge($actionParameters, $defaultParameters);
         $validator = Validator::make($actionParameters, $parametersValidationRules);
+
         if ($validator->fails()) {
             $exception = new ValidateException();
             $exception->setMessageBag($validator->errors());
@@ -219,11 +222,7 @@ class ActionCaller
 
     private function isDefaultValueAvailable(ActionParameterMetadata $parameter): bool
     {
-        if ($parameter->getDefault() === null && !$parameter->isNullable()) {
-            return false;
-        };
-
-        return true;
+        return !($parameter->getDefault() === null && !$parameter->isNullable());
     }
 
 }

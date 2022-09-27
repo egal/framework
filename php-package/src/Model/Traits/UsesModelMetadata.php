@@ -9,7 +9,6 @@ use Egal\Model\Facades\ModelMetadataManager;
 use Egal\Model\Metadata\FieldMetadata;
 use Egal\Model\Metadata\ModelMetadata;
 use Egal\Model\Model;
-use Illuminate\Support\Str;
 
 /**
  * @package Egal\Model
@@ -41,9 +40,9 @@ trait UsesModelMetadata
     private function setKeyProperties(): void
     {
         switch ($this->keyType) {
-            case FieldType::UUID->value:
+            case AttributeType::UUID->value:
                 $this->mergeCasts(['id' => 'string']);
-            case FieldType::INTEGER->value:
+            case AttributeType::INTEGER->value:
                 $this->incrementing = true;
                 return;
             default:

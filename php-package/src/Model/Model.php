@@ -15,7 +15,6 @@ use Egal\Model\Traits\HasEvents;
 use Egal\Model\Traits\HashGuardable;
 use Egal\Model\Traits\InstanceForAction;
 use Egal\Model\Traits\Pagination;
-use Egal\Model\Traits\UseActionParameterMetadata;
 use Egal\Model\Traits\UsesBuilder;
 use Egal\Model\Traits\UsesModelMetadata;
 use Egal\Model\Traits\UsesValidator;
@@ -34,7 +33,6 @@ abstract class Model extends EloquentModel
     use Pagination;
     use UsesBuilder;
     use UsesModelMetadata;
-    use UseActionParameterMetadata;
     use UsesValidator;
     use XssGuardable;
     use InstanceForAction;
@@ -228,13 +226,9 @@ abstract class Model extends EloquentModel
      * @throws \Egal\Model\Exceptions\UpdateException
      * @throws \Egal\Model\Exceptions\ObjectNotFoundException
      */
-    public static function actionUpdate($id = null, array $attributes = []): array
+    public static function actionUpdate($id, array $attributes = []): array
     {
         $instance = new static();
-
-        if (!isset($id)) {
-            throw new UpdateException('The identifier of the entity being updated is not specified!');
-        }
 
         $instance->makeIsInstanceForAction();
         $instance->validateKey($id);

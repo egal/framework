@@ -27,7 +27,9 @@ class ActionMetadata
      */
     protected array $parameters = [];
 
-    protected function __construct(string $name)
+    private ?array $validationRules = null;
+
+    public function __construct(string $name)
     {
         $this->name = $name;
     }
@@ -37,9 +39,18 @@ class ActionMetadata
         return new static($name);
     }
 
-    public function getParameters(): array
+    private function setValidationRules(): void
     {
-        return $this->parameters;
+        $this->validationRules = [];
+
+        foreach ($this->getParameters() as $parameter) {
+            $this->setValidationRule($parameter);
+        }
+    }
+
+    private function setValidationRule(ActionParameterMetadata $parameter): void
+    {
+        $this->validationRules[$parameter->getName()] = $parameter->getValidationRules();
     }
 
     public function parameterExist(string $parameterName): bool
@@ -82,7 +93,7 @@ class ActionMetadata
     {
         $actionMetadata = [];
         $actionMetadata['name'] = $this->name;
-        $actionMetadata['parameters'] = array_map(fn(ActionParameterMetadata $parameter) => $parameter->toArray(), $this->parameters);
+        $actionMetadata['parameters'] = array_map(static fn (ActionParameterMetadata $parameter) => $parameter->toArray(), $this->parameters);
 
         return $actionMetadata;
     }
@@ -95,6 +106,20 @@ class ActionMetadata
     public function getMethodName(): string
     {
         return self::METHOD_NAME_PREFIX . ucwords($this->name);
+    }
+
+    public function getParameters(): array
+    {
+        return $this->parameters;
+    }
+
+    public function getValidationRules(): array
+    {
+        if (!isset($this->validationRules)) {
+            $this->setValidationRules();
+        }
+
+        return $this->validationRules;
     }
 
 }

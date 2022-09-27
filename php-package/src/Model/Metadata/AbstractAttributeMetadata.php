@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Egal\Model\Metadata;
 
 use Egal\Model\Enums\AttributeType;
+use Egal\Model\Enums\ValidationRules;
 use Egal\Model\Exceptions\ValidateException;
 use Egal\Model\Traits\AttributeValidationRules;
-use Egal\Model\Enums\ValidationRules;
 use Egal\Validation\Rules\Rule as EgalRule;
 use Illuminate\Contracts\Validation\Rule;
 use Illuminate\Support\Facades\Validator;
@@ -28,15 +30,15 @@ abstract class AbstractAttributeMetadata
      */
     protected array $validationRules = [];
 
-    public static function make(string $name, AttributeType $type): static
-    {
-        return new static($name, $type);
-    }
-
     protected function __construct(string $name, AttributeType $type)
     {
         $this->name = $name;
         $this->type = $type;
+    }
+
+    public static function make(string $name, AttributeType $type): static
+    {
+        return new static($name, $type);
     }
 
     public function toArray(): array
@@ -56,6 +58,7 @@ abstract class AbstractAttributeMetadata
     public function default(mixed $defaultValue): static
     {
         $validator = Validator::make([$this->getName() => $defaultValue], [$this->getName() => $this->getValidationRules()]);
+
         if ($validator->fails()) {
             if ($validator->fails()) {
                 $exception = new ValidateException();
@@ -64,6 +67,7 @@ abstract class AbstractAttributeMetadata
                 throw $exception;
             }
         }
+
         $this->default = $defaultValue;
 
         return $this;
@@ -104,7 +108,8 @@ abstract class AbstractAttributeMetadata
             case AttributeType::DATETIME:
                 break;
             default:
-                $this->validationRules[] = $this->type->value;
+                array_unshift($this->validationRules, $this->type->value);
+                break;
         }
 
         return $this->validationRules;
