@@ -60,7 +60,7 @@ class LessonRequest extends Model
                 ActionMetadata::make('create'),
                 ActionMetadata::make('update')
                     ->addParameters([
-                        ActionParameterMetadata::make('id', VariableType::INTEGER)
+                        ActionParameterMetadata::make('key', VariableType::INTEGER)
                             ->required()
                             ->addValidationRule('exists:lesson_requests,id')
                     ]),
@@ -68,13 +68,13 @@ class LessonRequest extends Model
                 ActionMetadata::make('getItems'),
                 ActionMetadata::make('delete')
                     ->addParameters([
-                        ActionParameterMetadata::make('id', VariableType::INTEGER)
+                        ActionParameterMetadata::make('key', VariableType::INTEGER)
                             ->required()
                             ->addValidationRule('exists:lesson_requests,id')
                     ]),
                 ActionMetadata::make('getItem')
                     ->addParameters([
-                        ActionParameterMetadata::make('id', VariableType::INTEGER)
+                        ActionParameterMetadata::make('key', VariableType::INTEGER)
                             ->required()
                             ->addValidationRule('exists:lesson_requests,id')
                     ]),

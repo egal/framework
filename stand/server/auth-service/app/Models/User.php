@@ -146,7 +146,7 @@ class User extends BaseUser
                 ActionMetadata::make('create'),
                 ActionMetadata::make('update')
                     ->addParameters([
-                        ActionParameterMetadata::make('id', VariableType::UUID)
+                        ActionParameterMetadata::make('key', VariableType::UUID)
                             ->required()
                             ->addValidationRule('exists:users,id')
                     ]),
@@ -154,13 +154,13 @@ class User extends BaseUser
                 ActionMetadata::make('getItems'),
                 ActionMetadata::make('delete')
                     ->addParameters([
-                        ActionParameterMetadata::make('id', VariableType::UUID)
+                        ActionParameterMetadata::make('key', VariableType::UUID)
                             ->required()
                             ->addValidationRule('exists:users,id')
                     ]),
                 ActionMetadata::make('getItem')
                     ->addParameters([
-                        ActionParameterMetadata::make('id', VariableType::UUID)
+                        ActionParameterMetadata::make('key', VariableType::UUID)
                             ->required()
                             ->addValidationRule('exists:users,id')
                     ]),

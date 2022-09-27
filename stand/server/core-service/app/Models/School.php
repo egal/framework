@@ -44,7 +44,7 @@ class School extends Model
                 ActionMetadata::make('create'),
                 ActionMetadata::make('update')->addParameters(
                     [
-                        ActionParameterMetadata::make('id', VariableType::UUID)
+                        ActionParameterMetadata::make('key', VariableType::UUID)
                             ->required()
                             ->addValidationRule('exists:schools,id')
                     ]
@@ -53,13 +53,13 @@ class School extends Model
                 ActionMetadata::make('getItems'),
                 ActionMetadata::make('delete')
                     ->addParameters([
-                        ActionParameterMetadata::make('id', VariableType::UUID)
+                        ActionParameterMetadata::make('key', VariableType::UUID)
                             ->required()
                             ->addValidationRule('exists:schools,id')
                     ]),
                 ActionMetadata::make('getItem')
                     ->addParameters([
-                        ActionParameterMetadata::make('id', VariableType::UUID)
+                        ActionParameterMetadata::make('key', VariableType::UUID)
                             ->required()
                             ->addValidationRule('exists:schools,id')
                     ]),

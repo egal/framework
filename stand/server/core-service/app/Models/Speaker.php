@@ -62,7 +62,7 @@ class Speaker extends EgalModel
                 ActionMetadata::make('create'),
                 ActionMetadata::make('update')
                     ->addParameters([
-                        ActionParameterMetadata::make('id', VariableType::UUID)
+                        ActionParameterMetadata::make('key', VariableType::UUID)
                             ->required()
                             ->addValidationRule('exists:speakers,id')
                     ]),
@@ -70,13 +70,13 @@ class Speaker extends EgalModel
                 ActionMetadata::make('getItems'),
                 ActionMetadata::make('delete')
                     ->addParameters([
-                        ActionParameterMetadata::make('id', VariableType::UUID)
+                        ActionParameterMetadata::make('key', VariableType::UUID)
                             ->required()
                             ->addValidationRule('exists:speakers,id')
                     ]),
                 ActionMetadata::make('getItem')
                     ->addParameters([
-                        ActionParameterMetadata::make('id', VariableType::UUID)
+                        ActionParameterMetadata::make('key', VariableType::UUID)
                             ->required()
                             ->addValidationRule('exists:speakers,id')
                     ]),

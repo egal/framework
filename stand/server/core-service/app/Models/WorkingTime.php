@@ -48,7 +48,7 @@ class WorkingTime extends Model
                 ActionMetadata::make('update')
                     ->addParameters([
 
-                        ActionParameterMetadata::make('id', VariableType::INTEGER)
+                        ActionParameterMetadata::make('key', VariableType::INTEGER)
                             ->required()
                             ->addValidationRule('exists:working_times,id')
                     ]),
@@ -56,13 +56,13 @@ class WorkingTime extends Model
                 ActionMetadata::make('getItems'),
                 ActionMetadata::make('delete')
                     ->addParameters([
-                        ActionParameterMetadata::make('id', VariableType::INTEGER)
+                        ActionParameterMetadata::make('key', VariableType::INTEGER)
                             ->required()
                             ->addValidationRule('exists:working_times,id')
                     ]),
                 ActionMetadata::make('getItem')
                     ->addParameters([
-                        ActionParameterMetadata::make('id', VariableType::INTEGER)
+                        ActionParameterMetadata::make('key', VariableType::INTEGER)
                             ->required()
                             ->addValidationRule('exists:working_times,id')
                     ]),
