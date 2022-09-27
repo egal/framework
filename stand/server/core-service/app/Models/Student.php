@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use Egal\Model\Enums\AttributeType;
+use Egal\Model\Enums\VariableType;
 use Egal\Model\Enums\RelationType;
 use Egal\Model\Metadata\ActionMetadata;
 use Egal\Model\Metadata\ActionParameterMetadata;
@@ -25,20 +25,20 @@ class Student extends Model
 
     public static function constructMetadata(): ModelMetadata
     {
-        return ModelMetadata::make(self::class, FieldMetadata::make('id', AttributeType::UUID))
+        return ModelMetadata::make(self::class, FieldMetadata::make('id', VariableType::UUID))
             ->addFields([
-                FieldMetadata::make('user_id', AttributeType::UUID)
+                FieldMetadata::make('user_id', VariableType::UUID)
                     ->required()
                     ->hidden(),
-                FieldMetadata::make('name', AttributeType::STRING)
+                FieldMetadata::make('name', VariableType::STRING)
                     ->required(),
-                FieldMetadata::make('surname', AttributeType::STRING)
+                FieldMetadata::make('surname', VariableType::STRING)
                     ->required(),
-                FieldMetadata::make('school_id', AttributeType::UUID)
+                FieldMetadata::make('school_id', VariableType::UUID)
                     ->addValidationRule('exists:schools,id')
                     ->required(),
-                FieldMetadata::make('created_at', AttributeType::DATETIME),
-                FieldMetadata::make('updated_at', AttributeType::DATETIME),
+                FieldMetadata::make('created_at', VariableType::DATETIME),
+                FieldMetadata::make('updated_at', VariableType::DATETIME),
             ])
             ->addRelations([
                 RelationMetadata::make(
@@ -50,7 +50,7 @@ class Student extends Model
                 ActionMetadata::make('create'),
                 ActionMetadata::make('update')
                     ->addParameters([
-                        ActionParameterMetadata::make('id', AttributeType::UUID)
+                        ActionParameterMetadata::make('id', VariableType::UUID)
                             ->required()
                             ->addValidationRule('exists:students,id')
                     ]),
@@ -58,13 +58,13 @@ class Student extends Model
                 ActionMetadata::make('getItems'),
                 ActionMetadata::make('delete')
                     ->addParameters([
-                        ActionParameterMetadata::make('id', AttributeType::UUID)
+                        ActionParameterMetadata::make('id', VariableType::UUID)
                             ->required()
                             ->addValidationRule('exists:students,id')
                     ]),
                 ActionMetadata::make('getItem')
                     ->addParameters([
-                        ActionParameterMetadata::make('id', AttributeType::UUID)
+                        ActionParameterMetadata::make('id', VariableType::UUID)
                             ->required()
                             ->addValidationRule('exists:students,id')
                     ]),

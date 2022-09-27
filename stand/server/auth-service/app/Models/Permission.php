@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use Egal\Model\Enums\AttributeType;
+use Egal\Model\Enums\VariableType;
 use Egal\Model\Metadata\ActionMetadata;
 use Egal\Model\Metadata\ActionParameterMetadata;
 use Egal\Model\Metadata\FieldMetadata;
@@ -29,17 +29,17 @@ class Permission extends Model
 
     public static function constructMetadata(): ModelMetadata
     {
-        return ModelMetadata::make(Permission::class, FieldMetadata::make('id', AttributeType::STRING))
+        return ModelMetadata::make(Permission::class, FieldMetadata::make('id', VariableType::STRING))
             ->addFields([
-                FieldMetadata::make('name', AttributeType::STRING)
+                FieldMetadata::make('name', VariableType::STRING)
                     ->required()
                     ->addValidationRule('unique:roles,name'),
-                FieldMetadata::make('is_default', AttributeType::BOOLEAN)
+                FieldMetadata::make('is_default', VariableType::BOOLEAN)
                     ->required(),
-                FieldMetadata::make('created_at', AttributeType::DATETIME)
+                FieldMetadata::make('created_at', VariableType::DATETIME)
                     ->guarded()
                     ->hidden(),
-                FieldMetadata::make('updated_at', AttributeType::DATETIME)
+                FieldMetadata::make('updated_at', VariableType::DATETIME)
                     ->guarded()
                     ->hidden(),
             ])
@@ -47,7 +47,7 @@ class Permission extends Model
                 ActionMetadata::make('create'),
                 ActionMetadata::make('update')
                     ->addParameters([
-                        ActionParameterMetadata::make('id', AttributeType::STRING)
+                        ActionParameterMetadata::make('id', VariableType::STRING)
                             ->required()
                             ->addValidationRule('exists:permissions,id')
                     ]),
@@ -55,13 +55,13 @@ class Permission extends Model
                 ActionMetadata::make('getItems'),
                 ActionMetadata::make('delete')
                     ->addParameters([
-                        ActionParameterMetadata::make('id', AttributeType::STRING)
+                        ActionParameterMetadata::make('id', VariableType::STRING)
                             ->required()
                             ->addValidationRule('exists:permissions,id')
                     ]),
                 ActionMetadata::make('getItem')
                     ->addParameters([
-                        ActionParameterMetadata::make('id', AttributeType::STRING)
+                        ActionParameterMetadata::make('id', VariableType::STRING)
                             ->required()
                             ->addValidationRule('exists:permissions,id')
                     ]),

@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use Egal\Model\Enums\AttributeType;
+use Egal\Model\Enums\VariableType;
 use Egal\Model\Metadata\ActionMetadata;
 use Egal\Model\Metadata\ActionParameterMetadata;
 use Egal\Model\Metadata\FieldMetadata;
@@ -19,24 +19,24 @@ class Employee extends Model
 
     public static function constructMetadata(): ModelMetadata
     {
-        return ModelMetadata::make(Employee::class, FieldMetadata::make('id', AttributeType::UUID))
+        return ModelMetadata::make(Employee::class, FieldMetadata::make('id', VariableType::UUID))
             ->addFields([
-                FieldMetadata::make('address', AttributeType::STRING)
+                FieldMetadata::make('address', VariableType::STRING)
                     ->default('Home Address'),
-                FieldMetadata::make('phone', AttributeType::INTEGER)
+                FieldMetadata::make('phone', VariableType::INTEGER)
                     ->nullable()
                     ->addValidationRule('unique:employees,phone'),
-                FieldMetadata::make('adult', AttributeType::BOOLEAN)
+                FieldMetadata::make('adult', VariableType::BOOLEAN)
                     ->required(),
-                FieldMetadata::make('weight', AttributeType::NUMERIC)
+                FieldMetadata::make('weight', VariableType::NUMERIC)
                     ->required(),
-                FieldMetadata::make('created_at', AttributeType::DATETIME)
+                FieldMetadata::make('created_at', VariableType::DATETIME)
                     ->guarded(),
-                FieldMetadata::make('updated_at', AttributeType::DATETIME)
+                FieldMetadata::make('updated_at', VariableType::DATETIME)
                     ->guarded(),
             ])
             ->addFakeFields([
-                FieldMetadata::make('height', AttributeType::NUMERIC)
+                FieldMetadata::make('height', VariableType::NUMERIC)
                     ->sometimes()
                     ->required()
             ])
@@ -44,7 +44,7 @@ class Employee extends Model
                 ActionMetadata::make('create'),
                 ActionMetadata::make('update')
                     ->addParameters([
-                        ActionParameterMetadata::make('id', AttributeType::UUID)
+                        ActionParameterMetadata::make('id', VariableType::UUID)
                             ->required()
                             ->addValidationRule('exists:employees,id')
                     ]),
@@ -52,13 +52,13 @@ class Employee extends Model
                 ActionMetadata::make('getItems'),
                 ActionMetadata::make('delete')
                     ->addParameters([
-                        ActionParameterMetadata::make('id', AttributeType::UUID)
+                        ActionParameterMetadata::make('id', VariableType::UUID)
                             ->required()
                             ->addValidationRule('exists:employees,id')
                     ]),
                 ActionMetadata::make('getItem')
                     ->addParameters([
-                        ActionParameterMetadata::make('id', AttributeType::UUID)
+                        ActionParameterMetadata::make('id', VariableType::UUID)
                             ->required()
                             ->addValidationRule('exists:employees,id')
                     ]),

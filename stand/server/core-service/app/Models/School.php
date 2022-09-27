@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use Egal\Model\Enums\AttributeType;
+use Egal\Model\Enums\VariableType;
 use Egal\Model\Enums\RelationType;
 use Egal\Model\Metadata\ActionMetadata;
 use Egal\Model\Metadata\ActionParameterMetadata;
@@ -25,14 +25,14 @@ class School extends Model
 
     public static function constructMetadata(): ModelMetadata
     {
-        return ModelMetadata::make(self::class, FieldMetadata::make('id', AttributeType::UUID))
+        return ModelMetadata::make(self::class, FieldMetadata::make('id', VariableType::UUID))
             ->addFields([
-                FieldMetadata::make('name', AttributeType::STRING)
+                FieldMetadata::make('name', VariableType::STRING)
                     ->required()
                     ->addValidationRule('unique:schools,name'),
-                FieldMetadata::make('avatar', AttributeType::STRING),
-                FieldMetadata::make('created_at', AttributeType::DATETIME),
-                FieldMetadata::make('updated_at', AttributeType::DATETIME),
+                FieldMetadata::make('avatar', VariableType::STRING),
+                FieldMetadata::make('created_at', VariableType::DATETIME),
+                FieldMetadata::make('updated_at', VariableType::DATETIME),
             ])
             ->addRelations([
                 RelationMetadata::make(
@@ -44,7 +44,7 @@ class School extends Model
                 ActionMetadata::make('create'),
                 ActionMetadata::make('update')->addParameters(
                     [
-                        ActionParameterMetadata::make('id', AttributeType::UUID)
+                        ActionParameterMetadata::make('id', VariableType::UUID)
                             ->required()
                             ->addValidationRule('exists:schools,id')
                     ]
@@ -53,13 +53,13 @@ class School extends Model
                 ActionMetadata::make('getItems'),
                 ActionMetadata::make('delete')
                     ->addParameters([
-                        ActionParameterMetadata::make('id', AttributeType::UUID)
+                        ActionParameterMetadata::make('id', VariableType::UUID)
                             ->required()
                             ->addValidationRule('exists:schools,id')
                     ]),
                 ActionMetadata::make('getItem')
                     ->addParameters([
-                        ActionParameterMetadata::make('id', AttributeType::UUID)
+                        ActionParameterMetadata::make('id', VariableType::UUID)
                             ->required()
                             ->addValidationRule('exists:schools,id')
                     ]),

@@ -2,7 +2,9 @@
 
 namespace Egal\Model\Metadata;
 
-class ActionParameterMetadata extends AbstractAttributeMetadata
-{
+use Egal\Model\Traits\Metadata;
 
+class ActionParameterMetadata
+{
+    use Metadata;
 }

@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use Egal\Model\Enums\AttributeType;
+use Egal\Model\Enums\VariableType;
 use Egal\Model\Enums\RelationType;
 use Egal\Model\Metadata\ActionMetadata;
 use Egal\Model\Metadata\ActionParameterMetadata;
@@ -30,25 +30,25 @@ class Lesson extends Model
 
     public static function constructMetadata(): ModelMetadata
     {
-        return ModelMetadata::make(self::class, FieldMetadata::make('id', AttributeType::INTEGER))
+        return ModelMetadata::make(self::class, FieldMetadata::make('id', VariableType::INTEGER))
             ->addFields([
-                FieldMetadata::make('speaker_id', AttributeType::UUID)
+                FieldMetadata::make('speaker_id', VariableType::UUID)
                     ->required()
                     ->addValidationRule('exists:speakers,id'),
-                FieldMetadata::make('school_id', AttributeType::UUID)
+                FieldMetadata::make('school_id', VariableType::UUID)
                     ->required()
                     ->addValidationRule('exists:schools,id'),
-                FieldMetadata::make('stage', AttributeType::STRING)
+                FieldMetadata::make('stage', VariableType::STRING)
                     ->required(),
-                FieldMetadata::make('chat_id', AttributeType::UUID)
+                FieldMetadata::make('chat_id', VariableType::UUID)
                     ->addValidationRule('unique:lessons,chat_id')
                     ->nullable(),
-                FieldMetadata::make('lesson_request_id', AttributeType::INTEGER)
+                FieldMetadata::make('lesson_request_id', VariableType::INTEGER)
                     ->addValidationRule('exists:lesson_requests,id'),
-                FieldMetadata::make('starts_at', AttributeType::DATETIME)
+                FieldMetadata::make('starts_at', VariableType::DATETIME)
                     ->date(),
-                FieldMetadata::make('created_at', AttributeType::DATETIME),
-                FieldMetadata::make('updated_at', AttributeType::DATETIME),
+                FieldMetadata::make('created_at', VariableType::DATETIME),
+                FieldMetadata::make('updated_at', VariableType::DATETIME),
             ])
             ->addRelations([
                 RelationMetadata::make(
@@ -64,7 +64,7 @@ class Lesson extends Model
                 ActionMetadata::make('create'),
                 ActionMetadata::make('update')
                     ->addParameters([
-                        ActionParameterMetadata::make('id', AttributeType::INTEGER)
+                        ActionParameterMetadata::make('id', VariableType::INTEGER)
                             ->required()
                             ->addValidationRule('exists:lessons,id')
                     ]),
@@ -72,13 +72,13 @@ class Lesson extends Model
                 ActionMetadata::make('getItems'),
                 ActionMetadata::make('delete')
                     ->addParameters([
-                        ActionParameterMetadata::make('id', AttributeType::INTEGER)
+                        ActionParameterMetadata::make('id', VariableType::INTEGER)
                             ->required()
                             ->addValidationRule('exists:lessons,id')
                     ]),
                 ActionMetadata::make('getItem')
                     ->addParameters([
-                        ActionParameterMetadata::make('id', AttributeType::INTEGER)
+                        ActionParameterMetadata::make('id', VariableType::INTEGER)
                             ->required()
                             ->addValidationRule('exists:lessons,id')
                     ]),

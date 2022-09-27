@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use Egal\Model\Enums\AttributeType;
+use Egal\Model\Enums\VariableType;
 use Egal\Model\Enums\RelationType;
 use Egal\Model\Metadata\ActionMetadata;
 use Egal\Model\Metadata\ActionParameterMetadata;
@@ -24,13 +24,13 @@ class Language extends Model
 
     public static function constructMetadata(): ModelMetadata
     {
-        return ModelMetadata::make(self::class, FieldMetadata::make('id', AttributeType::STRING))
+        return ModelMetadata::make(self::class, FieldMetadata::make('id', VariableType::STRING))
             ->addFields([
-                FieldMetadata::make('name', AttributeType::STRING)
+                FieldMetadata::make('name', VariableType::STRING)
                     ->required()
                     ->addValidationRule('unique:languages,name'),
-                FieldMetadata::make('created_at', AttributeType::DATETIME),
-                FieldMetadata::make('updated_at', AttributeType::DATETIME),
+                FieldMetadata::make('created_at', VariableType::DATETIME),
+                FieldMetadata::make('updated_at', VariableType::DATETIME),
             ])
             ->addRelations([
                 RelationMetadata::make(
@@ -42,7 +42,7 @@ class Language extends Model
                 ActionMetadata::make('create'),
                 ActionMetadata::make('update')
                     ->addParameters([
-                        ActionParameterMetadata::make('id', AttributeType::STRING)
+                        ActionParameterMetadata::make('id', VariableType::STRING)
                             ->required()
                             ->addValidationRule('exists:languages,id')
                     ]),
@@ -50,13 +50,13 @@ class Language extends Model
                 ActionMetadata::make('getItems'),
                 ActionMetadata::make('delete')
                     ->addParameters([
-                        ActionParameterMetadata::make('id', AttributeType::STRING)
+                        ActionParameterMetadata::make('id', VariableType::STRING)
                             ->required()
                             ->addValidationRule('exists:languages,id')
                     ]),
                 ActionMetadata::make('getItem')
                     ->addParameters([
-                        ActionParameterMetadata::make('id', AttributeType::STRING)
+                        ActionParameterMetadata::make('id', VariableType::STRING)
                             ->required()
                             ->addValidationRule('exists:languages,id')
                     ]),

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Egal\Core\ActionCaller;
 
 use Egal\Auth\Accesses\StatusAccess;
+use Egal\Core\Exceptions\ActionParameterValidationException;
 use Egal\Core\Exceptions\NoAccessActionCallException;
 use Egal\Core\Session\Session;
 use Egal\Model\Exceptions\ValidateException;
@@ -182,8 +183,7 @@ class ActionCaller
      * If it is impossible to generate valid parameters, an exception is thrown.
      *
      * @return array
-     * @throws ValidateException
-     * @throws ValidationException
+     * @throws ActionParameterValidationException
      */
     private function getValidActionParameters(): array
     {
@@ -194,7 +194,6 @@ class ActionCaller
             $this->modelActionMetadata->getParameters(),
             fn (ActionParameterMetadata $parameter) => !array_key_exists($parameter->getName(), $actionParameters)
         );
-        $notValidatedParams = array_diff_key($actionParameters, $parametersValidationRules);
         $defaultParameters = [];
 
         /** @var ActionParameterMetadata $parameter */
@@ -210,13 +209,13 @@ class ActionCaller
         $validator = Validator::make($actionParameters, $parametersValidationRules);
 
         if ($validator->fails()) {
-            $exception = new ValidateException();
+            $exception = new ActionParameterValidationException();
             $exception->setMessageBag($validator->errors());
 
             throw $exception;
         }
 
-        return array_merge($validator->validated(), $notValidatedParams);
+        return $actionParameters;
     }
 
     private function isDefaultValueAvailable(ActionParameterMetadata $parameter): bool

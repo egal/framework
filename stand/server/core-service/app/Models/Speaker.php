@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use Egal\Model\Enums\AttributeType;
+use Egal\Model\Enums\VariableType;
 use Egal\Model\Enums\RelationType;
 use Egal\Model\Metadata\ActionMetadata;
 use Egal\Model\Metadata\ActionParameterMetadata;
@@ -31,22 +31,22 @@ class Speaker extends EgalModel
 
     public static function constructMetadata(): ModelMetadata
     {
-        return ModelMetadata::make(self::class, FieldMetadata::make('id', AttributeType::UUID))
+        return ModelMetadata::make(self::class, FieldMetadata::make('id', VariableType::UUID))
             ->addFields([
-                FieldMetadata::make('user_id', AttributeType::UUID)
+                FieldMetadata::make('user_id', VariableType::UUID)
                     ->required()
                     ->hidden(),
-                FieldMetadata::make('name', AttributeType::STRING)
+                FieldMetadata::make('name', VariableType::STRING)
                     ->required(),
-                FieldMetadata::make('surname', AttributeType::STRING)
+                FieldMetadata::make('surname', VariableType::STRING)
                     ->required(),
-                FieldMetadata::make('avatar', AttributeType::STRING),
-                FieldMetadata::make('video', AttributeType::STRING),
-                FieldMetadata::make('country_id', AttributeType::STRING)
+                FieldMetadata::make('avatar', VariableType::STRING),
+                FieldMetadata::make('video', VariableType::STRING),
+                FieldMetadata::make('country_id', VariableType::STRING)
                     ->addValidationRule('exists:countries,id')
                     ->required(),
-                FieldMetadata::make('created_at', AttributeType::DATETIME),
-                FieldMetadata::make('updated_at', AttributeType::DATETIME),
+                FieldMetadata::make('created_at', VariableType::DATETIME),
+                FieldMetadata::make('updated_at', VariableType::DATETIME),
             ])
             ->addRelations([
                 RelationMetadata::make(
@@ -62,7 +62,7 @@ class Speaker extends EgalModel
                 ActionMetadata::make('create'),
                 ActionMetadata::make('update')
                     ->addParameters([
-                        ActionParameterMetadata::make('id', AttributeType::UUID)
+                        ActionParameterMetadata::make('id', VariableType::UUID)
                             ->required()
                             ->addValidationRule('exists:speakers,id')
                     ]),
@@ -70,13 +70,13 @@ class Speaker extends EgalModel
                 ActionMetadata::make('getItems'),
                 ActionMetadata::make('delete')
                     ->addParameters([
-                        ActionParameterMetadata::make('id', AttributeType::UUID)
+                        ActionParameterMetadata::make('id', VariableType::UUID)
                             ->required()
                             ->addValidationRule('exists:speakers,id')
                     ]),
                 ActionMetadata::make('getItem')
                     ->addParameters([
-                        ActionParameterMetadata::make('id', AttributeType::UUID)
+                        ActionParameterMetadata::make('id', VariableType::UUID)
                             ->required()
                             ->addValidationRule('exists:speakers,id')
                     ]),

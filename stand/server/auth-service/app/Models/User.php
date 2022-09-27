@@ -8,7 +8,7 @@ use Egal\Auth\Tokens\UserMasterRefreshToken;
 use Egal\Auth\Tokens\UserMasterToken;
 use Egal\AuthServiceDependencies\Exceptions\LoginException;
 use Egal\AuthServiceDependencies\Models\User as BaseUser;
-use Egal\Model\Enums\AttributeType;
+use Egal\Model\Enums\VariableType;
 use Egal\Model\Enums\RelationType;
 use Egal\Model\Metadata\ActionMetadata;
 use Egal\Model\Metadata\ActionParameterMetadata;
@@ -109,17 +109,17 @@ class User extends BaseUser
 
     public static function constructMetadata(): ModelMetadata
     {
-        return ModelMetadata::make(User::class, FieldMetadata::make('id', AttributeType::UUID))
+        return ModelMetadata::make(User::class, FieldMetadata::make('id', VariableType::UUID))
             ->addFields([
-                FieldMetadata::make('email', AttributeType::STRING)
+                FieldMetadata::make('email', VariableType::STRING)
                     ->required()
                     ->addValidationRule('unique:users,email'),
-                FieldMetadata::make('password', AttributeType::STRING)
+                FieldMetadata::make('password', VariableType::STRING)
                     ->required()
                     ->hidden()
                     ->guarded(),
-                FieldMetadata::make('created_at', AttributeType::DATETIME),
-                FieldMetadata::make('updated_at', AttributeType::DATETIME),
+                FieldMetadata::make('created_at', VariableType::DATETIME),
+                FieldMetadata::make('updated_at', VariableType::DATETIME),
             ])
             ->addRelations([
                 RelationMetadata::make(
@@ -130,13 +130,13 @@ class User extends BaseUser
             ->addActions([
                 ActionMetadata::make('register')->addParameters(
                     [
-                        ActionParameterMetadata::make('password', AttributeType::STRING)
+                        ActionParameterMetadata::make('password', VariableType::STRING)
                             ->required()
                     ]
                 ),
                 ActionMetadata::make('login')->addParameters(
                     [
-                        ActionParameterMetadata::make('email', AttributeType::STRING)
+                        ActionParameterMetadata::make('email', VariableType::STRING)
                             ->required()
                             ->addValidationRule('exists:users,email'),
                     ]
@@ -146,7 +146,7 @@ class User extends BaseUser
                 ActionMetadata::make('create'),
                 ActionMetadata::make('update')
                     ->addParameters([
-                        ActionParameterMetadata::make('id', AttributeType::UUID)
+                        ActionParameterMetadata::make('id', VariableType::UUID)
                             ->required()
                             ->addValidationRule('exists:users,id')
                     ]),
@@ -154,13 +154,13 @@ class User extends BaseUser
                 ActionMetadata::make('getItems'),
                 ActionMetadata::make('delete')
                     ->addParameters([
-                        ActionParameterMetadata::make('id', AttributeType::UUID)
+                        ActionParameterMetadata::make('id', VariableType::UUID)
                             ->required()
                             ->addValidationRule('exists:users,id')
                     ]),
                 ActionMetadata::make('getItem')
                     ->addParameters([
-                        ActionParameterMetadata::make('id', AttributeType::UUID)
+                        ActionParameterMetadata::make('id', VariableType::UUID)
                             ->required()
                             ->addValidationRule('exists:users,id')
                     ]),

@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use Egal\Model\Enums\AttributeType;
+use Egal\Model\Enums\VariableType;
 use Egal\Model\Metadata\ActionMetadata;
 use Egal\Model\Metadata\ActionParameterMetadata;
 use Egal\Model\Metadata\FieldMetadata;
@@ -14,24 +14,24 @@ class UserRole extends Model
 
     public static function constructMetadata(): ModelMetadata
     {
-        return ModelMetadata::make(UserRole::class, FieldMetadata::make('id', AttributeType::INTEGER))
+        return ModelMetadata::make(UserRole::class, FieldMetadata::make('id', VariableType::INTEGER))
             ->addFields([
-                FieldMetadata::make('user_id', AttributeType::UUID)
+                FieldMetadata::make('user_id', VariableType::UUID)
                     ->required()
                     ->addValidationRule('exists:users'),
-                FieldMetadata::make('role_id', AttributeType::STRING)
+                FieldMetadata::make('role_id', VariableType::STRING)
                     ->required()
                     ->addValidationRule('exists:roles'),
-                FieldMetadata::make('created_at', AttributeType::DATETIME)
+                FieldMetadata::make('created_at', VariableType::DATETIME)
                     ->hidden(),
-                FieldMetadata::make('updated_at', AttributeType::DATETIME)
+                FieldMetadata::make('updated_at', VariableType::DATETIME)
                     ->hidden(),
             ])
             ->addActions([
                 ActionMetadata::make('create'),
                 ActionMetadata::make('update')
                     ->addParameters([
-                        ActionParameterMetadata::make('id', AttributeType::INTEGER)
+                        ActionParameterMetadata::make('id', VariableType::INTEGER)
                             ->required()
                             ->addValidationRule('exists:user_roles,id')
                     ]),
@@ -39,13 +39,13 @@ class UserRole extends Model
                 ActionMetadata::make('getItems'),
                 ActionMetadata::make('delete')
                     ->addParameters([
-                        ActionParameterMetadata::make('id', AttributeType::INTEGER)
+                        ActionParameterMetadata::make('id', VariableType::INTEGER)
                             ->required()
                             ->addValidationRule('exists:user_roles,id')
                     ]),
                 ActionMetadata::make('getItem')
                     ->addParameters([
-                        ActionParameterMetadata::make('id', AttributeType::INTEGER)
+                        ActionParameterMetadata::make('id', VariableType::INTEGER)
                             ->required()
                             ->addValidationRule('exists:user_roles,id')
                     ]),

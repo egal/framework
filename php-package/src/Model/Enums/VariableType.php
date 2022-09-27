@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Egal\Model\Enums;
 
-enum AttributeType: string
+enum VariableType: string
 {
 
     case STRING     = 'string';

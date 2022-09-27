@@ -2,8 +2,12 @@
 
 namespace Egal\Model\Metadata;
 
-class FieldMetadata extends AbstractAttributeMetadata
+use Egal\Model\Traits\Metadata;
+
+class FieldMetadata
 {
+
+    use Metadata;
 
     protected bool $hidden = false;
 

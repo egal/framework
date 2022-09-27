@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use Egal\Model\Enums\AttributeType;
+use Egal\Model\Enums\VariableType;
 use Egal\Model\Metadata\ActionMetadata;
 use Egal\Model\Metadata\ActionParameterMetadata;
 use Egal\Model\Metadata\FieldMetadata;
@@ -17,22 +17,22 @@ class AdditionalSpeakerLanguage extends Model
 
     public static function constructMetadata(): ModelMetadata
     {
-        return ModelMetadata::make(self::class, FieldMetadata::make('id', AttributeType::INTEGER))
+        return ModelMetadata::make(self::class, FieldMetadata::make('id', VariableType::INTEGER))
             ->addFields([
-                FieldMetadata::make('language_id', AttributeType::STRING)
+                FieldMetadata::make('language_id', VariableType::STRING)
                     ->required()
                     ->addValidationRule('exists:languages,id'),
-                FieldMetadata::make('speaker_id', AttributeType::UUID)
+                FieldMetadata::make('speaker_id', VariableType::UUID)
                     ->addValidationRule('exists:speakers,id')
                     ->required(),
-                FieldMetadata::make('created_at', AttributeType::DATETIME),
-                FieldMetadata::make('updated_at', AttributeType::DATETIME),
+                FieldMetadata::make('created_at', VariableType::DATETIME),
+                FieldMetadata::make('updated_at', VariableType::DATETIME),
             ])
             ->addActions([
                 ActionMetadata::make('create'),
                 ActionMetadata::make('update')
                     ->addParameters([
-                        ActionParameterMetadata::make('id', AttributeType::INTEGER)
+                        ActionParameterMetadata::make('id', VariableType::INTEGER)
                             ->required()
                             ->addValidationRule('exists:additional_speaker_languages,id')
                     ]),
@@ -40,13 +40,13 @@ class AdditionalSpeakerLanguage extends Model
                 ActionMetadata::make('getItems'),
                 ActionMetadata::make('delete')
                     ->addParameters([
-                        ActionParameterMetadata::make('id', AttributeType::INTEGER)
+                        ActionParameterMetadata::make('id', VariableType::INTEGER)
                             ->required()
                             ->addValidationRule('exists:additional_speaker_languages,id')
                     ]),
                 ActionMetadata::make('getItem')
                     ->addParameters([
-                        ActionParameterMetadata::make('id', AttributeType::INTEGER)
+                        ActionParameterMetadata::make('id', VariableType::INTEGER)
                             ->required()
                             ->addValidationRule('exists:additional_speaker_languages,id')
                     ]),

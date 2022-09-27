@@ -2,24 +2,22 @@
 
 declare(strict_types=1);
 
-namespace Egal\Model\Metadata;
+namespace Egal\Model\Traits;
 
-use Egal\Model\Enums\AttributeType;
+use Egal\Model\Enums\VariableType;
 use Egal\Model\Enums\ValidationRules;
 use Egal\Model\Exceptions\ValidateException;
-use Egal\Model\Traits\AttributeValidationRules;
 use Egal\Validation\Rules\Rule as EgalRule;
 use Illuminate\Contracts\Validation\Rule;
 use Illuminate\Support\Facades\Validator;
 
-abstract class AbstractAttributeMetadata
+trait Metadata
 {
-
     use AttributeValidationRules;
 
     protected readonly string $name;
 
-    protected readonly AttributeType $type;
+    protected readonly VariableType $type;
 
     protected mixed $default = null;
 
@@ -30,13 +28,13 @@ abstract class AbstractAttributeMetadata
      */
     protected array $validationRules = [];
 
-    protected function __construct(string $name, AttributeType $type)
+    protected function __construct(string $name, VariableType $type)
     {
         $this->name = $name;
         $this->type = $type;
     }
 
-    public static function make(string $name, AttributeType $type): static
+    public static function make(string $name, VariableType $type): static
     {
         return new static($name, $type);
     }
@@ -105,7 +103,7 @@ abstract class AbstractAttributeMetadata
         }
 
         switch ($this->type) {
-            case AttributeType::DATETIME:
+            case VariableType::DATETIME:
                 break;
             default:
                 array_unshift($this->validationRules, $this->type->value);
@@ -120,7 +118,7 @@ abstract class AbstractAttributeMetadata
         return $this->name;
     }
 
-    public function getType(): AttributeType
+    public function getType(): VariableType
     {
         return $this->type;
     }
