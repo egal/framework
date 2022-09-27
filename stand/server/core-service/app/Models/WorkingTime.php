@@ -47,7 +47,6 @@ class WorkingTime extends Model
                 ActionMetadata::make('create'),
                 ActionMetadata::make('update')
                     ->addParameters([
-
                         ActionParameterMetadata::make('key', VariableType::INTEGER)
                             ->required()
                             ->addValidationRule('exists:working_times,id')
