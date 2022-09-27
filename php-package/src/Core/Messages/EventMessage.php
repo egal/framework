@@ -13,20 +13,20 @@ class EventMessage extends Message
 
     protected string $modelName;
 
-    protected string $key;
+    protected string $id;
 
     protected string $name;
 
     protected ?array $data = null;
 
-    public function __construct(string $modelName, string $key, string $name, ?array $data = null)
+    public function __construct(string $modelName, string $id, string $name, ?array $data = null)
     {
         parent::__construct();
 
         $this->modelName = $modelName;
         $this->name = $name;
         $this->data = $data;
-        $this->key = $key;
+        $this->id = $id;
         $this->serviceName = config('app.service_name');
     }
 
@@ -53,9 +53,9 @@ class EventMessage extends Message
         return $this->name;
     }
 
-    public function getKey(): string
+    public function getId(): string
     {
-        return $this->key;
+        return $this->id;
     }
 
     /**
