@@ -97,7 +97,7 @@ class ModelActionGetItemsFilterAggregateRelationTest extends TestCase
     /**
      * @dataProvider dataProviderFilterAggregateRelation
      */
-    public function testFilterAggregateRelation(?array $filter, ?string $expectException, $responseExpect, array $withs)
+    public function testFilterAggregateRelation(?array $filter, ?string $expectException, $responseExpect, array $relations)
     {
         if ($expectException) {
             $this->expectException($expectException);
@@ -105,7 +105,7 @@ class ModelActionGetItemsFilterAggregateRelationTest extends TestCase
 
         $actual = ModelActionGetItemsFilterAggregateRelationTestCategory::actionGetItems(
             null,
-            $withs,
+            $relations,
             $filter,
             []
         )['items'];

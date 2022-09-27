@@ -14,7 +14,7 @@ class UserFactory extends Factory
     {
         return [
             'email' => $this->faker->email,
-            'password' => $this->faker->password,
+            'password' => password_hash($this->faker->password, PASSWORD_BCRYPT),
         ];
     }
 
