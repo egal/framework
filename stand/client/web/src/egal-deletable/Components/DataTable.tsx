@@ -15,12 +15,13 @@ import {
   TextInput
 } from 'grommet';
 import { Close, StatusWarning, Filter } from 'grommet-icons';
-import { deepMerge } from 'grommet/utils';
 import { Field as FieldMetadata, Model as ModelMetadata } from '../Utils/Metadata';
 
 // TODO: Implementation of primary and secondary filters.
-// eslint-disable-next-line @typescript-eslint/ban-types
-type FilterConfig = {};
+type FilterConfig = {
+  primary?: boolean;
+  secondary?: boolean;
+};
 
 interface FieldConfig {
   name: string;
@@ -58,8 +59,8 @@ type State = {
 };
 
 export class DataTable extends React.Component<Props, State> {
-  static defaultProps: Props | any = {
-    columns: []
+  static defaultProps: Partial<Props> = {
+    fields: []
   };
 
   state: State = {
