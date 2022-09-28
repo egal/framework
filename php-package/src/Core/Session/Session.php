@@ -60,6 +60,8 @@ final class Session
             : StatusAccess::GUEST;
     }
 
+    public function getAuthEntity():
+
     public static function isUserServiceTokenExists(): bool
     {
         return self::getSingleton()->userServiceToken !== null;
@@ -159,7 +161,7 @@ final class Session
                 ? $exception
                 : new UnableDecodeTokenException();
         }
-        
+
         if (!isset($decodedToken['type'])) {
             throw new UndefinedTokenTypeException();
         }
