@@ -22,7 +22,6 @@ class CreateStudentsTable extends Migration
             $table->timestamps();
         });
 
-        DB::statement('CREATE EXTENSION IF NOT EXISTS "uuid-ossp"');
         DB::statement('ALTER TABLE students ALTER COLUMN id SET DEFAULT uuid_generate_v4();');
     }
 
