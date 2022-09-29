@@ -6,7 +6,10 @@ import {
   BrowserRouter as Router,
   PathRouteProps,
 } from 'react-router-dom';
-import { MobileResolutionNotSupported, MenuItemConfig } from '../../Widgets';
+import {
+  MobileResolutionNotSupportedFullLayerError,
+  MenuItemConfig,
+} from '../../Widgets';
 import { useWindowSize } from '../../Hooks';
 
 type AppConfig = {
@@ -25,8 +28,11 @@ export function App({
   mobileResolutionSupport = true,
 }: AppConfig) {
   const MobileResolutionNotSupportedElement = !mobileResolutionSupport &&
-    useWindowSize().width < 1200 && <MobileResolutionNotSupported />;
+    useWindowSize().width < 1200 && (
+      <MobileResolutionNotSupportedFullLayerError />
+    );
 
+  // TODO: Recursive load routes.
   const RouterElement = (
     <Router>
       <Routes>

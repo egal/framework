@@ -14,7 +14,7 @@ type Props<EntityType = any> = {
   entity: EntityType;
 };
 
-export function InputFactory<EntityType = any>({
+export function FormFieldInputFactoryWidget<EntityType = any>({
   input,
   entity,
 }: Props<EntityType>) {
@@ -28,6 +28,7 @@ export function InputFactory<EntityType = any>({
     case 'toggle':
       return (
         <CheckBox
+          id={input.name}
           name={input.name}
           toggle={input.renderType === 'toggle'}
           disabled={!input.enabled}

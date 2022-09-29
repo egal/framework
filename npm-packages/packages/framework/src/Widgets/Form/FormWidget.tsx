@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { FormFieldsFactory } from './FormFieldsFactory';
-import { InputConfig } from './InputFactory';
+import { InputConfig } from './FormFieldInputFactoryWidget';
 import {
   Box,
   Button,
@@ -15,10 +15,10 @@ type Props<EntityType = any> = {
   resettable?: boolean;
 } & GrommetFormProps<EntityType>;
 
-export function Form({
+export function FormWidget({
   entity,
   fields,
-  submittable = true,
+  submittable = false,
   resettable = false,
   ...grommetFormProps
 }: Props) {

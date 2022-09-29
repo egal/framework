@@ -1,2 +1,2 @@
 export * from './FormFieldsFactory';
-export * from './InputFactory';
+export * from './FormFieldInputFactoryWidget';

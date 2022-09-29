@@ -25,7 +25,7 @@ up-dependencies-detach:
 	docker-compose up --detach rabbitmq postgres web-service proxy
 
 up: generate-dot-env-file up-dependencies-detach
-	docker-compose up auth-service core-service
+	docker-compose up auth-service
 
 down:
 	docker-compose down -t 0

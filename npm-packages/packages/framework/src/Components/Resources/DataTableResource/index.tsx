@@ -1,8 +1,5 @@
 import * as React from 'react';
-import {
-  ColumnConfig as GrommetColumnConfig,
-  DataTable as GrommetDataTable,
-} from 'grommet/components/DataTable';
+import { DataTableResourceConfig, DataTableResourceFieldConfig } from './Types';
 import {
   ActionError,
   ActionGetItemsParams,
@@ -10,51 +7,30 @@ import {
   DataProvider,
 } from '../../../DataProvider';
 import {
-  Box as GrommetBox,
-  Button as GrommetButton,
-  CheckBox as GrommetCheckBox,
-  Heading as GrommetHeading,
-  Layer as GrommetLayer,
-  Pagination as GrommetPagination,
-  Paragraph as GrommetParagraph,
-  Spinner as GrommetSpinner,
-} from 'grommet';
+  ServerFieldMetadata as FieldMetadata,
+  ServerModelMetadata,
+} from '../../../Metadata';
+import { Layer as GrommetLayer } from 'grommet/components/Layer';
+import { Box as GrommetBox } from 'grommet/components/Box';
 import {
   Close as GrommetCloseIcon,
-  StatusWarning as GrommetStatusWarningIcon,
   Filter as GrommetFilterIcon,
-} from 'grommet-icons';
+  StatusWarning as GrommetStatusWarningIcon,
+} from 'grommet-icons/icons';
+import { Heading as GrommetHeading } from 'grommet/components/Heading';
+import { Paragraph as GrommetParagraph } from 'grommet/components/Paragraph';
+import { Spinner as GrommetSpinner } from 'grommet/components/Spinner';
 import {
-  ServerFieldMetadata as FieldMetadata,
-  ServerModelMetadata as ModelMetadata,
-} from '../../../Metadata';
+  ColumnConfig as GrommetColumnConfig,
+  DataTable as GrommetDataTable,
+} from 'grommet/components/DataTable';
+import { CheckBox as GrommetCheckBox } from 'grommet/components/CheckBox';
+import { Pagination as GrommetPagination } from 'grommet/components/Pagination';
+import { FormWidget } from '../../../Widgets/Form/FormWidget';
 import { InputConfig } from '../../../Widgets';
-import { Form } from '../../../Widgets/Form/Form';
+import { Button as GrommetButton } from 'grommet/components/Button';
 
-// TODO: Implementation of primary and secondary filters.
-type FilterConfig = {
-  primary?: boolean;
-  secondary?: boolean;
-};
-
-interface FieldConfig {
-  name: string;
-  header: string;
-  renderType?: 'boolean' | 'checkbox' | 'toggle';
-  renderDataTable?: (datum: any) => React.ReactNode;
-  formInputEnabled?: boolean;
-  renderFormInput?: (entity: any) => React.ReactElement; // TODO: Нормальные параметры.
-  dataTableColumnAdditionalProps?: any | GrommetColumnConfig<any>;
-  filter?: boolean | FilterConfig;
-}
-
-interface Props {
-  modelName: string;
-  serviceName: string;
-  perPage: number;
-  fields: FieldConfig[];
-  keyFieldName: string;
-}
+export * from './DataTableResource';
 
 type State = {
   items: null | ActionGetItemsResult; // TODO: Make not nullable.
@@ -66,14 +42,17 @@ type State = {
   create: null | {
     attributes: any;
   };
-  modelMetadata: null | ModelMetadata; // TODO: Make not nullable.
+  modelMetadata: null | ServerModelMetadata; // TODO: Make not nullable.
   undefinedErrorDetected: boolean;
   filterEdit: boolean;
   filterValue: any;
 };
 
-export class DataTableResource extends React.Component<Props, State> {
-  static defaultProps: Partial<Props> = {
+export class DataTableResourceOld extends React.Component<
+  DataTableResourceConfig,
+  State
+> {
+  static defaultProps: Partial<DataTableResourceConfig> = {
     fields: [],
   };
 
@@ -93,7 +72,7 @@ export class DataTableResource extends React.Component<Props, State> {
     },
   };
 
-  constructor(props: Props) {
+  constructor(props: DataTableResourceConfig) {
     super(props);
 
     this.dataTableOnClickRowCallback =
@@ -348,7 +327,7 @@ export class DataTableResource extends React.Component<Props, State> {
     }
 
     return (
-      <Form
+      <FormWidget
         resettable
         submittable
         entity={this.state.edit.attributes}
@@ -375,7 +354,9 @@ export class DataTableResource extends React.Component<Props, State> {
       });
   }
 
-  transformFieldConfigToInputConfig(field: FieldConfig): InputConfig {
+  transformFieldConfigToInputConfig(
+    field: DataTableResourceFieldConfig
+  ): InputConfig {
     const fieldMetadata = this.getFieldMetadata(field.name);
     return {
       name: field.name,
@@ -395,7 +376,7 @@ export class DataTableResource extends React.Component<Props, State> {
     }
 
     return (
-      <Form
+      <FormWidget
         resettable
         submittable
         entity={{}}
@@ -457,7 +438,7 @@ export class DataTableResource extends React.Component<Props, State> {
             />
           </GrommetBox>
           <GrommetBox overflow={'auto'}>
-            <Form
+            <FormWidget
               entity={this.state.filterValue}
               fields={this.props.fields
                 .filter((field) => {
@@ -485,7 +466,7 @@ export class DataTableResource extends React.Component<Props, State> {
                 });
                 this.reloadData();
               }}
-            ></Form>
+            ></FormWidget>
           </GrommetBox>
         </GrommetBox>
       </GrommetLayer>

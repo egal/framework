@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import axios, { AxiosError } from 'axios';
 import { deepMerge } from 'grommet/utils';
 import { ActionResultPromise } from '../DataProvider';
+import { ServerFieldMetadata, ServerModelMetadata } from '../Metadata';
 
 // type ActionGetItemsResult<EntityType = any> = {
 //   current_page: number;
@@ -45,13 +46,6 @@ import { ActionResultPromise } from '../DataProvider';
 //   ModelMetadata,
 //   ActionError
 // >;
-
-type Config<GetParamsType = any> = {
-  serviceName: string;
-  modelName: string;
-  initGetParams?: GetParamsType | null;
-  getActionName?: string | 'getItems' | 'getItem';
-};
 
 function getFromActionNameHTTPMethod(actionName: string): string {
   switch (actionName) {
@@ -102,14 +96,12 @@ export function useResource<
   GetResultType = any,
   ErrorType = any,
   GetParamsType = any
->(config: Config<GetParamsType>) {
-  const {
-    serviceName,
-    modelName,
-    initGetParams = null,
-    getActionName = 'getItems',
-  }: Config = config;
-
+>(
+  serviceName: string,
+  modelName: string,
+  initGetParams: GetParamsType | any = {},
+  getActionName: string | 'getItems' | 'getItem' = 'getItems'
+) {
   const serverUrl: string = 'http://localhost:8080';
   const [getResult, setGetResult] = useState<GetResultType>();
   const [error, setError] = useState<ErrorType>();
@@ -163,11 +155,38 @@ export function useResource<
     return action('delete', { key: key });
   };
 
+  const [metadata, setMetadata] = useState<ServerModelMetadata>();
+
+  const actionGetMetadata = () => {
+    return action('getMetadata', null).then((res) => {
+      setMetadata(res);
+    });
+  };
+
+  const fieldMetadata = (name: string): ServerFieldMetadata => {
+    if (metadata === undefined) {
+      throw new Error();
+    }
+
+    const result: ServerFieldMetadata = [
+      metadata.primary_key,
+      ...metadata.fields,
+      ...metadata.fake_fields,
+    ].find((field: ServerFieldMetadata): boolean => field.name === name);
+
+    if (result === undefined) {
+      throw new Error('Field not found!');
+    }
+
+    return result;
+  };
+
   useEffect(() => {
+    actionGetMetadata();
     actionGet();
   }, []);
 
-  return {
+  return [
     getResult,
     getParams,
     error,
@@ -175,5 +194,8 @@ export function useResource<
     actionCreate,
     actionUpdate,
     actionDelete,
-  };
+    actionGetMetadata,
+    metadata,
+    fieldMetadata,
+  ];
 }

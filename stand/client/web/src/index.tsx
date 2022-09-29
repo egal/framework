@@ -1,33 +1,41 @@
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import logo from './assets/logo.svg';
-import { App, Layout, DataTableResource, NotFound, useResource, ActionGetItemsParams } from '@egalteam/framework';
-import { Meter as GrommetMeter } from 'grommet';
+import {
+  App,
+  Layout,
+  DataTableResource,
+  NotFoundFullLayerError as NotFound,
+  useResource,
+  ActionGetItemsParams
+} from '@egalteam/framework';
+import { Heading, Meter as GrommetMeter } from 'grommet';
 import { grommet as grommetTheme } from 'grommet/themes';
 import { deepMerge } from 'grommet/utils';
 import React from 'react';
 
 function TestComponent() {
-  const { getResult, actionGet, getParams } = useResource<any, any, ActionGetItemsParams>({
-    serviceName: 'auth',
-    modelName: 'Employee',
-    initGetParams: {
-      pagination: {
-        per_page: 10,
-        page: 1
-      }
+  const [
+    getResult,
+    getParams,
+    error,
+    actionGet,
+    actionCreate,
+    actionUpdate,
+    actionDelete,
+    actionGetMetadata,
+    metadata,
+    fieldMetadata
+  ] = useResource<any, any, ActionGetItemsParams>('auth', 'Employee', {
+    pagination: {
+      per_page: 10,
+      page: 1
     }
   });
 
   return (
-    <h1>
-      Render!
-      <button
-        onClick={() => {
-          console.log(getResult);
-        }}>
-        Show
-      </button>
+    <>
+      <p>{JSON.stringify(getResult)}</p>
       <button
         onClick={() => {
           if (!getParams.pagination?.page) {
@@ -42,11 +50,11 @@ function TestComponent() {
             },
             'deepMerge'
           );
-          console.log(getResult);
         }}>
-        Click me
+        NextPage
       </button>
-    </h1>
+      <button onClick={() => actionGet()}>Reload</button>
+    </>
   );
 }
 
@@ -74,7 +82,7 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
       }
     })}
     menu={[
-      { header: 'Home', path: '/', element: <h1>Home page</h1> },
+      { header: 'Home', path: '/', element: <Heading>Home page</Heading> },
       { header: 'Test', path: '/test', element: <TestComponent /> },
       {
         header: 'Home',
@@ -102,7 +110,7 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
             fields={[
               { name: 'id', header: 'ID', filter: { primary: true } },
               { name: 'address', header: 'Address', filter: true },
-              { name: 'adult', header: 'Adult', renderType: 'toggle' },
+              { name: 'adult', header: 'Adult', renderType: 'toggle', filter: { secondary: true } },
               { name: 'phone', header: 'Phone' },
               {
                 name: 'weight',

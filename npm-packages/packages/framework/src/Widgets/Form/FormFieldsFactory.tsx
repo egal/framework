@@ -1,6 +1,9 @@
 import * as React from 'react';
 import { FormField } from 'grommet';
-import { InputConfig, InputFactory } from './InputFactory';
+import {
+  InputConfig,
+  FormFieldInputFactoryWidget,
+} from './FormFieldInputFactoryWidget';
 
 type Props<EntityType = any> = {
   fields: InputConfig[];
@@ -21,7 +24,7 @@ export function FormFieldsFactory<EntityType = any>({
             label={`${field.header}`}
             key={key}
           >
-            <InputFactory input={field} entity={entity} />
+            <FormFieldInputFactoryWidget input={field} entity={entity} />
           </FormField>
         );
       })}
