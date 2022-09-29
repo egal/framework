@@ -107,6 +107,19 @@ export function DataTableResource({
 
   return (
     <>
+      {creatingEnabled && (
+        <FullLayerModal onClose={disableCreating}>
+          <FormWidget
+            entity={creatingEntity}
+            fields={toInputConfigs(fields, { excludeGuarded: true })}
+            onChange={changeCreatingEntity}
+            resettable
+            onReset={resetCreatingEntity}
+            submittable
+            onSubmit={() => actionCreate(creatingEntity).then(disableCreating)}
+          />
+        </FullLayerModal>
+      )}
       {updatingEnabled && (
         <FullLayerModal onClose={disableUpdating}>
           <FormWidget
@@ -121,19 +134,6 @@ export function DataTableResource({
                 disableUpdating()
               )
             }
-          />
-        </FullLayerModal>
-      )}
-      {creatingEnabled && (
-        <FullLayerModal onClose={disableCreating}>
-          <FormWidget
-            entity={creatingEntity}
-            fields={toInputConfigs(fields, { excludeGuarded: true })}
-            onChange={changeCreatingEntity}
-            resettable
-            onReset={resetCreatingEntity}
-            submittable
-            onSubmit={() => actionCreate(creatingEntity).then(disableCreating)}
           />
         </FullLayerModal>
       )}
@@ -161,10 +161,53 @@ export function DataTableResource({
         gap={'small'}
       >
         <GrommetBox width={'100%'} direction={'row'} justify={'between'}>
-          <GrommetButton
-            icon={<GrommetFilterIcon />}
-            onClick={enableSecondaryFiltersEdit}
-          />
+          <GrommetBox direction={'row'}>
+            <GrommetButton
+              icon={<GrommetFilterIcon />}
+              onClick={enableSecondaryFiltersEdit}
+            />
+            <FormWidget
+              submittable
+              onSubmit={() => {
+                const fieldsNames = Object.keys(filteringEntity);
+                const res = fieldsNames.flatMap((key, index) => {
+                  const condition = [key, 'co', filteringEntity[key]];
+                  return index + 1 === fieldsNames.length
+                    ? [condition]
+                    : [condition, 'AND'];
+                });
+
+                actionGet({ filter: res }, 'deepMerge');
+              }}
+              resettable
+              onReset={() => {
+                resetFilteringEntity();
+                actionGet();
+              }}
+              entity={filteringEntity}
+              fields={toInputConfigs(fields, {
+                enableAllForce: true,
+                filterPrimaryFilterable: true,
+              })}
+              onChange={changeFilteringEntity}
+              formBoxProps={{
+                direction: 'row',
+                gap: 'small',
+              }}
+              formFieldsBoxProps={{
+                direction: 'row',
+                gap: 'small',
+              }}
+              buttonsBoxProps={{
+                direction: 'row',
+                gap: 'small',
+              }}
+            />
+          </GrommetBox>
+        </GrommetBox>
+        <GrommetBox width={'100%'} direction={'row'} justify={'between'}>
+          {/* TODO: Actions. */}
+          <>More Actions to be here...</>
           <GrommetButton
             label={'Create'}
             onClick={
@@ -189,7 +232,7 @@ export function DataTableResource({
             step={getResult.per_page}
             numberItems={getResult.total_count}
           />
-          <GrommetBox>Total: {getResult.items.total_count}</GrommetBox>
+          <GrommetBox>Total: {getResult.total_count}</GrommetBox>
         </GrommetBox>
       </GrommetBox>
     </>

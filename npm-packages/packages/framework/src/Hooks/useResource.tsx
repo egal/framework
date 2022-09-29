@@ -144,15 +144,17 @@ export function useResource<
   };
 
   const actionCreate = (entity: any) => {
-    return action('create', { attributes: entity });
+    return action('create', { attributes: entity }).then(() => actionGet());
   };
 
   const actionUpdate = (key: string | number, entity: any) => {
-    return action('update', { key: key, attributes: entity });
+    return action('update', { key: key, attributes: entity }).then(() =>
+      actionGet()
+    );
   };
 
   const actionDelete = (key: string | number) => {
-    return action('delete', { key: key });
+    return action('delete', { key: key }).then(() => actionGet());
   };
 
   const [metadata, setMetadata] = useState<ServerModelMetadata>();

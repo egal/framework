@@ -87,13 +87,13 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
       {
         header: 'Home',
         items: [
-          { header: 'Home', path: '/', element: <h1>Home page</h1> },
-          { header: 'Home', path: '/', element: <h1>Home page</h1> },
+          { header: 'Home', path: '/', element: <Heading>Home page</Heading> },
+          { header: 'Home', path: '/', element: <Heading>Home page</Heading> },
           {
             header: 'Home',
             items: [
-              { header: 'Home', path: '/', element: <h1>Home page</h1> },
-              { header: 'Home', path: '/', element: <h1>Home page</h1> }
+              { header: 'Home', path: '/', element: <Heading>Home page</Heading> },
+              { header: 'Home', path: '/', element: <Heading>Home page</Heading> }
             ]
           }
         ]
@@ -108,7 +108,7 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
             keyFieldName={'id'}
             perPage={10}
             fields={[
-              { name: 'id', header: 'ID', filter: { primary: true } },
+              { name: 'id', header: 'ID' },
               { name: 'address', header: 'Address', filter: true },
               { name: 'adult', header: 'Adult', renderType: 'toggle', filter: { secondary: true } },
               { name: 'phone', header: 'Phone' },
@@ -119,7 +119,7 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
                   <GrommetMeter values={[{ value: item.weight }]} thickness="small" size="small" />
                 )
               },
-              { name: 'created_at', header: 'Created at' },
+              { name: 'created_at', header: 'Created at', filter: { primary: true } },
               { name: 'updated_at', header: 'Updated at' }
             ]}
           />

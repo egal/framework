@@ -24,8 +24,8 @@ export function useFieldsConvertor(
     fields: DataTableResourceFieldConfig[],
     config: ToInputConfig = {
       excludeGuarded: false,
-      filterPrimaryFilterable: false,
       filterSecondaryFilterable: false,
+      filterPrimaryFilterable: false,
       enableAllForce: false,
     }
   ): InputConfig[] => {
