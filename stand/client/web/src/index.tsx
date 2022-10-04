@@ -53,9 +53,6 @@ function LoginComponent() {
             </FormField>
             <Button type={'submit'} label={'Login'} primary />
             {/* TODO: Remake to ReactRouterDOM.Link */}
-            <Link to={'/register'}>
-              <Button label={'Register'} />
-            </Link>
             <a href={'/register'}>
               <Button label={'Register'} />
             </a>
@@ -137,15 +134,6 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
     authConfig={deepMerge(authConfig, {})}
     menu={[
       { header: 'Home', path: '/', element: <Heading>Home page</Heading> },
-      {
-        header: 'Temp',
-        path: '/temp',
-        element: (
-          <Heading>
-            <Link to={'/'}>Home page</Link>
-          </Heading>
-        )
-      },
       { header: 'Test', path: '/test', element: <TestComponent /> },
       {
         header: 'Home',
