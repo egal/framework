@@ -6,11 +6,13 @@ export function useEntityManipulate<EntityType = any>(): [
   (entity: EntityType) => void,
   () => void,
   (newEntity: EntityType) => void,
-  () => void
+  () => void,
+  boolean
 ] {
   const [enabled, setEnabled] = useState<boolean>(false);
   const [entity, setEntity] = useState<EntityType>();
   const [originalEntity, setOriginalEntity] = useState<EntityType>();
+  const [entityIsDirty, setEntityIsDirty] = useState(true);
 
   const enable = (entity: EntityType) => {
     if (enabled) {
@@ -28,6 +30,8 @@ export function useEntityManipulate<EntityType = any>(): [
     }
 
     setEntity(newEntity);
+    setEntityIsDirty(entity !== originalEntity);
+    console.log(entityIsDirty);
   };
 
   const disable = () => {
@@ -46,7 +50,16 @@ export function useEntityManipulate<EntityType = any>(): [
     }
 
     setEntity(originalEntity);
+    setEntityIsDirty(false);
   };
 
-  return [enabled, entity, enable, disable, changeEntity, resetEntity];
+  return [
+    enabled,
+    entity,
+    enable,
+    disable,
+    changeEntity,
+    resetEntity,
+    entityIsDirty,
+  ];
 }

@@ -6,56 +6,102 @@ import {
   Layout,
   DataTableResource,
   NotFoundFullLayerError as NotFound,
-  useResource,
-  ActionGetItemsParams
+  interfaceConfig,
+  authConfig,
+  useAction,
+  useAuthContext
 } from '@egalteam/framework';
-import { Heading, Meter as GrommetMeter } from 'grommet';
+import { Box, Heading, Layer, Meter as GrommetMeter, Form, FormField, TextInput, Button } from 'grommet';
 import { grommet as grommetTheme } from 'grommet/themes';
 import { deepMerge } from 'grommet/utils';
-import React from 'react';
+import React, { useState } from 'react';
+import { Link, redirect } from 'react-router-dom';
 
-function TestComponent() {
+function LoginComponent() {
+  const [formValue, setFormValue] = useState({ email: '', password: '' });
   const [
-    getResult,
-    getParams,
-    error,
-    actionGet,
-    actionCreate,
-    actionUpdate,
-    actionDelete,
-    actionGetMetadata,
-    metadata,
-    fieldMetadata
-  ] = useResource<any, any, ActionGetItemsParams>('auth', 'Employee', {
-    pagination: {
-      per_page: 10,
-      page: 1
-    }
-  });
+    //
+    logged,
+    getMasterToken,
+    getServiceToken,
+    login,
+    logout
+  ] = useAuthContext();
 
   return (
-    <>
-      <p>{JSON.stringify(getResult)}</p>
-      <button
-        onClick={() => {
-          if (!getParams.pagination?.page) {
-            throw new Error();
-          }
-
-          actionGet(
-            {
-              pagination: {
-                page: getParams.pagination?.page + 1
+    // TODO: Without Layer.
+    <Layer full animation={'none'}>
+      <Box fill align={'center'} justify={'center'}>
+        <Form
+          value={formValue}
+          onChange={(newValue) => setFormValue(newValue)}
+          onSubmit={() => {
+            useAction('http://localhost:8080', 'auth', 'User', 'login', formValue).then(
+              ({ user_master_token }: { user_master_token: string }) => {
+                // TODO: Use UMRT.
+                login(user_master_token);
               }
-            },
-            'deepMerge'
-          );
-        }}>
-        NextPage
-      </button>
-      <button onClick={() => actionGet()}>Reload</button>
-    </>
+            );
+          }}>
+          <Box gap={'small'}>
+            <Heading>Login</Heading>
+            <FormField name={'email'}>
+              <TextInput id={'email'} name={'email'} placeholder={'my@email.com'} />
+            </FormField>
+            <FormField name={'password'}>
+              <TextInput id={'password'} name={'password'} placeholder={'*****'} type={'password'} />
+            </FormField>
+            <Button type={'submit'} label={'Login'} primary />
+            {/* TODO: Remake to ReactRouterDOM.Link */}
+            <Link to={'/register'}>
+              <Button label={'Register'} />
+            </Link>
+            <a href={'/register'}>
+              <Button label={'Register'} />
+            </a>
+          </Box>
+        </Form>
+      </Box>
+    </Layer>
   );
+}
+
+function RegisterComponent() {
+  const [formValue, setFormValue] = useState({ email: null, password: null });
+
+  return (
+    // TODO: Without Layer.
+    <Layer full animation={'none'}>
+      <Box fill align={'center'} justify={'center'}>
+        <Form
+          value={formValue}
+          onChange={(newValue) => setFormValue(newValue)}
+          onSubmit={() => {
+            // TODO: Make redirect to login on reg.then().
+            useAction('http://localhost:8080', 'auth', 'User', 'register', formValue);
+          }}>
+          <Box gap={'small'}>
+            <Heading>Register</Heading>
+            <FormField name={'email'}>
+              <TextInput id={'email'} name={'email'} placeholder={'my@email.com'} />
+            </FormField>
+            <FormField name={'password'}>
+              <TextInput id={'password'} name={'password'} placeholder={'*****'} type={'password'} />
+            </FormField>
+            <Button type={'submit'} label={'Register'} primary />
+            {/* TODO: Remake to ReactRouterDOM.Link */}
+            <a href={'/login'}>
+              <Button label={'Login'} />
+            </a>
+          </Box>
+        </Form>
+      </Box>
+    </Layer>
+  );
+}
+
+function TestComponent() {
+  return null;
 }
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
@@ -81,8 +127,25 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
         }
       }
     })}
+    interfaceConfig={deepMerge(interfaceConfig, {
+      dataTableResource: {
+        createButton: {
+          label: 'Create'
+        }
+      }
+    })}
+    authConfig={deepMerge(authConfig, {})}
     menu={[
       { header: 'Home', path: '/', element: <Heading>Home page</Heading> },
+      {
+        header: 'Temp',
+        path: '/temp',
+        element: (
+          <Heading>
+            <Link to={'/'}>Home page</Link>
+          </Heading>
+        )
+      },
       { header: 'Test', path: '/test', element: <TestComponent /> },
       {
         header: 'Home',
@@ -105,7 +168,6 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
           <DataTableResource
             serviceName={'auth'}
             modelName={'Employee'}
-            keyFieldName={'id'}
             perPage={10}
             fields={[
               { name: 'id', header: 'ID' },
@@ -120,7 +182,7 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
                 )
               },
               { name: 'created_at', header: 'Created at', filter: { primary: true } },
-              { name: 'updated_at', header: 'Updated at' }
+              { name: 'updated_at', header: 'Updated at', filter: { primary: true } }
             ]}
           />
         )
@@ -128,7 +190,9 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
     ]}
     additionalRoutes={[
       { path: '*', element: <NotFound /> },
-      { path: '/custom', element: <h1>Custom route!</h1> }
+      { path: '/custom', element: <h1>Custom route!</h1> },
+      { path: '/login', element: <LoginComponent /> },
+      { path: '/register', element: <RegisterComponent /> }
     ]}
   />
 );

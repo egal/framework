@@ -11,6 +11,17 @@ import {
   MenuItemConfig,
 } from '../../Widgets';
 import { useWindowSize } from '../../Hooks';
+import {
+  interfaceConfig as defaultInterfaceConfig,
+  InterfaceConfig,
+  InterfaceConfigContext,
+} from '../../Contexts/InterfaceConfig';
+import { AuthContext } from '../../Contexts/Auth';
+import {
+  AuthConfig,
+  authConfig as defaultAuthConfig,
+  useAuth,
+} from '../../Hooks/useAuth';
 
 type AppConfig = {
   menu?: MenuItemConfig[];
@@ -18,6 +29,8 @@ type AppConfig = {
   theme: ThemeType;
   additionalRoutes?: PathRouteProps[];
   mobileResolutionSupport?: boolean;
+  interfaceConfig?: InterfaceConfig;
+  authConfig?: AuthConfig;
 };
 
 export function App({
@@ -26,6 +39,8 @@ export function App({
   additionalRoutes = [],
   layout,
   mobileResolutionSupport = true,
+  interfaceConfig = defaultInterfaceConfig,
+  authConfig = defaultAuthConfig,
 }: AppConfig) {
   const MobileResolutionNotSupportedElement = !mobileResolutionSupport &&
     useWindowSize().width < 1200 && (
@@ -44,17 +59,21 @@ export function App({
             key={key}
           />
         ))}
-        {additionalRoutes?.map((route, key) =>
-          React.createElement(Route, { ...route, key: key })
-        )}
+        {additionalRoutes?.map((route, key) => (
+          <Route key={key} {...route} />
+        ))}
       </Routes>
     </Router>
   );
 
   return (
     <Grommet theme={theme}>
-      {MobileResolutionNotSupportedElement}
-      {RouterElement}
+      <AuthContext.Provider value={useAuth(authConfig)}>
+        <InterfaceConfigContext.Provider value={interfaceConfig}>
+          {MobileResolutionNotSupportedElement}
+          {RouterElement}
+        </InterfaceConfigContext.Provider>
+      </AuthContext.Provider>
     </Grommet>
   );
 }

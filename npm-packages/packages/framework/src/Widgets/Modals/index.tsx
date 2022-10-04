@@ -11,12 +11,7 @@ type Props = {
 
 export function FullLayerModal({ onClose, children, ...grommetProps }: Props) {
   return (
-    <GrommetLayer
-      onEsc={onClose}
-      onClickOutside={onClose}
-      margin={'small'}
-      {...grommetProps}
-    >
+    <GrommetLayer onEsc={onClose} onClickOutside={onClose} {...grommetProps}>
       <GrommetBox pad={'medium'} width={'30vw'} overflow="auto">
         <GrommetBox align={'end'}>
           <GrommetButton

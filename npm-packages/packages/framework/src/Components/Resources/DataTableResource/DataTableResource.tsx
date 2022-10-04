@@ -1,40 +1,35 @@
 import * as React from 'react';
 import { ActionGetItemsParams } from '../../../DataProvider';
 import {
+  Box,
   Box as GrommetBox,
   Button as GrommetButton,
-  CheckBox as GrommetCheckBox,
-  Heading,
-  Heading as GrommetHeading,
-  Layer as GrommetLayer,
+  Form as GrommetForm,
+  FormField,
   Pagination as GrommetPagination,
-  Paragraph as GrommetParagraph,
-  Spinner as GrommetSpinner,
 } from 'grommet';
-
-import { Filter as GrommetFilterIcon } from 'grommet-icons/icons';
 import {
   FullBoxLoader,
   FullLayerModal,
-  InputConfig,
   SomethingWentWrongFullLayerError,
 } from '../../../Widgets';
-import { FormWidget } from '../../../Widgets/Form/FormWidget';
-import { useResource } from '../../../Hooks';
-import { DataTable, FieldConfig } from '../../../Widgets/DataTable';
-import { useEntityManipulate } from '../../../Hooks/useEntityManipulate';
-import { DataTableResourceConfig, DataTableResourceFieldConfig } from './Types';
+import { DataTable } from '../../../Widgets/DataTable';
+import { useResource, useEntityManipulate, useRelay } from '../../../Hooks';
+import { DataTableResourceConfig } from './Types';
 import { useFieldsConvertor } from './Hooks';
 import { useEffect, useState } from 'react';
-import { useRelay } from '../../../Hooks/useRelay';
+import { Form } from '../../Form';
+import { InputFactory } from '../../Factories';
+import { useInterfaceConfigContext } from '../../../Contexts';
 
 export function DataTableResource({
   serviceName,
   modelName,
   perPage,
   fields = [],
-  keyFieldName,
 }: DataTableResourceConfig) {
+  const { dataTableResource: interfaceConfig } = useInterfaceConfigContext();
+
   const [
     creatingEnabled,
     creatingEntity,
@@ -42,6 +37,7 @@ export function DataTableResource({
     disableCreating,
     changeCreatingEntity,
     resetCreatingEntity,
+    ,
   ] = useEntityManipulate();
 
   const [
@@ -51,15 +47,17 @@ export function DataTableResource({
     disableUpdating,
     changeUpdatingEntity,
     resetUpdatingEntity,
+    ,
   ] = useEntityManipulate();
 
   const [
-    filteringEnabled,
+    ,
     filteringEntity,
     enableFiltering,
     disableFiltering,
     changeFilteringEntity,
     resetFilteringEntity,
+    ,
   ] = useEntityManipulate();
 
   const [
@@ -68,15 +66,17 @@ export function DataTableResource({
     disableSecondaryFiltersEdit,
   ] = useRelay();
 
+  const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([]);
+
   const [
     getResult,
-    getParams,
+    ,
     error,
     actionGet,
     actionCreate,
     actionUpdate,
     actionDelete,
-    actionGetMetadata,
+    ,
     modelMetadata,
     fieldMetadata,
   ] = useResource<any, any, ActionGetItemsParams>(serviceName, modelName, {
@@ -88,6 +88,7 @@ export function DataTableResource({
 
   useEffect(() => {
     enableFiltering({});
+    return () => disableFiltering();
   }, []);
 
   // TODO: Crutch, may be.
@@ -100,39 +101,42 @@ export function DataTableResource({
     return <FullBoxLoader />;
   }
 
-  const [toInputConfigs, toDataTableFieldConfig] = useFieldsConvertor(
+  const [toFormFieldConfigs, toDataTableFieldConfigs] = useFieldsConvertor(
     modelMetadata,
     fieldMetadata
   );
+
+  const [CreateButton, UpdateButton, DeleteButton] = [
+    GrommetButton,
+    GrommetButton,
+    GrommetButton,
+  ];
 
   return (
     <>
       {creatingEnabled && (
         <FullLayerModal onClose={disableCreating}>
-          <FormWidget
-            entity={creatingEntity}
-            fields={toInputConfigs(fields, { excludeGuarded: true })}
+          <Form
+            value={creatingEntity}
+            fields={toFormFieldConfigs(fields, { excludeGuarded: true })}
             onChange={changeCreatingEntity}
-            resettable
             onReset={resetCreatingEntity}
-            submittable
             onSubmit={() => actionCreate(creatingEntity).then(disableCreating)}
           />
         </FullLayerModal>
       )}
       {updatingEnabled && (
         <FullLayerModal onClose={disableUpdating}>
-          <FormWidget
-            entity={updatingEntity}
-            fields={toInputConfigs(fields)}
+          <Form
+            value={updatingEntity}
+            fields={toFormFieldConfigs(fields)}
             onChange={changeUpdatingEntity}
-            resettable
             onReset={resetUpdatingEntity}
-            submittable
             onSubmit={() =>
-              actionUpdate(creatingEntity[keyFieldName], creatingEntity).then(
-                disableUpdating()
-              )
+              actionUpdate(
+                updatingEntity[modelMetadata.primary_key.name],
+                updatingEntity
+              ).then(disableUpdating)
             }
           />
         </FullLayerModal>
@@ -143,9 +147,9 @@ export function DataTableResource({
           full={'vertical'}
           position={'right'}
         >
-          <FormWidget
-            entity={filteringEntity}
-            fields={toInputConfigs(fields, {
+          <Form
+            value={filteringEntity}
+            fields={toFormFieldConfigs(fields, {
               enableAllForce: true,
               filterSecondaryFilterable: true,
             })}
@@ -153,86 +157,135 @@ export function DataTableResource({
           />
         </FullLayerModal>
       )}
-      <GrommetBox
-        pad={'small'}
-        height={'100%'}
-        width={'100%'}
-        justify={'between'}
-        gap={'small'}
-      >
-        <GrommetBox width={'100%'} direction={'row'} justify={'between'}>
-          <GrommetBox direction={'row'}>
-            <GrommetButton
-              icon={<GrommetFilterIcon />}
-              onClick={enableSecondaryFiltersEdit}
-            />
-            <FormWidget
-              submittable
-              onSubmit={() => {
-                const fieldsNames = Object.keys(filteringEntity);
-                const res = fieldsNames.flatMap((key, index) => {
-                  const condition = [key, 'co', filteringEntity[key]];
-                  return index + 1 === fieldsNames.length
-                    ? [condition]
-                    : [condition, 'AND'];
-                });
-
-                actionGet({ filter: res }, 'deepMerge');
-              }}
-              resettable
-              onReset={() => {
-                resetFilteringEntity();
-                actionGet();
-              }}
-              entity={filteringEntity}
-              fields={toInputConfigs(fields, {
-                enableAllForce: true,
+      <GrommetBox fill pad={'small'} justify={'between'}>
+        <GrommetBox gap={'small'}>
+          <GrommetForm value={filteringEntity} onChange={changeFilteringEntity}>
+            <GrommetBox
+              direction={'row'}
+              align={'end'}
+              justify={'end'}
+              gap={'small'}
+            >
+              {toFormFieldConfigs(fields, {
                 filterPrimaryFilterable: true,
-              })}
-              onChange={changeFilteringEntity}
-              formBoxProps={{
-                direction: 'row',
-                gap: 'small',
-              }}
-              formFieldsBoxProps={{
-                direction: 'row',
-                gap: 'small',
-              }}
-              buttonsBoxProps={{
-                direction: 'row',
-                gap: 'small',
-              }}
+                enableAllForce: true,
+              }).map((field, key) => (
+                <FormField
+                  htmlFor={field.name}
+                  key={key}
+                  margin={'none'}
+                  {...field}
+                >
+                  <InputFactory {...field} />
+                </FormField>
+              ))}
+              <Box>
+                <GrommetButton
+                  label="More filters"
+                  size={'large'}
+                  onClick={enableSecondaryFiltersEdit}
+                  primary
+                />
+              </Box>
+              <Box>
+                <GrommetButton
+                  label="Filter"
+                  size={'large'}
+                  type="submit"
+                  primary
+                  onClick={() => {
+                    const fieldsNames = Object.keys(filteringEntity);
+                    const res = fieldsNames.flatMap((key, index) => {
+                      const condition = [key, 'co', filteringEntity[key]];
+                      return index + 1 === fieldsNames.length
+                        ? [condition]
+                        : [condition, 'AND'];
+                    });
+
+                    actionGet({ filter: res }, 'merge');
+                  }}
+                  // TODO: Disabled, not working because input not controlled.
+                  // disabled={filteringEntityIsDirty}
+                />
+              </Box>
+              <Box>
+                <GrommetButton
+                  label="Reset filters"
+                  size={'large'}
+                  type="reset"
+                  // TODO: Disabled.
+                  // disabled={filteringEntityIsDirty}
+                  onClick={() => {
+                    resetFilteringEntity();
+                    actionGet({ filter: [] }, 'merge');
+                  }}
+                />
+              </Box>
+            </GrommetBox>
+          </GrommetForm>
+          <GrommetBox direction={'row'} justify={'end'} gap={'small'}>
+            <GrommetBox>
+              <CreateButton
+                {...interfaceConfig.createButton}
+                onClick={
+                  // TODO: Normal start entity.
+                  () => enableCreating({})
+                }
+              />
+            </GrommetBox>
+            <GrommetBox>
+              <UpdateButton
+                {...interfaceConfig.updateButton}
+                disabled={selectedKeys.length !== 1}
+                onClick={() =>
+                  enableUpdating(
+                    getResult.items.find(
+                      (item: any) =>
+                        item[modelMetadata.primary_key.name] === selectedKeys[0]
+                    )
+                  )
+                }
+              />
+            </GrommetBox>
+            <GrommetBox>
+              <DeleteButton
+                {...interfaceConfig.deleteButton}
+                badge={selectedKeys.length > 0 && selectedKeys.length}
+                disabled={selectedKeys.length < 1}
+                onClick={() =>
+                  selectedKeys.map((deletableKey) => {
+                    // TODO: Use batchUpdate.
+                    actionDelete(deletableKey).then(() =>
+                      setSelectedKeys(
+                        selectedKeys.filter((key) => key !== deletableKey)
+                      )
+                    );
+                  })
+                }
+              />
+            </GrommetBox>
+          </GrommetBox>
+          <GrommetBox overflow="auto">
+            <DataTable
+              select={selectedKeys}
+              onSelect={(selectedKeys) => setSelectedKeys(selectedKeys)}
+              onClickRow={'select'}
+              fields={toDataTableFieldConfigs(fields)}
+              entities={getResult.items}
             />
           </GrommetBox>
         </GrommetBox>
-        <GrommetBox width={'100%'} direction={'row'} justify={'between'}>
-          {/* TODO: Actions. */}
-          <>More Actions to be here...</>
-          <GrommetButton
-            label={'Create'}
-            onClick={
-              // TODO: Normal start entity.
-              () => enableCreating({})
-            }
-          />
-        </GrommetBox>
-        <GrommetBox height={'100%'} width={'100%'} overflow="auto">
-          <DataTable
-            fields={toDataTableFieldConfig(fields)}
-            entities={getResult.items}
-          />
-        </GrommetBox>
         <GrommetBox justify={'between'} direction={'row'}>
-          <GrommetBox />
+          <GrommetBox>Total: {getResult.total_count}</GrommetBox>
           <GrommetPagination
             onChange={({ page }: { page: number }): void => {
+              setSelectedKeys([]);
               actionGet({ pagination: { page: page } }, 'deepMerge');
             }}
             page={getResult.current_page}
             step={getResult.per_page}
             numberItems={getResult.total_count}
           />
-          <GrommetBox>Total: {getResult.total_count}</GrommetBox>
         </GrommetBox>
       </GrommetBox>
     </>

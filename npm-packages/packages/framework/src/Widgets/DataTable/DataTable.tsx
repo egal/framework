@@ -1,18 +1,12 @@
-import {
-  DataTableCellFactory,
-  DataTableCellFactoryConfig,
-} from './DataTableCellFactory';
 import * as React from 'react';
 import {
   ColumnConfig as GrommetColumnConfig,
   DataTable as GrommetDataTable,
   DataTableProps,
 } from 'grommet/components/DataTable';
+import { ViewFactory, ViewFactoryProps } from '../../Components/Factories';
 
-export type FieldConfig<EntityType = any> = Omit<
-  DataTableCellFactoryConfig,
-  'value'
-> & {
+export type FieldConfig<EntityType = any> = Omit<ViewFactoryProps, 'value'> & {
   name: string;
   header: string;
   render?: (datum: EntityType) => React.ReactNode;
@@ -37,7 +31,7 @@ export function DataTable<EntityType = any>({
       ...grommetProps
     }): GrommetColumnConfig<EntityType> => {
       const render = (datum: EntityType) => (
-        <DataTableCellFactory renderType={renderType} value={datum[name]} />
+        <ViewFactory renderType={renderType} value={datum[name]} />
       );
 
       return {
@@ -55,7 +49,6 @@ export function DataTable<EntityType = any>({
     data: entities,
     // TODO: onClickRow
     // onClickRow: this.dataTableOnClickRowCallback,
-    resizeable: true,
     columns: columns,
     ...grommetDataTableProps,
   });

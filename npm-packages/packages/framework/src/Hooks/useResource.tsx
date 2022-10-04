@@ -5,48 +5,6 @@ import { deepMerge } from 'grommet/utils';
 import { ActionResultPromise } from '../DataProvider';
 import { ServerFieldMetadata, ServerModelMetadata } from '../Metadata';
 
-// type ActionGetItemsResult<EntityType = any> = {
-//   current_page: number;
-//   total_count: number;
-//   per_page: number;
-//   items: EntityType[];
-// };
-//
-// type ActionErrorCode = 'ERR_UNDEFINED' | 'ERR_NETWORK' | string;
-//
-// type ActionError = {
-//   message: string;
-//   code: ActionErrorCode;
-// };
-
-// type ActionGetItemsFilterParam = any;
-//
-// export type ActionGetItemsParams = {
-//   pagination?: {
-//     per_page: number;
-//     page: number;
-//   };
-//   filter?: ActionGetItemsFilterParam; // TODO: Normalize.
-// };
-
-// type ActionResultPromise<T, F = any> = {
-//   catch<TResult = never>(
-//     onrejected?:
-//       | ((reason: F) => TResult | PromiseLike<TResult>)
-//       | undefined
-//       | null
-//   ): Promise<T | TResult>;
-// } & Promise<T>;
-
-// type ActionGetItemsPromise = ActionResultPromise<
-//   ActionGetItemsResult,
-//   ActionError
-// >;
-// type ActionGetModelMetadataPromise = ActionResultPromise<
-//   ModelMetadata,
-//   ActionError
-// >;
-
 function getFromActionNameHTTPMethod(actionName: string): string {
   switch (actionName) {
     default:
@@ -148,13 +106,13 @@ export function useResource<
   };
 
   const actionUpdate = (key: string | number, entity: any) => {
-    return action('update', { key: key, attributes: entity }).then(() =>
+    return action('update', { id: key, attributes: entity }).then(() =>
       actionGet()
     );
   };
 
   const actionDelete = (key: string | number) => {
-    return action('delete', { key: key }).then(() => actionGet());
+    return action('delete', { id: key }).then(() => actionGet());
   };
 
   const [metadata, setMetadata] = useState<ServerModelMetadata>();

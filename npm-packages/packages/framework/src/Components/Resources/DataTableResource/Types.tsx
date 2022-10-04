@@ -14,7 +14,7 @@ export interface DataTableResourceFieldConfig {
   renderType?: 'boolean' | 'checkbox' | 'toggle';
   renderDataTable?: (datum: any) => React.ReactNode;
   formInputEnabled?: boolean;
-  renderFormInput?: (entity: any) => React.ReactElement; // TODO: Нормальные параметры.
+  renderFormInput?: () => React.ReactElement; // TODO: Нормальные параметры.
   dataTableColumnAdditionalProps?: any | GrommetColumnConfig<any>;
   filter?: true | DataTableResourceFieldFilterConfig;
 }
@@ -24,5 +24,4 @@ export interface DataTableResourceConfig {
   serviceName: string;
   perPage: number;
   fields: DataTableResourceFieldConfig[];
-  keyFieldName: string;
 }
