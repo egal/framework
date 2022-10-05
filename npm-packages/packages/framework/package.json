@@ -1,0 +1,50 @@
+{
+  "name": "@egalteam/framework",
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/esm/index.js",
+  "types": "./dist/esm/index.d.ts",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "engines": {
+    "node": ">=10"
+  },
+  "nodemonConfig": {
+    "ext": "ts,tsx",
+    "ignore": [
+      "**/dist/**"
+    ],
+    "delay": 2500
+  },
+  "scripts": {
+    "watch": "nodemon --exec 'npm run build'",
+    "build": "npm run build:esm && npm run build:cjs",
+    "build:esm": "tsc",
+    "build:cjs": "tsc --module commonjs --outDir dist/cjs"
+  },
+  "prettier": {
+    "semi": true,
+    "singleQuote": true,
+    "trailingComma": "es5"
+  },
+  "peerDependencies": {
+    "grommet": "^2.26.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.4.1"
+  },
+  "devDependencies": {
+    "grommet": "^2.26.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "@types/styled-components": "^5.1.26",
+    "nodemon": "^2.0.20",
+    "ts-loader": "^9.4.1",
+    "typescript": "^4.8.3"
+  },
+  "dependencies": {
+    "axios": "^0.27.2",
+    "jwt-decode": "^3.1.2"
+  }
+}

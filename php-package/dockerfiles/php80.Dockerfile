@@ -14,7 +14,7 @@ RUN apt-get update && apt-get install -y \
     procps
 
 # Очистить кэш
-RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+RUN apt-get clean && rm -rf /var/src/apt/lists/*
 
 # Получить последнюю версию Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
