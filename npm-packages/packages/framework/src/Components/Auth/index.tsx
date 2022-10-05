@@ -1,27 +1,25 @@
 import * as React from 'react';
 import { useAuthContext } from '../../Contexts';
-import { redirect } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 // TODO: Test this components.
 
-export function PrivateElement({
-  element,
-  onFailure = () => redirect('/login'),
-}: {
-  element: React.ReactNode;
-  onFailure?: () => void;
-}) {
-  const [logged] = useAuthContext();
-  return logged ? element : onFailure();
-}
+type Props = {
+  children: React.ReactElement;
+  onlyFor?: 'all' | 'logged' | 'guest';
+  onFailureNavigateTo?: string;
+};
 
-export function GuestElement({
-  element,
-  onFailure = () => redirect('/logout'),
-}: {
-  element: React.ReactNode;
-  onFailure?: () => void;
-}) {
+export function PrivateElement({
+  onlyFor = 'logged',
+  children,
+  onFailureNavigateTo,
+}: Props) {
   const [logged] = useAuthContext();
-  return !logged ? element : onFailure();
+  const navigate = useNavigate();
+
+  onlyFor === 'logged' && !logged && navigate(onFailureNavigateTo ?? '/login');
+  onlyFor === 'guest' && logged && navigate(onFailureNavigateTo ?? '/logout');
+
+  return children;
 }

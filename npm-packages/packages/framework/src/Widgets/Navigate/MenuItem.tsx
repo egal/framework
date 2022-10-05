@@ -18,6 +18,6 @@ export function MenuItem({ path, header, items, render }: MenuItemConfig) {
   } else if (path !== undefined && header !== undefined) {
     return <MenuItemLink path={path} header={header} />;
   } else {
-    throw new Error();
+    throw new Error('Unsupported menu item!');
   }
 }

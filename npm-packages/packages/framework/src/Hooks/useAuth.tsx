@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import jwtDecode from 'jwt-decode';
-import { useCookie } from './useCookie';
+import { deleteCookie, useCookie } from './useCookie';
 
 export type AuthConfig = {
   authServiceName: string;
@@ -38,7 +38,8 @@ export function useAuth(config: AuthConfig = authConfig): Auth {
   const [masterToken, setMasterToken] = useState<MasterToken>();
   const [servicesTokens, setServicesTokens] = useState<ServicesTokens>([]);
 
-  const [cookieMasterToken, setCookieMasterToken] = useCookie('master_token');
+  const [cookieMasterToken, setCookieMasterToken, deleteCookieMasterToken] =
+    useCookie('master_token');
 
   const getMasterToken = (): MasterToken => {
     if (!logged) {
@@ -78,6 +79,7 @@ export function useAuth(config: AuthConfig = authConfig): Auth {
 
     setServicesTokens([]);
     setMasterToken(undefined);
+    deleteCookieMasterToken();
     setLogged(false);
   };
 

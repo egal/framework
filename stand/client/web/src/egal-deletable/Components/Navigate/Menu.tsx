@@ -19,7 +19,7 @@ export default class Menu extends React.Component<MenuProps> {
     } else if (item.path !== undefined) {
       return <MenuItemLink liKey={key} key={key} path={item.path} header={item.header} />;
     } else {
-      throw new Error();
+      throw new Error('Unsupported type of menu item!');
     }
   }
 

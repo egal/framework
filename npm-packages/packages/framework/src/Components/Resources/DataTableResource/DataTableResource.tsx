@@ -51,7 +51,7 @@ export function DataTableResource({
   ] = useEntityManipulate();
 
   const [
-    ,
+    filteringEnabled,
     filteringEntity,
     enableFiltering,
     disableFiltering,
@@ -88,7 +88,9 @@ export function DataTableResource({
 
   useEffect(() => {
     enableFiltering({});
-    return () => disableFiltering();
+    return () => {
+      filteringEnabled && disableFiltering();
+    };
   }, []);
 
   // TODO: Crutch, may be.
@@ -254,7 +256,7 @@ export function DataTableResource({
                 disabled={selectedKeys.length < 1}
                 onClick={() =>
                   selectedKeys.map((deletableKey) => {
-                    // TODO: Use batchUpdate.
+                    // TODO: Use batchUpdate, after remake on server.
                     actionDelete(deletableKey).then(() =>
                       setSelectedKeys(
                         selectedKeys.filter((key) => key !== deletableKey)

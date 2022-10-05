@@ -16,7 +16,7 @@ import {
   InterfaceConfig,
   InterfaceConfigContext,
 } from '../../Contexts/InterfaceConfig';
-import { AuthContext } from '../../Contexts/Auth';
+import { AuthContext } from '../../Contexts';
 import {
   AuthConfig,
   authConfig as defaultAuthConfig,
@@ -47,18 +47,28 @@ export function App({
       <MobileResolutionNotSupportedFullLayerError />
     );
 
-  // TODO: Recursive load routes.
+  const routeGenerator = (
+    { path, element, items }: MenuItemConfig,
+    key: number
+  ): React.ReactElement[] => {
+    if (items) {
+      return items.flatMap(routeGenerator);
+    }
+
+    return [
+      <Route
+        path={path}
+        // TODO: Twice render because using React.cloneElement. Its convenient to user use.
+        element={React.cloneElement(layout, { menuItems: menu }, element)}
+        key={key}
+      />,
+    ];
+  };
+
   const RouterElement = (
     <Router>
       <Routes>
-        {menu.map(({ path, element }: MenuItemConfig, key: number) => (
-          <Route
-            path={path}
-            // TODO: Twice render because using React.cloneElement. Its convenient to user use.
-            element={React.cloneElement(layout, { menuItems: menu }, element)}
-            key={key}
-          />
-        ))}
+        {...menu.flatMap(routeGenerator)}
         {additionalRoutes?.map((route, key) => (
           <Route key={key} {...route} />
         ))}

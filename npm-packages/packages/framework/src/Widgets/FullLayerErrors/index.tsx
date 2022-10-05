@@ -37,7 +37,8 @@ export function MobileResolutionNotSupportedFullLayerError() {
 
 export function NotFoundFullLayerError() {
   return (
-    <Layer full>
+    // TODO: Make without layer.
+    <Layer full animation={'none'}>
       <Box fill align="center" justify="center">
         <Heading>Not found!</Heading>
       </Box>

@@ -16,7 +16,9 @@ export function useEntityManipulate<EntityType = any>(): [
 
   const enable = (entity: EntityType) => {
     if (enabled) {
-      throw new Error();
+      throw new Error(
+        'Entity manipulate enable impossible, is already enabled!'
+      );
     }
 
     setOriginalEntity(entity);
@@ -26,7 +28,9 @@ export function useEntityManipulate<EntityType = any>(): [
 
   const changeEntity = (newEntity: EntityType) => {
     if (!enabled) {
-      throw new Error();
+      throw new Error(
+        'Change entity impossible, manipulate entity not enabled!'
+      );
     }
 
     setEntity(newEntity);
@@ -36,7 +40,9 @@ export function useEntityManipulate<EntityType = any>(): [
 
   const disable = () => {
     if (!enabled) {
-      throw new Error();
+      throw new Error(
+        'Entity manipulate disable impossible, is already disabled!'
+      );
     }
 
     setOriginalEntity(undefined);
@@ -46,7 +52,9 @@ export function useEntityManipulate<EntityType = any>(): [
 
   const resetEntity = () => {
     if (!enabled) {
-      throw new Error();
+      throw new Error(
+        'Reset entity impossible, manipulate entity not enabled!'
+      );
     }
 
     setEntity(originalEntity);

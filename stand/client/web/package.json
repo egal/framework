@@ -31,7 +31,7 @@
     "format": "prettier --write './**/*.{js,jsx,ts,tsx,css,md,json}' --config ./.prettierrc",
     "link": "npm-run-all -s link:*",
     "link:lib-self": "cd ../../../npm-packages/packages/framework/ && npm link",
-    "link:lib-react": "cd ../../../npm-packages/packages/framework/ && npm link ../../../stand/client/web/node_modules/react/",
+    "link:lib-react": "cd ../../../npm-packages/packages/framework/ && npm link ../../../stand/client/web/node_modules/react/ ../../../stand/client/web/node_modules/react-router-dom/",
     "link:app-to-lib": "npm link ../../../npm-packages/packages/framework/"
   },
   "eslintConfig": {

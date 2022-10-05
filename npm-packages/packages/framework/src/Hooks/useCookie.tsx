@@ -11,10 +11,6 @@ type CookieOptions = {
   HttpOnly?: boolean;
 };
 
-type UpdateItem = {
-  (value: string, options?: CookieOptions): void;
-};
-
 export function stringifyOptions(options: CookieOptions) {
   return Object.keys(options).reduce((acc, key) => {
     if (key === 'days') {
@@ -57,6 +53,10 @@ export const setCookie = (
     stringifyOptions(optionsWithDefaults);
 };
 
+export const deleteCookie = (name: string) => {
+  setCookie(name, '', { days: -1 });
+};
+
 export const getCookie = (name: string, initialValue?: string) => {
   return (
     (isBrowser &&
@@ -71,7 +71,11 @@ export const getCookie = (name: string, initialValue?: string) => {
 export function useCookie(
   key: string,
   initialValue?: string
-): [string | undefined, UpdateItem] {
+): [
+  string | undefined,
+  (value: string, options?: CookieOptions) => void,
+  () => void
+] {
   const [item, setItem] = useState(() => {
     return getCookie(key, initialValue);
   });
@@ -81,5 +85,14 @@ export function useCookie(
     setCookie(key, value, options);
   };
 
-  return [item, updateItem];
+  const deleteItem = () => {
+    deleteCookie(key);
+  };
+
+  return [
+    //
+    item,
+    updateItem,
+    deleteItem,
+  ];
 }

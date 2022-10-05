@@ -2,20 +2,21 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import logo from './assets/logo.svg';
 import {
-  App,
+  App as EgalApp,
   Layout,
   DataTableResource,
   NotFoundFullLayerError as NotFound,
   interfaceConfig,
   authConfig,
   useAction,
-  useAuthContext
+  useAuthContext,
+  FullBoxLoader
 } from '@egalteam/framework';
 import { Box, Heading, Layer, Meter as GrommetMeter, Form, FormField, TextInput, Button } from 'grommet';
 import { grommet as grommetTheme } from 'grommet/themes';
 import { deepMerge } from 'grommet/utils';
-import React, { useState } from 'react';
-import { Link, redirect } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { Link, redirect, useNavigate } from 'react-router-dom';
 
 function LoginComponent() {
   const [formValue, setFormValue] = useState({ email: '', password: '' });
@@ -27,6 +28,7 @@ function LoginComponent() {
     login,
     logout
   ] = useAuthContext();
+  const navigate = useNavigate();
 
   return (
     // TODO: Without Layer.
@@ -40,6 +42,7 @@ function LoginComponent() {
               ({ user_master_token }: { user_master_token: string }) => {
                 // TODO: Use UMRT.
                 login(user_master_token);
+                navigate('/');
               }
             );
           }}>
@@ -53,9 +56,9 @@ function LoginComponent() {
             </FormField>
             <Button type={'submit'} label={'Login'} primary />
             {/* TODO: Remake to ReactRouterDOM.Link */}
-            <a href={'/register'}>
+            <Link to={'/register'}>
               <Button label={'Register'} />
-            </a>
+            </Link>
           </Box>
         </Form>
       </Box>
@@ -75,7 +78,9 @@ function RegisterComponent() {
           onChange={(newValue) => setFormValue(newValue)}
           onSubmit={() => {
             // TODO: Make redirect to login on reg.then().
-            useAction('http://localhost:8080', 'auth', 'User', 'register', formValue);
+            useAction('http://localhost:8080', 'auth', 'User', 'register', formValue).then(() => {
+              redirect('/login');
+            });
           }}>
           <Box gap={'small'}>
             <Heading>Register</Heading>
@@ -87,9 +92,9 @@ function RegisterComponent() {
             </FormField>
             <Button type={'submit'} label={'Register'} primary />
             {/* TODO: Remake to ReactRouterDOM.Link */}
-            <a href={'/login'}>
+            <Link to={'/login'}>
               <Button label={'Login'} />
-            </a>
+            </Link>
           </Box>
         </Form>
       </Box>
@@ -97,12 +102,28 @@ function RegisterComponent() {
   );
 }
 
-function TestComponent() {
-  return null;
+function LogoutComponent() {
+  const [, , , , logout] = useAuthContext();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    logout(); // TODO: Logout not working.
+    navigate('/login');
+  }, []);
+
+  return <FullBoxLoader />;
 }
 
-ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
-  <App
+function TestComponent() {
+  return (
+    <Link to={'/'}>
+      <Button label={'Go home!'} />
+    </Link>
+  );
+}
+
+const App = () => (
+  <EgalApp
     mobileResolutionSupport={false}
     layout={<Layout logotype={logo} />}
     theme={deepMerge(grommetTheme, {
@@ -136,15 +157,15 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
       { header: 'Home', path: '/', element: <Heading>Home page</Heading> },
       { header: 'Test', path: '/test', element: <TestComponent /> },
       {
-        header: 'Home',
+        header: 'First',
         items: [
-          { header: 'Home', path: '/', element: <Heading>Home page</Heading> },
-          { header: 'Home', path: '/', element: <Heading>Home page</Heading> },
+          { header: 'Second', path: '/second', element: <Heading>Second page</Heading> },
+          { header: 'Third', path: '/third', element: <Heading>Third page</Heading> },
           {
-            header: 'Home',
+            header: 'Fifth',
             items: [
-              { header: 'Home', path: '/', element: <Heading>Home page</Heading> },
-              { header: 'Home', path: '/', element: <Heading>Home page</Heading> }
+              { header: 'Sixth', path: '/sixth', element: <Heading>Sixth page</Heading> },
+              { header: 'Seventh', path: '/seventh', element: <Heading>Seventh page</Heading> }
             ]
           }
         ]
@@ -180,7 +201,10 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
       { path: '*', element: <NotFound /> },
       { path: '/custom', element: <h1>Custom route!</h1> },
       { path: '/login', element: <LoginComponent /> },
-      { path: '/register', element: <RegisterComponent /> }
+      { path: '/register', element: <RegisterComponent /> },
+      { path: '/logout', element: <LogoutComponent /> }
     ]}
   />
 );
+
+ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(<App />);

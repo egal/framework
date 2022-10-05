@@ -125,7 +125,9 @@ export function useResource<
 
   const fieldMetadata = (name: string): ServerFieldMetadata => {
     if (metadata === undefined) {
-      throw new Error();
+      throw new Error(
+        'Getting field metadata impossible, metadata not loaded!'
+      );
     }
 
     const result: ServerFieldMetadata = [
