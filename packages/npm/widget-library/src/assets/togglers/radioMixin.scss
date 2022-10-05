@@ -1,0 +1,76 @@
+@import 'src/assets/variables';
+@import 'baseTogglersMixin';
+
+@mixin radio($pseudo-element: 'before') {
+  @include baseTogglerMixin($pseudo-element);
+
+  --input-dot-color: #{$info};
+  --input-background-color: #{$base-white};
+
+  --input-dot-color-hover: #{$info};
+  --input-background-color-hover: #{$base-white};
+
+  --input-dot-color-active: #{$pressed-accent};
+  --input-background-color-active: #{$base-white};
+
+  --input-dot-color-checked: #{$primary-accent};
+  --input-background-color-checked: #{$base-white};
+
+
+  --input-dot-color-disabled: #{$gray-300};
+  --input-background-color-disabled: #{$base-white};
+
+  .text::#{$pseudo-element} {
+    border-radius: 100%;
+    border: 1px solid var(--input-border-color);
+    background-position: center center;
+  }
+
+  &.e-radio--sm {
+    .text::#{$pseudo-element} {
+      background-size: 8px;
+    }
+  }
+
+  &.e-radio--md {
+    .text::#{$pseudo-element} {
+      background-size: 10px;
+    }
+  }
+
+  &.e-radio--lg {
+    .text::#{$pseudo-element} {
+      background-size: 12px;
+    }
+  }
+
+  #{$selector-input-hover}::#{$pseudo-element} {
+    border-color: var(--input-border-color-hover);
+  }
+
+  #{$selector-checked}::#{$pseudo-element} {
+    border-color: var(--input-border-color-checked);
+    background-color: var(--input-dot-color-checked);
+    box-shadow: inset 0 0 0 2px var(--input-background-color-checked);
+  }
+
+  #{$selector-active}::#{$pseudo-element} {
+    border-color: var(--input-border-color-active);
+  }
+  #{$selector-active-checked}::#{$pseudo-element} {
+    border-color: var(--input-border-color-active);
+    background-color: var(--input-dot-color-active);
+    box-shadow: inset 0 0 0 2px var(--input-background-color-active);
+  }
+
+  #{$selector-disabled-checked}::#{$pseudo-element} {
+    border-color: var(--input-border-color-disabled);
+  }
+  #{$selector-disabled}::#{$pseudo-element} {
+    background-color: var(--input-dot-color-disabled);
+    box-shadow: inset 0 0 0 2px var(--input-background-color-disabled);
+  }
+  #{$selector-disabled-not-checked}::#{$pseudo-element} {
+    background-image: none;
+  }
+}

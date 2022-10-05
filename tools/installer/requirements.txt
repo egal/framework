@@ -1,0 +1,6 @@
+pyinstaller==4.9
+inflection==0.5.1
+PyYAML==6.0
+questionary==1.10.0
+requests==2.27.1
+rich==11.2.0

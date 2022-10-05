@@ -1,0 +1,150 @@
+@import 'src/assets/variables';
+
+@mixin button($radius: 6px, $font-size: $h7-font-size, $padding: 12px 20px, $soft-colors: false) {
+  display: inline-flex;
+  border: none;
+  background-color: $default-accent;
+  border-radius: $radius;
+  cursor: pointer;
+  align-items: center;
+  padding: $padding;
+  transition: 0.1s;
+
+  font-family: $open-sans-font;
+  font-size: $font-size;
+  font-weight: $h6-font-style;
+  color: $base-white;
+
+  .bi, :deep(.bi) {
+    stroke: $base-white;
+  }
+
+  &__icon {
+    &--left {
+      margin-right: 8px;
+    }
+
+    &--right {
+      margin-left: 8px;
+    }
+  }
+
+
+
+  &:disabled {
+    cursor: default;
+    color: $gray-500;
+    background-color: $gray-300;
+    .bi, :deep(.bi) {
+      stroke: $gray-500;
+    }
+  }
+
+  &:hover:enabled {
+    background-color: $hover-accent;
+
+  }
+
+  &:active:enabled {
+    background-color: $pressed-accent;
+
+  }
+}
+
+@mixin button-soft() {
+  color: $default-accent;
+  background-color: $default-secondary;
+   .bi, :deep(.bi) {
+      stroke: $default-accent;
+    }
+
+  &:hover:enabled {
+    color: $base-white;
+    background-color: $hover-secondary;
+     .bi, :deep(.bi) {
+      stroke: $base-white;
+    }
+  }
+
+  &:active:enabled {
+    color: $base-white;
+    background-color: $pressed-secondary;
+     .bi, :deep(.bi) {
+      stroke: $base-white;
+    }
+  }
+}
+
+@mixin button-outline() {
+  color: $default-accent;
+  background-color: $base-white;
+  border: 1px solid $default-accent;
+   .bi, :deep(.bi) {
+      stroke: $default-accent;
+    }
+
+
+  &:hover:enabled {
+    color: $hover-accent;
+    background-color: $base-white;
+    border-color: $hover-accent;
+     .bi, :deep(.bi) {
+      stroke: $hover-accent;
+    }
+  }
+
+  &:active:enabled {
+    color: $pressed-accent;
+    background-color: $base-white;
+    border-color: $pressed-accent;
+     .bi, :deep(.bi) {
+      stroke: $pressed-accent;
+    }
+  }
+
+  &:disabled {
+    cursor: default;
+    color: $gray-500;
+    background-color: $base-white;
+    border-color: $gray-300;
+    .bi, :deep(.bi) {
+      stroke: $gray-500;
+    }
+  }
+}
+
+@mixin button-clear() {
+  color: $default-accent;
+  background-color: $base-white;
+   .bi, :deep(.bi) {
+      stroke: $default-accent;
+    }
+
+  &:hover:enabled {
+    color: $hover-accent;
+    background-color: $base-white;
+     .bi, :deep(.bi) {
+      stroke: $hover-accent;
+    }
+
+  }
+
+  &:active:enabled {
+    color: $pressed-accent;
+    background-color: $base-white;
+     .bi, :deep(.bi) {
+      stroke: $pressed-accent;
+    }
+
+  }
+
+  &:disabled {
+    cursor: default;
+    color: $gray-500;
+    background-color: $base-white;
+     .bi, :deep(.bi) {
+      stroke: $gray-500;
+    }
+  }
+}
+

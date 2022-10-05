@@ -1,0 +1,8 @@
+__SERVICE_NAME__:build-service-image:
+  extends: .template
+  stage: build
+  needs:
+    - prepare
+  variables:
+    SERVICE_NAME: __SERVICE_NAME__
+  <<: *docker-compose-build-service-image-script
