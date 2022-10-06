@@ -1,6 +1,3 @@
-test-deploying-branch:
-	[[ ! " $(git_branch) " =~ " 2.x 3.x " ]] || ( echo "Error: Only 2.x or 3.x branches supports!" && exit 1 );
-
 split_temp_dir_path := tmp
 # Internal
 #git_branch := $(shell git rev-parse --abbrev-ref HEAD)
@@ -8,7 +5,8 @@ split_int_name := $(subst /,-,$(split_dir))
 split_only_branch_name := $(split_int_name)-only
 split_tmp_dir_path := $(split_temp_dir_path)/split-$(split_int_name)
 # Script
-split: test-deploying-branch
+split:
+	[[ ! " $(git_branch) " =~ " 2.x 3.x " ]] || ( echo "Error: Only 2.x or 3.x branches supports!" && exit 1 );
 	[[ ! -z "$(split_dir)" ]] || ( echo "Param 'split_dir' must be provided!" && exit 1 )
 	[[ ! -z "$(split_remote)" ]] || ( echo "Param 'split_remote' must be provided!" && exit 1 )
 	# Create branch with
@@ -28,7 +26,7 @@ split: test-deploying-branch
 	git branch -D $(split_only_branch_name)
 # p.s. Main info from https://stackoverflow.com/questions/359424/detach-move-subdirectory-into-separate-git-repository
 
-npm-publish: test-deploying-branch
+npm-publish:
 	[[ ! -z "$(package_dir)" ]] || ( echo "Param 'package_dir' must be provided!" && exit 1 )
 	[[ ! -z "$(version)" ]] || ( echo "Param 'version' must be provided!" && exit 1 )
 	[[ ! -z "$(npm_token)" ]] || ( echo "Param 'npm_token' must be provided!" && exit 1 )
