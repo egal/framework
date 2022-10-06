@@ -42,14 +42,19 @@ deploy@packages/php/framework:
 	make --file=deploy.mk \
 		split_remote=git@github.com:egal/framework-php-package-new.git \
 		split_dir=packages/php/framework \
+		git_branch=$(git_branch) \
 		split
 
 deploy@packages/npm/framework:
 	make --file=deploy.mk \
 		package_dir=packages/npm/framework \
+		version=$(version) \
+		npm_token=$(npm_token) \
 		npm-publish
 
 deploy@packages/npm/widget-library:
 	make --file=deploy.mk \
 		package_dir=packages/npm/widget-library \
+		version=$(version) \
+		npm_token=$(npm_token) \
 		npm-publish

@@ -13,7 +13,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Split
-        run: make --file=deploy.mk split_current_branch=2.x deploy@packages/php/framework
+        run: make --file=deploy.mk git_branch=2.x deploy@packages/php/framework
 
   release-package-npm-framework:
     runs-on: ubuntu-latest
