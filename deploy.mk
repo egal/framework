@@ -1,9 +1,9 @@
 test-deploying-branch:
-	[[ ! " $(split_current_branch) " =~ " 2.x 3.x " ]] || ( echo "Error: Only 2.x or 3.x branches supports!" && exit 1 );
+	[[ ! " $(git_branch) " =~ " 2.x 3.x " ]] || ( echo "Error: Only 2.x or 3.x branches supports!" && exit 1 );
 
 split_temp_dir_path := tmp
 # Internal
-split_current_branch := $(shell git rev-parse --abbrev-ref HEAD)
+#git_branch := $(shell git rev-parse --abbrev-ref HEAD)
 split_int_name := $(subst /,-,$(split_dir))
 split_only_branch_name := $(split_int_name)-only
 split_tmp_dir_path := $(split_temp_dir_path)/split-$(split_int_name)
@@ -21,8 +21,8 @@ split: test-deploying-branch
 		git init  && \
 		git pull --tags ../../ $(split_only_branch_name) && \
 		git remote add origin $(split_remote) && \
-		git checkout -b $(split_current_branch) && \
-		git push --tags --prune origin $(split_current_branch)
+		git checkout -b $(git_branch) && \
+		git push --tags --prune origin $(git_branch)
 	# Cleanup
 	rm -rf $(split_tmp_dir_path)
 	git branch -D $(split_only_branch_name)

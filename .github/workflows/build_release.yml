@@ -13,7 +13,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Split
-        run: make --file=deploy.mk deploy@packages/php/framework
+        run: make --file=deploy.mk split_current_branch=${GITHUB_REF#refs/heads/} deploy@packages/php/framework
 
   release-package-npm-framework:
     runs-on: ubuntu-latest
@@ -24,7 +24,7 @@ jobs:
         with:
           node-version: 14.x
       - name: Split
-        run: make --file=deploy.mk deploy@packages/npm/framework
+        run: make --file=deploy.mk split_current_branch=${GITHUB_REF#refs/heads/} deploy@packages/npm/framework
 
   release-package-npm-widget-library:
     runs-on: ubuntu-latest
@@ -35,7 +35,7 @@ jobs:
         with:
           node-version: 14.x
       - name: Split
-        run: make --file=deploy.mk deploy@packages/npm/widget-library
+        run: make --file=deploy.mk split_current_branch=${GITHUB_REF#refs/heads/} deploy@packages/npm/widget-library
 
   release-service-postgres:
     runs-on: ubuntu-latest
@@ -62,13 +62,13 @@ jobs:
         with:
           context: services/postgres/base
           push: true
-          tags: ${{ steps.image-metadata.outputs.tags }}
+          tags: ${{ steps.image-metadata.outputs.tag }}
       - name: Build and push
-        run: |
-          echo "Pushed tags: ${{ steps.image-metadata.outputs.tag }}"
-      - name: Build and push
-        run: |
-          echo "Pushed tags: ${{ steps.image-metadata.outputs.tag }}-pldbgapi"
+        uses: docker/build-push-action@v2
+        with:
+          context: services/postgres/base
+          push: true
+          tags: ${{ steps.image-metadata.outputs.tag }}-pldbgapi
 
   release-service-rabbitmq:
     runs-on: ubuntu-latest
