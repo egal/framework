@@ -40,8 +40,8 @@ jobs:
           git push --tags --prune origin ${git_branch}
           
           cd ${base_dir}
-          rm -rf $(split_tmp_dir_path)
-          git branch -D $(split_only_branch_name)
+          rm -rf ${split_tmp_dir_path}
+          git branch -D ${split_only_branch_name}
 
   release-package-npm-framework:
     runs-on: ubuntu-latest
