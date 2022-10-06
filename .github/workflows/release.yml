@@ -155,7 +155,6 @@ jobs:
     needs:
       - package-php-framework
       - package-npm-framework
-      - package-npm-widget-library
       - service-postgres
       - service-rabbitmq
       - service-web
