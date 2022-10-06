@@ -13,7 +13,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Split
-        run: make --file=deploy.mk split_current_branch=${$(git branch -r --contains v2.4.0-rc.1)/origin\/} deploy@packages/php/framework
+        run: |
+          raw=$(git branch -r --contains v2.4.0-rc.1)
+          branch=${raw/origin\/}
+          make --file=deploy.mk split_current_branch=${branch} deploy@packages/php/framework
 
   release-package-npm-framework:
     runs-on: ubuntu-latest
@@ -24,7 +27,10 @@ jobs:
         with:
           node-version: 14.x
       - name: Split
-        run: make --file=deploy.mk split_current_branch=${$(git branch -r --contains v2.4.0-rc.1)/origin\/} deploy@packages/npm/framework
+        run: |
+          raw=$(git branch -r --contains v2.4.0-rc.1)
+          branch=${raw/origin\/}
+          make --file=deploy.mk split_current_branch=${branch} deploy@packages/npm/framework
 
   release-package-npm-widget-library:
     runs-on: ubuntu-latest
@@ -35,7 +41,10 @@ jobs:
         with:
           node-version: 14.x
       - name: Split
-        run: make --file=deploy.mk split_current_branch=${$(git branch -r --contains v2.4.0-rc.1)/origin\/} deploy@packages/npm/widget-library
+        run: |
+          raw=$(git branch -r --contains v2.4.0-rc.1)
+          branch=${raw/origin\/}
+          make --file=deploy.mk split_current_branch=${branch} deploy@packages/npm/widget-library
 
   release-service-postgres:
     runs-on: ubuntu-latest
