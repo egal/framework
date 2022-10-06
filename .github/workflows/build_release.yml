@@ -18,6 +18,8 @@ jobs:
       - name: Split
         # p.s. Main info from https://stackoverflow.com/questions/359424/detach-move-subdirectory-into-separate-git-repository
         run: |
+          ls -la
+          echo '--- 1 ---'
           git_branch='2.x'
           split_dir=packages/php/framework
           split_remote='https://rollsover:${{ secrets.ACCESS_TOKEN }}@github.com/egal/framework-php-package.git'
@@ -27,6 +29,8 @@ jobs:
           base_dir=$(pwd)
           git checkout ${git_branch}
           git pull
+          
+          echo '--- 2 ---'
           
           split_temp_dir_path='tmp'
           split_int_name=$(echo ${split_dir} | sed -e "s/\//-/g")
