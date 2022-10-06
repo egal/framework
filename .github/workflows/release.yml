@@ -37,24 +37,7 @@ jobs:
           node-version: 14.x
       - name: Publish
         run: |
-          cd ./packages/npm/framework && \
-            npm install && \
-            npm version ${{ github.event.release.tag_name }} && \
-            tsc index && \
-            npm run build && \
-            echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > .npmrc && \
-            npm publish --access public
-
-  package-npm-widget-library:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
-        with:
-          node-version: 14.x
-      - name: Publish
-        run: |
-          cd ./packages/npm/widget-library && \
+          cd ./packages/npm/packages/framework && \
             npm install && \
             npm version ${{ github.event.release.tag_name }} && \
             npm run build && \
