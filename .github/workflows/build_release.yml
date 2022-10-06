@@ -19,6 +19,7 @@ jobs:
           split_dir=packages/php/framework
           split_remote='git@github.com:egal/framework-php-package-new.git'
           
+          split_temp_dir_path='tmp'
           base_dir=$(pwd)
           split_int_name=${split_dir/\/,/}
           split_only_branch_name=${split_int_name}-only
