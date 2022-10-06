@@ -1,0 +1,189 @@
+.raw:template:
+  when: on_success
+  variables:
+    GIT_STRATEGY: none
+    WORKDIR: /srv/${CI_PROJECT_NAME}-${CI_ENVIRONMENT_NAME}
+  before_script:
+    - |
+      if [ -z "${WORKDIR}" ]; then
+        echo '$WORKDIR variable is empty!'
+        exit 1
+      fi
+      if [ ! -d "${WORKDIR}" ]; then
+          mkdir -p "${WORKDIR}"
+      fi
+      cd "${WORKDIR}"
+
+.docker-compose-pull-service-image-script: &docker-compose-pull-service-image-script
+  script: docker-compose pull "${SERVICE_NAME:-not-found-service}"
+
+.docker-compose-build-service-image-script: &docker-compose-build-service-image-script
+  script: docker-compose build "${SERVICE_NAME:-not-found-service}"
+
+.migration-script: &migration-script
+  script: docker-compose run --rm --no-deps "${SERVICE_NAME:-not-found-service}" php artisan migrate --force --seed
+
+.docker-compose-service-deploy-script: &docker-compose-service-deploy-script
+  script:
+    - docker-compose up --detach "${SERVICE_NAME:-not-found-service}"
+    - |
+      for CONTAINER_NAME in $(docker inspect -f '{{.Name}}' $(docker-compose ps -q ${SERVICE_NAME}) | cut -c2-)
+      do
+        CURRENT_TRY_NUMBER=0
+        while [[ "${CONTAINER_HEALTH_STATUS}" != 'null' && "${CONTAINER_HEALTH_STATUS}" != 'healthy' ]] && (( $CURRENT_TRY_NUMBER < ${MAX_TRIES_COUNT:-60} ))
+        do
+          CONTAINER_HEALTH_STATUS=$(docker inspect --format "{{json .State.Health }}" ${CONTAINER_NAME} | jq --raw-output '.Status')
+          if [[ "${CONTAINER_HEALTH_STATUS}" == 'unhealthy' ]]; then
+            docker logs ${CONTAINER_NAME}
+            echo
+            echo "${CONTAINER_NAME} health status is ${CONTAINER_HEALTH_STATUS}!"
+            exit 1
+          fi
+          CURRENT_TRY_NUMBER=$(($CURRENT_TRY_NUMBER+1))
+          sleep ${INTERVAL_SECONDS:-1}
+        done
+        echo "${CONTAINER_NAME} health status is ${CONTAINER_HEALTH_STATUS}!"
+        CONTAINER_HEALTH_STATUS=''
+      done
+
+prepare:
+  extends: .template
+  stage: preparing
+  when: always
+  variables:
+    GIT_STRATEGY: fetch
+    DOT_ENV_FILE_CONTENT: | # TODO: Add environment variables you need!
+      ENVIRONMENT_NAME=$CI_ENVIRONMENT_NAME
+      PROJECT_NAME=$CI_PROJECT_NAME
+  script:
+    - rsync "${CI_PROJECT_DIR}/" "${WORKDIR}/" -r --delete --exclude '/.git'
+    - |
+      rm -rf '.proxy.env'
+      touch '.proxy.env'
+      DOMAIN=$(echo "${CI_ENVIRONMENT_URL}" | awk -F/ '{print $3}')
+      echo "DOMAIN=${DOMAIN}" >> '.proxy.env'
+    - |
+      touch '.docker-compose-cli.env'
+      echo "COMPOSE_PROJECT_NAME=${CI_PROJECT_NAME}-${CI_ENVIRONMENT_NAME/\//-}" >> '.docker-compose-cli.env'
+      echo "COMPOSE_FILE=docker-compose.yml:docker-compose.deploy.yml:docker-compose.deploy.${CI_ENVIRONMENT_NAME%\/*}.yml" >> '.docker-compose-cli.env'
+    - |
+      touch '.env'
+      echo "UID=$(id -u)" >> '.env'
+      echo "GID=$(id -g)" >> '.env'
+      cat '.docker-compose-cli.env' >> '.env'
+      cat '.proxy.env' >> '.env'
+      echo "${DOT_ENV_FILE_CONTENT}" >> '.env'
+
+client:build-service-image:
+  extends: .template
+  stage: build
+  needs:
+    - prepare
+  variables:
+    SERVICE_NAME: client
+  <<: *docker-compose-build-service-image-script
+
+rabbitmq:pull-service-image:
+  extends: .template
+  stage: build
+  needs:
+    - prepare
+  variables:
+    SERVICE_NAME: rabbitmq
+  <<: *docker-compose-pull-service-image-script
+
+postgres:pull-service-image:
+  extends: .template
+  stage: build
+  needs:
+    - prepare
+  variables:
+    SERVICE_NAME: postgres
+  <<: *docker-compose-pull-service-image-script
+
+web-service:pull-service-image:
+  extends: .template
+  stage: build
+  needs:
+    - prepare
+  variables:
+    SERVICE_NAME: web-service
+  <<: *docker-compose-pull-service-image-script
+
+create-docker-network:
+  extends:
+    - .template
+  stage: deploy
+  needs:
+    - prepare
+  script: # TODO: Find a better way.
+    - source '.docker-compose-cli.env'
+    - docker network create "${COMPOSE_PROJECT_NAME}_default" || true
+
+rabbitmq:deploy:
+  extends: .template
+  stage: deploy
+  needs:
+    - rabbitmq:pull-service-image
+    - create-docker-network
+  variables:
+    SERVICE_NAME: rabbitmq
+  <<: *docker-compose-service-deploy-script
+
+postgres:deploy:
+  extends: .template
+  stage: deploy
+  needs:
+    - rabbitmq:pull-service-image
+    - create-docker-network
+  variables:
+    SERVICE_NAME: postgres
+  <<: *docker-compose-service-deploy-script
+
+web-service:deploy:
+  extends: .template
+  stage: deploy
+  needs:
+    - web-service:pull-service-image
+    - create-docker-network
+    - rabbitmq:deploy
+  variables:
+    SERVICE_NAME: web-service
+  <<: *docker-compose-service-deploy-script
+
+client:deploy:
+  extends: .template
+  stage: deploy
+  needs:
+    - client:build-service-image
+  variables:
+    SERVICE_NAME: client
+  <<: *docker-compose-service-deploy-script
+
+proxy:deploy:
+  extends: .template
+  stage: deploy
+  needs:
+    - client:deploy
+    - web-service:deploy
+  script:
+    - source '.proxy.env'
+    - |
+      CONFIG_PATH="/etc/nginx/conf.d/${DOMAIN}.conf"
+      sudo cp server/proxy/${CI_ENVIRONMENT_NAME%\/*}.template.conf ${CONFIG_PATH}
+      sudo sed -i "s/__SERVER_NAME__/${DOMAIN}/" ${CONFIG_PATH}
+      UPSTREAMS='client web-service'
+      upstreamConfig=''
+      for containerName in $UPSTREAMS; do
+        upstream="upstream ${containerName}@${DOMAIN} { "
+        for containerId in $(docker-compose ps -q ${containerName}); do
+          for port in $(docker inspect $containerId | jq --raw-output '.[0].NetworkSettings.Ports[][].HostPort' | sort -u); do
+            upstream="${upstream} server localhost:${port};"
+          done
+        done
+        upstream="${upstream} }\n"
+        upstreamConfig="${upstreamConfig}${upstream}"
+      done
+      sudo sed -i "s/__UPSTREAMS__/${upstreamConfig}/" ${CONFIG_PATH}
+    - sudo nginx -t
+    - sudo nginx -s reload

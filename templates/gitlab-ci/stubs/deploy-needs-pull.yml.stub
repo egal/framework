@@ -1,0 +1,10 @@
+__SERVICE_NAME__:deploy:
+  extends: .template
+  stage: deploy
+  needs:
+    - __SERVICE_NAME__:pull-service-image
+    - create-docker-network
+    - rabbitmq:deploy
+  variables:
+    SERVICE_NAME: __SERVICE_NAME__
+  <<: *docker-compose-service-deploy-script

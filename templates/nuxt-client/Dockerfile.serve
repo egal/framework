@@ -1,0 +1,5 @@
+FROM node:lts-alpine as build-stage
+
+WORKDIR /app
+
+CMD npm install && HOST=0 npm run dev
