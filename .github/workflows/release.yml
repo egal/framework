@@ -36,13 +36,15 @@ jobs:
         with:
           node-version: 16.x
       - name: Publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
           cd ./packages/npm/packages/framework && \
             npm install && \
             npm version ${{ github.event.release.tag_name }} && \
             npm run build && \
-            echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > .npmrc && \
             npm publish --access public
+#            echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > .npmrc && \
 
   service-postgres:
     runs-on: ubuntu-latest
