@@ -60,7 +60,10 @@ final class Session
             : StatusAccess::GUEST;
     }
 
-    public function getAuthEntity():
+    public function getAuthEntity(): void
+    {
+
+    }
 
     public static function isUserServiceTokenExists(): bool
     {
