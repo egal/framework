@@ -172,6 +172,7 @@ jobs:
           tags: ${{ steps.image-metadata.outputs.tags }}
 
   notify:
+    if: "!github.event.release.prerelease"
     needs:
       - package-php-framework
       - package-npm-framework
