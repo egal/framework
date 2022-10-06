@@ -21,7 +21,7 @@ jobs:
           
           split_temp_dir_path='tmp'
           base_dir=$(pwd)
-          split_int_name=${split_dir/\/,/}
+          split_int_name=$(echo ${test} | sed -e "s/\//-/g")
           split_only_branch_name=${split_int_name}-only
           split_tmp_dir_path=${split_temp_dir_path}/split-${split_int_name}
           
