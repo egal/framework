@@ -24,9 +24,7 @@ jobs:
           split_dir=packages/php/framework
           split_remote='https://rollsover:${{ secrets.ACCESS_TOKEN }}@github.com/egal/framework-php-package.git'
           
-          git clone https://rollsover:${{ secrets.ACCESS_TOKEN }}@github.com/egal/framework.git ./framework
-          cd ./framework
-          base_dir=$(pwd)
+          git clone https://rollsover:${{ secrets.ACCESS_TOKEN }}@github.com/egal/framework.git .
           
           echo '--- 2 ---'
           split_temp_dir_path='tmp'
