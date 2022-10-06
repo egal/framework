@@ -31,7 +31,7 @@ jobs:
           
           cd ${split_tmp_dir_path}
           git init
-          git pull --tags ../../ $(split_only_branch_name)
+          git pull --tags ../../ ${split_only_branch_name}
           git remote add origin ${split_remote}
           git checkout -b ${git_branch}
           git push --tags --prune origin ${git_branch}
