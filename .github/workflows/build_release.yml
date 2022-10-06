@@ -27,8 +27,6 @@ jobs:
           git clone https://rollsover:${{ secrets.ACCESS_TOKEN }}@github.com/egal/framework.git ./framework
           cd ./framework
           base_dir=$(pwd)
-          git checkout ${git_branch}
-          git pull
           
           echo '--- 2 ---'
           split_temp_dir_path='tmp'
