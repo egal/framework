@@ -13,7 +13,31 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Split
-        run: make --file=deploy.mk git_branch=2.x deploy@packages/php/framework
+        # p.s. Main info from https://stackoverflow.com/questions/359424/detach-move-subdirectory-into-separate-git-repository
+        run: |
+          git_branch='2.x'
+          split_dir=packages/php/framework
+          split_remote='git@github.com:egal/framework-php-package-new.git'
+          
+          base_dir=$(pwd)
+          split_int_name=${split_dir/\/,/}
+          split_only_branch_name=${split_int_name}-only
+          split_tmp_dir_path=${split_temp_dir_path}/split-${split_int_name}
+          
+          git subtree split -P ${split_dir} -b ${split_only_branch_name}
+          rm -rf ${split_tmp_dir_path}
+          mkdir -p ${split_tmp_dir_path}
+          
+          cd ${split_tmp_dir_path}
+          git init
+          git pull --tags ../../ $(split_only_branch_name)
+          git remote add origin ${split_remote}
+          git checkout -b ${git_branch}
+          git push --tags --prune origin ${git_branch}
+          
+          cd ${base_dir}
+          rm -rf $(split_tmp_dir_path)
+          git branch -D $(split_only_branch_name)
 
   release-package-npm-framework:
     runs-on: ubuntu-latest
@@ -46,7 +70,6 @@ jobs:
           cd ./packages/npm/widget-library && \
             npm install && \
             npm version ${GITHUB_REF##*/} && \
-            tsc index && \
             npm run build && \
             echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > .npmrc && \
             npm publish --access public
