@@ -26,6 +26,8 @@ jobs:
           split_remote='https://rollsover:${{ secrets.ACCESS_TOKEN }}@github.com/egal/framework-php-package.git'
           
           git clone https://rollsover:${{ secrets.ACCESS_TOKEN }}@github.com/egal/framework.git .
+          git checkout ${git_branch}
+          git pull
           
           echo '--- 2 ---'
           split_temp_dir_path='tmp'
@@ -34,9 +36,7 @@ jobs:
           split_tmp_dir_path=${split_temp_dir_path}/split-${split_int_name}
           
           echo '--- 3 ---'
-          tree
           git filter-repo --subdirectory-filter ${split_dir}/
-          tree
           exit 1
           
           echo '--- 4 ---'
