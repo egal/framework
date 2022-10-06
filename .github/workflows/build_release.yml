@@ -36,7 +36,7 @@ jobs:
           
           echo '--- 3 ---'
           git filter-repo --path ${split_dir}/
-          git filter-repo --subdirectory-filter ${split_dir}
+          git filter-repo --subdirectory-filter ${split_dir}/
           ls -la
           exit 1
           
