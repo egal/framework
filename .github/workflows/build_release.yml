@@ -15,7 +15,7 @@ jobs:
         run: |
           git_branch='2.x'
           split_dir=packages/php/framework
-          split_remote='https://rollsover:${{ secrets.ACCESS_TOKEN }}@github.com/egal/framework-php-package-new.git'
+          split_remote='https://rollsover:${{ secrets.ACCESS_TOKEN }}@github.com/egal/framework-php-package.git'
           
           git clone https://rollsover:${{ secrets.ACCESS_TOKEN }}@github.com/egal/framework.git ./framework
           cd ./framework
