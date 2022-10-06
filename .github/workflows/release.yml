@@ -45,7 +45,6 @@ jobs:
             npm version ${{ github.event.release.tag_name }} && \
             npm run build && \
             npm publish --access public
-#            echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > .npmrc && \
 
   service-postgres:
     runs-on: ubuntu-latest
