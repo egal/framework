@@ -15,8 +15,8 @@ jobs:
         with:
           packages: |
             git-filter-repo
-      - name: Split
         # p.s. Main info from https://stackoverflow.com/questions/359424/detach-move-subdirectory-into-separate-git-repository
+      - name: Split
         run: |
           ls -la
           echo '--- 1 ---'
@@ -31,14 +31,18 @@ jobs:
           git pull
           
           echo '--- 2 ---'
-          
           split_temp_dir_path='tmp'
           split_int_name=$(echo ${split_dir} | sed -e "s/\//-/g")
           split_only_branch_name=${split_int_name}-only
           split_tmp_dir_path=${split_temp_dir_path}/split-${split_int_name}
           
+          echo '--- 3 ---'
           git filter-repo --path ${split_dir}/
+          
+          echo '--- 4 ---'
           git remote set-url origin ${split_remote}
+          
+          echo '--- 5 ---'
           git push --tags --prune -u origin ${git_branch}
 
   release-package-npm-framework:
