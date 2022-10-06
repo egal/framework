@@ -10,8 +10,6 @@ jobs:
   release-package-php-framework:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
       - name: Split
         # p.s. Main info from https://stackoverflow.com/questions/359424/detach-move-subdirectory-into-separate-git-repository
         run: |
@@ -19,8 +17,13 @@ jobs:
           split_dir=packages/php/framework
           split_remote='https://rollsover:${{ secrets.ACCESS_TOKEN }}@github.com/egal/framework-php-package-new.git'
           
-          split_temp_dir_path='tmp'
+          git clone https://rollsover:${{ secrets.ACCESS_TOKEN }}@github.com/egal/framework.git ./framework
+          cd ./framework
           base_dir=$(pwd)
+          git checkout ${git_branch}
+          git pull
+          
+          split_temp_dir_path='tmp'
           split_int_name=$(echo ${split_dir} | sed -e "s/\//-/g")
           split_only_branch_name=${split_int_name}-only
           split_tmp_dir_path=${split_temp_dir_path}/split-${split_int_name}
