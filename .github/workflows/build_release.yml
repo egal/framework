@@ -146,7 +146,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - id: vars
-        run: echo ::set-output name=tag::${GITHUB_REF##*/v}
+        run: echo ::set-output name=tag::${GITHUB_REF##*/}
       - uses: php-actions/composer@v6
         with:
           command: require --ignore-platform-reqs --working-dir ./services/web --no-install egal/framework:${{ steps.vars.outputs.tag }}
