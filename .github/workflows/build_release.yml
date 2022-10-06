@@ -10,6 +10,11 @@ jobs:
   release-package-php-framework:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/setup-python@v1
+      - uses: BSFishy/pip-action@v1
+        with:
+          packages: |
+            git-filter-repo
       - name: Split
         # p.s. Main info from https://stackoverflow.com/questions/359424/detach-move-subdirectory-into-separate-git-repository
         run: |
@@ -28,20 +33,9 @@ jobs:
           split_only_branch_name=${split_int_name}-only
           split_tmp_dir_path=${split_temp_dir_path}/split-${split_int_name}
           
-          git subtree split -P ${split_dir} -b ${split_only_branch_name}
-          rm -rf ${split_tmp_dir_path}
-          mkdir -p ${split_tmp_dir_path}
-          
-          cd ${split_tmp_dir_path}
-          git init
-          git pull --tags ../../ ${split_only_branch_name}
-          git remote add origin ${split_remote}
-          git checkout -b ${git_branch}
-          git push --tags --prune origin ${git_branch}
-          
-          cd ${base_dir}
-          rm -rf ${split_tmp_dir_path}
-          git branch -D ${split_only_branch_name}
+          git filter-repo --path ${split_dir}/
+          git remote set-url origin ${split_remote}
+          git push --tags --prune -u origin ${git_branch}
 
   release-package-npm-framework:
     runs-on: ubuntu-latest
