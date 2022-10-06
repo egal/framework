@@ -10,6 +10,7 @@ jobs:
   release-package-php-framework:
     runs-on: ubuntu-latest
     steps:
+      - run: sudo apt install -y tree
       - uses: actions/setup-python@v1
       - uses: BSFishy/pip-action@v1
         with:
@@ -33,9 +34,9 @@ jobs:
           split_tmp_dir_path=${split_temp_dir_path}/split-${split_int_name}
           
           echo '--- 3 ---'
-          ls -la ${split_dir}/
+          tree
           git filter-repo --subdirectory-filter ${split_dir}/
-          ls -la
+          tree
           exit 1
           
           echo '--- 4 ---'
