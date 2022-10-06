@@ -35,7 +35,9 @@ jobs:
           split_tmp_dir_path=${split_temp_dir_path}/split-${split_int_name}
           
           echo '--- 3 ---'
-          git filter-repo --path ${split_dir}/
+          git filter-repo --to-subdirectory-filter --path ${split_dir}/
+          ls -la
+          exit 1
           
           echo '--- 4 ---'
           git remote set-url origin ${split_remote} || git remote add origin ${split_remote}
