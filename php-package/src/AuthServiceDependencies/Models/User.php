@@ -10,7 +10,7 @@ use Egal\Auth\Tokens\UserServiceToken;
 use Egal\AuthServiceDependencies\Exceptions\LoginException;
 use Egal\AuthServiceDependencies\Exceptions\UserNotIdentifiedException;
 use Egal\Model\Model;
-use Egal\Model\ModelManager;
+use Egal\Model\Facades\ModelMetadataManager;
 
 abstract class User extends Model
 {
@@ -91,7 +91,7 @@ abstract class User extends Model
 
     public static function getServiceModel(): string
     {
-        return ModelManager::getModelMetadata('Service')->getModelClass();
+        return ModelMetadataManager::getModelMetadata('Service')->getModelClass();
     }
 
     protected function generateAuthInformation(): array
