@@ -21,7 +21,7 @@ jobs:
       - name: Split
         run: |
           git_branch='3.x'
-          split_dir=packages/php/framework
+          split_dir=packages/php
           split_remote='https://rollsover:${{ secrets.ACCESS_TOKEN }}@github.com/egal/framework-php-package.git'
           git clone https://rollsover:${{ secrets.ACCESS_TOKEN }}@github.com/egal/framework.git .
           git filter-repo --subdirectory-filter ${split_dir}/
