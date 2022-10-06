@@ -35,7 +35,7 @@ jobs:
           split_tmp_dir_path=${split_temp_dir_path}/split-${split_int_name}
           
           echo '--- 3 ---'
-          git filter-repo --path ${split_dir}/ --subdirectory-filter ${split_dir}/
+          git filter-repo --path ${split_dir}/ --to-subdirectory-filter ${split_dir}/
           ls -la
           exit 1
           
