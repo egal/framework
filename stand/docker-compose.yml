@@ -56,7 +56,7 @@ services:
       RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD}
       WAIT_HOSTS: rabbitmq:5672,postgres:5432
     volumes:
-      - ../php-package:/dependencies/php-package
+      - ../packages/php:/dependencies/php-package
   core-service:
     build:
       context: server/core-service
@@ -76,4 +76,4 @@ services:
       RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD}
       WAIT_HOSTS: rabbitmq:5672,postgres:5432
     volumes:
-      - ../php-package:/dependencies/php-package
+      - ../packages/php:/dependencies/php-package

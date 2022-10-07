@@ -2,7 +2,6 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 class CreateStudentsTable extends Migration
@@ -21,8 +20,6 @@ class CreateStudentsTable extends Migration
                 ->on('schools');
             $table->timestamps();
         });
-
-        DB::statement('ALTER TABLE students ALTER COLUMN id SET DEFAULT uuid_generate_v4();');
     }
 
     public function down()

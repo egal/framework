@@ -13,6 +13,7 @@ class SpeakerFactory extends Factory
     public function definition(): array
     {
         return [
+            'id' => $this->faker->uuid(),
             'name' => $this->faker->name(),
             'surname' => $this->faker->lastName(),
             'avatar' => $this->faker->filePath(),
