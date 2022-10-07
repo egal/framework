@@ -33,7 +33,7 @@ class ServiceProvider extends IlluminateServiceProvider
             $this->commands([]);
         }
 
-        $this->app->singleton('ModelMetadataManager', fn () => new ModelMetadataManager());
+        $this->app->singleton('PolicyManager', fn () => new PolicyManager());
 
         $this->commands([]);
     }

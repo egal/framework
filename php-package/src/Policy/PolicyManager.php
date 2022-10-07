@@ -52,7 +52,8 @@ class PolicyManager
             $class = str_replace('/', '\\', $class);
             $class = $policiesNamespace . $class;
 
-            $this->registerPolicy($class);
+            $policyModelClass = (class_exists($classShortName)
+            $this->registerPolicy($class, [$class]);
         }
     }
 
