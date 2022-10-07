@@ -6,7 +6,6 @@ namespace Egal\Policy;
 
 class PolicyManager
 {
-    public const POLICY_CLASS_NAME_SUFFIX = 'Policy';
 
     /**
      * All the defined policies.
@@ -19,7 +18,7 @@ class PolicyManager
 
     public function registerPolicy(string $model, array $policies): void
     {
-        $this->policies = array_merge($this->policies, ['$model' => $policies]);
+        $this->policies = array_merge_recursive($this->policies, [$model => $policies]);
     }
 
     public function registerDirectory(string $dir, string $policiesNamespace): void
@@ -46,70 +45,36 @@ class PolicyManager
                 continue;
             }
 
+
             $classShortName = str_replace('.php', '', $dirItem);
             $class = str_replace($dir, '', $itemPath);
             $class = str_replace($dirItem, $classShortName, $class);
             $class = str_replace('/', '\\', $class);
             $class = $policiesNamespace . $class;
 
-            $policyClass = class_exists($classShortName)
-            $this->registerPolicy($class, );
+            $this->registerPolicy($class);
         }
     }
 
     /**
      * @throws ModelNotFoundException
      */
-    public function getModelMetadata(string $class): ModelMetadata
+    public function getModelPolicies(string $model): ModelMetadata
     {
-        if (class_exists($class)) {
-            return $this->modelsMetadata[get_class_short_name($class)] ?? call_user_func([$class, 'constructMetadata']);
+        if (class_exists($model)) {
+            return $this->policies[get_class_short_name($model)] ?? throw new Policy;
         }
 
-        if (isset($this->modelsMetadata[$class])) {
-            return $this->modelsMetadata[$class];
+        if (isset($this->modelsMetadata[$model])) {
+            return $this->modelsMetadata[$model];
         }
 
-        throw ModelNotFoundException::make($class);
+        throw ModelNotFoundException::make($model);
     }
 
     public function getModelsMetadata(): array
     {
         return $this->modelsMetadata;
-    }
-
-    public function registerDirectory(string $dir, string $modelsNamespace): void
-    {
-        $dir = base_path() . '/' . $dir;
-
-        foreach (scandir($dir) as $dirItem) {
-            $itemPath = str_replace('//', '/', $dir . '/' . $dirItem);
-
-            if ($dirItem === '.' || $dirItem === '..') {
-                continue;
-            }
-
-            if (is_dir($itemPath)) {
-                $itemNamespace = str_replace('/app/', '', $itemPath);
-                $itemNamespace = str_replace($itemPath, '', $itemNamespace);
-                $itemNamespace = str_replace('/', '\\', $itemNamespace);
-                $itemNamespace = ucfirst($itemNamespace);
-
-                $this->registerDirectory($itemPath, $itemNamespace);
-            }
-
-            if (!str_contains($dirItem, '.php')) {
-                continue;
-            }
-
-            $classShortName = str_replace('.php', '', $dirItem);
-            $class = str_replace($dir, '', $itemPath);
-            $class = str_replace($dirItem, $classShortName, $class);
-            $class = str_replace('/', '\\', $class);
-            $class = $modelsNamespace . $class;
-
-            $this->registerModel($class);
-        }
     }
 
     public function registerModel(string $class): void

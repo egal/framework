@@ -79,7 +79,6 @@ class ActionCaller
     private function isAccessedForCall(): bool
     {
         // TODO: проверить, есть ли политика для модели хоть одна
-
         return Session::getAuthEntity()->mayOrFail($processingActionName, $this->modelMetadata->getModelShortName());
     }
 
