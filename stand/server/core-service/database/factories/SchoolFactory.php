@@ -13,7 +13,6 @@ class SchoolFactory extends Factory
     public function definition(): array
     {
         return [
-            'id' => $this->faker->uuid(),
             'name' => $this->faker->name(),
             'avatar' => $this->faker->filePath(),
         ];
