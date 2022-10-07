@@ -11,6 +11,10 @@ use Egal\Auth\Tokens\ServiceServiceToken;
 use Egal\Auth\Tokens\Token;
 use Egal\Auth\Tokens\TokenType;
 use Egal\Auth\Tokens\UserServiceToken;
+use Egal\AuthServiceDependencies\Entities\AuthEntity;
+use Egal\AuthServiceDependencies\Entities\Guest;
+use Egal\AuthServiceDependencies\Entities\Service;
+use Egal\AuthServiceDependencies\Entities\User;
 use Egal\Core\Events\ServiceServiceTokenDetectedEvent;
 use Egal\Core\Events\UserServiceTokenDetectedEvent;
 use Egal\Core\Exceptions\CurrentSessionException;
@@ -26,6 +30,8 @@ final class Session
     private ?UserServiceToken $userServiceToken = null;
 
     private ?ServiceServiceToken $serviceServiceToken = null;
+
+    private ?AuthEntity $authEntity = null;
 
     public static function isActionMessageExists(): bool
     {
@@ -60,9 +66,9 @@ final class Session
             : StatusAccess::GUEST;
     }
 
-    public function getAuthEntity(): void
+    public static function getAuthEntity(): AuthEntity
     {
-
+        return self::getSingleton()->authEntity;
     }
 
     public static function isUserServiceTokenExists(): bool
@@ -117,6 +123,7 @@ final class Session
         }
 
         self::setToken($actionMessage->getToken());
+        self::setAuthEntity();
     }
 
     public static function setServiceServiceToken(ServiceServiceToken $serviceServiceToken): void
@@ -179,6 +186,15 @@ final class Session
             default:
                 throw new WrongTokenTypeException();
         }
+    }
+
+    private static function setAuthEntity(): void
+    {
+        self::getSingleton()->authEntity = match (true) {
+            self::isUserServiceTokenExists() => new User(self::getUserServiceToken()),
+            self::isServiceServiceTokenExists() => new Service(self::getServiceServiceToken()),
+            default => new Guest(),
+        };
     }
 
 }

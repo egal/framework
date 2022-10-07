@@ -2,7 +2,7 @@
 
 namespace Egal\AuthServiceDependencies\Entities;
 
-class Guest
+class Guest extends AuthEntity
 {
 
     public function __construct() { }

@@ -50,4 +50,9 @@ class ActionMetadata
         return self::METHOD_NAME_PREFIX . ucwords($this->name);
     }
 
+    public function getProcessingName(): string
+    {
+        return preg_replace("/^.*(e)$/", '${1}', $this->name) . 'ing';
+    }
+
 }

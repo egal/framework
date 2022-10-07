@@ -78,16 +78,9 @@ class ActionCaller
      */
     private function isAccessedForCall(): bool
     {
-        // TODO: подключить авторизацию при реализации Политик:       $authStatus = Session::getAuthStatus();
-        $authStatus = StatusAccess::GUEST;
+        // TODO: проверить, есть ли политика для модели хоть одна
 
-        // For user and service we check if it guest.
-        if ($authStatus === StatusAccess::GUEST) {
-        // TODO: реализовать проверку соответствия $authStatus и указанного в action доступа по статусу
-            return true;
-        }
-
-        return $this->isServiceAccess() || $this->isUserAccess();
+        return Session::getAuthEntity()->mayOrFail($processingActionName, $this->modelMetadata->getModelShortName());
     }
 
     /**
