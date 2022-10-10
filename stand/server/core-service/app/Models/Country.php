@@ -35,6 +35,7 @@ class Country extends Model
             ->addRelations([
                 RelationMetadata::make(
                     'speakers',
+                    Speaker::class,
                     RelationType::HAS_MANY,
                 )
             ])

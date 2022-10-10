@@ -60,6 +60,7 @@ class Role extends Model
             ->addRelations([
                 RelationMetadata::make(
                     'permissions',
+                    Permission::class,
                     RelationType::HAS_MANY
                 ),
             ])

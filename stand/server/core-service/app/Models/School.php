@@ -36,6 +36,7 @@ class School extends Model
             ->addRelations([
                 RelationMetadata::make(
                     'students',
+                    Student::class,
                     RelationType::HAS_MANY,
                 )
             ])
