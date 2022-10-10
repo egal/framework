@@ -56,9 +56,9 @@ class ActionCaller
      * If not available to call, an {@see \Egal\Core\Exceptions\NoAccessActionCallException} is thrown.
      *
      * @return mixed Result of action execution.
-     * @throws \Exception|\ReflectionException|\Egal\Core\Exceptions\ActionCallException|\Egal\Core\Exceptions\NoAccessActionCallException
+     * @throws \Exception|NoAccessActionCallException
      */
-    public function call()
+    public function call(): mixed
     {
         if (Session::isAuthEnabled() && !$this->isAccessedForCall()) {
             throw new NoAccessActionCallException();
@@ -84,92 +84,10 @@ class ActionCaller
     }
 
     /**
-     * Checks if the action call is available for calling service.
-     *
-     * @throws \Egal\Core\Exceptions\CurrentSessionException
-     */
-    private function isServiceAccess(): bool
-    {
-        if (!Session::isServiceServiceTokenExists()) {
-            return false;
-        }
-
-        $serviceName = Session::getServiceServiceToken()->getServiceName();
-
-        // TODO: разиловать проверку выданного сервису доступа до эндпоинта
-        return in_array($serviceName, $this->modelActionMetadata->getServicesAccess());
-    }
-
-    /**
-     * Checks if the action call is available for calling user.
-     *
-     * @throws \Exception
-     */
-    private function isUserAccess(): bool
-    {
-        if (!Session::isUserServiceTokenExists()) {
-            return false;
-        }
-
-        // TODO: реализовать проверку выданного пользователю доступа до эндпоинта по статусу, по роли, по permission
-        return in_array(Session::getAuthStatus(), $this->modelActionMetadata->getStatusesAccess())
-            && $this->userHasAccessWithCurrentRoles()
-            && $this->userHasAccessWithCurrentPermissions();
-    }
-
-    /**
-     * Checks if the action call is available for calling user with current roles.
-     *
-     * @throws \Exception
-     * TODO: Переименовать!
-     * TODO: Реализовать
-     */
-    private function userHasAccessWithCurrentRoles(): bool
-    {
-        if (count($this->modelActionMetadata->getRolesAccess()) === 0) {
-            return true;
-        }
-
-        foreach ($this->modelActionMetadata->getRolesAccess() as $rolesAccess) {
-            $userRoles = Session::getUserServiceToken()->getRoles();
-
-            if (count(array_intersect($userRoles, $rolesAccess)) === count($rolesAccess)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * Checks if the action call is available for calling user with current permissions.
-     *
-     * @throws \Exception
-     * TODO: Переименовать!
-     * TODO: реализовать
-     */
-    private function userHasAccessWithCurrentPermissions(): bool
-    {
-        if (count($this->modelActionMetadata->getPermissionsAccess()) === 0) {
-            return true;
-        }
-
-        foreach ($this->modelActionMetadata->getPermissionsAccess() as $permissionsAccess) {
-            $userPermissions = Session::getUserServiceToken()->getPermissions();
-
-            if (count(array_intersect($userPermissions, $permissionsAccess)) === count($permissionsAccess)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /**
      * Формирует из {@see \Egal\Core\ActionCaller\ActionCaller::modelActionMetadata} валидные параметры.
      *
      * If it is impossible to generate valid parameters, an exception is thrown.
-     * TODO: реализовать проверку на: isDefaultValueAvailable(), allowsNull() - для случаев, когда не передается необходимый для action параметр
+     *
      * @return array
      * @throws ActionParameterValidateException
      */
@@ -208,7 +126,7 @@ class ActionCaller
 
     private function isDefaultValueAvailable(ActionParameterMetadata $parameter): bool
     {
-        return !($parameter->getDefault() === null && !$parameter->isNullable());
+        return $parameter->getDefault() !== null || $parameter->isNullable();
     }
 
 }
