@@ -40,6 +40,7 @@ class WorkingTime extends Model
             ->addRelations([
                 RelationMetadata::make(
                     'school',
+                    School::class,
                     RelationType::BELONGS_TO,
                 )
             ])

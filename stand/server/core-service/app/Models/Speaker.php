@@ -19,7 +19,7 @@ class Speaker extends EgalModel
 
     use HasFactory;
 
-    public function countries(): BelongsTo
+    public function country(): BelongsTo
     {
         return $this->belongsTo(Country::class);
     }
@@ -51,10 +51,12 @@ class Speaker extends EgalModel
             ->addRelations([
                 RelationMetadata::make(
                     'country',
+                    Country::class,
                     RelationType::BELONGS_TO,
                 ),
                 RelationMetadata::make(
                     'languages',
+                    Language::class,
                     RelationType::HAS_MANY_THROUGH,
                 ),
             ])

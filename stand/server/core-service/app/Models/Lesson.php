@@ -53,10 +53,12 @@ class Lesson extends Model
             ->addRelations([
                 RelationMetadata::make(
                     'school',
+                    School::class,
                     RelationType::BELONGS_TO,
                 ),
                 RelationMetadata::make(
                     'speaker',
+                    Speaker::class,
                     RelationType::BELONGS_TO,
                 )
             ])

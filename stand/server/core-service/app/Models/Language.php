@@ -35,6 +35,7 @@ class Language extends Model
             ->addRelations([
                 RelationMetadata::make(
                     'speakers',
+                    Speaker::class,
                     RelationType::HAS_MANY_THROUGH,
                 ),
             ])
