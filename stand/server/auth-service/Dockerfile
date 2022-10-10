@@ -25,6 +25,7 @@ WORKDIR /app
 
 # Preparing code base
 COPY . .
+RUN composer dump-autoload
 
 #RUN apk --no-cache add pcre-dev ${PHPIZE_DEPS} \
 #  && pecl install xdebug \

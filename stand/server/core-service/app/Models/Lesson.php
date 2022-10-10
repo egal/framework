@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use Egal\Model\Enums\FieldType;
+use Egal\Model\Enums\VariableType;
 use Egal\Model\Enums\RelationType;
 use Egal\Model\Metadata\ActionMetadata;
 use Egal\Model\Metadata\FieldMetadata;
@@ -29,25 +29,25 @@ class Lesson extends Model
 
     public static function constructMetadata(): ModelMetadata
     {
-        return ModelMetadata::make(self::class, FieldMetadata::make('id', FieldType::INTEGER))
+        return ModelMetadata::make(self::class, FieldMetadata::make('id', VariableType::INTEGER))
             ->addFields([
-                FieldMetadata::make('speaker_id', FieldType::UUID)
+                FieldMetadata::make('speaker_id', VariableType::UUID)
                     ->required()
                     ->addValidationRule('exists:speakers,id'),
-                FieldMetadata::make('school_id', FieldType::UUID)
+                FieldMetadata::make('school_id', VariableType::UUID)
                     ->required()
                     ->addValidationRule('exists:schools,id'),
-                FieldMetadata::make('stage', FieldType::STRING)
+                FieldMetadata::make('stage', VariableType::STRING)
                     ->required(),
-                FieldMetadata::make('chat_id', FieldType::UUID)
+                FieldMetadata::make('chat_id', VariableType::UUID)
                     ->addValidationRule('unique:lessons,chat_id')
                     ->nullable(),
-                FieldMetadata::make('lesson_request_id', FieldType::INTEGER)
+                FieldMetadata::make('lesson_request_id', VariableType::INTEGER)
                     ->addValidationRule('exists:lesson_requests,id'),
-                FieldMetadata::make('starts_at', FieldType::DATETIME)
+                FieldMetadata::make('starts_at', VariableType::DATETIME)
                     ->date(),
-                FieldMetadata::make('created_at', FieldType::DATETIME),
-                FieldMetadata::make('updated_at', FieldType::DATETIME),
+                FieldMetadata::make('created_at', VariableType::DATETIME),
+                FieldMetadata::make('updated_at', VariableType::DATETIME),
             ])
             ->addRelations([
                 RelationMetadata::make(

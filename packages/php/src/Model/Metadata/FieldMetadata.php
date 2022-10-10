@@ -4,7 +4,7 @@ namespace Egal\Model\Metadata;
 
 use Egal\Model\Enums\ValidationRules;
 use Egal\Model\Traits\FieldValidationRules;
-use Egal\Model\Enums\FieldType;
+use Egal\Model\Enums\VariableType;
 use Egal\Validation\Rules\Rule as EgalRule;
 use Illuminate\Contracts\Validation\Rule;
 
@@ -15,7 +15,7 @@ class FieldMetadata
 
     protected readonly string $name;
 
-    protected readonly FieldType $type;
+    protected readonly VariableType $type;
 
     protected bool $hidden = false;
 
@@ -30,13 +30,13 @@ class FieldMetadata
      */
     protected array $validationRules = [];
 
-    protected function __construct(string $name, FieldType $type)
+    protected function __construct(string $name, VariableType $type)
     {
         $this->name = $name;
         $this->type = $type;
     }
 
-    public static function make(string $name, FieldType $type): self
+    public static function make(string $name, VariableType $type): self
     {
         return new static($name, $type);
     }
@@ -115,7 +115,7 @@ class FieldMetadata
         return $this->name;
     }
 
-    public function getType(): FieldType
+    public function getType(): VariableType
     {
         return $this->type;
     }
@@ -127,7 +127,7 @@ class FieldMetadata
         }
 
         switch ($this->type) {
-            case FieldType::DATETIME:
+            case VariableType::DATETIME:
                 break;
             default:
                 array_unshift($this->validationRules, $this->type->value);

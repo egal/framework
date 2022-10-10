@@ -1,19 +1,17 @@
 <?php
-
 declare(strict_types=1);
-
 namespace Egal\Model\Filter\FilterConditions;
 
 use Egal\Model\Builder;
+use Egal\Model\Exceptions\FieldNotFoundException;
 use Egal\Model\Exceptions\FilterException;
+use Egal\Model\Exceptions\RelationNotFoundException;
 use Egal\Model\Exceptions\UnsupportedFieldPatternInFilterConditionException;
 use Egal\Model\Exceptions\UnsupportedFilterConditionException;
 use Egal\Model\Exceptions\UnsupportedFilterValueTypeException;
 use Egal\Model\Filter\FilterCondition;
-
 class SimpleFilterConditionApplier extends FilterConditionApplier
 {
-
     private const EQUAL_OPERATOR = 'eq';
     private const EQUAL_IGNORE_CASE_OPERATOR = 'eqi';
     private const NOT_EQUAL_OPERATOR = 'ne';
@@ -31,11 +29,19 @@ class SimpleFilterConditionApplier extends FilterConditionApplier
     private const END_WITH_OPERATOR = 'ew';
     private const END_WITH_IGNORE_CASE_OPERATOR = 'ewi';
 
+    /**
+     * @throws FieldNotFoundException
+     * @throws UnsupportedFilterConditionException
+     * @throws RelationNotFoundException
+     * @throws UnsupportedFieldPatternInFilterConditionException
+     * @throws UnsupportedFilterValueTypeException
+     * @throws FilterException
+     * @throws \ReflectionException
+     */
     public static function apply(Builder &$builder, FilterCondition $condition, string $boolean): void
     {
         $operator = static::getSqlOperator($condition->getOperator());
         $value = static::getPreparedValue($condition->getOperator(), $condition->getValue());
-
         if (preg_match('/^(\w+)\[([\w,\\\\]+)\]\.(\w+)$/', $condition->getField(), $matches)) {
             self::filterByMorphRelationField($matches, $builder, $value, $operator, $boolean);
         } elseif (preg_match('/^(\w+)\.(exists)\(\)$/', $condition->getField(), $matches)) {
@@ -48,7 +54,6 @@ class SimpleFilterConditionApplier extends FilterConditionApplier
             throw new UnsupportedFieldPatternInFilterConditionException();
         }
     }
-
     /**
      * @param mixed $matches
      * @param mixed $value
@@ -65,11 +70,10 @@ class SimpleFilterConditionApplier extends FilterConditionApplier
         // For condition field like `morph_rel[first_type,second_type].field`.
         [$relation, $field, $types] = [$matches[1], $matches[3], explode(',', $matches[2])];
         $builder->getModel()->getModelMetadata()->relationExistOrFail($relation);
-
         foreach ($types as $type) {
             $relationModelMetadata = (new $type())->getModelMetadata();
             $relationModelMetadata->fieldExistOrFail($field);
-// TODO: валидировать поле по указанному типу - перенесено в общие правила валидации
+// TODO: выяснить предмет валидации - зачем, непонятно
 // $relationModelMetadata->validateFieldValueType($field, $value);
         }
 
@@ -78,7 +82,6 @@ class SimpleFilterConditionApplier extends FilterConditionApplier
         };
         $builder->hasMorph(camel_case($relation), $types, '>=', 1, $boolean, $clause);
     }
-
     /**
      * @param mixed $matches
      * @param mixed $value
@@ -95,19 +98,15 @@ class SimpleFilterConditionApplier extends FilterConditionApplier
     ): void {
         // For condition field like `rel.exists()`.
         [$relation, $function] = [$matches[1], $matches[2]];
-
         if ($operator !== '=') {
             throw new UnsupportedFilterConditionException();
         }
-
         if (!is_bool($value)) {
             throw UnsupportedFilterValueTypeException::make($relation . '_' . $function, 'boolean');
         }
-
         $builder->getModel()->getModelMetadata()->relationExistOrFail($relation);
         $builder->has(camel_case($relation), $value ? '>=' : '<', 1, $boolean);
     }
-
     /**
      * @param mixed $matches
      * @param mixed $value
@@ -127,14 +126,13 @@ class SimpleFilterConditionApplier extends FilterConditionApplier
         $relationName = camel_case($relation);
         $relationModelMetadata = $model->$relationName()->getQuery()->getModel()->getModelMetadata();
         $relationModelMetadata->fieldExistOrFail($field);
-// TODO: валидировать поле по указанному типу - перенесено в общие правила валидации
+// TODO: выяснить предмет валидации - зачем, непонятно
 // $relationModelMetadata->validateFieldValueType($field, $value);
         $clause = static function (Builder $query) use ($field, $operator, $value): void {
             $query->where($field, $operator, $value);
         };
         $builder->has($relationName, '>=', 1, $boolean, $clause);
     }
-
     /**
      * @param mixed $value
      * @throws \Egal\Model\Exceptions\UnsupportedFilterValueTypeException
@@ -144,7 +142,7 @@ class SimpleFilterConditionApplier extends FilterConditionApplier
     protected static function filterByField(
         FilterCondition $condition,
         Builder $builder,
-        $value,
+                        $value,
         string $operator,
         string $boolean
     ): void {
@@ -154,7 +152,6 @@ class SimpleFilterConditionApplier extends FilterConditionApplier
         $modelMetadata->validateFieldValueType($field, $value);
         $builder->where($condition->getField(), $operator, $value, $boolean);
     }
-
     /**
      * @throws FilterException
      */
@@ -170,14 +167,13 @@ class SimpleFilterConditionApplier extends FilterConditionApplier
             self::CONTAIN_OPERATOR,self::START_WITH_OPERATOR, self::END_WITH_OPERATOR => 'LIKE',
             self::NOT_CONTAIN_OPERATOR => 'NOT LIKE',
             self::EQUAL_IGNORE_CASE_OPERATOR,
-                self::CONTAIN_IGNORE_CASE_OPERATOR,
-                self::START_WITH_IGNORE_CASE_OPERATOR,
-                self::END_WITH_IGNORE_CASE_OPERATOR => 'ILIKE',
+            self::CONTAIN_IGNORE_CASE_OPERATOR,
+            self::START_WITH_IGNORE_CASE_OPERATOR,
+            self::END_WITH_IGNORE_CASE_OPERATOR => 'ILIKE',
             self::NOT_EQUAL_IGNORE_CASE_OPERATOR, self::NOT_CONTAIN_IGNORE_CASE_OPERATOR => 'NOT ILIKE',
             default => throw new FilterException('Incorrect operator!'),
         };
     }
-
     /**
      * @param mixed $value
      */
@@ -185,11 +181,10 @@ class SimpleFilterConditionApplier extends FilterConditionApplier
     {
         return match ($operator) {
             self::CONTAIN_OPERATOR, self::CONTAIN_IGNORE_CASE_OPERATOR, self::NOT_CONTAIN_OPERATOR,
-                self::NOT_CONTAIN_IGNORE_CASE_OPERATOR => '%' . $value . '%',
+            self::NOT_CONTAIN_IGNORE_CASE_OPERATOR => '%' . $value . '%',
             self::START_WITH_OPERATOR, self::START_WITH_IGNORE_CASE_OPERATOR => $value . '%',
             self::END_WITH_OPERATOR, self::END_WITH_IGNORE_CASE_OPERATOR => '%' . $value,
             default => $value,
         };
     }
-
 }

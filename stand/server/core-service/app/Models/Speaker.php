@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use Egal\Model\Enums\FieldType;
+use Egal\Model\Enums\VariableType;
 use Egal\Model\Enums\RelationType;
 use Egal\Model\Metadata\ActionMetadata;
 use Egal\Model\Metadata\FieldMetadata;
@@ -30,22 +30,22 @@ class Speaker extends EgalModel
 
     public static function constructMetadata(): ModelMetadata
     {
-        return ModelMetadata::make(self::class, FieldMetadata::make('id', FieldType::UUID))
+        return ModelMetadata::make(self::class, FieldMetadata::make('id', VariableType::UUID))
             ->addFields([
-                FieldMetadata::make('user_id', FieldType::UUID)
+                FieldMetadata::make('user_id', VariableType::UUID)
                     ->required()
                     ->hidden(),
-                FieldMetadata::make('name', FieldType::STRING)
+                FieldMetadata::make('name', VariableType::STRING)
                     ->required(),
-                FieldMetadata::make('surname', FieldType::STRING)
+                FieldMetadata::make('surname', VariableType::STRING)
                     ->required(),
-                FieldMetadata::make('avatar', FieldType::STRING),
-                FieldMetadata::make('video', FieldType::STRING),
-                FieldMetadata::make('country_id', FieldType::STRING)
+                FieldMetadata::make('avatar', VariableType::STRING),
+                FieldMetadata::make('video', VariableType::STRING),
+                FieldMetadata::make('country_id', VariableType::STRING)
                     ->addValidationRule('exists:countries,id')
                     ->required(),
-                FieldMetadata::make('created_at', FieldType::DATETIME),
-                FieldMetadata::make('updated_at', FieldType::DATETIME),
+                FieldMetadata::make('created_at', VariableType::DATETIME),
+                FieldMetadata::make('updated_at', VariableType::DATETIME),
             ])
             ->addRelations([
                 RelationMetadata::make(

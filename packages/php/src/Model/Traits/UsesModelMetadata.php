@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Egal\Model\Traits;
 
-use Egal\Model\Enums\FieldType;
+use Egal\Model\Enums\VariableType;
 use Egal\Model\Facades\ModelMetadataManager;
 use Egal\Model\Metadata\FieldMetadata;
 use Egal\Model\Metadata\ModelMetadata;
@@ -41,9 +41,9 @@ trait UsesModelMetadata
     private function setKeyProperties(): void
     {
         switch ($this->keyType) {
-            case FieldType::UUID->value:
+            case VariableType::UUID->value:
                 $this->mergeCasts(['id' => 'string']);
-            case FieldType::INTEGER->value:
+            case VariableType::INTEGER->value:
                 $this->incrementing = true;
                 return;
             default:
