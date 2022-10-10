@@ -5,9 +5,18 @@ declare(strict_types=1);
 namespace Egal\Model\Traits;
 
 use Egal\Model\Enums\ValidationRules;
+use Illuminate\Validation\Rule;
 
 trait VariableValidationRules
 {
+
+    public function array_keys(array $keys): self
+    {
+        $keys = implode(',', $keys);
+        $this->validationRules[] = 'array:' . $keys;
+
+        return $this;
+    }
 
     public function required(): self
     {
