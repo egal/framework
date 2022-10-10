@@ -84,24 +84,24 @@ abstract class Model extends EloquentModel
     /**
      * Getting entity.
      *
-     * @param int|string $id Entity identification.
+     * @param int|string $key Entity identification.
      * @param string[] $relations Array of relations displayed for an entity.
      * @return mixed[] Entity as an associative array.
      * @throws \Egal\Model\Exceptions\ObjectNotFoundException
      */
-    public static function actionGetItem($id, array $relations = []): array
+    public static function actionGetItem($key, array $relations = []): array
     {
         $instance = new static();
         $instance->makeIsInstanceForAction();
-        $instance->validateKey($id);
+        $instance->validateKey($key);
 
         $item = $instance->newQuery()
             ->makeModelIsInstanceForAction()
             ->with($relations)
-            ->find($id);
+            ->find($key);
 
         if (!$item) {
-            throw ObjectNotFoundException::make($id);
+            throw ObjectNotFoundException::make($key);
         }
 
         return $item->toArray();
@@ -220,24 +220,24 @@ abstract class Model extends EloquentModel
     /**
      * Entity update
      *
-     * @param int|string|null $id Entity identification.
+     * @param int|string|null $key Entity identification.
      * @param mixed[] $attributes Associative array of attributes.
      * @return mixed[] Updated entity as an associative array.
      * @throws \Egal\Model\Exceptions\UpdateException
      * @throws \Egal\Model\Exceptions\ObjectNotFoundException
      */
-    public static function actionUpdate($id, array $attributes = []): array
+    public static function actionUpdate($key, array $attributes = []): array
     {
         $instance = new static();
 
         $instance->makeIsInstanceForAction();
-        $instance->validateKey($id);
+        $instance->validateKey($key);
 
         /** @var \Egal\Model\Model $entity */
-        $entity = $instance->newQuery()->find($id);
+        $entity = $instance->newQuery()->find($key);
 
         if (!$entity) {
-            throw ObjectNotFoundException::make($id);
+            throw ObjectNotFoundException::make($key);
         }
 
         $entity->makeIsInstanceForAction();
@@ -268,17 +268,17 @@ abstract class Model extends EloquentModel
                 throw new UpdateManyException('Object not specified index ' . $objectIndex . '!');
             }
 
-            $id = $attributes[$instance->getKeyName()];
+            $key = $attributes[$instance->getKeyName()];
             $instance->makeIsInstanceForAction();
-            $instance->validateKey($id);
+            $instance->validateKey($key);
 
             /** @var \Egal\Model\Model $entity */
-            $entity = $instance->newQuery()->find($id);
+            $entity = $instance->newQuery()->find($key);
 
             if (!$entity) {
                 DB::rollBack();
 
-                throw ObjectNotFoundException::make($id);
+                throw ObjectNotFoundException::make($key);
             }
 
             $entity->makeIsInstanceForAction();
@@ -333,21 +333,21 @@ abstract class Model extends EloquentModel
     /**
      * Deleting an entity.
      *
-     * @param int|string $id Entity identification.
+     * @param int|string $key Entity identification.
      * @return string[]
      * @throws \Egal\Model\Exceptions\ObjectNotFoundException
      */
-    public static function actionDelete($id): array
+    public static function actionDelete($key): array
     {
         $instance = new static();
         $instance->makeIsInstanceForAction();
-        $instance->validateKey($id);
+        $instance->validateKey($key);
 
         /** @var \Egal\Model\Model $entity */
-        $entity = $instance->newQuery()->find($id);
+        $entity = $instance->newQuery()->find($key);
 
         if (!$entity) {
-            throw ObjectNotFoundException::make($id);
+            throw ObjectNotFoundException::make($key);
         }
 
         $entity->makeIsInstanceForAction();
@@ -359,27 +359,27 @@ abstract class Model extends EloquentModel
     /**
      * Multiple deletion of entities
      *
-     * @param int[]|string[] $ids Array of identifiers for the entities to be deleted.
+     * @param int[]|string[] $keys Array of identifiers for the entities to be deleted.
      * @throws \Egal\Model\Exceptions\ExceedingTheLimitCountEntitiesForManipulationException
      * @throws \Egal\Model\Exceptions\ObjectNotFoundException
      */
-    public static function actionDeleteMany(array $ids): ?bool
+    public static function actionDeleteMany(array $keys): ?bool
     {
         $instance = new static();
-        $instance->isLessThanMaxCountEntitiesCanToManipulateWithActionOrFail(count($ids));
+        $instance->isLessThanMaxCountEntitiesCanToManipulateWithActionOrFail(count($keys));
         DB::beginTransaction();
 
-        foreach ($ids as $id) {
+        foreach ($keys as $key) {
             $instance->makeIsInstanceForAction();
-            $instance->validateKey($id);
+            $instance->validateKey($key);
 
             /** @var \Egal\Model\Model $entity */
-            $entity = $instance->newQuery()->find($id);
+            $entity = $instance->newQuery()->find($key);
 
             if (!$entity) {
                 DB::rollBack();
 
-                throw ObjectNotFoundException::make($id);
+                throw ObjectNotFoundException::make($key);
             }
 
             try {

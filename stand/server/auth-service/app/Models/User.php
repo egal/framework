@@ -11,6 +11,7 @@ use Egal\AuthServiceDependencies\Models\User as BaseUser;
 use Egal\Model\Enums\VariableType;
 use Egal\Model\Enums\RelationType;
 use Egal\Model\Metadata\ActionMetadata;
+use Egal\Model\Metadata\ActionParameterMetadata;
 use Egal\Model\Metadata\FieldMetadata;
 use Egal\Model\Metadata\ModelMetadata;
 use Egal\Model\Metadata\RelationMetadata;
@@ -108,7 +109,7 @@ class User extends BaseUser
 
     public static function constructMetadata(): ModelMetadata
     {
-        return ModelMetadata::make(User::class, FieldMetadata::make('id',VariableType::UUID))
+        return ModelMetadata::make(User::class, FieldMetadata::make('id', VariableType::UUID))
             ->addFields([
                 FieldMetadata::make('email', VariableType::STRING)
                     ->required()
@@ -127,16 +128,52 @@ class User extends BaseUser
                 ),
             ])
             ->addActions([
-                ActionMetadata::make('register'),
-                ActionMetadata::make('login'),
+                ActionMetadata::make('register')->addParameters(
+                    [
+                        ActionParameterMetadata::make('password', VariableType::STRING)
+                            ->required()
+                    ]
+                ),
+                ActionMetadata::make('login')->addParameters(
+                    [
+                        ActionParameterMetadata::make('email', VariableType::STRING)
+                            ->required()
+                            ->addValidationRule('exists:users,email'),
+                    ]
+                ),
                 ActionMetadata::make('loginToService'),
                 ActionMetadata::make('refreshUserMasterToken'),
                 ActionMetadata::make('create'),
-                ActionMetadata::make('update'),
+                ActionMetadata::make('update')
+                    ->addParameters([
+                        ActionParameterMetadata::make('key', VariableType::UUID)
+                            ->required()
+                            ->addValidationRule('exists:users,id')
+                    ]),
                 ActionMetadata::make('getMetadata'),
-                ActionMetadata::make('getItems'),
-                ActionMetadata::make('delete'),
-                ActionMetadata::make('getItem'),
+                ActionMetadata::make('getItems')
+                    ->addParameters([
+                        ActionParameterMetadata::make('pagination', VariableType::ARRAY)
+                            ->nullable(),
+                        ActionParameterMetadata::make('relations', VariableType::ARRAY)
+                            ->nullable(),
+                        ActionParameterMetadata::make('filter', VariableType::ARRAY)
+                            ->nullable(),
+                        ActionParameterMetadata::make('order', VariableType::ARRAY)
+                            ->nullable(),
+                    ]),
+                ActionMetadata::make('delete')
+                    ->addParameters([
+                        ActionParameterMetadata::make('key', VariableType::UUID)
+                            ->required()
+                            ->addValidationRule('exists:users,id')
+                    ]),
+                ActionMetadata::make('getItem')
+                    ->addParameters([
+                        ActionParameterMetadata::make('key', VariableType::UUID)
+                            ->required()
+                            ->addValidationRule('exists:users,id')
+                    ]),
                 ActionMetadata::make('getCount'),
                 ActionMetadata::make('createMany'),
                 ActionMetadata::make('updateMany'),

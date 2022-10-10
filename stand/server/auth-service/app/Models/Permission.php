@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Egal\Model\Enums\VariableType;
 use Egal\Model\Metadata\ActionMetadata;
+use Egal\Model\Metadata\ActionParameterMetadata;
 use Egal\Model\Metadata\FieldMetadata;
 use Egal\Model\Metadata\ModelMetadata;
 use Egal\Model\Model;
@@ -11,7 +12,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Permission extends Model
 {
-
     use HasFactory;
 
     protected static function boot()
@@ -28,7 +28,7 @@ class Permission extends Model
 
     public static function constructMetadata(): ModelMetadata
     {
-        return ModelMetadata::make(Permission::class, FieldMetadata::make('id',VariableType::STRING))
+        return ModelMetadata::make(Permission::class, FieldMetadata::make('id', VariableType::STRING))
             ->addFields([
                 FieldMetadata::make('name', VariableType::STRING)
                     ->required()
@@ -44,11 +44,26 @@ class Permission extends Model
             ])
             ->addActions([
                 ActionMetadata::make('create'),
-                ActionMetadata::make('update'),
+                ActionMetadata::make('update')
+                    ->addParameters([
+                        ActionParameterMetadata::make('key', VariableType::STRING)
+                            ->required()
+                            ->addValidationRule('exists:permissions,id')
+                    ]),
                 ActionMetadata::make('getMetadata'),
                 ActionMetadata::make('getItems'),
-                ActionMetadata::make('delete'),
-                ActionMetadata::make('getItem'),
+                ActionMetadata::make('delete')
+                    ->addParameters([
+                        ActionParameterMetadata::make('key', VariableType::STRING)
+                            ->required()
+                            ->addValidationRule('exists:permissions,id')
+                    ]),
+                ActionMetadata::make('getItem')
+                    ->addParameters([
+                        ActionParameterMetadata::make('key', VariableType::STRING)
+                            ->required()
+                            ->addValidationRule('exists:permissions,id')
+                    ]),
                 ActionMetadata::make('getCount'),
                 ActionMetadata::make('createMany'),
                 ActionMetadata::make('updateMany'),

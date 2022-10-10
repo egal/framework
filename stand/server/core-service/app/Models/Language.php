@@ -42,7 +42,7 @@ class Language extends Model
                 ActionMetadata::make('create'),
                 ActionMetadata::make('update')
                     ->addParameters([
-                        ActionParameterMetadata::make('id', VariableType::STRING)
+                        ActionParameterMetadata::make('key', VariableType::STRING)
                             ->required()
                             ->addValidationRule('exists:languages,id')
                     ]),
@@ -50,13 +50,13 @@ class Language extends Model
                 ActionMetadata::make('getItems'),
                 ActionMetadata::make('delete')
                     ->addParameters([
-                        ActionParameterMetadata::make('id', VariableType::STRING)
+                        ActionParameterMetadata::make('key', VariableType::STRING)
                             ->required()
                             ->addValidationRule('exists:languages,id')
                     ]),
                 ActionMetadata::make('getItem')
                     ->addParameters([
-                        ActionParameterMetadata::make('id', VariableType::STRING)
+                        ActionParameterMetadata::make('key', VariableType::STRING)
                             ->required()
                             ->addValidationRule('exists:languages,id')
                     ]),

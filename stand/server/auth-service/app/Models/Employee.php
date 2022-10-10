@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Egal\Model\Enums\VariableType;
 use Egal\Model\Metadata\ActionMetadata;
+use Egal\Model\Metadata\ActionParameterMetadata;
 use Egal\Model\Metadata\FieldMetadata;
 use Egal\Model\Metadata\ModelMetadata;
 use Egal\Model\Model;
@@ -12,13 +13,12 @@ use Staudenmeir\EloquentHasManyDeep\HasRelationships;
 
 class Employee extends Model
 {
-
     use HasFactory;
     use HasRelationships;
 
     public static function constructMetadata(): ModelMetadata
     {
-        return ModelMetadata::make(Employee::class, FieldMetadata::make('id',VariableType::UUID))
+        return ModelMetadata::make(Employee::class, FieldMetadata::make('id', VariableType::UUID))
             ->addFields([
                 FieldMetadata::make('address', VariableType::STRING)
                     ->default('Home Address'),
@@ -35,17 +35,42 @@ class Employee extends Model
                     ->guarded(),
             ])
             ->addFakeFields([
-                FieldMetadata::make('height',  VariableType::NUMERIC)
+                FieldMetadata::make('height', VariableType::NUMERIC)
                     ->sometimes()
                     ->required()
             ])
             ->addActions([
                 ActionMetadata::make('create'),
-                ActionMetadata::make('update'),
+                ActionMetadata::make('update')
+                    ->addParameters([
+                        ActionParameterMetadata::make('key', VariableType::UUID)
+                            ->required()
+                            ->addValidationRule('exists:employees,id')
+                    ]),
                 ActionMetadata::make('getMetadata'),
-                ActionMetadata::make('getItems'),
-                ActionMetadata::make('delete'),
-                ActionMetadata::make('getItem'),
+                ActionMetadata::make('getItems')
+                    ->addParameters([
+                        ActionParameterMetadata::make('pagination', VariableType::ARRAY)
+                            ->nullable(),
+                        ActionParameterMetadata::make('relations', VariableType::ARRAY)
+                            ->nullable(),
+                        ActionParameterMetadata::make('filter', VariableType::ARRAY)
+                            ->nullable(),
+                        ActionParameterMetadata::make('order', VariableType::ARRAY)
+                            ->nullable(),
+                    ]),
+                ActionMetadata::make('delete')
+                    ->addParameters([
+                        ActionParameterMetadata::make('key', VariableType::UUID)
+                            ->required()
+                            ->addValidationRule('exists:employees,id')
+                    ]),
+                ActionMetadata::make('getItem')
+                    ->addParameters([
+                        ActionParameterMetadata::make('key', VariableType::UUID)
+                            ->required()
+                            ->addValidationRule('exists:employees,id')
+                    ]),
                 ActionMetadata::make('getCount'),
                 ActionMetadata::make('createMany'),
                 ActionMetadata::make('updateMany'),

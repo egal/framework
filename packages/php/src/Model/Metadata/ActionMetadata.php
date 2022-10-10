@@ -31,6 +31,7 @@ class ActionMetadata
     {
         $this->name = $name;
     }
+
     public static function make(string $name): self
     {
         return new static($name);
@@ -94,10 +95,12 @@ class ActionMetadata
 
         return $actionMetadata;
     }
+
     public function getName(): string
     {
         return $this->name;
     }
+
     public function getMethodName(): string
     {
         return self::METHOD_NAME_PREFIX . ucwords($this->name);

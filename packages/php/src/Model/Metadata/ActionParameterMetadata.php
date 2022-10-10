@@ -6,5 +6,7 @@ use Egal\Model\Traits\VariableMetadata;
 
 class ActionParameterMetadata
 {
+
     use VariableMetadata;
+
 }
