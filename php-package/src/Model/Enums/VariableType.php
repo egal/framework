@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Egal\Model\Enums;
 
-enum FieldType: string
+enum VariableType: string
 {
 
     case STRING     = 'string';
@@ -15,5 +15,6 @@ enum FieldType: string
     case JSON       = 'json';
     case BOOLEAN    = 'boolean';
     case NUMERIC    = 'numeric';
+    case ARRAY      = 'array';
 
 }
