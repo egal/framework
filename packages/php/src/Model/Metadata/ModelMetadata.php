@@ -56,7 +56,7 @@ class ModelMetadata
         return new static($modelClass, $key);
     }
 
-    public function toArray(): array
+    public function toArray(bool $loadRelatedMetadata = false): array
     {
         $modelMetadata = [
             'model_short_name' => $this->modelShortName,
@@ -64,8 +64,10 @@ class ModelMetadata
         ];
 
         $modelMetadata['fields'] = array_map(fn(FieldMetadata $field) => $field->toArray(), $this->fields);
+        $loadRelatedMetadata
+            ? $modelMetadata['relations'] = array_map(fn(RelationMetadata $relation) => $relation->toArray(true), $this->relations)
+            : $modelMetadata['relations'] = array_map(fn(RelationMetadata $relation) => $relation->toArray(), $this->relations);
         $modelMetadata['fake_fields'] = array_map(fn(FieldMetadata $field) => $field->toArray(), $this->fakeFields);
-        $modelMetadata['relations'] = array_map(fn(RelationMetadata $relation) => $relation->toArray(), $this->relations);
         $modelMetadata['actions'] = array_map(fn(ActionMetadata $action) => $action->toArray(), $this->actions);
 
         return $modelMetadata;

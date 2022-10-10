@@ -123,6 +123,7 @@ class User extends BaseUser
             ->addRelations([
                 RelationMetadata::make(
                     'roles',
+                    Role::class,
                     RelationType::HAS_MANY,
                 ),
             ])
