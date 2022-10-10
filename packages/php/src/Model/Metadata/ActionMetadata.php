@@ -11,6 +11,7 @@ use Egal\Model\Exceptions\ActionParameterNotFoundException;
  */
 class ActionMetadata
 {
+
     // TODO: добавить метаданные доступов
     // TODO: добавить генерацию входных параметров
     // TODO: добавить обработку дефолтных значений параметров
@@ -19,23 +20,26 @@ class ActionMetadata
 
     public const METHOD_NAME_PREFIX = 'action';
 
-    protected readonly string $name;
+    protected string $name;
 
     /**
      * @var ActionParameterMetadata[]
      */
     protected array $parameters = [];
 
-    private ?array $validationRules = null;
+    protected ?array $validationRules = null;
 
-    public function __construct(string $name)
+    protected readonly string $modelName;
+
+    public function __construct(string $modelName, string $name)
     {
+        $this->modelName = $modelName;
         $this->name = $name;
     }
 
-    public static function make(string $name): self
+    public static function make(string $modelName, string $name): static
     {
-        return new static($name);
+        return new static($modelName, $name);
     }
 
     private function setValidationRules(): void
@@ -78,7 +82,7 @@ class ActionMetadata
     /**
      * @param ActionParameterMetadata[] $parameters
      */
-    public function addParameters(array $parameters): self
+    public function addParameters(array $parameters): static
     {
         $this->parameters = array_merge($this->parameters, $parameters);
 
@@ -92,7 +96,7 @@ class ActionMetadata
     {
         $actionMetadata = [];
         $actionMetadata['name'] = $this->name;
-        $actionMetadata['parameters'] = array_map(static fn (ActionParameterMetadata $parameter) => $parameter->toArray(), $this->parameters);
+        $actionMetadata['parameters'] = array_map(static fn(ActionParameterMetadata $parameter) => $parameter->toArray(), $this->parameters);
 
         return $actionMetadata;
     }
