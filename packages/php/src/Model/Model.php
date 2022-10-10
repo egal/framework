@@ -226,17 +226,9 @@ abstract class Model extends EloquentModel
      * @throws \Egal\Model\Exceptions\UpdateException
      * @throws \Egal\Model\Exceptions\ObjectNotFoundException
      */
-    public static function actionUpdate($id = null, array $attributes = []): array
+    public static function actionUpdate($id, array $attributes = []): array
     {
         $instance = new static();
-
-        if (!isset($id)) {
-            if (!isset($attributes[$instance->getKeyName()])) {
-                throw new UpdateException('The identifier of the entity being updated is not specified!');
-            }
-
-            $id = $attributes[$instance->getKeyName()];
-        }
 
         $instance->makeIsInstanceForAction();
         $instance->validateKey($id);

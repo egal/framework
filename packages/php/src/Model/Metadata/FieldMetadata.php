@@ -2,44 +2,16 @@
 
 namespace Egal\Model\Metadata;
 
-use Egal\Model\Enums\ValidationRules;
-use Egal\Model\Traits\FieldValidationRules;
-use Egal\Model\Enums\VariableType;
-use Egal\Validation\Rules\Rule as EgalRule;
-use Illuminate\Contracts\Validation\Rule;
+use Egal\Model\Traits\VariableMetadata;
 
 class FieldMetadata
 {
 
-    use FieldValidationRules;
-
-    protected readonly string $name;
-
-    protected readonly VariableType $type;
+    use VariableMetadata;
 
     protected bool $hidden = false;
 
     protected bool $guarded = false;
-
-    protected mixed $default = null;
-
-    protected bool $nullable = false;
-
-    /**
-     * @var array<string, Rule, EgalRule>
-     */
-    protected array $validationRules = [];
-
-    protected function __construct(string $name, VariableType $type)
-    {
-        $this->name = $name;
-        $this->type = $type;
-    }
-
-    public static function make(string $name, VariableType $type): self
-    {
-        return new static($name, $type);
-    }
 
     public function toArray(): array
     {
@@ -54,39 +26,15 @@ class FieldMetadata
         ];
     }
 
-    public function addValidationRule(string $validationRule): self
-    {
-        $this->validationRules[] = $validationRule;
-
-        return $this;
-    }
-
     public function hidden(): self
     {
         $this->hidden = true;
-
         return $this;
     }
 
     public function guarded(): self
     {
         $this->guarded = true;
-
-        return $this;
-    }
-
-    public function default(mixed $defaultValue): self
-    {
-        $this->default = $defaultValue;
-
-        return $this;
-    }
-
-    public function nullable(): self
-    {
-        $this->nullable = true;
-        $this->validationRules[] = ValidationRules::NULLABLE->value;
-
         return $this;
     }
 
@@ -98,42 +46,6 @@ class FieldMetadata
     public function isGuarded(): bool
     {
         return $this->guarded;
-    }
-
-    public function isNullable(): bool
-    {
-        return $this->nullable;
-    }
-
-    public function getDefault(): mixed
-    {
-        return $this->default;
-    }
-
-    public function getName(): string
-    {
-        return $this->name;
-    }
-
-    public function getType(): VariableType
-    {
-        return $this->type;
-    }
-
-    public function getValidationRules(): array
-    {
-        if (in_array($this->type->value, $this->validationRules)) {
-            return $this->validationRules;
-        }
-
-        switch ($this->type) {
-            case VariableType::DATETIME:
-                break;
-            default:
-                array_unshift($this->validationRules, $this->type->value);
-        }
-
-        return $this->validationRules;
     }
 
 }

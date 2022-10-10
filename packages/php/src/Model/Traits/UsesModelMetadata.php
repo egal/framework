@@ -9,7 +9,6 @@ use Egal\Model\Facades\ModelMetadataManager;
 use Egal\Model\Metadata\FieldMetadata;
 use Egal\Model\Metadata\ModelMetadata;
 use Egal\Model\Model;
-use Illuminate\Support\Str;
 
 /**
  * @package Egal\Model
