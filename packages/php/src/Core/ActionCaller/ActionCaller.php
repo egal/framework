@@ -104,7 +104,7 @@ class ActionCaller
 
         /** @var ActionParameterMetadata $parameter */
         foreach ($missingParameters as $parameter) {
-            if (!$this->isDefaultValueAvailable($parameter)) {
+            if (!$parameter->isNullVariableReplaceableWithDefault()) {
                 continue;
             }
 
@@ -122,11 +122,6 @@ class ActionCaller
         }
 
         return $actionParameters;
-    }
-
-    private function isDefaultValueAvailable(ActionParameterMetadata $parameter): bool
-    {
-        return $parameter->getDefault() !== null || $parameter->isNullable();
     }
 
 }

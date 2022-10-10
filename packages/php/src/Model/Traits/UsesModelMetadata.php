@@ -54,7 +54,7 @@ trait UsesModelMetadata
     {
         static::creating(static function (Model $model): void {
             foreach ($model->getModelMetadata()->getFields() as $field) {
-                if (! $field->isNullable() && is_null($field->getDefault())) {
+                if (! $field->isNullVariableReplaceableWithDefault()) {
                     continue;
                 }
 
