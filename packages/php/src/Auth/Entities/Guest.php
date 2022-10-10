@@ -1,6 +1,6 @@
 <?php
 
-namespace Egal\AuthServiceDependencies\Entities;
+namespace Egal\Auth\Entities;
 
 class Guest extends AuthEntity
 {

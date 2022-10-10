@@ -43,6 +43,11 @@ class ModelMetadata
      */
     protected array $actions = [];
 
+    /**
+     * @var string[]
+     */
+    protected array $policies = [];
+
     public function __construct(string $modelClass, ?FieldMetadata $key)
     {
         $this->modelClass = $modelClass;
@@ -123,6 +128,16 @@ class ModelMetadata
         return $this;
     }
 
+    /**
+     * @param string[] $policies
+     */
+    public function addPolicies(array $policies): self
+    {
+        $this->policies = array_merge($this->policies, $policies);
+
+        return $this;
+    }
+
     public function fieldExist(string $fieldName): bool
     {
         return array_filter(
@@ -177,6 +192,11 @@ class ModelMetadata
         }
     }
 
+    public function hasPolicies(): bool
+    {
+        return $this->policies !== [];
+    }
+
     public function getModelShortName(): string
     {
         return $this->modelShortName;
@@ -216,6 +236,20 @@ class ModelMetadata
     }
 
     /**
+     * @throws ActionNotFoundException
+     */
+    public function getAction(string $actionName): ActionMetadata
+    {
+        foreach ($this->actions as $action) {
+            if ($action->getName() === $actionName) {
+                return $action;
+            }
+        }
+
+        throw ActionNotFoundException::make($this->modelClass, $actionName);
+    }
+
+    /**
      * @return string[]
      */
     public function getHiddenFieldsNames(): array
@@ -231,23 +265,14 @@ class ModelMetadata
         return array_map(fn($field) => $field->getName(), array_filter([...$this->fields, ...$this->fakeFields, $this->getKey()], fn($field) => $field->isGuarded()));
     }
 
-    /**
-     * @throws ActionNotFoundException
-     */
-    public function getAction(string $actionName): ActionMetadata
-    {
-        foreach ($this->actions as $action) {
-            if ($action->getName() === $actionName) {
-                return $action;
-            }
-        }
-
-        throw ActionNotFoundException::make($this->modelClass, $actionName);
-    }
-
     public function getCasts(): array
     {
         return $this->casts;
+    }
+
+    public function getPolicies(): array
+    {
+        return $this->policies;
     }
 
 }

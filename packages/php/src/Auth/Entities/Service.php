@@ -1,6 +1,6 @@
 <?php
 
-namespace Egal\AuthServiceDependencies\Entities;
+namespace Egal\Auth\Entities;
 
 use Egal\Auth\Tokens\ServiceServiceToken;
 

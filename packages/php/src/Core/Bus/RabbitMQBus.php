@@ -219,6 +219,7 @@ class RabbitMQBus extends Bus
         $this->basicPublish($startProcessingMessage, $replyTo);
 
         try {
+            dump('Session::setActionMessage($actionMessage);');
             Session::setActionMessage($actionMessage);
             $actionResultMessage = new ActionResultMessage();
             $actionResultMessage->setActionMessage($actionMessage);
