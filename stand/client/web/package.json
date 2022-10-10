@@ -1,6 +1,5 @@
 {
-  "name": "company-coin-react",
-  "version": "0.1.0",
+  "name": "@egalteam/stand",
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^5.16.5",
@@ -10,12 +9,12 @@
     "@types/jest": "^27.5.2",
     "@types/node": "^16.11.56",
     "@types/react": "^18.0.17",
-    "@types/react-dom": "^18.0.6",
     "axios": "^0.27.2",
     "chance": "^1.1.8",
+    "grommet": "^2.26.0",
+    "polished": "^4.2.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-router": "^6.3.0",
     "react-router-dom": "^6.3.0",
     "react-scripts": "5.0.1",
     "styled-components": "^5.3.5",
@@ -29,7 +28,11 @@
     "eject": "react-scripts eject",
     "lint": "eslint .",
     "lint:fix": "eslint --fix",
-    "format": "prettier --write './**/*.{js,jsx,ts,tsx,css,md,json}' --config ./.prettierrc"
+    "format": "prettier --write './**/*.{js,jsx,ts,tsx,css,md,json}' --config ./.prettierrc",
+    "link": "npm-run-all -s link:*",
+    "link:lib-self": "cd ../../../npm-packages/packages/framework/ && npm link",
+    "link:lib-react": "cd ../../../npm-packages/packages/framework/ && npm link ../../../stand/client/web/node_modules/react/ ../../../stand/client/web/node_modules/react-router-dom/",
+    "link:app-to-lib": "npm link ../../../npm-packages/packages/framework/"
   },
   "eslintConfig": {
     "extends": [
@@ -58,6 +61,7 @@
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-react": "^7.31.1",
+    "npm-run-all": "^4.1.5",
     "prettier": "^2.7.1"
   }
 }

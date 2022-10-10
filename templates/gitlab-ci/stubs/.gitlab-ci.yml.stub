@@ -1,0 +1,31 @@
+stages:
+  - preparing
+  - build
+  - deploy
+  - testing
+  - stopping
+
+include:
+  # testing
+  - local: .gitlab-ci/testing.deploy.gitlab-ci.yml
+    rules:
+      - if: $CI_MERGE_REQUEST_ID
+  # development
+  - local: .gitlab-ci/development.deploy.gitlab-ci.yml
+    rules:
+      - if: $CI_COMMIT_TAG && $CI_COMMIT_TAG =~ /^v[0-9]+\.[0-9]+\.[0-9]+\-beta\.[0-9]+$/
+  # staging
+  - local: .gitlab-ci/staging.deploy.gitlab-ci.yml
+    rules:
+      - if: $CI_COMMIT_TAG && $CI_COMMIT_TAG =~ /^v[0-9]+\.[0-9]+\.[0-9]+\-rc\.[0-9]+$/
+  # production
+  - local: .gitlab-ci/production.deploy.gitlab-ci.yml
+    rules:
+      - if: $CI_COMMIT_TAG && $CI_COMMIT_TAG =~ /^v[0-9]+\.[0-9]+\.[0-9]+$/
+
+not-running-job:
+  stage: preparing
+  only:
+    variables:
+      - $NOT_FOUND_VARIABLE == 'not-found-value'
+  script: echo 'This job shouldn't start!' && exit 1

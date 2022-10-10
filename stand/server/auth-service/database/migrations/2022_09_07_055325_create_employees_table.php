@@ -18,7 +18,8 @@ class CreateEmployeesTable extends Migration
 
             $table->timestamps();
         });
-        DB::statement('ALTER TABLE users ALTER COLUMN id SET DEFAULT uuid_generate_v4();');
+
+        DB::statement('ALTER TABLE employees ALTER COLUMN id SET DEFAULT uuid_generate_v4();');
     }
 
     public function down(): void

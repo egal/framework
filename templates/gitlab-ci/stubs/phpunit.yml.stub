@@ -1,0 +1,8 @@
+__SERVICE_NAME__:phpunit:test:
+  extends: .template
+  stage: testing
+  variables:
+    SERVICE_NAME: __SERVICE_NAME__
+  needs:
+    - __SERVICE_NAME__:deploy
+  <<: *run-phpunit-script
