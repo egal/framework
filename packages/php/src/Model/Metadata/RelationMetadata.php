@@ -49,7 +49,11 @@ class RelationMetadata
             'guarded' => $this->guarded,
         ];
 
-        return $loadRelatedMetadata ? array_merge($result, ['related' => $this->getRelatedMetadata()->toArray()]) : $result;
+        if ($loadRelatedMetadata) {
+            $result['related'] = $this->getRelatedMetadata()->toArray();
+        }
+
+        return $result;
     }
 
     public function guarded(): self
