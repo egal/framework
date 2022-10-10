@@ -13,7 +13,7 @@ class RelationMetadata
 
     protected readonly string $name;
 
-    protected string $related;
+    protected readonly string $related;
 
     protected bool $guarded = false;
 
@@ -43,16 +43,13 @@ class RelationMetadata
 
     public function toArray(bool $loadRelatedMetadata = false): array
     {
-        return $loadRelatedMetadata
-            ? [
-                'name' => $this->name,
-                'type' => $this->type->value,
-                'related' => $this->getRelatedMetadata()->toArray()
-            ]
-            : [
-                'name' => $this->name,
-                'type' => $this->type->value,
-            ];
+        $result = [
+            'name' => $this->name,
+            'type' => $this->type->value,
+            'guarded' => $this->guarded,
+        ];
+
+        return $loadRelatedMetadata ? array_merge($result, ['related' => $this->getRelatedMetadata()->toArray()]) : $result;
     }
 
     public function guarded(): self
