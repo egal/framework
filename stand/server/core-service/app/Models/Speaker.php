@@ -18,7 +18,7 @@ class Speaker extends EgalModel
 
     use HasFactory;
 
-    public function countries(): BelongsTo
+    public function country(): BelongsTo
     {
         return $this->belongsTo(Country::class);
     }
