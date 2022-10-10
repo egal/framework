@@ -25,6 +25,7 @@ class CreateSchoolsTable extends Migration
     public function down()
     {
         Schema::dropIfExists('schools');
+        DB::statement('DROP EXTENSION IF EXISTS "uuid-ossp"');
     }
 
 }

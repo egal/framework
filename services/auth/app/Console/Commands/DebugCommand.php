@@ -11,7 +11,7 @@ class DebugCommand extends Command
 
     public function handle(): void
     {
-        dump(class_exists('App\Models\Users'));
+        //
     }
 
 }
