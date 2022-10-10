@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Egal\Auth\Entities;
 
 use Egal\Auth\Tokens\ServiceServiceToken;
