@@ -13,6 +13,19 @@ use Egal\AuthServiceDependencies\Models\User as BaseUser;
 use Egal\Core\Session\Session;
 use Egal\Model\Enums\VariableType;
 use Egal\Model\Enums\RelationType;
+use Egal\Model\Metadata\ActionMetadata\ActionMetadata;
+use Egal\Model\Metadata\ActionMetadata\CreateActionMetadata;
+use Egal\Model\Metadata\ActionMetadata\CreateManyActionMetadata;
+use Egal\Model\Metadata\ActionMetadata\DeleteActionMetadata;
+use Egal\Model\Metadata\ActionMetadata\DeleteManyActionMetadata;
+use Egal\Model\Metadata\ActionMetadata\DeleteManyRawActionMetadata;
+use Egal\Model\Metadata\ActionMetadata\GetCountActionMetadata;
+use Egal\Model\Metadata\ActionMetadata\GetItemActionMetadata;
+use Egal\Model\Metadata\ActionMetadata\GetItemsActionMetadata;
+use Egal\Model\Metadata\ActionMetadata\GetMetadataActionMetadata;
+use Egal\Model\Metadata\ActionMetadata\UpdateActionMetadata;
+use Egal\Model\Metadata\ActionMetadata\UpdateManyActionMetadata;
+use Egal\Model\Metadata\ActionMetadata\UpdateManyRawActionMetadata;
 use Egal\Model\Metadata\ActionParameterMetadata;
 use Egal\Model\Metadata\FieldMetadata;
 use Egal\Model\Metadata\ModelMetadata;
@@ -145,7 +158,7 @@ class User extends BaseUser
                     ]),
                 ActionMetadata::make('loginToService'),
                 ActionMetadata::make('refreshUserMasterToken'),
-                ActionMetadata\CreateActionMetadata::make()
+                CreateActionMetadata::make()
                     ->addParameters([
                         ActionParameterMetadata::make('email', VariableType::STRING)
                             ->required()
@@ -153,17 +166,17 @@ class User extends BaseUser
                         ActionParameterMetadata::make('password', VariableType::STRING)
                             ->required()
                     ]),
-                ActionMetadata\CreateManyActionMetadata::make(),
-                ActionMetadata\UpdateActionMetadata::make(static::class, VariableType::UUID),
-                ActionMetadata\UpdateManyActionMetadata::make(static::class, VariableType::UUID),
-                ActionMetadata\UpdateManyRawActionMetadata::make(),
-                ActionMetadata\DeleteActionMetadata::make(static::class, VariableType::UUID),
-                ActionMetadata\DeleteManyActionMetadata::make(static::class, VariableType::UUID),
-                ActionMetadata\DeleteManyRawActionMetadata::make(),
-                ActionMetadata\GetItemsActionMetadata::make(),
-                ActionMetadata\GetItemActionMetadata::make(static::class, VariableType::UUID),
-                ActionMetadata\GetCountActionMetadata::make(),
-                ActionMetadata\GetMetadataActionMetadata::make()
+                CreateManyActionMetadata::make(),
+                UpdateActionMetadata::make(static::class, VariableType::UUID),
+                UpdateManyActionMetadata::make(static::class, VariableType::UUID),
+                UpdateManyRawActionMetadata::make(),
+                DeleteActionMetadata::make(static::class, VariableType::UUID),
+                DeleteManyActionMetadata::make(static::class, VariableType::UUID),
+                DeleteManyRawActionMetadata::make(),
+                GetItemsActionMetadata::make(),
+                GetItemActionMetadata::make(static::class, VariableType::UUID),
+                GetCountActionMetadata::make(),
+                GetMetadataActionMetadata::make()
             ]);
     }
 
