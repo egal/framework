@@ -32,7 +32,7 @@ class Permission extends Model
             ->addFields([
                 FieldMetadata::make('name', VariableType::STRING)
                     ->required()
-                    ->addValidationRule('unique:roles,name'),
+                    ->addValidationRule('unique:permissions,name'),
                 FieldMetadata::make('is_default', VariableType::BOOLEAN)
                     ->required(),
                 FieldMetadata::make('created_at', VariableType::DATETIME)
@@ -43,32 +43,25 @@ class Permission extends Model
                     ->hidden(),
             ])
             ->addActions([
-                ActionMetadata::make('create'),
-                ActionMetadata::make('update')
+                ActionMetadata\CreateActionMetadata::make()
                     ->addParameters([
-                        ActionParameterMetadata::make('key', VariableType::STRING)
+                        ActionParameterMetadata::make('name', VariableType::STRING)
                             ->required()
-                            ->addValidationRule('exists:permissions,id')
+                            ->addValidationRule('unique:permissions,name'),
+                        ActionParameterMetadata::make('is_default', VariableType::BOOLEAN)
+                            ->default(false),
                     ]),
-                ActionMetadata::make('getMetadata'),
-                ActionMetadata::make('getItems'),
-                ActionMetadata::make('delete')
-                    ->addParameters([
-                        ActionParameterMetadata::make('key', VariableType::STRING)
-                            ->required()
-                            ->addValidationRule('exists:permissions,id')
-                    ]),
-                ActionMetadata::make('getItem')
-                    ->addParameters([
-                        ActionParameterMetadata::make('key', VariableType::STRING)
-                            ->required()
-                            ->addValidationRule('exists:permissions,id')
-                    ]),
-                ActionMetadata::make('getCount'),
-                ActionMetadata::make('createMany'),
-                ActionMetadata::make('updateMany'),
-                ActionMetadata::make('updateManyRaw'),
-                ActionMetadata::make('deleteMany'),
+                ActionMetadata\CreateManyActionMetadata::make(),
+                ActionMetadata\UpdateActionMetadata::make(static::class, VariableType::STRING),
+                ActionMetadata\UpdateManyActionMetadata::make(static::class, VariableType::STRING),
+                ActionMetadata\UpdateManyRawActionMetadata::make(),
+                ActionMetadata\DeleteActionMetadata::make(static::class, VariableType::STRING),
+                ActionMetadata\DeleteManyActionMetadata::make(static::class, VariableType::STRING),
+                ActionMetadata\DeleteManyRawActionMetadata::make(),
+                ActionMetadata\GetItemsActionMetadata::make(),
+                ActionMetadata\GetItemActionMetadata::make(static::class, VariableType::STRING),
+                ActionMetadata\GetCountActionMetadata::make(),
+                ActionMetadata\GetMetadataActionMetadata::make()
             ]);
     }
 

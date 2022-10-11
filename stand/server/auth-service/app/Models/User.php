@@ -129,57 +129,25 @@ class User extends BaseUser
                 ),
             ])
             ->addActions([
-                ActionMetadata::make('register')->addParameters(
-                    [
-                        ActionParameterMetadata::make('password', VariableType::STRING)
-                            ->required()
-                    ]
-                ),
-                ActionMetadata::make('login')->addParameters(
-                    [
+                ActionMetadata\CreateActionMetadata::make()
+                    ->addParameters([
                         ActionParameterMetadata::make('email', VariableType::STRING)
                             ->required()
-                            ->addValidationRule('exists:users,email'),
-                    ]
-                ),
-                ActionMetadata::make('loginToService'),
-                ActionMetadata::make('refreshUserMasterToken'),
-                ActionMetadata::make('create'),
-                ActionMetadata::make('update')
-                    ->addParameters([
-                        ActionParameterMetadata::make('key', VariableType::UUID)
+                            ->addValidationRule('unique:users,email'),
+                        ActionParameterMetadata::make('password', VariableType::STRING)
                             ->required()
-                            ->addValidationRule('exists:users,id')
                     ]),
-                ActionMetadata::make('getMetadata'),
-                ActionMetadata::make('getItems')
-                    ->addParameters([
-                        ActionParameterMetadata::make('pagination', VariableType::ARRAY)
-                            ->nullable(),
-                        ActionParameterMetadata::make('relations', VariableType::ARRAY)
-                            ->nullable(),
-                        ActionParameterMetadata::make('filter', VariableType::ARRAY)
-                            ->nullable(),
-                        ActionParameterMetadata::make('order', VariableType::ARRAY)
-                            ->nullable(),
-                    ]),
-                ActionMetadata::make('delete')
-                    ->addParameters([
-                        ActionParameterMetadata::make('key', VariableType::UUID)
-                            ->required()
-                            ->addValidationRule('exists:users,id')
-                    ]),
-                ActionMetadata::make('getItem')
-                    ->addParameters([
-                        ActionParameterMetadata::make('key', VariableType::UUID)
-                            ->required()
-                            ->addValidationRule('exists:users,id')
-                    ]),
-                ActionMetadata::make('getCount'),
-                ActionMetadata::make('createMany'),
-                ActionMetadata::make('updateMany'),
-                ActionMetadata::make('updateManyRaw'),
-                ActionMetadata::make('deleteMany'),
+                ActionMetadata\CreateManyActionMetadata::make(),
+                ActionMetadata\UpdateActionMetadata::make(static::class, VariableType::UUID),
+                ActionMetadata\UpdateManyActionMetadata::make(static::class, VariableType::UUID),
+                ActionMetadata\UpdateManyRawActionMetadata::make(),
+                ActionMetadata\DeleteActionMetadata::make(static::class, VariableType::UUID),
+                ActionMetadata\DeleteManyActionMetadata::make(static::class, VariableType::UUID),
+                ActionMetadata\DeleteManyRawActionMetadata::make(),
+                ActionMetadata\GetItemsActionMetadata::make(),
+                ActionMetadata\GetItemActionMetadata::make(static::class, VariableType::UUID),
+                ActionMetadata\GetCountActionMetadata::make(),
+                ActionMetadata\GetMetadataActionMetadata::make()
             ]);
     }
 

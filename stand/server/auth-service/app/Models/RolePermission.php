@@ -26,32 +26,26 @@ class RolePermission extends Model
                     ->hidden(),
             ])
             ->addActions([
-                ActionMetadata::make('create'),
-                ActionMetadata::make('update')
+                ActionMetadata\CreateActionMetadata::make()
                     ->addParameters([
-                        ActionParameterMetadata::make('key', VariableType::INTEGER)
+                        ActionParameterMetadata::make('permission_id', VariableType::UUID)
                             ->required()
-                            ->addValidationRule('exists:role_permissions,id')
-                    ]),
-                ActionMetadata::make('getMetadata'),
-                ActionMetadata::make('getItems'),
-                ActionMetadata::make('delete')
-                    ->addParameters([
-                        ActionParameterMetadata::make('key', VariableType::INTEGER)
+                            ->addValidationRule('exists:permissions'),
+                        ActionParameterMetadata::make('role_id', VariableType::STRING)
                             ->required()
-                            ->addValidationRule('exists:role_permissions,id')
+                            ->addValidationRule('exists:roles'),
                     ]),
-                ActionMetadata::make('getItem')
-                    ->addParameters([
-                        ActionParameterMetadata::make('key', VariableType::INTEGER)
-                            ->required()
-                            ->addValidationRule('exists:role_permissions,id')
-                    ]),
-                ActionMetadata::make('getCount'),
-                ActionMetadata::make('createMany'),
-                ActionMetadata::make('updateMany'),
-                ActionMetadata::make('updateManyRaw'),
-                ActionMetadata::make('deleteMany'),
+                ActionMetadata\CreateManyActionMetadata::make(),
+                ActionMetadata\UpdateActionMetadata::make(static::class, VariableType::INTEGER),
+                ActionMetadata\UpdateManyActionMetadata::make(static::class, VariableType::INTEGER),
+                ActionMetadata\UpdateManyRawActionMetadata::make(),
+                ActionMetadata\DeleteActionMetadata::make(static::class, VariableType::INTEGER),
+                ActionMetadata\DeleteManyActionMetadata::make(static::class, VariableType::INTEGER),
+                ActionMetadata\DeleteManyRawActionMetadata::make(),
+                ActionMetadata\GetItemsActionMetadata::make(),
+                ActionMetadata\GetItemActionMetadata::make(static::class, VariableType::INTEGER),
+                ActionMetadata\GetCountActionMetadata::make(),
+                ActionMetadata\GetMetadataActionMetadata::make()
             ]);
     }
 

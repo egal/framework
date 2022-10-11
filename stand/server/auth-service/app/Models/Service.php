@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use Egal\Model\Metadata\ActionMetadata;
+use Egal\Model\Metadata\ActionMetadata\ActionMetadata;
 use Egal\Model\Metadata\ModelMetadata;
 use Egal\AuthServiceDependencies\Models\Service as BaseService;
 
