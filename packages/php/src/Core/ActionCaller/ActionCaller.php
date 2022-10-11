@@ -8,7 +8,7 @@ use Egal\Core\Exceptions\ActionParameterValidateException;
 use Egal\Core\Exceptions\NoAccessActionCallException;
 use Egal\Core\Session\Session;
 use Egal\Model\Facades\ModelMetadataManager;
-use Egal\Model\Metadata\ActionMetadata;
+use Egal\Model\Metadata\ActionMetadata\BaseActionMetadata;
 use Egal\Model\Metadata\ActionParameterMetadata;
 use Egal\Model\Metadata\ModelMetadata;
 use Illuminate\Support\Facades\Validator;
@@ -36,7 +36,7 @@ class ActionCaller
     /**
      * Model Action Metadata for which Action is called.
      */
-    private ActionMetadata $modelActionMetadata;
+    private BaseActionMetadata $modelActionMetadata;
 
     /**
      * ActionCaller constructor.
@@ -98,7 +98,7 @@ class ActionCaller
 
         $missingParameters = array_filter(
             $this->modelActionMetadata->getParameters(),
-            fn (ActionParameterMetadata $parameter) => !array_key_exists($parameter->getName(), $actionParameters)
+            fn(ActionParameterMetadata $parameter) => !array_key_exists($parameter->getName(), $actionParameters)
         );
         $defaultParameters = [];
 
@@ -121,7 +121,7 @@ class ActionCaller
             throw $exception;
         }
 
-        return $actionParameters;
+        return array_filter($actionParameters, fn($key) => !str_contains($key, "."), ARRAY_FILTER_USE_KEY);
     }
 
 }

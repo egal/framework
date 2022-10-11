@@ -2,14 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Egal\Model\Metadata;
+namespace Egal\Model\Metadata\ActionMetadata;
 
 use Egal\Model\Exceptions\ActionParameterNotFoundException;
+use Egal\Model\Metadata\ActionParameterMetadata;
 
 /**
  * @package Egal\Model
  */
-class ActionMetadata
+Abstract class BaseActionMetadata
 {
 
     // TODO: добавить метаданные доступов
@@ -28,19 +29,6 @@ class ActionMetadata
     protected array $parameters = [];
 
     protected ?array $validationRules = null;
-
-    protected readonly string $modelName;
-
-    public function __construct(string $modelName, string $name)
-    {
-        $this->modelName = $modelName;
-        $this->name = $name;
-    }
-
-    public static function make(string $modelName, string $name): static
-    {
-        return new static($modelName, $name);
-    }
 
     private function setValidationRules(): void
     {

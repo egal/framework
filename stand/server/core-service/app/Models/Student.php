@@ -48,32 +48,29 @@ class Student extends Model
                 )
             ])
             ->addActions([
-                ActionMetadata::make('create'),
-                ActionMetadata::make('update')
+                ActionMetadata\CreateActionMetadata::make()
                     ->addParameters([
-                        ActionParameterMetadata::make('key', VariableType::UUID)
-                            ->required()
-                            ->addValidationRule('exists:students,id')
+                        ActionParameterMetadata::make('user_id', VariableType::UUID)
+                            ->required(),
+                        ActionParameterMetadata::make('name', VariableType::STRING)
+                            ->required(),
+                        ActionParameterMetadata::make('surname', VariableType::STRING)
+                            ->required(),
+                        ActionParameterMetadata::make('school_id', VariableType::UUID)
+                            ->addValidationRule('exists:schools,id')
+                            ->required(),
                     ]),
-                ActionMetadata::make('getMetadata'),
-                ActionMetadata::make('getItems'),
-                ActionMetadata::make('delete')
-                    ->addParameters([
-                        ActionParameterMetadata::make('key', VariableType::UUID)
-                            ->required()
-                            ->addValidationRule('exists:students,id')
-                    ]),
-                ActionMetadata::make('getItem')
-                    ->addParameters([
-                        ActionParameterMetadata::make('key', VariableType::UUID)
-                            ->required()
-                            ->addValidationRule('exists:students,id')
-                    ]),
-                ActionMetadata::make('getCount'),
-                ActionMetadata::make('createMany'),
-                ActionMetadata::make('updateMany'),
-                ActionMetadata::make('updateManyRaw'),
-                ActionMetadata::make('deleteMany'),
+                ActionMetadata\CreateManyActionMetadata::make(),
+                ActionMetadata\UpdateActionMetadata::make(static::class, VariableType::UUID),
+                ActionMetadata\UpdateManyActionMetadata::make(static::class, VariableType::UUID),
+                ActionMetadata\UpdateManyRawActionMetadata::make(),
+                ActionMetadata\DeleteActionMetadata::make(static::class, VariableType::UUID),
+                ActionMetadata\DeleteManyActionMetadata::make(static::class, VariableType::UUID),
+                ActionMetadata\DeleteManyRawActionMetadata::make(),
+                ActionMetadata\GetItemsActionMetadata::make(),
+                ActionMetadata\GetItemActionMetadata::make(static::class, VariableType::UUID),
+                ActionMetadata\GetCountActionMetadata::make(),
+                ActionMetadata\GetMetadataActionMetadata::make()
             ]);
     }
 

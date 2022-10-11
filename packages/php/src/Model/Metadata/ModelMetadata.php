@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace Egal\Model\Metadata;
 
+use Egal\Model\Enums\VariableType;
 use Egal\Model\Exceptions\ActionNotFoundException;
 use Egal\Model\Exceptions\FieldNotFoundException;
 use Egal\Model\Exceptions\RelationNotFoundException;
 use Egal\Model\Exceptions\UnsupportedFilterValueTypeException;
+use Egal\Model\Metadata\ActionMetadata\BaseActionMetadata;
 use Illuminate\Validation\Concerns\ValidatesAttributes;
 
 class ModelMetadata
@@ -39,7 +41,7 @@ class ModelMetadata
     protected array $relations = [];
 
     /**
-     * @var ActionMetadata[]
+     * @var BaseActionMetadata[]
      */
     protected array $actions = [];
 
@@ -71,7 +73,7 @@ class ModelMetadata
         $modelMetadata['fields'] = array_map(fn(FieldMetadata $field) => $field->toArray(), $this->fields);
         $modelMetadata['fake_fields'] = array_map(fn(FieldMetadata $field) => $field->toArray(), $this->fakeFields);
         $modelMetadata['relations'] = array_map(fn(RelationMetadata $relation) => $relation->toArray($loadRelatedMetadata), $this->relations);
-        $modelMetadata['actions'] = array_map(fn(ActionMetadata $action) => $action->toArray(), $this->actions);
+        $modelMetadata['actions'] = array_map(fn(BaseActionMetadata $action) => $action->toArray(), $this->actions);
 
         return $modelMetadata;
     }
@@ -107,7 +109,7 @@ class ModelMetadata
     }
 
     /**
-     * @param ActionMetadata[] $actions
+     * @param BaseActionMetadata[] $actions
      */
     public function addActions(array $actions): self
     {
@@ -140,7 +142,7 @@ class ModelMetadata
     {
         return array_filter(
                 [...$this->fields, ...$this->fakeFields, $this->getKey()],
-                fn (FieldMetadata $field) => $field->getName() === $fieldName
+                fn(FieldMetadata $field) => $field->getName() === $fieldName
             ) !== [];
     }
 
@@ -178,11 +180,19 @@ class ModelMetadata
     {
         $field = array_filter(
             [...$this->fields, ...$this->fakeFields, $this->getKey()],
-            fn (FieldMetadata $field) => $field->getName() === $fieldName
+            fn(FieldMetadata $field) => $field->getName() === $fieldName
         );
         $field = reset($field);
+        $fieldType = $field->getType();
 
-        $validationMethod = 'validate' . ucfirst($field->getType()->value);
+        switch ($fieldType) {
+            case VariableType::DATETIME:
+                return;
+            default:
+                $validationMethod = 'validate' . ucfirst($fieldType->value);
+                break;
+        }
+
         $fieldValidated = $this->$validationMethod($fieldName, $value);
 
         if (!$fieldValidated) {
@@ -226,7 +236,7 @@ class ModelMetadata
     }
 
     /**
-     * @return ActionMetadata[]
+     * @return BaseActionMetadata[]
      */
     public function getActions(): array
     {
@@ -236,7 +246,7 @@ class ModelMetadata
     /**
      * @throws ActionNotFoundException
      */
-    public function getAction(string $actionName): ActionMetadata
+    public function getAction(string $actionName): BaseActionMetadata
     {
         foreach ($this->actions as $action) {
             if ($action->getName() === $actionName) {

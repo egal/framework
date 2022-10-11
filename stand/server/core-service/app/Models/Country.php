@@ -41,32 +41,26 @@ class Country extends Model
                 )
             ])
             ->addActions([
-                ActionMetadata::make('create'),
-                ActionMetadata::make('update')
+                ActionMetadata\CreateActionMetadata::make()
                     ->addParameters([
-                        ActionParameterMetadata::make('key', VariableType::STRING)
+                        ActionParameterMetadata::make('name', VariableType::STRING)
                             ->required()
-                            ->addValidationRule('exists:countries,id')
-                    ]),
-                ActionMetadata::make('getMetadata'),
-                ActionMetadata::make('getItems'),
-                ActionMetadata::make('delete')
-                    ->addParameters([
-                        ActionParameterMetadata::make('key', VariableType::STRING)
+                            ->addValidationRule('unique:countries,name'),
+                        ActionParameterMetadata::make('id', VariableType::STRING)
                             ->required()
-                            ->addValidationRule('exists:countries,id')
+                            ->addValidationRule('unique:countries,id'),
                     ]),
-                ActionMetadata::make('getItem')
-                    ->addParameters([
-                        ActionParameterMetadata::make('key', VariableType::STRING)
-                            ->required()
-                            ->addValidationRule('exists:countries,id')
-                    ]),
-                ActionMetadata::make('getCount'),
-                ActionMetadata::make('createMany'),
-                ActionMetadata::make('updateMany'),
-                ActionMetadata::make('updateManyRaw'),
-                ActionMetadata::make('deleteMany'),
+                ActionMetadata\CreateManyActionMetadata::make(),
+                ActionMetadata\UpdateActionMetadata::make(static::class, VariableType::STRING),
+                ActionMetadata\UpdateManyActionMetadata::make(static::class, VariableType::STRING),
+                ActionMetadata\UpdateManyRawActionMetadata::make(),
+                ActionMetadata\DeleteActionMetadata::make(static::class, VariableType::STRING),
+                ActionMetadata\DeleteManyActionMetadata::make(static::class, VariableType::STRING),
+                ActionMetadata\DeleteManyRawActionMetadata::make(),
+                ActionMetadata\GetItemsActionMetadata::make(),
+                ActionMetadata\GetItemActionMetadata::make(static::class, VariableType::STRING),
+                ActionMetadata\GetCountActionMetadata::make(),
+                ActionMetadata\GetMetadataActionMetadata::make()
             ]);
     }
 
