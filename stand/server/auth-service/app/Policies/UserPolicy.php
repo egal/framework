@@ -7,8 +7,10 @@ use Illuminate\Support\Facades\Gate;
 
 class UserPolicy
 {
-    public function register(Session $session): bool
+
+    public function registering(): bool
     {
         return Gate::allows('guest');
     }
+
 }
