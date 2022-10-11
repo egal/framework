@@ -2,12 +2,15 @@
 
 namespace App\Models;
 
-use App\Exceptions\EmptyPasswordException;
 use App\Exceptions\PasswordHashException;
+use App\Policies\ModelPolicy;
+use App\Policies\UserPolicy;
+use Egal\Auth\Exceptions\NoAccessForActionException;
 use Egal\Auth\Tokens\UserMasterRefreshToken;
 use Egal\Auth\Tokens\UserMasterToken;
 use Egal\AuthServiceDependencies\Exceptions\LoginException;
 use Egal\AuthServiceDependencies\Models\User as BaseUser;
+use Egal\Core\Session\Session;
 use Egal\Model\Enums\VariableType;
 use Egal\Model\Enums\RelationType;
 use Egal\Model\Metadata\ActionMetadata;
@@ -26,12 +29,13 @@ class User extends BaseUser
     use HasFactory;
     use HasRelationships;
 
+    /**
+     * @throws PasswordHashException
+     * @throws NoAccessForActionException
+     */
     public static function actionRegister(string $email, string $password): User
     {
-        if (!$password) {
-            throw new EmptyPasswordException();
-        }
-
+        Session::getAuthEntity()->mayOrFail('registering', User::class);
         $user = new static();
         $user->setAttribute('email', $email);
         $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
@@ -49,9 +53,7 @@ class User extends BaseUser
     public static function actionLogin(string $email, string $password): array
     {
         /** @var BaseUser $user */
-        $user = self::query()
-            ->where('email', '=', $email)
-            ->first();
+        $user = self::query()->where('email', '=', $email)->first();
 
         if (!$user || !password_verify($password, $user->getAttribute('password'))) {
             throw new LoginException('Incorrect Email or password!');
@@ -90,9 +92,7 @@ class User extends BaseUser
     {
         parent::boot();
         static::created(function (User $user) {
-            $defaultRoles = Role::query()
-                ->where('is_default', true)
-                ->get();
+            $defaultRoles = Role::query()->where('is_default', true)->get();
             $user->roles()->attach($defaultRoles->pluck('id'));
         });
     }
@@ -110,6 +110,10 @@ class User extends BaseUser
     public static function constructMetadata(): ModelMetadata
     {
         return ModelMetadata::make(User::class, FieldMetadata::make('id', VariableType::UUID))
+            ->addPolicies([
+                UserPolicy::class,
+                ModelPolicy::class,
+            ])
             ->addFields([
                 FieldMetadata::make('email', VariableType::STRING)
                     ->required()
@@ -132,7 +136,10 @@ class User extends BaseUser
                 ActionMetadata::make('register')->addParameters(
                     [
                         ActionParameterMetadata::make('password', VariableType::STRING)
+                            ->required(),
+                        ActionParameterMetadata::make('email', VariableType::STRING)
                             ->required()
+                            ->addValidationRule('email:rfc,dns')
                     ]
                 ),
                 ActionMetadata::make('login')->addParameters(
