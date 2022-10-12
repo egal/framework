@@ -10,7 +10,6 @@ class Init extends Migration
 
     public function up(): void
     {
-        DB::statement('CREATE EXTENSION IF NOT EXISTS "uuid-ossp"');
         Schema::create('users', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->string('email')->unique();
@@ -18,6 +17,7 @@ class Init extends Migration
             $table->timestamps();
         });
 
+        DB::statement('CREATE EXTENSION IF NOT EXISTS "uuid-ossp"');
         DB::statement('ALTER TABLE users ALTER COLUMN id SET DEFAULT uuid_generate_v4();');
 
         Schema::create('roles', function (Blueprint $table) {
@@ -73,5 +73,6 @@ class Init extends Migration
         Schema::dropIfExists('user_roles');
         Schema::dropIfExists('users');
         Schema::dropIfExists('services');
+        DB::statement('DROP EXTENSION IF EXISTS "uuid-ossp"');
     }
 }

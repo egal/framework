@@ -13,7 +13,6 @@ class EmployeeFactory extends Factory
     public function definition(): array
     {
         return [
-            'id' => $this->faker->unique(true)->uuid,
             'address' => $this->faker->address(),
             'phone' => (int) $this->faker->unique()->regexify("[0-9]{6}"),
             'adult' => $this->faker->boolean(),
