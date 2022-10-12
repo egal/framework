@@ -125,7 +125,7 @@ trait VariableMetadata
 
     public function isNullVariableReplaceableWithDefault(): bool
     {
-        return !$this->isNullable() && ($this->getDefault() === null);
+        return $this->isNullable() || ($this->getDefault() !== null);
     }
 
 }
