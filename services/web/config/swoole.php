@@ -15,7 +15,7 @@ return [
         'server' => [
 
             'host' => env('SWOOLE_HTTP_HOST', '0.0.0.0'),
-            'port' => (int)env('SWOOLE_HTTP_PORT', 8080),
+            'port' => (int)env('SWOOLE_HTTP_PORT', 80),
 
             'options' => [
                 'package_max_length' => env('SWOOLE_PACKAGE_MAX_LENGTH', 5 * 1024 * 1024),
