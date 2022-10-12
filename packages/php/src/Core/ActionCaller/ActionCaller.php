@@ -58,7 +58,7 @@ class ActionCaller
      * @return mixed Result of action execution.
      * @throws \Exception|NoAccessActionCallException
      */
-    public function call(): mixed
+    public function call()
     {
         if (Session::isAuthEnabled() && !$this->isAccessedForCall()) {
             throw new NoAccessActionCallException();

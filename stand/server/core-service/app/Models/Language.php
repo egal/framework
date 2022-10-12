@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 class Language extends Model
 {
+
     use HasFactory;
 
     public function speakers(): HasManyThrough

@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Validator;
 
 trait VariableMetadata
 {
+
     use VariableValidationRules;
 
     protected readonly string $name;
