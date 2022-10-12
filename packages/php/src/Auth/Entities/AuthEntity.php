@@ -6,37 +6,62 @@ namespace Egal\Auth\Entities;
 
 use Egal\Auth\Exceptions\NoAccessForActionException;
 use Egal\Core\Session\Session;
+use Egal\Model\Exceptions\NotFoundException;
 use Egal\Model\Facades\ModelMetadataManager;
 use Egal\Model\Model;
 
+/**
+ * @method bool isUserOrFail()
+ * @method bool mayOrFail(string|Model $model, string $ability)
+ * @method bool isGuestOrFail()
+ * @method bool isServiceOrFail()
+ */
 abstract class AuthEntity
 {
 
     /**
-     * TODO: Usage Session::getAuthEntity()->mayOrFail($this->modelActionMetadata->getMethodName(), $this->modelMetadata->getModelShortName());
-     *
-     * @param  string  $ability
-     * @param  array|mixed  $arguments
      * @throws NoAccessForActionException
+     * @throws NotFoundException
      */
-    public function mayOrFail(string $ability, mixed $arguments = []): bool
+    public function __call(string $name, array $arguments): bool
     {
-        return $this->may($ability, $arguments) ?: throw new NoAccessForActionException;
+        $methodName = preg_replace("/OrFail/", '', $name);
+dump($methodName);
+        if (! method_exists($this, $methodName)) {
+            throw new NotFoundException();
+        }
+
+        return call_user_func_array([$this, $methodName], $arguments) ?: throw new NoAccessForActionException;
     }
 
-    /**
-     * @param  string  $ability
-     * @param  array|mixed  $arguments
-     * @throws NoAccessForActionException
-     */
-    public function may(string $ability, mixed $arguments = []): bool
+
+    public function may(string|Model $model, string $ability): bool
     {
-        if (class_exists($arguments)) {
-            $result = array_map(fn(string $policy) => call_user_func($policy, $ability), ModelMetadataManager::getModelMetadata($arguments)->getPolicies());
-            return in_array(false, $result);
+        if ($model instanceof Model) {
+            $result = array_map(fn(string $policy) => call_user_func_array([$policy, $ability], [$model]), ModelMetadataManager::getModelMetadata(class_basename(get_class($model)))->getPolicies());
+            return ! in_array(false, $result);
+        }
+        if (class_exists($model)) {
+            $result = array_map(fn(string $policy) => call_user_func_array([$policy, $ability], []), ModelMetadataManager::getModelMetadata($model)->getPolicies());
+            return ! in_array(false, $result);
         }
 
         return false;
+    }
+
+    public function isUser(): bool
+    {
+        return $this instanceof User;
+    }
+
+    public function isGuest(): bool
+    {
+        return $this instanceof Guest;
+    }
+
+    public function isService(): bool
+    {
+        return $this instanceof Service;
     }
 
 }

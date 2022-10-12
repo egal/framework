@@ -35,8 +35,8 @@ class User extends BaseUser
      */
     public static function actionRegister(string $email, string $password): User
     {
-        Session::getAuthEntity()->mayOrFail('registering', User::class);
         $user = new static();
+        Session::getAuthEntity()->mayOrFail(User::class, 'registering');
         $user->setAttribute('email', $email);
         $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
 
