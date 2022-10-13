@@ -84,7 +84,7 @@ class ActionCaller
     }
 
     /**
-     * Формирует из {@see \Egal\Core\ActionCaller\ActionCaller::modelActionMetadata} валидные параметры.
+     * Generates valid parameters based on {@see \Egal\Core\ActionCaller\ActionCaller::modelActionMetadata}.
      *
      * If it is impossible to generate valid parameters, an exception is thrown.
      *
