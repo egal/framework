@@ -12,7 +12,17 @@ class ServicePolicy
         return Session::getAuthEntity()->isGuest();
     }
 
+    public static function logged(): bool
+    {
+        return Session::getAuthEntity()->isGuest();
+    }
+
     public static function loginToService(): bool
+    {
+        return Session::getAuthEntity()->isGuest();
+    }
+
+    public static function loggedToService(): bool
     {
         return Session::getAuthEntity()->isGuest();
     }
