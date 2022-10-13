@@ -8,7 +8,6 @@ use Egal\Auth\Exceptions\NoAccessForActionException;
 use Egal\Model\Exceptions\NotFoundException;
 use Egal\Model\Facades\ModelMetadataManager;
 use Egal\Model\Model;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * @method bool isUserOrFail()
@@ -50,7 +49,7 @@ abstract class AuthEntity
                     fn(string $policy) => method_exists($policy, $ability)
                 )
             );
-            return $countDenies === 0 && $countPolicies > 0;
+            return $countDenies === 0 && $countPolicies;
         }
 
         return false;
