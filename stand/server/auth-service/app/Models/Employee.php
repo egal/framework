@@ -13,6 +13,7 @@ use Staudenmeir\EloquentHasManyDeep\HasRelationships;
 
 class Employee extends Model
 {
+
     use HasFactory;
     use HasRelationships;
 

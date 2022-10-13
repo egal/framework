@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Schema;
 
 class CreateEmployeesTable extends Migration
 {
+
     public function up(): void
     {
         Schema::create('employees', function (Blueprint $table) {
@@ -26,4 +27,5 @@ class CreateEmployeesTable extends Migration
     {
         Schema::dropIfExists('employees');
     }
+
 }

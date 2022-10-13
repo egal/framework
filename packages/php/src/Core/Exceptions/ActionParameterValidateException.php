@@ -27,6 +27,11 @@ class ActionParameterValidateException extends Exception
         }
     }
 
+    public function mergeMessage(string $message): void
+    {
+        $this->message .= ' ' . $message;
+    }
+
     public function getMessageBag(): MessageBag
     {
         return $this->messageBag;

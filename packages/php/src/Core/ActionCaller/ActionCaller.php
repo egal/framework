@@ -58,7 +58,7 @@ class ActionCaller
      * @return mixed Result of action execution.
      * @throws \Exception|NoAccessActionCallException
      */
-    public function call(): mixed
+    public function call()
     {
         if (Session::isAuthEnabled() && !$this->isAccessedForCall()) {
             throw new NoAccessActionCallException();
@@ -95,12 +95,17 @@ class ActionCaller
     {
         $parametersValidationRules = $this->modelActionMetadata->getValidationRules();
         $actionParameters = $this->actionParameters;
+        $defaultParameters = [];
 
         $missingParameters = array_filter(
             $this->modelActionMetadata->getParameters(),
             fn(ActionParameterMetadata $parameter) => !array_key_exists($parameter->getName(), $actionParameters)
         );
-        $defaultParameters = [];
+
+        $notAllowedParameters = array_filter(
+            $actionParameters,
+            fn ($actionParameter) => $this->modelActionMetadata->parameterExist($actionParameter)
+        );
 
         /** @var ActionParameterMetadata $parameter */
         foreach ($missingParameters as $parameter) {
@@ -114,9 +119,13 @@ class ActionCaller
         $actionParameters = array_merge($actionParameters, $defaultParameters);
         $validator = Validator::make($actionParameters, $parametersValidationRules);
 
-        if ($validator->fails()) {
+        if ($validator->fails() || $notAllowedParameters != []) {
             $exception = new ActionParameterValidateException();
             $exception->setMessageBag($validator->errors());
+
+            foreach ($notAllowedParameters as $key => $parameter) {
+                $exception->mergeMessage("Parameter $key not allowed here!");
+            }
 
             throw $exception;
         }

@@ -14,9 +14,6 @@ Abstract class BaseActionMetadata
 {
 
     // TODO: добавить метаданные доступов
-    // TODO: добавить генерацию входных параметров
-    // TODO: добавить обработку дефолтных значений параметров
-    // TODO: добавить правила валидации для action
     // TODO: добавить примеры запроса-ответа
 
     public const METHOD_NAME_PREFIX = 'action';

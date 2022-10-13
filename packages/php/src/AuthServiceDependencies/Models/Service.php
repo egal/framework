@@ -8,6 +8,7 @@ use Egal\Auth\Tokens\ServiceMasterToken;
 use Egal\Auth\Tokens\ServiceServiceToken;
 use Egal\AuthServiceDependencies\Exceptions\LoginException;
 use Egal\AuthServiceDependencies\Exceptions\ServiceNotFoundAuthException;
+use Egal\Core\Session\Session;
 
 abstract class Service
 {
@@ -43,6 +44,8 @@ abstract class Service
 
     public static function actionLogin(string $serviceName, string $key): string
     {
+        Session::getAuthEntity()->mayOrFail(Service::class, 'login');
+
         $service = static::find($serviceName);
 
         if (!$service || $service->getKey() !== $key) {
@@ -58,6 +61,8 @@ abstract class Service
 
     public static function actionLoginToService(string $token, string $serviceName): string
     {
+        Session::getAuthEntity()->mayOrFail(Service::class, 'loginToService');
+
         /** @var \Egal\Auth\Tokens\ServiceMasterToken $smt */
         $smt = ServiceMasterToken::fromJWT($token, config('app.service_key'));
         $smt->isAliveOrFail();

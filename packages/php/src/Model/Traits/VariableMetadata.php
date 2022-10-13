@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Validator;
 
 trait VariableMetadata
 {
+
     use VariableValidationRules;
 
     protected readonly string $name;
@@ -125,7 +126,7 @@ trait VariableMetadata
 
     public function isNullVariableReplaceableWithDefault(): bool
     {
-        return !$this->isNullable() && ($this->getDefault() === null);
+        return $this->isNullable() || ($this->getDefault() !== null);
     }
 
 }

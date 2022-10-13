@@ -9,6 +9,7 @@ use Egal\Auth\Tokens\UserMasterToken;
 use Egal\Auth\Tokens\UserServiceToken;
 use Egal\AuthServiceDependencies\Exceptions\LoginException;
 use Egal\AuthServiceDependencies\Exceptions\UserNotIdentifiedException;
+use Egal\Core\Session\Session;
 use Egal\Model\Model;
 use Egal\Model\Facades\ModelMetadataManager;
 
@@ -39,6 +40,8 @@ abstract class User extends Model
 
     public static function actionLoginToService(string $token, string $serviceName): string
     {
+        Session::getAuthEntity()->mayOrFail(static::class, 'loginToService');
+
         /** @var \Egal\Auth\Tokens\UserMasterToken $umt */
         $umt = UserMasterToken::fromJWT($token, config('app.service_key'));
         $umt->isAliveOrFail();
@@ -65,6 +68,8 @@ abstract class User extends Model
 
     public static function actionRefreshUserMasterToken(string $token): array
     {
+        Session::getAuthEntity()->mayOrFail(static::class, 'refreshUserMasterToken');
+
         $oldUmrt = UserMasterRefreshToken::fromJWT($token, config('app.service_key'));
         $oldUmrt->isAliveOrFail();
 

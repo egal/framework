@@ -3,9 +3,7 @@
 namespace App\Models;
 
 use App\Exceptions\PasswordHashException;
-use App\Policies\ModelPolicy;
 use App\Policies\UserPolicy;
-use Egal\Auth\Exceptions\NoAccessForActionException;
 use Egal\Auth\Tokens\UserMasterRefreshToken;
 use Egal\Auth\Tokens\UserMasterToken;
 use Egal\AuthServiceDependencies\Exceptions\LoginException;
@@ -43,11 +41,11 @@ class User extends BaseUser
 
     /**
      * @throws PasswordHashException
-     * @throws NoAccessForActionException
      */
     public static function actionRegister(string $email, string $password): User
     {
-        Session::getAuthEntity()->mayOrFail('registering', User::class);
+        Session::getAuthEntity()->mayOrFail(static::class, 'register');
+
         $user = new static();
         $user->setAttribute('email', $email);
         $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
@@ -64,6 +62,8 @@ class User extends BaseUser
 
     public static function actionLogin(string $email, string $password): array
     {
+        Session::getAuthEntity()->mayOrFail(static::class, 'login');
+
         /** @var BaseUser $user */
         $user = self::query()->where('email', '=', $email)->first();
 
@@ -124,7 +124,6 @@ class User extends BaseUser
         return ModelMetadata::make(User::class, FieldMetadata::make('id', VariableType::UUID))
             ->addPolicies([
                 UserPolicy::class,
-                ModelPolicy::class,
             ])
             ->addFields([
                 FieldMetadata::make('email', VariableType::STRING)
@@ -145,13 +144,16 @@ class User extends BaseUser
                 ),
             ])
             ->addActions([
-                ActionMetadata::make('register')->addParameters(
-                    [
+                ActionMetadata::make('register')
+                    ->addParameters([
                         ActionParameterMetadata::make('password', VariableType::STRING)
+                            ->required(),
+                        ActionParameterMetadata::make('email', VariableType::STRING)
                             ->required()
+                            ->addValidationRule('email:rfc,dns')
                     ]),
-                ActionMetadata::make('login')->addParameters(
-                    [
+                ActionMetadata::make('login')
+                    ->addParameters([
                         ActionParameterMetadata::make('email', VariableType::STRING)
                             ->required()
                             ->addValidationRule('exists:users,email'),

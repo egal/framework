@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Egal\Model;
 
 use Egal\Model\Exceptions\ObjectNotFoundException;
-use Egal\Model\Exceptions\UpdateException;
 use Egal\Model\Exceptions\UpdateManyException;
 use Egal\Model\Facades\ModelMetadataManager;
 use Egal\Model\Filter\FilterPart;

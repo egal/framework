@@ -5,38 +5,69 @@ declare(strict_types=1);
 namespace Egal\Auth\Entities;
 
 use Egal\Auth\Exceptions\NoAccessForActionException;
-use Egal\Core\Session\Session;
+use Egal\Model\Exceptions\NotFoundException;
 use Egal\Model\Facades\ModelMetadataManager;
 use Egal\Model\Model;
 
+/**
+ * @method bool isUserOrFail()
+ * @method bool mayOrFail(string|Model $model, string $ability)
+ * @method bool isGuestOrFail()
+ * @method bool isServiceOrFail()
+ */
 abstract class AuthEntity
 {
 
     /**
-     * TODO: Usage Session::getAuthEntity()->mayOrFail($this->modelActionMetadata->getMethodName(), $this->modelMetadata->getModelShortName());
-     *
-     * @param  string  $ability
-     * @param  array|mixed  $arguments
      * @throws NoAccessForActionException
+     * @throws NotFoundException
      */
-    public function mayOrFail(string $ability, mixed $arguments = []): bool
+    public function __call(string $name, array $arguments): bool
     {
-        return $this->may($ability, $arguments) ?: throw new NoAccessForActionException;
+        $methodName = preg_replace("/OrFail/", '', $name);
+        if (!method_exists($this, $methodName)) {
+            trigger_error('Call to undefined method '.__CLASS__.'::'.$name.'()', E_USER_ERROR);
+        }
+
+        return call_user_func_array([$this, $methodName], $arguments) ?: throw new NoAccessForActionException;
     }
 
-    /**
-     * @param  string  $ability
-     * @param  array|mixed  $arguments
-     * @throws NoAccessForActionException
-     */
-    public function may(string $ability, mixed $arguments = []): bool
+
+    public function may(string|Model $model, string $ability): bool
     {
-        if (class_exists($arguments)) {
-            $result = array_map(fn(string $policy) => call_user_func($policy, $ability), ModelMetadataManager::getModelMetadata($arguments)->getPolicies());
-            return in_array(false, $result);
+        if ($model instanceof Model || class_exists($model)) {
+            $modelClass = is_string($model) ? $model : get_class($model);
+            $countDenies = count(
+                array_filter(
+                    ModelMetadataManager::getModelMetadata($modelClass)->getPolicies(),
+                    fn(string $policy) => method_exists($policy, $ability) && !call_user_func_array([$policy, $ability], [$model])
+                )
+            );
+            $countPolicies = count(
+                array_filter(
+                    ModelMetadataManager::getModelMetadata($modelClass)->getPolicies(),
+                    fn(string $policy) => method_exists($policy, $ability)
+                )
+            );
+            return $countDenies === 0 && $countPolicies;
         }
 
         return false;
+    }
+
+    public function isUser(): bool
+    {
+        return $this instanceof User;
+    }
+
+    public function isGuest(): bool
+    {
+        return $this instanceof Guest;
+    }
+
+    public function isService(): bool
+    {
+        return $this instanceof Service;
     }
 
 }

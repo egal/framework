@@ -2,7 +2,10 @@
 
 namespace App\Models;
 
-use Egal\Model\Metadata\ActionMetadata\ActionMetadata;
+use App\Policies\ServicePolicy;
+use Egal\Model\Enums\VariableType;
+use Egal\Model\Metadata\ActionMetadata;
+use Egal\Model\Metadata\ActionParameterMetadata;
 use Egal\Model\Metadata\ModelMetadata;
 use Egal\AuthServiceDependencies\Models\Service as BaseService;
 
@@ -12,20 +15,24 @@ class Service extends BaseService
     public static function constructMetadata(): ModelMetadata
     {
         return ModelMetadata::make(Service::class)
+            ->addPolicies([
+                ServicePolicy::class,
+            ])
             ->addActions([
-                ActionMetadata::make('login'),
-                ActionMetadata::make('loginToService'),
-                ActionMetadata::make('create'),
-                ActionMetadata::make('update'),
-                ActionMetadata::make('getMetadata'),
-                ActionMetadata::make('getItems'),
-                ActionMetadata::make('delete'),
-                ActionMetadata::make('getItem'),
-                ActionMetadata::make('getCount'),
-                ActionMetadata::make('createMany'),
-                ActionMetadata::make('updateMany'),
-                ActionMetadata::make('updateManyRaw'),
-                ActionMetadata::make('deleteMany'),
+                ActionMetadata::make('login')
+                    ->addParameters([
+                        ActionParameterMetadata::make('serviceName', VariableType::STRING)
+                            ->required(),
+                        ActionParameterMetadata::make('key', VariableType::STRING)
+                            ->required(),
+                    ]),
+                ActionMetadata::make('loginToService')
+                    ->addParameters([
+                        ActionParameterMetadata::make('token', VariableType::STRING)
+                            ->required(),
+                        ActionParameterMetadata::make('serviceName', VariableType::STRING)
+                            ->required()
+                    ]),
             ]);
     }
 
