@@ -140,7 +140,7 @@ class Request extends ActionMessage
             $this->authServiceName,
             'Service',
             'login',
-            ['service_name' => config('app.service_name'), 'key' => config('app.service_key')]
+            ['serviceName' => config('app.service_name'), 'key' => config('app.service_key')]
         );
         Session::setActionMessage($smtActionMessage);
         $smtActionCaller = new ActionCaller(
@@ -154,7 +154,7 @@ class Request extends ActionMessage
             $this->authServiceName,
             'Service',
             'loginToService',
-            ['service_name' => $this->serviceName, 'token' => $smt]
+            ['serviceName' => $this->serviceName, 'token' => $smt]
         );
         Session::setActionMessage($sstActionMessage);
         $sstActionCaller = new ActionCaller(
@@ -177,10 +177,7 @@ class Request extends ActionMessage
             $this->authServiceName,
             'Service',
             'login',
-            [
-                'service_name' => config('app.service_name'),
-                'key' => config('app.service_key'),
-            ]
+            ['serviceName' => config('app.service_name'), 'key' => config('app.service_key')]
         );
         $serviceMasterTokenRequest->disableServiceAuthorization();
         $serviceMasterTokenResponse = $serviceMasterTokenRequest->call();
@@ -191,7 +188,7 @@ class Request extends ActionMessage
             $this->authServiceName,
             'Service',
             'loginToService',
-            ['service_name' => $this->serviceName, 'token' => $serviceMasterToken]
+            ['serviceName' => $this->serviceName, 'token' => $serviceMasterToken]
         );
         $serviceServiceTokenRequest->disableServiceAuthorization();
         $serviceServiceTokenResponse = $serviceServiceTokenRequest->call();
