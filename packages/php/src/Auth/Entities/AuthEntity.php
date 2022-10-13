@@ -27,7 +27,7 @@ abstract class AuthEntity
     {
         $methodName = preg_replace("/OrFail/", '', $name);
         if (!method_exists($this, $methodName)) {
-            throw new NotFoundException(); // todo php exception
+            trigger_error('Call to undefined method '.__CLASS__.'::'.$name.'()', E_USER_ERROR);
         }
 
         return call_user_func_array([$this, $methodName], $arguments) ?: throw new NoAccessForActionException;
