@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Egal\Model\Metadata\ActionMetadata;
+namespace Egal\Model\Metadata\ActionMetadataDependencies;
 
 use Egal\Model\Exceptions\ActionParameterNotFoundException;
 use Egal\Model\Metadata\ActionParameterMetadata;
@@ -10,7 +10,7 @@ use Egal\Model\Metadata\ActionParameterMetadata;
 /**
  * @package Egal\Model
  */
-Abstract class BaseActionMetadata
+abstract class BaseActionMetadata
 {
 
     // TODO: добавить метаданные доступов

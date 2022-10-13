@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Egal\Model\Metadata\ActionMetadata;
+namespace Egal\Model\Metadata\ActionMetadataDependencies;
 
 use Egal\Model\Enums\VariableType;
 use Egal\Model\Metadata\ActionParameterMetadata;
@@ -10,7 +10,7 @@ use Egal\Model\Metadata\ActionParameterMetadata;
 /**
  * @package Egal\Model
  */
-class CreateActionMetadata extends BaseActionMetadata
+class CreateManyActionMetadata extends BaseActionMetadata
 {
 
     public function __construct(string $name)
@@ -18,13 +18,14 @@ class CreateActionMetadata extends BaseActionMetadata
         $this->name = $name;
 
         $this->addParameters([
-            ActionParameterMetadata::make('attributes', VariableType::ARRAY)
+            ActionParameterMetadata::make('objects', VariableType::ARRAY)
+                ->required()
         ]);
     }
 
     public static function make(): static
     {
-        return new static('create');
+        return new static('createMany');
     }
 
 }

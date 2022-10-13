@@ -9,7 +9,7 @@ use Egal\Model\Exceptions\ActionNotFoundException;
 use Egal\Model\Exceptions\FieldNotFoundException;
 use Egal\Model\Exceptions\RelationNotFoundException;
 use Egal\Model\Exceptions\UnsupportedFilterValueTypeException;
-use Egal\Model\Metadata\ActionMetadata\BaseActionMetadata;
+use Egal\Model\Metadata\ActionMetadataDependencies\BaseActionMetadata;
 use Illuminate\Validation\Concerns\ValidatesAttributes;
 
 class ModelMetadata

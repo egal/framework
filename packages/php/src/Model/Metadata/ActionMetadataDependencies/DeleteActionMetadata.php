@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Egal\Model\Metadata\ActionMetadata;
+namespace Egal\Model\Metadata\ActionMetadataDependencies;
 
 use Egal\Model\Enums\VariableType;
 use Egal\Model\Metadata\ActionParameterMetadata;
@@ -11,7 +11,7 @@ use Illuminate\Support\Str;
 /**
  * @package Egal\Model
  */
-class GetItemActionMetadata extends BaseActionMetadata
+class DeleteActionMetadata extends BaseActionMetadata
 {
 
     public function __construct(string $modelClass, VariableType $keyType, string $name)
@@ -30,7 +30,7 @@ class GetItemActionMetadata extends BaseActionMetadata
 
     public static function make(string $modelClass, VariableType $keyType): static
     {
-        return new static($modelClass, $keyType, 'getItem');
+        return new static($modelClass, $keyType, 'delete');
     }
 
 }

@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Egal\Model\Enums\VariableType;
 use Egal\Model\Enums\RelationType;
-use Egal\Model\Metadata\ActionMetadata;
+use Egal\Model\Metadata\ActionMetadataDependencies;
 use Egal\Model\Metadata\ActionParameterMetadata;
 use Egal\Model\Metadata\FieldMetadata;
 use Egal\Model\Metadata\ModelMetadata;
@@ -61,7 +61,7 @@ class Speaker extends Model
                 ),
             ])
             ->addActions([
-                ActionMetadata\CreateActionMetadata::make()
+                ActionMetadataDependencies\CreateActionMetadata::make()
                     ->addParameters([
                         ActionParameterMetadata::make('user_id', VariableType::UUID)
                             ->required(),
@@ -77,17 +77,17 @@ class Speaker extends Model
                             ->addValidationRule('exists:countries,id')
                             ->required(),
                     ]),
-                ActionMetadata\CreateManyActionMetadata::make(),
-                ActionMetadata\UpdateActionMetadata::make(static::class, VariableType::UUID),
-                ActionMetadata\UpdateManyActionMetadata::make(static::class, VariableType::UUID),
-                ActionMetadata\UpdateManyRawActionMetadata::make(),
-                ActionMetadata\DeleteActionMetadata::make(static::class, VariableType::UUID),
-                ActionMetadata\DeleteManyActionMetadata::make(static::class, VariableType::UUID),
-                ActionMetadata\DeleteManyRawActionMetadata::make(),
-                ActionMetadata\GetItemsActionMetadata::make(),
-                ActionMetadata\GetItemActionMetadata::make(static::class, VariableType::UUID),
-                ActionMetadata\GetCountActionMetadata::make(),
-                ActionMetadata\GetMetadataActionMetadata::make()
+                ActionMetadataDependencies\CreateManyActionMetadata::make(),
+                ActionMetadataDependencies\UpdateActionMetadata::make(static::class, VariableType::UUID),
+                ActionMetadataDependencies\UpdateManyActionMetadata::make(static::class, VariableType::UUID),
+                ActionMetadataDependencies\UpdateManyRawActionMetadata::make(),
+                ActionMetadataDependencies\DeleteActionMetadata::make(static::class, VariableType::UUID),
+                ActionMetadataDependencies\DeleteManyActionMetadata::make(static::class, VariableType::UUID),
+                ActionMetadataDependencies\DeleteManyRawActionMetadata::make(),
+                ActionMetadataDependencies\GetItemsActionMetadata::make(),
+                ActionMetadataDependencies\GetItemActionMetadata::make(static::class, VariableType::UUID),
+                ActionMetadataDependencies\GetCountActionMetadata::make(),
+                ActionMetadataDependencies\GetMetadataActionMetadata::make()
             ]);
     }
 

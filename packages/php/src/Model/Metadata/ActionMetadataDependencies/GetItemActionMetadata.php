@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Egal\Model\Metadata\ActionMetadata;
+namespace Egal\Model\Metadata\ActionMetadataDependencies;
 
 use Egal\Model\Enums\VariableType;
 use Egal\Model\Metadata\ActionParameterMetadata;
@@ -11,7 +11,7 @@ use Illuminate\Support\Str;
 /**
  * @package Egal\Model
  */
-class UpdateManyActionMetadata extends BaseActionMetadata
+class GetItemActionMetadata extends BaseActionMetadata
 {
 
     public function __construct(string $modelClass, VariableType $keyType, string $name)
@@ -22,7 +22,7 @@ class UpdateManyActionMetadata extends BaseActionMetadata
         $tableName = Str::snake(Str::plural(end($explodedModelClass)));
 
         $this->addParameters([
-            ActionParameterMetadata::make('objects.id', $keyType)
+            ActionParameterMetadata::make('id', $keyType)
                 ->required()
                 ->addValidationRule("exists:{$tableName},id"),
         ]);
@@ -30,7 +30,7 @@ class UpdateManyActionMetadata extends BaseActionMetadata
 
     public static function make(string $modelClass, VariableType $keyType): static
     {
-        return new static($modelClass, $keyType, 'updateMany');
+        return new static($modelClass, $keyType, 'getItem');
     }
 
 }

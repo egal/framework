@@ -2,7 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Egal\Model\Metadata\ActionMetadata;
+namespace Egal\Model\Metadata;
+
+use Egal\Model\Metadata\ActionMetadataDependencies\BaseActionMetadata;
 
 /**
  * @package Egal\Model

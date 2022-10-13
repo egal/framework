@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Egal\Model\Enums\VariableType;
 use Egal\Model\Enums\RelationType;
-use Egal\Model\Metadata\ActionMetadata;
+use Egal\Model\Metadata\ActionMetadataDependencies;
 use Egal\Model\Metadata\ActionParameterMetadata;
 use Egal\Model\Metadata\FieldMetadata;
 use Egal\Model\Metadata\ModelMetadata;
@@ -45,7 +45,7 @@ class WorkingTime extends Model
                 )
             ])
             ->addActions([
-                ActionMetadata\CreateActionMetadata::make()
+                ActionMetadataDependencies\CreateActionMetadata::make()
                     ->addParameters([
                         ActionParameterMetadata::make('attributes.speaker_id', VariableType::UUID)
                             ->addValidationRule('exists:speakers,id')
@@ -57,17 +57,17 @@ class WorkingTime extends Model
                             ->required()
                             ->addValidationRule('date_format:Y-m-d H:i:s'),
                     ]),
-                ActionMetadata\CreateManyActionMetadata::make(),
-                ActionMetadata\UpdateActionMetadata::make(static::class, VariableType::INTEGER),
-                ActionMetadata\UpdateManyActionMetadata::make(static::class, VariableType::INTEGER),
-                ActionMetadata\UpdateManyRawActionMetadata::make(),
-                ActionMetadata\DeleteActionMetadata::make(static::class, VariableType::INTEGER),
-                ActionMetadata\DeleteManyActionMetadata::make(static::class, VariableType::INTEGER),
-                ActionMetadata\DeleteManyRawActionMetadata::make(),
-                ActionMetadata\GetItemsActionMetadata::make(),
-                ActionMetadata\GetItemActionMetadata::make(static::class, VariableType::INTEGER),
-                ActionMetadata\GetCountActionMetadata::make(),
-                ActionMetadata\GetMetadataActionMetadata::make()
+                ActionMetadataDependencies\CreateManyActionMetadata::make(),
+                ActionMetadataDependencies\UpdateActionMetadata::make(static::class, VariableType::INTEGER),
+                ActionMetadataDependencies\UpdateManyActionMetadata::make(static::class, VariableType::INTEGER),
+                ActionMetadataDependencies\UpdateManyRawActionMetadata::make(),
+                ActionMetadataDependencies\DeleteActionMetadata::make(static::class, VariableType::INTEGER),
+                ActionMetadataDependencies\DeleteManyActionMetadata::make(static::class, VariableType::INTEGER),
+                ActionMetadataDependencies\DeleteManyRawActionMetadata::make(),
+                ActionMetadataDependencies\GetItemsActionMetadata::make(),
+                ActionMetadataDependencies\GetItemActionMetadata::make(static::class, VariableType::INTEGER),
+                ActionMetadataDependencies\GetCountActionMetadata::make(),
+                ActionMetadataDependencies\GetMetadataActionMetadata::make()
             ]);
     }
 

@@ -8,7 +8,7 @@ use Egal\Core\Exceptions\ActionParameterValidateException;
 use Egal\Core\Exceptions\NoAccessActionCallException;
 use Egal\Core\Session\Session;
 use Egal\Model\Facades\ModelMetadataManager;
-use Egal\Model\Metadata\ActionMetadata\BaseActionMetadata;
+use Egal\Model\Metadata\ActionMetadataDependencies\BaseActionMetadata;
 use Egal\Model\Metadata\ActionParameterMetadata;
 use Egal\Model\Metadata\ModelMetadata;
 use Illuminate\Support\Facades\Validator;

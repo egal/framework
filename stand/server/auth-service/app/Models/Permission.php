@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use Egal\Model\Enums\VariableType;
-use Egal\Model\Metadata\ActionMetadata;
+use Egal\Model\Metadata\ActionMetadataDependencies;
 use Egal\Model\Metadata\ActionParameterMetadata;
 use Egal\Model\Metadata\FieldMetadata;
 use Egal\Model\Metadata\ModelMetadata;
@@ -44,7 +44,7 @@ class Permission extends Model
                     ->hidden(),
             ])
             ->addActions([
-                ActionMetadata\CreateActionMetadata::make()
+                ActionMetadataDependencies\CreateActionMetadata::make()
                     ->addParameters([
                         ActionParameterMetadata::make('name', VariableType::STRING)
                             ->required()
@@ -52,17 +52,17 @@ class Permission extends Model
                         ActionParameterMetadata::make('is_default', VariableType::BOOLEAN)
                             ->default(false),
                     ]),
-                ActionMetadata\CreateManyActionMetadata::make(),
-                ActionMetadata\UpdateActionMetadata::make(static::class, VariableType::STRING),
-                ActionMetadata\UpdateManyActionMetadata::make(static::class, VariableType::STRING),
-                ActionMetadata\UpdateManyRawActionMetadata::make(),
-                ActionMetadata\DeleteActionMetadata::make(static::class, VariableType::STRING),
-                ActionMetadata\DeleteManyActionMetadata::make(static::class, VariableType::STRING),
-                ActionMetadata\DeleteManyRawActionMetadata::make(),
-                ActionMetadata\GetItemsActionMetadata::make(),
-                ActionMetadata\GetItemActionMetadata::make(static::class, VariableType::STRING),
-                ActionMetadata\GetCountActionMetadata::make(),
-                ActionMetadata\GetMetadataActionMetadata::make()
+                ActionMetadataDependencies\CreateManyActionMetadata::make(),
+                ActionMetadataDependencies\UpdateActionMetadata::make(static::class, VariableType::STRING),
+                ActionMetadataDependencies\UpdateManyActionMetadata::make(static::class, VariableType::STRING),
+                ActionMetadataDependencies\UpdateManyRawActionMetadata::make(),
+                ActionMetadataDependencies\DeleteActionMetadata::make(static::class, VariableType::STRING),
+                ActionMetadataDependencies\DeleteManyActionMetadata::make(static::class, VariableType::STRING),
+                ActionMetadataDependencies\DeleteManyRawActionMetadata::make(),
+                ActionMetadataDependencies\GetItemsActionMetadata::make(),
+                ActionMetadataDependencies\GetItemActionMetadata::make(static::class, VariableType::STRING),
+                ActionMetadataDependencies\GetCountActionMetadata::make(),
+                ActionMetadataDependencies\GetMetadataActionMetadata::make()
             ]);
     }
 

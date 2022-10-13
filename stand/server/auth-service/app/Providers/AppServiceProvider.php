@@ -14,7 +14,6 @@ class AppServiceProvider extends IlluminateServiceProvider
     public function boot(): void
     {
         ModelMetadataManager::registerDirectory('app/Models/', 'App\Models\\');
-
     }
 
 }
