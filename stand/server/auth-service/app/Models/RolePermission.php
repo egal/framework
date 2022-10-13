@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Policies\AllowPolicy;
 use Egal\Model\Enums\VariableType;
 use Egal\Model\Metadata\ActionMetadata;
 use Egal\Model\Metadata\ActionParameterMetadata;
@@ -15,6 +16,9 @@ class RolePermission extends Model
     public static function constructMetadata(): ModelMetadata
     {
         return ModelMetadata::make(RolePermission::class, FieldMetadata::make('id', VariableType::INTEGER))
+            ->addPolicies([
+                AllowPolicy::class,
+            ])
             ->addFields([
                 FieldMetadata::make('role_id', VariableType::STRING)
                     ->required(),

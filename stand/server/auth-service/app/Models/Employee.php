@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Policies\AllowPolicy;
 use Egal\Model\Enums\VariableType;
 use Egal\Model\Metadata\ActionMetadata;
 use Egal\Model\Metadata\ActionParameterMetadata;
@@ -20,6 +21,9 @@ class Employee extends Model
     public static function constructMetadata(): ModelMetadata
     {
         return ModelMetadata::make(Employee::class, FieldMetadata::make('id', VariableType::UUID))
+            ->addPolicies([
+                AllowPolicy::class,
+            ])
             ->addFields([
                 FieldMetadata::make('address', VariableType::STRING)
                     ->default('Home Address'),

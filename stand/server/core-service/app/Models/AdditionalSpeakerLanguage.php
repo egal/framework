@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Policies\AllowPolicy;
 use Egal\Model\Enums\VariableType;
 use Egal\Model\Metadata\ActionMetadata;
 use Egal\Model\Metadata\ActionParameterMetadata;
@@ -18,6 +19,9 @@ class AdditionalSpeakerLanguage extends Model
     public static function constructMetadata(): ModelMetadata
     {
         return ModelMetadata::make(self::class, FieldMetadata::make('id', VariableType::INTEGER))
+            ->addPolicies([
+                AllowPolicy::class,
+            ])
             ->addFields([
                 FieldMetadata::make('language_id', VariableType::STRING)
                     ->required()
