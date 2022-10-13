@@ -10,7 +10,8 @@ class UserPolicy
 
     public static function registering(): bool
     {
-        return Session::getAuthEntity()->isGuest();
+        $authEntity = Session::getAuthEntity();
+        return $authEntity->isService() && $authEntity->service === 'core';
     }
 
 }

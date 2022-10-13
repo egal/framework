@@ -5,12 +5,12 @@ namespace App\Policies;
 use Egal\Core\Session\Session;
 use Illuminate\Support\Facades\Gate;
 
-class ModelPolicy
+class SchoolPolicy
 {
 
-    public static function actionDelete(): bool
+    public static function actionCreate(): bool
     {
-        return false;
+        return true;
     }
 
 }

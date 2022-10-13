@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Egal\Auth\Entities;
 
 use Egal\Auth\Exceptions\NoAccessForActionException;
-use Egal\Core\Session\Session;
 use Egal\Model\Exceptions\NotFoundException;
 use Egal\Model\Facades\ModelMetadataManager;
 use Egal\Model\Model;
@@ -38,12 +37,13 @@ dump($methodName);
     public function may(string|Model $model, string $ability): bool
     {
         if ($model instanceof Model) {
-            $result = array_map(fn(string $policy) => call_user_func_array([$policy, $ability], [$model]), ModelMetadataManager::getModelMetadata(class_basename(get_class($model)))->getPolicies());
-            return ! in_array(false, $result);
+            $result = array_map(fn(string $policy) => method_exists($policy, $ability) ? call_user_func_array([$policy, $ability], [$model]) : null, ModelMetadataManager::getModelMetadata(class_basename(get_class($model)))->getPolicies());
+            return in_array(true, $result);
         }
+
         if (class_exists($model)) {
-            $result = array_map(fn(string $policy) => call_user_func_array([$policy, $ability], []), ModelMetadataManager::getModelMetadata($model)->getPolicies());
-            return ! in_array(false, $result);
+            $result = array_map(fn(string $policy) => method_exists($policy, $ability) ?  call_user_func_array([$policy, $ability], []) : null, ModelMetadataManager::getModelMetadata($model)->getPolicies());
+            return in_array(true, $result);
         }
 
         return false;

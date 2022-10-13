@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Policies\SchoolPolicy;
 use Egal\Model\Enums\VariableType;
 use Egal\Model\Enums\RelationType;
 use Egal\Model\Metadata\ActionMetadata;
@@ -26,6 +27,9 @@ class School extends Model
     public static function constructMetadata(): ModelMetadata
     {
         return ModelMetadata::make(self::class, FieldMetadata::make('id', VariableType::UUID))
+            ->addPolicies([
+                SchoolPolicy::class
+            ])
             ->addFields([
                 FieldMetadata::make('name', VariableType::STRING)
                     ->required()
