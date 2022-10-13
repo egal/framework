@@ -7,12 +7,12 @@ use Egal\Core\Session\Session;
 class ServicePolicy
 {
 
-    public static function actionLogin(): bool
+    public static function login(): bool
     {
         return Session::getAuthEntity()->isGuest();
     }
 
-    public static function actionLoginToService(): bool
+    public static function loginToService(): bool
     {
         return Session::getAuthEntity()->isGuest();
     }
