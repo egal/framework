@@ -190,11 +190,6 @@ class ModelMetadata
         }
     }
 
-    public function hasPolicy(): bool
-    {
-        return $this->policy !== null;
-    }
-
     public function getModelShortName(): string
     {
         return $this->modelShortName;

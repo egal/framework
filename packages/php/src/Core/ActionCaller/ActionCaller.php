@@ -80,7 +80,7 @@ class ActionCaller
      */
     private function isAccessedForCall(): bool
     {
-        return $this->modelMetadata->hasPolicy();
+        return $this->modelMetadata->getPolicy() !== null;
     }
 
     /**
