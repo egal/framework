@@ -15,9 +15,7 @@ class Service extends BaseService
     public static function constructMetadata(): ModelMetadata
     {
         return ModelMetadata::make(Service::class)
-            ->addPolicies([
-                ServicePolicy::class,
-            ])
+            ->policy(ServicePolicy::class)
             ->addActions([
                 ActionMetadata::make('login')
                     ->addParameters([

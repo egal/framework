@@ -157,8 +157,9 @@ abstract class Model extends EloquentModel
             ];
         }
 
-        foreach ($result as $item) {
-            Session::getAuthEntity()->mayOrFail($item, 'retrieved');
+        foreach ($result['items'] as $item) {
+            $model = new static($item);
+            Session::getAuthEntity()->mayOrFail($model, 'retrieved');
         }
 
         return $result;

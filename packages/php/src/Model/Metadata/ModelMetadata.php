@@ -44,9 +44,9 @@ class ModelMetadata
     protected array $actions = [];
 
     /**
-     * @var string[]
+     * @var string|null
      */
-    protected array $policies = [];
+    protected ?string $policy;
 
     public function __construct(string $modelClass, ?FieldMetadata $key)
     {
@@ -127,11 +127,11 @@ class ModelMetadata
     }
 
     /**
-     * @param string[] $policies
+     * @param class-string $policy
      */
-    public function addPolicies(array $policies): self
+    public function policy(string $policy): self
     {
-        $this->policies = array_merge($this->policies, $policies);
+        $this->policy = $policy;
 
         return $this;
     }
@@ -190,9 +190,9 @@ class ModelMetadata
         }
     }
 
-    public function hasPolicies(): bool
+    public function hasPolicy(): bool
     {
-        return $this->policies !== [];
+        return $this->policy !== null;
     }
 
     public function getModelShortName(): string
@@ -268,9 +268,9 @@ class ModelMetadata
         return $this->casts;
     }
 
-    public function getPolicies(): array
+    public function getPolicy(): string
     {
-        return $this->policies;
+        return $this->policy;
     }
 
 }

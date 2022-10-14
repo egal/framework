@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Egal\Auth\Entities;
 
 use Egal\Auth\Exceptions\NoAccessForActionException;
-use Egal\Model\Exceptions\NotFoundException;
 use Egal\Model\Facades\ModelMetadataManager;
 use Egal\Model\Model;
 
@@ -20,7 +19,6 @@ abstract class AuthEntity
 
     /**
      * @throws NoAccessForActionException
-     * @throws NotFoundException
      */
     public function __call(string $name, array $arguments): bool
     {
@@ -32,27 +30,12 @@ abstract class AuthEntity
         return call_user_func_array([$this, $methodName], $arguments) ?: throw new NoAccessForActionException;
     }
 
-
     public function may(string|Model $model, string $ability): bool
     {
-        if ($model instanceof Model || class_exists($model)) {
-            $modelClass = is_string($model) ? $model : get_class($model);
-            $countDenies = count(
-                array_filter(
-                    ModelMetadataManager::getModelMetadata($modelClass)->getPolicies(),
-                    fn(string $policy) => method_exists($policy, $ability) && !call_user_func_array([$policy, $ability], [$model])
-                )
-            );
-            $countPolicies = count(
-                array_filter(
-                    ModelMetadataManager::getModelMetadata($modelClass)->getPolicies(),
-                    fn(string $policy) => method_exists($policy, $ability)
-                )
-            );
-            return $countDenies === 0 && $countPolicies;
-        }
+        $modelClass = is_string($model) ? $model : get_class($model);
+        $policy = ModelMetadataManager::getModelMetadata($modelClass)->getPolicy();
 
-        return false;
+        return call_user_func_array([$policy, $ability], [$model]);
     }
 
     public function isUser(): bool

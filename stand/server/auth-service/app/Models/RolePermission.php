@@ -16,9 +16,7 @@ class RolePermission extends Model
     public static function constructMetadata(): ModelMetadata
     {
         return ModelMetadata::make(RolePermission::class, FieldMetadata::make('id', VariableType::INTEGER))
-            ->addPolicies([
-                AllowPolicy::class,
-            ])
+            ->policy(AllowPolicy::class)
             ->addFields([
                 FieldMetadata::make('role_id', VariableType::STRING)
                     ->required(),

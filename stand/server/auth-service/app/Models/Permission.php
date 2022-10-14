@@ -31,9 +31,7 @@ class Permission extends Model
     public static function constructMetadata(): ModelMetadata
     {
         return ModelMetadata::make(Permission::class, FieldMetadata::make('id', VariableType::STRING))
-            ->addPolicies([
-                AllowPolicy::class,
-            ])
+            ->policy(AllowPolicy::class)
             ->addFields([
                 FieldMetadata::make('name', VariableType::STRING)
                     ->required()

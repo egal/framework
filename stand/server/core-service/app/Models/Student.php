@@ -27,9 +27,7 @@ class Student extends Model
     public static function constructMetadata(): ModelMetadata
     {
         return ModelMetadata::make(self::class, FieldMetadata::make('id', VariableType::UUID))
-            ->addPolicies([
-                AllowPolicy::class,
-            ])
+            ->policy(AllowPolicy::class)
             ->addFields([
                 FieldMetadata::make('user_id', VariableType::UUID)
                     ->required()

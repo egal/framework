@@ -110,9 +110,7 @@ class User extends BaseUser
     public static function constructMetadata(): ModelMetadata
     {
         return ModelMetadata::make(User::class, FieldMetadata::make('id', VariableType::UUID))
-            ->addPolicies([
-                UserPolicy::class,
-            ])
+            ->policy(UserPolicy::class)
             ->addFields([
                 FieldMetadata::make('email', VariableType::STRING)
                     ->required()

@@ -21,9 +21,7 @@ class Employee extends Model
     public static function constructMetadata(): ModelMetadata
     {
         return ModelMetadata::make(Employee::class, FieldMetadata::make('id', VariableType::UUID))
-            ->addPolicies([
-                AllowPolicy::class,
-            ])
+            ->policy(AllowPolicy::class)
             ->addFields([
                 FieldMetadata::make('address', VariableType::STRING)
                     ->default('Home Address'),
