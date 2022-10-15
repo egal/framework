@@ -22,7 +22,7 @@ abstract class AuthEntity
      */
     public function __call(string $name, array $arguments): bool
     {
-        $methodName = preg_replace("/OrFail/", '', $name);
+        $methodName = preg_replace("/^(.*)(OrFail)$/", '$1', $name);
         if (!method_exists($this, $methodName)) {
             trigger_error('Call to undefined method '.__CLASS__.'::'.$name.'()', E_USER_ERROR);
         }
