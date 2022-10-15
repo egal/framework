@@ -55,10 +55,9 @@ class ActionCaller
      *
      * If not available to call, an {@see \Egal\Core\Exceptions\NoAccessActionCallException} is thrown.
      *
-     * @return mixed Result of action execution.
      * @throws \Exception|NoAccessActionCallException
      */
-    public function call()
+    public function call(): mixed
     {
         if (Session::isAuthEnabled() && !$this->isAccessedForCall()) {
             throw new NoAccessActionCallException();
@@ -88,12 +87,10 @@ class ActionCaller
      *
      * If it is impossible to generate valid parameters, an exception is thrown.
      *
-     * @return array
      * @throws ActionParameterValidateException
      */
     private function getValidActionParameters(): array
     {
-        $parametersValidationRules = $this->modelActionMetadata->getValidationRules();
         $actionParameters = $this->actionParameters;
         $defaultParameters = [];
 
@@ -117,7 +114,7 @@ class ActionCaller
         }
 
         $actionParameters = array_merge($actionParameters, $defaultParameters);
-        $validator = Validator::make($actionParameters, $parametersValidationRules);
+        $validator = Validator::make($actionParameters, $this->modelActionMetadata->getValidationRules());
 
         if ($validator->fails() || $notAllowedParameters != []) {
             $exception = new ActionParameterValidateException();
