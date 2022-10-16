@@ -11,6 +11,7 @@ use Egal\Model\Exceptions\ActionParameterNotFoundException;
  */
 class ActionMetadata
 {
+
     // TODO: добавить метаданные доступов
     // TODO: добавить примеры запроса-ответа
 
