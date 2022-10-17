@@ -60,8 +60,6 @@ export function DataTable(props: Props) {
     );
   }
 
-  console.log(selectingProps);
-
   return (
     <Box overflow="auto" fill justify={'start'}>
       <Box>

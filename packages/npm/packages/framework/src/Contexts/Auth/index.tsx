@@ -14,5 +14,6 @@ export const AuthContext = createContext<Auth>({
 });
 
 export function useAuthContext(): Auth {
+  // TODO: Exception "Not in context".
   return useContext(AuthContext);
 }
