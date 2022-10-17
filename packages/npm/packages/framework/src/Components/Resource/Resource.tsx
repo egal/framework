@@ -53,6 +53,9 @@ type Props = {
 };
 
 export function Resource<ItemType>({ children, model }: Props) {
+  // TODO: Get items init params.
+  // Like useResource<ItemType>(model, {gitItems: { intiParams: {...} }})
+  // Intuit params stores in as prop of Resource { config: {...} }.
   const resource = useResource<ItemType>(model);
 
   type SelectedKey = string | number;
