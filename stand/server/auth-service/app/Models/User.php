@@ -143,8 +143,16 @@ class User extends BaseUser
                         ActionParameterMetadata::make('email', VariableType::STRING)
                             ->required()
                             ->addValidationRule('exists:users,email'),
+                        ActionParameterMetadata::make('password', VariableType::STRING)
+                            ->required()
                     ]),
-                ActionMetadata::make('loginToService'),
+                ActionMetadata::make('loginToService')
+                    ->addParameters([
+                        ActionParameterMetadata::make('token', VariableType::STRING)
+                            ->required(),
+                        ActionParameterMetadata::make('service_name', VariableType::STRING)
+                            ->required(),
+                    ]),
                 ActionMetadata::make('refreshUserMasterToken'),
                 ActionMetadata::make('create'),
                 ActionMetadata::make('update')
