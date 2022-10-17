@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import jwtDecode from 'jwt-decode';
-import { deleteCookie, useCookie } from './useCookie';
+import { removeCookie, useCookie } from './useCookie';
 
 export type AuthConfig = {
   authServiceName: string;
@@ -23,23 +23,22 @@ export type ServiceToken = Token;
 type ServicesTokens<ServiceTokenType extends ServiceToken = any> =
   ServiceTokenType[];
 
-export type Auth = [
-  logged: boolean,
-  getMasterToken: () => MasterToken,
+export type Auth = {
+  logged: boolean;
+  getMasterToken: () => MasterToken;
   getServiceToken: <ServiceTokenType = any>(
     serviceName: string
-  ) => ServiceTokenType,
-  login: (rawMasterToken: string) => void,
-  logout: () => void
-];
+  ) => ServiceTokenType;
+  login: (rawMasterToken: string) => void;
+  logout: () => void;
+};
 
 export function useAuth(config: AuthConfig = authConfig): Auth {
   const [logged, setLogged] = useState<boolean>(false);
   const [masterToken, setMasterToken] = useState<MasterToken>();
   const [servicesTokens, setServicesTokens] = useState<ServicesTokens>([]);
 
-  const [cookieMasterToken, setCookieMasterToken, deleteCookieMasterToken] =
-    useCookie('master_token');
+  const cookieMasterToken = useCookie('master_token');
 
   const getMasterToken = (): MasterToken => {
     if (!logged) {
@@ -69,7 +68,7 @@ export function useAuth(config: AuthConfig = authConfig): Auth {
 
   const login = (rawMasterToken: string): void => {
     rawLogin(rawMasterToken);
-    setCookieMasterToken(rawMasterToken);
+    cookieMasterToken.set(rawMasterToken);
   };
 
   const logout = (): void => {
@@ -79,7 +78,7 @@ export function useAuth(config: AuthConfig = authConfig): Auth {
 
     setServicesTokens([]);
     setMasterToken(undefined);
-    deleteCookieMasterToken();
+    cookieMasterToken.remove();
     setLogged(false);
   };
 
@@ -91,16 +90,16 @@ export function useAuth(config: AuthConfig = authConfig): Auth {
     throw new Error('Not implemented!');
   };
 
-  if (!logged && cookieMasterToken !== undefined) {
-    rawLogin(cookieMasterToken);
+  if (!logged && cookieMasterToken.value !== undefined) {
+    rawLogin(cookieMasterToken.value);
   }
 
-  return [
+  return {
     //
     logged,
     getMasterToken,
     getServiceToken,
     login,
     logout,
-  ];
+  };
 }

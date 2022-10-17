@@ -9,7 +9,12 @@ export type ServerFieldMetadata = {
 
 export type FakeField = any;
 
-export type Relation = any;
+export type Relation = {
+  name: string;
+  guarded: boolean;
+  related: ServerModelMetadata;
+  type: 'belongs_to' | string;
+};
 
 export type ServerModelMetadata = {
   primary_key: ServerFieldMetadata;

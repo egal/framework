@@ -14,8 +14,7 @@
     "ext": "ts,tsx",
     "ignore": [
       "**/dist/**"
-    ],
-    "delay": 2500
+    ]
   },
   "scripts": {
     "watch": "nodemon --exec 'npm run build'",

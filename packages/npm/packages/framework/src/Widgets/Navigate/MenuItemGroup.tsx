@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Box, Button, Collapsible } from 'grommet';
+import { Box, Button, Collapsible, Text } from 'grommet';
 import { useState } from 'react';
 import { FormDown, FormNext } from 'grommet-icons';
 import { MenuItemConfig } from './index';
@@ -18,16 +18,14 @@ export function MenuItemGroup({ header, items }: Props) {
 
   return (
     <>
-      <Box pad="xsmall">
-        <Button onClick={switchIsOpen}>
-          <Box direction="row" justify="between">
-            <div>{header}</div>
-            <ArrowIcon />
-          </Box>
-        </Button>
-      </Box>
+      <Button onClick={switchIsOpen}>
+        <Box direction="row" justify="between">
+          <Text>{header}</Text>
+          <ArrowIcon />
+        </Box>
+      </Button>
       <Collapsible open={isOpen}>
-        <Box margin={{ left: 'small' }}>
+        <Box pad={{ left: 'small', top: 'small' }} gap={'small'}>
           {items.map((item, key) =>
             React.createElement(MenuItem, { ...item, key: key })
           )}
