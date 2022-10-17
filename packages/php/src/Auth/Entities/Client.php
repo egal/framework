@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Egal\Auth\Entities;
 
-use Egal\Auth\Exceptions\NoAccessForActionException;
+use Egal\Auth\Exceptions\NoAccessToActionException;
 use Egal\Model\Facades\ModelMetadataManager;
 use Egal\Model\Model;
 
@@ -14,11 +14,11 @@ use Egal\Model\Model;
  * @method bool isGuestOrFail()
  * @method bool isServiceOrFail()
  */
-abstract class AuthEntity
+abstract class Client
 {
 
     /**
-     * @throws NoAccessForActionException
+     * @throws NoAccessToActionException
      */
     public function __call(string $name, array $arguments): bool
     {
@@ -27,7 +27,7 @@ abstract class AuthEntity
             trigger_error('Call to undefined method '.__CLASS__.'::'.$name.'()', E_USER_ERROR);
         }
 
-        return call_user_func_array([$this, $methodName], $arguments) ?: throw new NoAccessForActionException;
+        return call_user_func_array([$this, $methodName], $arguments) ?: throw new NoAccessToActionException;
     }
 
     public function may(string|Model $model, string $ability): bool

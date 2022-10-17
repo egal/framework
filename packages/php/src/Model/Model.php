@@ -79,9 +79,9 @@ abstract class Model extends EloquentModel
      */
     public static function actionGetMetadata(): array
     {
-        Session::getAuthEntity()->mayOrFail(static::class, 'retrievingMetadata');
+        Session::client()->mayOrFail(static::class, 'retrievingMetadata');
         $result = ModelMetadataManager::getModelMetadata(static::class)->toArray(true);
-        Session::getAuthEntity()->mayOrFail(static::class, 'retrievedMetadata');
+        Session::client()->mayOrFail(static::class, 'retrievedMetadata');
 
         return $result;
     }
@@ -96,7 +96,7 @@ abstract class Model extends EloquentModel
      */
     public static function actionGetItem($key, array $relations = []): array
     {
-        Session::getAuthEntity()->mayOrFail(static::class, 'retrieving');
+        Session::client()->mayOrFail(static::class, 'retrieving');
 
         $instance = new static();
         $instance->makeIsInstanceForAction();
@@ -111,7 +111,7 @@ abstract class Model extends EloquentModel
             throw ObjectNotFoundException::make($key);
         }
 
-        Session::getAuthEntity()->mayOrFail($item, 'retrieved');
+        Session::client()->mayOrFail($item, 'retrieved');
 
         return $item->toArray();
     }
@@ -132,7 +132,7 @@ abstract class Model extends EloquentModel
         array  $filter = [],
         array  $order = []
     ): array {
-        Session::getAuthEntity()->mayOrFail(static::class, 'retrieving');
+        Session::client()->mayOrFail(static::class, 'retrieving');
 
         $instance = new static();
         $instance->makeIsInstanceForAction();
@@ -159,7 +159,7 @@ abstract class Model extends EloquentModel
 
         foreach ($result['items'] as $item) {
             $model = new static($item);
-            Session::getAuthEntity()->mayOrFail($model, 'retrieved');
+            Session::client()->mayOrFail($model, 'retrieved');
         }
 
         return $result;
@@ -172,7 +172,7 @@ abstract class Model extends EloquentModel
      */
     public static function actionGetCount(array $filter = []): array
     {
-        Session::getAuthEntity()->mayOrFail(static::class, 'retrievingCount');
+        Session::client()->mayOrFail(static::class, 'retrievingCount');
 
         $instance = new static();
         $instance->makeIsInstanceForAction();
@@ -181,7 +181,7 @@ abstract class Model extends EloquentModel
             ->setFilterFromArray($filter)
             ->count();
 
-        Session::getAuthEntity()->mayOrFail(static::class, 'retrievedCount');
+        Session::client()->mayOrFail(static::class, 'retrievedCount');
 
         return ['count' => $count];
     }
@@ -194,7 +194,7 @@ abstract class Model extends EloquentModel
      */
     public static function actionCreate(array $attributes = []): array
     {
-        Session::getAuthEntity()->mayOrFail(static::class, 'creating');
+        Session::client()->mayOrFail(static::class, 'creating');
 
         DB::beginTransaction();
         $entity = new static();
@@ -204,7 +204,7 @@ abstract class Model extends EloquentModel
 
         try {
             $entity->save();
-            Session::getAuthEntity()->mayOrFail($entity, 'created');
+            Session::client()->mayOrFail($entity, 'created');
         } catch (Exception $exception) {
             DB::rollBack();
 
@@ -225,7 +225,7 @@ abstract class Model extends EloquentModel
      */
     public static function actionCreateMany(array $objects = []): array
     {
-        Session::getAuthEntity()->mayOrFail(static::class, 'creating');
+        Session::client()->mayOrFail(static::class, 'creating');
 
         $model = new static();
         $model->makeIsInstanceForAction();
@@ -240,7 +240,7 @@ abstract class Model extends EloquentModel
 
             try {
                 $entity->save();
-                Session::getAuthEntity()->mayOrFail($entity, 'created');
+                Session::client()->mayOrFail($entity, 'created');
             } catch (Exception $exception) {
                 DB::rollBack();
 
@@ -266,7 +266,7 @@ abstract class Model extends EloquentModel
      */
     public static function actionUpdate($key, array $attributes = []): array
     {
-        Session::getAuthEntity()->mayOrFail(static::class, 'updating');
+        Session::client()->mayOrFail(static::class, 'updating');
 
         DB::beginTransaction();
         $instance = new static();
@@ -284,7 +284,7 @@ abstract class Model extends EloquentModel
         $entity->update($attributes);
         try {
             $entity->save();
-            Session::getAuthEntity()->mayOrFail($entity, 'updated');
+            Session::client()->mayOrFail($entity, 'updated');
         } catch (Exception $exception) {
             DB::rollBack();
 
@@ -306,7 +306,7 @@ abstract class Model extends EloquentModel
      */
     public static function actionUpdateMany(array $objects = []): array
     {
-        Session::getAuthEntity()->mayOrFail(static::class, 'updating');
+        Session::client()->mayOrFail(static::class, 'updating');
 
         $collection = new Collection();
         $instance = new static();
@@ -338,7 +338,7 @@ abstract class Model extends EloquentModel
 
             try {
                 $entity->save();
-                Session::getAuthEntity()->mayOrFail($entity, 'updated');
+                Session::client()->mayOrFail($entity, 'updated');
             } catch (Exception $exception) {
                 DB::rollBack();
 
@@ -362,7 +362,7 @@ abstract class Model extends EloquentModel
      */
     public static function actionUpdateManyRaw(array $filter = [], array $attributes = []): array
     {
-        Session::getAuthEntity()->mayOrFail(static::class, 'updating');
+        Session::client()->mayOrFail(static::class, 'updating');
 
         $instance = new static();
         $builder = $instance->newQuery()->makeModelIsInstanceForAction();
@@ -378,7 +378,7 @@ abstract class Model extends EloquentModel
 
             try {
                 $entity->save();
-                Session::getAuthEntity()->mayOrFail(static::class, 'updated');
+                Session::client()->mayOrFail(static::class, 'updated');
             } catch (Exception $exception) {
                 DB::rollBack();
 
@@ -402,7 +402,7 @@ abstract class Model extends EloquentModel
      */
     public static function actionDelete($key): array
     {
-        Session::getAuthEntity()->mayOrFail(static::class, 'deleting');
+        Session::client()->mayOrFail(static::class, 'deleting');
 
         DB::beginTransaction();
         $instance = new static();
@@ -420,7 +420,7 @@ abstract class Model extends EloquentModel
 
         try {
             $entity->delete();
-            Session::getAuthEntity()->mayOrFail(static::class, 'deleted');
+            Session::client()->mayOrFail(static::class, 'deleted');
         } catch (Exception $exception) {
             DB::rollBack();
 
@@ -439,7 +439,7 @@ abstract class Model extends EloquentModel
      */
     public static function actionDeleteMany(array $keys): ?bool
     {
-        Session::getAuthEntity()->mayOrFail(static::class, 'deleting');
+        Session::client()->mayOrFail(static::class, 'deleting');
 
         $instance = new static();
         $instance->isLessThanMaxCountEntitiesCanToManipulateWithActionOrFail(count($keys));
@@ -461,7 +461,7 @@ abstract class Model extends EloquentModel
             try {
                 $entity->makeIsInstanceForAction();
                 $entity->delete();
-                Session::getAuthEntity()->mayOrFail(static::class, 'deleted');
+                Session::client()->mayOrFail(static::class, 'deleted');
             } catch (Exception $e) {
                 DB::rollBack();
 
@@ -483,7 +483,7 @@ abstract class Model extends EloquentModel
      */
     public static function actionDeleteManyRaw(array $filter = []): array
     {
-        Session::getAuthEntity()->mayOrFail(static::class, 'deleting');
+        Session::client()->mayOrFail(static::class, 'deleting');
 
         $instance = new static();
         $builder = $instance->newQuery()->makeModelIsInstanceForAction();
@@ -497,7 +497,7 @@ abstract class Model extends EloquentModel
             try {
                 $entity->makeIsInstanceForAction();
                 $entity->delete();
-                Session::getAuthEntity()->mayOrFail(static::class, 'deleted');
+                Session::client()->mayOrFail(static::class, 'deleted');
             } catch (Exception $exception) {
                 DB::rollBack();
 

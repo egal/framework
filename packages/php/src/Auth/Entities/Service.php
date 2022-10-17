@@ -6,7 +6,7 @@ namespace Egal\Auth\Entities;
 
 use Egal\Auth\Tokens\ServiceServiceToken;
 
-class Service extends AuthEntity
+class Service extends Client
 {
 
     public readonly string $service;

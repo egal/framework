@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace Egal\Auth\Entities;
 
-class Guest extends AuthEntity
+class Guest extends Client
 {
-
-    public function __construct() { }
 
 }

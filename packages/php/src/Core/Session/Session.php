@@ -11,7 +11,7 @@ use Egal\Auth\Tokens\ServiceServiceToken;
 use Egal\Auth\Tokens\Token;
 use Egal\Auth\Tokens\TokenType;
 use Egal\Auth\Tokens\UserServiceToken;
-use Egal\Auth\Entities\AuthEntity;
+use Egal\Auth\Entities\Client;
 use Egal\Auth\Entities\Guest;
 use Egal\Auth\Entities\Service;
 use Egal\Auth\Entities\User;
@@ -31,7 +31,7 @@ final class Session
 
     private ?ServiceServiceToken $serviceServiceToken = null;
 
-    private ?AuthEntity $authEntity = null;
+    private ?Client $authEntity = null;
 
     public static function isActionMessageExists(): bool
     {
@@ -66,7 +66,7 @@ final class Session
             : StatusAccess::GUEST;
     }
 
-    public static function getAuthEntity(): AuthEntity
+    public static function client(): Client
     {
         return self::getSingleton()->authEntity;
     }

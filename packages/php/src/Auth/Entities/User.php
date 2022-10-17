@@ -6,9 +6,9 @@ namespace Egal\Auth\Entities;
 
 use Egal\Auth\Tokens\UserServiceToken;
 
-class User extends AuthEntity
+class User extends Client
 {
-    public readonly string $id;
+    public readonly string $key;
 
     public readonly array $roles;
 
@@ -18,7 +18,7 @@ class User extends AuthEntity
 
     public function __construct(UserServiceToken $ust)
     {
-        $this->id = $ust->getUid();
+        $this->key = $ust->getUid();
         $this->roles = $ust->getRoles();
         $this->permissions = $ust->getPermissions();
         $this->authInformation = $ust->getAuthInformation();

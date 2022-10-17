@@ -40,7 +40,8 @@ abstract class User extends Model
 
     public static function actionLoginToService(string $token, string $serviceName): string
     {
-        Session::getAuthEntity()->mayOrFail(static::class, 'loginToService');
+        dump('actionLoginToService()');
+        Session::client()->mayOrFail(static::class, 'loginToService');
 
         /** @var \Egal\Auth\Tokens\UserMasterToken $umt */
         $umt = UserMasterToken::fromJWT($token, config('app.service_key'));
@@ -49,7 +50,7 @@ abstract class User extends Model
         /** @var \Egal\AuthServiceDependencies\Models\User $user */
         $user = static::find($umt->getAuthIdentification());
         $service = self::getServiceModel()::find($serviceName);
-
+        dump($service);
         if (!$user) {
             throw new UserNotIdentifiedException();
         }
@@ -68,7 +69,7 @@ abstract class User extends Model
 
     public static function actionRefreshUserMasterToken(string $token): array
     {
-        Session::getAuthEntity()->mayOrFail(static::class, 'refreshUserMasterToken');
+        Session::client()->mayOrFail(static::class, 'refreshUserMasterToken');
 
         $oldUmrt = UserMasterRefreshToken::fromJWT($token, config('app.service_key'));
         $oldUmrt->isAliveOrFail();
