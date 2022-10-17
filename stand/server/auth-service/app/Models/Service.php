@@ -3,9 +3,11 @@
 namespace App\Models;
 
 use App\Policies\ServicePolicy;
+use Egal\Model\Enums\FieldType;
 use Egal\Model\Enums\VariableType;
 use Egal\Model\Metadata\ActionMetadata;
 use Egal\Model\Metadata\ActionParameterMetadata;
+use Egal\Model\Metadata\FieldMetadata;
 use Egal\Model\Metadata\ModelMetadata;
 use Egal\AuthServiceDependencies\Models\Service as BaseService;
 
@@ -14,7 +16,7 @@ class Service extends BaseService
 
     public static function constructMetadata(): ModelMetadata
     {
-        return ModelMetadata::make(Service::class)
+        return ModelMetadata::make(Service::class, FieldMetadata::make('service', VariableType::STRING))
             ->policy(ServicePolicy::class)
             ->addActions([
                 ActionMetadata::make('login')
