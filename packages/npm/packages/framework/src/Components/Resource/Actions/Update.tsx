@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Box, Button, Form, Spinner } from 'grommet';
+import { Box, Button, Form } from 'grommet';
 import { useResourceContext } from '../Resource';
 import { FullLayerModal } from '../FullLayerModal';
 import { Buttons } from './Buttons/Buttons';
