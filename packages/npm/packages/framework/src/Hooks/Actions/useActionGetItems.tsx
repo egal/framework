@@ -3,11 +3,11 @@ import {
   ActionError,
   ActionResultPromise,
   ActionModel,
-  RecursivePartial,
   useAction,
 } from './useAction';
 import { deepMerge } from 'grommet/utils';
 import { useState } from 'react';
+import { RecursivePartial } from '../../Utils';
 
 type Result<ItemType> = {
   current_page: number;
@@ -16,7 +16,7 @@ type Result<ItemType> = {
   items: ItemType[];
 };
 
-export type Params = {
+export type ActionGetItemsParams = {
   pagination?: {
     per_page?: number;
     page?: number;
@@ -26,35 +26,35 @@ export type Params = {
 };
 
 export type ActionGetItemsHook<ItemType> = Omit<
-  ActionHook<Result<ItemType>, Params>,
+  ActionHook<Result<ItemType>, ActionGetItemsParams>,
   'call'
 > & {
   call: () => ActionResultPromise<Result<ItemType>, ActionError>;
-  params: Params;
-  setParams: (value: Params) => void;
-  mergeParams: (value: Partial<Params>) => void;
-  deepMergeParams: (value: RecursivePartial<Params>) => void;
+  params: ActionGetItemsParams;
+  setParams: (value: ActionGetItemsParams) => void;
+  mergeParams: (value: Partial<ActionGetItemsParams>) => void;
+  deepMergeParams: (value: RecursivePartial<ActionGetItemsParams>) => void;
 };
 
 export function useActionGetItems<ItemType>(
   model: ActionModel,
-  initParams: Params
+  initParams: ActionGetItemsParams
 ): ActionGetItemsHook<ItemType> {
   const {
     result,
     error,
     call: baseCall,
-  } = useAction<Result<ItemType>, Params>(model, 'getItems');
+  } = useAction<Result<ItemType>, ActionGetItemsParams>(model, 'getItems');
 
-  const [params, setParams] = useState<Params>(initParams);
+  const [params, setParams] = useState<ActionGetItemsParams>(initParams);
 
   const call = () => baseCall(params);
 
-  const mergeParams = (value: Partial<Params>) => {
+  const mergeParams = (value: Partial<ActionGetItemsParams>) => {
     setParams({ ...params, ...value });
   };
 
-  const deepMergeParams = (value: RecursivePartial<Params>) => {
+  const deepMergeParams = (value: RecursivePartial<ActionGetItemsParams>) => {
     setParams(deepMerge(params as any, value as any)); // TODO: Remove any.
   };
 

@@ -1,7 +1,7 @@
 import { ActionModel } from './useAction';
 import {
   ActionGetItemsHook,
-  Params,
+  ActionGetItemsParams,
   useActionGetItems,
 } from './useActionGetItems';
 import { ActionCreateHook, useActionCreate } from './useActionCreate';
@@ -11,6 +11,8 @@ import {
   useActionGetMetadata,
 } from './useActionGetMetadata';
 import { ActionDeleteHook, useActionDelete } from './useActionDelete';
+import { deepMerge } from 'grommet/utils';
+import { RecursivePartial } from '../../Utils';
 
 export type ResourceHook<ItemType> = {
   metadata: ActionGetMetadataHook;
@@ -20,21 +22,29 @@ export type ResourceHook<ItemType> = {
   delete: ActionDeleteHook;
 };
 
-export interface ActionConfig {
-  getItems?: {
-    initParams?: Params;
+export interface ResourceHookConfig {
+  getItems: {
+    initParams: ActionGetItemsParams;
   };
 }
 
 export function useResource<ItemType>(
   model: ActionModel,
-  config?: ActionConfig
+  config: RecursivePartial<ResourceHookConfig> = {}
 ): ResourceHook<ItemType> {
+  const defaultConfig: ResourceHookConfig = {
+    getItems: {
+      initParams: {},
+    },
+  };
+
+  const mergedConfig = deepMerge(defaultConfig, config);
+
   return {
     metadata: useActionGetMetadata(model),
     getItems: useActionGetItems<ItemType>(
       model,
-      config?.getItems?.initParams ?? {}
+      mergedConfig.getItems.initParams
     ),
     create: useActionCreate<ItemType>(model),
     update: useActionUpdate<ItemType>(model),

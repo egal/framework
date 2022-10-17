@@ -1,28 +1,27 @@
 import React, { useEffect, useState } from 'react';
 import { Select as GrommetSelect, SelectProps } from 'grommet';
 import { ActionModel, useActionGetItems } from '../../../Hooks';
-import type { Params } from '../../../Hooks';
+import { ActionGetItemsParams } from '../../../Hooks';
+import { FullBoxLoader } from '../../../Widgets';
 
 type Props = Omit<SelectProps, 'options'> & {
   model: ActionModel;
-  actionGetItemsInitParams?: Params;
+  actionGetItemsInitParams?: ActionGetItemsParams;
 };
 
-const Select: React.FC<Props> = ({
-  actionGetItemsInitParams = {},
-  model,
-  ...props
-}) => {
-  const actionGetItems = useActionGetItems(model, actionGetItemsInitParams);
-  const [data, setData] = useState([]);
+export function Select<
+  ItemType extends string | boolean | number | JSX.Element | object
+>({ actionGetItemsInitParams = {}, model, ...props }: Props) {
+  const actionGetItems = useActionGetItems<ItemType>(
+    model,
+    actionGetItemsInitParams
+  );
 
   useEffect(() => {
-    actionGetItems.call().then((response: any) => {
-      setData(response.items);
-    });
+    actionGetItems.call();
   }, []);
 
-  return <GrommetSelect options={data} {...props} />;
-};
+  if (!actionGetItems.result) return <FullBoxLoader />;
 
-export { Select };
+  return <GrommetSelect options={actionGetItems.result.items} {...props} />;
+}

@@ -8,7 +8,7 @@ import { Pagination } from './Pagination';
 import { EntityManipulate, useEntityManipulate } from '../../Hooks';
 import { Filters } from './Filters/Filters';
 import { Extensions, useExtensions } from './useExtensions';
-import type { ActionConfig } from '../../Hooks';
+import type { ResourceHookConfig } from '../../Hooks';
 
 type Model = {
   name: string;
@@ -50,7 +50,7 @@ export function useResourceContext(): ContextType {
 
 type Props = {
   model: Model;
-  config?: ActionConfig;
+  config?: ResourceHookConfig;
   children: React.ReactNode;
 };
 

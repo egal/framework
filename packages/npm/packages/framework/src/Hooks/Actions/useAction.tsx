@@ -6,14 +6,6 @@ export type ActionModel = {
   service: string;
 };
 
-export type RecursivePartial<T> = {
-  [P in keyof T]?: T[P] extends (infer U)[]
-    ? RecursivePartial<U>[]
-    : T[P] extends object
-    ? RecursivePartial<T[P]>
-    : T[P];
-};
-
 export type ActionErrorCode = 'ERR_UNDEFINED' | 'ERR_NETWORK' | string;
 export type ActionError = {
   message: string;
