@@ -1,7 +1,14 @@
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import { App, NotFoundFullLayerError as NotFound, interfaceConfig, authConfig, Resource } from '@egalteam/framework';
-import { Heading } from 'grommet';
+import {
+  App,
+  NotFoundFullLayerError as NotFound,
+  interfaceConfig,
+  authConfig,
+  Resource,
+  Select
+} from '@egalteam/framework';
+import { Heading, TextInput, FormField } from 'grommet';
 import { grommet as grommetTheme } from 'grommet/themes';
 import { deepMerge } from 'grommet/utils';
 import React from 'react';
@@ -61,7 +68,6 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
         ]
       },
       {
-        // TODO: Show and set (create/update) relation one2many (employee.country.name).
         header: 'Employees',
         path: '/employees',
         element: <EmployeesResource />
@@ -73,13 +79,62 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
           <Resource
             key={'speakers'}
             model={{ service: 'core', name: 'Speaker' }}
-            //
-          >
+            config={{
+              getItems: {
+                initParams: {
+                  relations: ['country']
+                }
+              }
+            }}>
+            <Resource.Actions>
+              <Resource.Actions.Create>
+                <FormField name="name" component={TextInput} label="Name" required />
+                <FormField name="surname" component={TextInput} label="Surname" required />
+                <FormField label={'Country'}>
+                  <Select
+                    name={'country_id'}
+                    model={{ name: 'Country', service: 'core' }}
+                    valueKey={{ key: 'id', reduce: true }}
+                    labelKey={'name'}
+                  />
+                </FormField>
+                <FormField label={'User'}>
+                  <Select
+                    name={'user_id'}
+                    model={{ name: 'User', service: 'auth' }}
+                    valueKey={{ key: 'id', reduce: true }}
+                    labelKey={'email'}
+                  />
+                </FormField>
+              </Resource.Actions.Create>
+              <Resource.Actions.Update>
+                <FormField name="name" component={TextInput} label="Name" required />
+                <FormField name="surname" component={TextInput} label="Surname" required />
+                <FormField label={'Country'}>
+                  <Select
+                    name={'country_id'}
+                    model={{ name: 'Country', service: 'core' }}
+                    valueKey={{ key: 'id', reduce: true }}
+                    labelKey={'name'}
+                  />
+                </FormField>
+                <FormField label={'User'}>
+                  <Select
+                    disabled
+                    name={'user_id'}
+                    model={{ name: 'User', service: 'auth' }}
+                    valueKey={{ key: 'id', reduce: true }}
+                    labelKey={'email'}
+                  />
+                </FormField>
+              </Resource.Actions.Update>
+            </Resource.Actions>
             <Resource.DataTable
               columns={[
-                //
                 { property: 'id', header: 'ID' },
-                { property: 'name', header: 'Name' }
+                { property: 'name', header: 'Name' },
+                { property: 'country_id', header: 'Country ID' },
+                { property: 'country.name', header: 'Country name' }
               ]}
             />
           </Resource>
@@ -88,7 +143,7 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
     ]}
     additionalRoutes={[
       { path: '*', element: <NotFound /> },
-      { path: '/custom', element: <Heading>Custom route!</Heading> },
+      { path: '/custom', element: <h1>Custom route!</h1> },
       { path: '/login', element: <LoginPage /> },
       { path: '/register', element: <RegisterPage /> },
       { path: '/logout', element: <LogoutPage /> }
