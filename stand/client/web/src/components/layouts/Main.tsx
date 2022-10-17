@@ -1,17 +1,16 @@
 import * as React from 'react';
 import { Box, Button, Grid, Heading, Sidebar } from 'grommet';
-import { MenuItemConfig, Menu } from '../../Widgets';
 import { Logout } from 'grommet-icons';
-import { PrivateElement } from '../Auth';
 import { useNavigate } from 'react-router-dom';
+import { Menu, MenuItemConfig, PrivateElement } from '@egalteam/framework';
+import logo from '../../assets/logo.svg';
 
 type Props = {
-  logotype?: string;
   children?: React.ReactElement;
-  menuItems?: MenuItemConfig[];
+  menu?: MenuItemConfig[];
 };
 
-export const Layout = ({ children, menuItems, logotype }: Props) => {
+export const Layout = ({ children, menu }: Props) => {
   const navigate = useNavigate();
 
   return (
@@ -25,17 +24,14 @@ export const Layout = ({ children, menuItems, logotype }: Props) => {
         areas={[
           { name: 'nav', start: [0, 0], end: [0, 1] },
           { name: 'header', start: [1, 0], end: [1, 0] },
-          { name: 'main', start: [1, 1], end: [1, 1] },
-        ]}
-      >
-        <Box gridArea={'header'} background={'brand'} pad="xsmall">
-          <Heading level={3}>Header</Heading>
-        </Box>
+          { name: 'main', start: [1, 1], end: [1, 1] }
+        ]}>
+        <Box gridArea={'header'} background={'brand'} pad="xsmall" />
         <Box gridArea="nav" background={'light-5'}>
           <Sidebar
             responsive={false}
             background={'light-2'}
-            header={logotype ? <img src={logotype} alt={'logotype'} /> : null}
+            header={<img src={logo} alt={'logotype'} />}
             footer={
               <Button
                 primary
@@ -46,9 +42,8 @@ export const Layout = ({ children, menuItems, logotype }: Props) => {
                 }}
               />
             }
-            pad={'medium'}
-          >
-            <Menu items={menuItems} />
+            pad={'medium'}>
+            <Menu items={menu} />
           </Sidebar>
         </Box>
         <Box gridArea={'main'}>{children}</Box>
