@@ -30,6 +30,7 @@ export const MobileResolutionNotSupportedFullLayerError = () => (
     </Box>
   </Layer>
 );
+
 export const NotFoundFullLayerError = () => (
   // TODO: Make without layer.
   <Layer full animation={'none'}>
