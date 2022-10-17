@@ -79,9 +79,9 @@ abstract class Model extends EloquentModel
      */
     public static function actionGetMetadata(): array
     {
-        Session::client()->mayOrFail(static::class, 'retrievingMetadata');
+        Session::client()->mayOrFail('retrievingMetadata', static::class);
         $result = ModelMetadataManager::getModelMetadata(static::class)->toArray(true);
-        Session::client()->mayOrFail(static::class, 'retrievedMetadata');
+        Session::client()->mayOrFail('retrievedMetadata', static::class);
 
         return $result;
     }
@@ -96,7 +96,7 @@ abstract class Model extends EloquentModel
      */
     public static function actionGetItem($key, array $relations = []): array
     {
-        Session::client()->mayOrFail(static::class, 'retrieving');
+        Session::client()->mayOrFail('retrieving', static::class);
 
         $instance = new static();
         $instance->makeIsInstanceForAction();
@@ -111,7 +111,7 @@ abstract class Model extends EloquentModel
             throw ObjectNotFoundException::make($key);
         }
 
-        Session::client()->mayOrFail($item, 'retrieved');
+        Session::client()->mayOrFail('retrieved', $item);
 
         return $item->toArray();
     }
@@ -132,7 +132,7 @@ abstract class Model extends EloquentModel
         array  $filter = [],
         array  $order = []
     ): array {
-        Session::client()->mayOrFail(static::class, 'retrieving');
+        Session::client()->mayOrFail('retrieving', static::class);
 
         $instance = new static();
         $instance->makeIsInstanceForAction();
@@ -159,7 +159,7 @@ abstract class Model extends EloquentModel
 
         foreach ($result['items'] as $item) {
             $model = new static($item);
-            Session::client()->mayOrFail($model, 'retrieved');
+            Session::client()->mayOrFail('retrieved', $model);
         }
 
         return $result;
@@ -172,7 +172,7 @@ abstract class Model extends EloquentModel
      */
     public static function actionGetCount(array $filter = []): array
     {
-        Session::client()->mayOrFail(static::class, 'retrievingCount');
+        Session::client()->mayOrFail('retrievingCount', static::class);
 
         $instance = new static();
         $instance->makeIsInstanceForAction();
@@ -181,7 +181,7 @@ abstract class Model extends EloquentModel
             ->setFilterFromArray($filter)
             ->count();
 
-        Session::client()->mayOrFail(static::class, 'retrievedCount');
+        Session::client()->mayOrFail('retrievedCount', static::class);
 
         return ['count' => $count];
     }
@@ -194,7 +194,7 @@ abstract class Model extends EloquentModel
      */
     public static function actionCreate(array $attributes = []): array
     {
-        Session::client()->mayOrFail(static::class, 'creating');
+        Session::client()->mayOrFail('creating', static::class);
 
         DB::beginTransaction();
         $entity = new static();
@@ -204,7 +204,7 @@ abstract class Model extends EloquentModel
 
         try {
             $entity->save();
-            Session::client()->mayOrFail($entity, 'created');
+            Session::client()->mayOrFail('created', $entity);
         } catch (Exception $exception) {
             DB::rollBack();
 
@@ -225,7 +225,7 @@ abstract class Model extends EloquentModel
      */
     public static function actionCreateMany(array $objects = []): array
     {
-        Session::client()->mayOrFail(static::class, 'creating');
+        Session::client()->mayOrFail('creating', static::class);
 
         $model = new static();
         $model->makeIsInstanceForAction();
@@ -240,7 +240,7 @@ abstract class Model extends EloquentModel
 
             try {
                 $entity->save();
-                Session::client()->mayOrFail($entity, 'created');
+                Session::client()->mayOrFail('created', $entity);
             } catch (Exception $exception) {
                 DB::rollBack();
 
@@ -266,7 +266,7 @@ abstract class Model extends EloquentModel
      */
     public static function actionUpdate($key, array $attributes = []): array
     {
-        Session::client()->mayOrFail(static::class, 'updating');
+        Session::client()->mayOrFail('updating', static::class);
 
         DB::beginTransaction();
         $instance = new static();
@@ -284,7 +284,7 @@ abstract class Model extends EloquentModel
         $entity->update($attributes);
         try {
             $entity->save();
-            Session::client()->mayOrFail($entity, 'updated');
+            Session::client()->mayOrFail('updated', $entity);
         } catch (Exception $exception) {
             DB::rollBack();
 
@@ -306,7 +306,7 @@ abstract class Model extends EloquentModel
      */
     public static function actionUpdateMany(array $objects = []): array
     {
-        Session::client()->mayOrFail(static::class, 'updating');
+        Session::client()->mayOrFail('updating', static::class);
 
         $collection = new Collection();
         $instance = new static();
@@ -338,7 +338,7 @@ abstract class Model extends EloquentModel
 
             try {
                 $entity->save();
-                Session::client()->mayOrFail($entity, 'updated');
+                Session::client()->mayOrFail('updated', $entity);
             } catch (Exception $exception) {
                 DB::rollBack();
 
@@ -362,7 +362,7 @@ abstract class Model extends EloquentModel
      */
     public static function actionUpdateManyRaw(array $filter = [], array $attributes = []): array
     {
-        Session::client()->mayOrFail(static::class, 'updating');
+        Session::client()->mayOrFail('updating', static::class);
 
         $instance = new static();
         $builder = $instance->newQuery()->makeModelIsInstanceForAction();
@@ -378,7 +378,7 @@ abstract class Model extends EloquentModel
 
             try {
                 $entity->save();
-                Session::client()->mayOrFail(static::class, 'updated');
+                Session::client()->mayOrFail('updated', static::class);
             } catch (Exception $exception) {
                 DB::rollBack();
 
@@ -402,7 +402,7 @@ abstract class Model extends EloquentModel
      */
     public static function actionDelete($key): array
     {
-        Session::client()->mayOrFail(static::class, 'deleting');
+        Session::client()->mayOrFail('deleting', static::class);
 
         DB::beginTransaction();
         $instance = new static();
@@ -420,7 +420,7 @@ abstract class Model extends EloquentModel
 
         try {
             $entity->delete();
-            Session::client()->mayOrFail(static::class, 'deleted');
+            Session::client()->mayOrFail('deleted', static::class);
         } catch (Exception $exception) {
             DB::rollBack();
 
@@ -439,7 +439,7 @@ abstract class Model extends EloquentModel
      */
     public static function actionDeleteMany(array $keys): ?bool
     {
-        Session::client()->mayOrFail(static::class, 'deleting');
+        Session::client()->mayOrFail('deleting', static::class);
 
         $instance = new static();
         $instance->isLessThanMaxCountEntitiesCanToManipulateWithActionOrFail(count($keys));
@@ -461,7 +461,7 @@ abstract class Model extends EloquentModel
             try {
                 $entity->makeIsInstanceForAction();
                 $entity->delete();
-                Session::client()->mayOrFail(static::class, 'deleted');
+                Session::client()->mayOrFail('deleted', static::class);
             } catch (Exception $e) {
                 DB::rollBack();
 
@@ -483,7 +483,7 @@ abstract class Model extends EloquentModel
      */
     public static function actionDeleteManyRaw(array $filter = []): array
     {
-        Session::client()->mayOrFail(static::class, 'deleting');
+        Session::client()->mayOrFail('deleting', static::class);
 
         $instance = new static();
         $builder = $instance->newQuery()->makeModelIsInstanceForAction();
@@ -497,7 +497,7 @@ abstract class Model extends EloquentModel
             try {
                 $entity->makeIsInstanceForAction();
                 $entity->delete();
-                Session::client()->mayOrFail(static::class, 'deleted');
+                Session::client()->mayOrFail('deleted', static::class);
             } catch (Exception $exception) {
                 DB::rollBack();
 

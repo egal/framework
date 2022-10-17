@@ -40,7 +40,7 @@ abstract class User extends Model
 
     public static function actionLoginToService(string $token, string $service_name): string
     {
-        Session::client()->mayOrFail(static::class, 'loginToService');
+        Session::client()->mayOrFail('loginToService', static::class);
 
         /** @var \Egal\Auth\Tokens\UserMasterToken $umt */
         $umt = UserMasterToken::fromJWT($token, config('app.service_key'));
@@ -67,7 +67,7 @@ abstract class User extends Model
 
     public static function actionRefreshUserMasterToken(string $token): array
     {
-        Session::client()->mayOrFail(static::class, 'refreshUserMasterToken');
+        Session::client()->mayOrFail('refreshUserMasterToken', static::class);
 
         $oldUmrt = UserMasterRefreshToken::fromJWT($token, config('app.service_key'));
         $oldUmrt->isAliveOrFail();

@@ -10,7 +10,7 @@ use Egal\Model\Model;
 
 /**
  * @method bool isUserOrFail()
- * @method bool mayOrFail(string|Model $model, string $ability)
+ * @method bool mayOrFail(string $ability, string|Model $model)
  * @method bool isGuestOrFail()
  * @method bool isServiceOrFail()
  */
@@ -30,7 +30,7 @@ abstract class Client
         return call_user_func_array([$this, $methodName], $arguments) ?: throw new NoAccessToActionException;
     }
 
-    public function may(string|Model $model, string $ability): bool
+    public function may(string $ability, string|Model $model): bool
     {
         $modelClass = is_string($model) ? $model : get_class($model);
         $policy = ModelMetadataManager::getModelMetadata($modelClass)->getPolicy();

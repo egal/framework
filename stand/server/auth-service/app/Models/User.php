@@ -32,7 +32,7 @@ class User extends BaseUser
      */
     public static function actionRegister(string $email, string $password): User
     {
-        Session::client()->mayOrFail(static::class, 'register');
+        Session::client()->mayOrFail('register', static::class);
 
         $user = new static();
         $user->setAttribute('email', $email);
@@ -50,7 +50,7 @@ class User extends BaseUser
 
     public static function actionLogin(string $email, string $password): array
     {
-        Session::client()->mayOrFail(static::class, 'login');
+        Session::client()->mayOrFail('login', static::class);
 
         /** @var BaseUser $user */
         $user = self::query()->where('email', '=', $email)->first();
