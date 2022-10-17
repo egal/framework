@@ -62,7 +62,10 @@ class ActionCaller
         if (Session::isAuthEnabled() && $this->modelMetadata->getPolicy() === null) {
             throw new NoAccessActionCallException();
         }
-
+        dump([
+            $this->modelMetadata->getModelClass(),
+            $this->modelActionMetadata->getMethodName(),
+        ]);
         return call_user_func_array(
             [
                 $this->modelMetadata->getModelClass(),

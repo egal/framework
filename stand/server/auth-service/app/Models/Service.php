@@ -19,7 +19,7 @@ class Service extends BaseService
             ->addActions([
                 ActionMetadata::make('login')
                     ->addParameters([
-                        ActionParameterMetadata::make('serviceName', VariableType::STRING)
+                        ActionParameterMetadata::make('service_name', VariableType::STRING)
                             ->required(),
                         ActionParameterMetadata::make('key', VariableType::STRING)
                             ->required(),
@@ -28,7 +28,7 @@ class Service extends BaseService
                     ->addParameters([
                         ActionParameterMetadata::make('token', VariableType::STRING)
                             ->required(),
-                        ActionParameterMetadata::make('serviceName', VariableType::STRING)
+                        ActionParameterMetadata::make('service_name', VariableType::STRING)
                             ->required()
                     ]),
             ]);

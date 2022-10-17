@@ -38,7 +38,7 @@ abstract class User extends Model
         return $this->getAttribute($this->getAuthIdentifierName());
     }
 
-    public static function actionLoginToService(string $token, string $serviceName): string
+    public static function actionLoginToService(string $token, string $service_name): string
     {
         Session::client()->mayOrFail(static::class, 'loginToService');
 
@@ -48,7 +48,7 @@ abstract class User extends Model
 
         /** @var \Egal\AuthServiceDependencies\Models\User $user */
         $user = static::find($umt->getAuthIdentification());
-        $service = Service::find($serviceName);
+        $service = Service::find($service_name);
         if (!$user) {
             throw new UserNotIdentifiedException();
         }
@@ -60,7 +60,7 @@ abstract class User extends Model
         $ust = new UserServiceToken();
         $ust->setSigningKey($service->getKey());
         $ust->setAuthInformation($user->generateAuthInformation());
-        $ust->setTargetServiceName($serviceName);
+        $ust->setTargetServiceName($service_name);
 
         return $ust->generateJWT();
     }

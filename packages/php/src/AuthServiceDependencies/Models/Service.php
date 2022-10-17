@@ -42,11 +42,11 @@ class Service
         return $this->name;
     }
 
-    public static function actionLogin(string $serviceName, string $key): string
+    public static function actionLogin(string $service_name, string $key): string
     {
         Session::client()->mayOrFail(Service::class, 'login');
 
-        $service = static::find($serviceName);
+        $service = static::find($service_name);
 
         if (!$service || $service->getKey() !== $key) {
             throw new LoginException('Incorrect key or service name!');
@@ -59,7 +59,7 @@ class Service
         return $smt->generateJWT();
     }
 
-    public static function actionLoginToService(string $token, string $serviceName): string
+    public static function actionLoginToService(string $token, string $service_name): string
     {
         Session::client()->mayOrFail(Service::class, 'loginToService');
 
@@ -74,7 +74,7 @@ class Service
             throw new ServiceNotFoundAuthException();
         }
 
-        $recipientService = static::find($serviceName);
+        $recipientService = static::find($service_name);
 
         if (!$recipientService) {
             throw new ServiceNotFoundAuthException();
