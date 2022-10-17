@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { DataTable } from './DataTable';
 import { Actions } from './Actions/Actions';
-import { Box, Keyboard, Spinner } from 'grommet';
+import { Box, Keyboard } from 'grommet';
 import { ResourceHook, useResource } from '../../Hooks';
 import { useContext, useEffect, useState } from 'react';
 import { Pagination } from './Pagination';
@@ -9,37 +9,39 @@ import { EntityManipulate, useEntityManipulate } from '../../Hooks';
 import { Filters } from './Filters/Filters';
 import { Extensions, useExtensions } from './useExtensions';
 import type { ResourceHookConfig } from '../../Hooks';
+import { RecursivePartial } from '../../Utils';
 
 type Model = {
   name: string;
   service: string;
 };
 
-type ContextType = {
-  resource: ResourceHook<any>; // TODO: Not any.
+type ContextType<ItemType> = {
+  resource: ResourceHook<ItemType>;
   selectedKeys: {
     value: (string | number)[];
     set: (value: (string | number)[]) => void;
-    getSelectedEntity: () => any;
+    getSelectedEntity: () => ItemType;
     reset: () => void;
   };
   extensions: Extensions;
   manipulates: {
-    showing: EntityManipulate<any>;
-    creating: EntityManipulate<any>;
-    updating: EntityManipulate<any>;
+    showing: EntityManipulate<ItemType>;
+    creating: EntityManipulate<ItemType>;
+    updating: EntityManipulate<ItemType>;
     filtering: {
-      primary: EntityManipulate<any>;
-      secondary: EntityManipulate<any>;
+      primary: EntityManipulate<any>; // TODO: Not any.
+      secondary: EntityManipulate<any>; // TODO: Not any.
     };
   };
 };
 
-export const ResourceContext = React.createContext<ContextType | undefined>(
-  undefined
-);
+// TODO: Not any.
+export const ResourceContext = React.createContext<
+  ContextType<any> | undefined
+>(undefined);
 
-export function useResourceContext(): ContextType {
+export function useResourceContext(): ContextType<any> {
   const context = useContext(ResourceContext);
 
   if (context === undefined)
@@ -50,14 +52,11 @@ export function useResourceContext(): ContextType {
 
 type Props = {
   model: Model;
-  config?: ResourceHookConfig;
   children: React.ReactNode;
-};
+} & RecursivePartial<ResourceHookConfig>;
 
-export function Resource<ItemType>({ children, model, config }: Props) {
-  // TODO: Get items init params.
-  // Like useResource<ItemType>(model, {gitItems: { intiParams: {...} }})
-  // Intuit params stores in as prop of Resource { config: {...} }.
+// TODO: Save filter params in GET params of Browser URL.
+export function Resource<ItemType>({ children, model, ...config }: Props) {
   const resource = useResource<ItemType>(model, config);
 
   type SelectedKey = string | number;

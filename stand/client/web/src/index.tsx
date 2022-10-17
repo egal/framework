@@ -18,6 +18,7 @@ import { LoginPage } from './pages/auth/LoginPage';
 import { LogoutPage } from './pages/auth/LogoutPage';
 import { RegisterPage } from './pages/auth/RegisterPage';
 import { Layout } from './components/layouts/Main';
+import { SpeakersResource } from './components/resources/SpeakersResource';
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <App
@@ -75,70 +76,7 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
       {
         header: 'Speakers',
         path: '/speakers',
-        element: (
-          <Resource
-            key={'speakers'}
-            model={{ service: 'core', name: 'Speaker' }}
-            config={{
-              getItems: {
-                initParams: {
-                  relations: ['country']
-                }
-              }
-            }}>
-            <Resource.Actions>
-              <Resource.Actions.Create>
-                <FormField name="name" component={TextInput} label="Name" required />
-                <FormField name="surname" component={TextInput} label="Surname" required />
-                <FormField label={'Country'}>
-                  <Select
-                    name={'country_id'}
-                    model={{ name: 'Country', service: 'core' }}
-                    valueKey={{ key: 'id', reduce: true }}
-                    labelKey={'name'}
-                  />
-                </FormField>
-                <FormField label={'User'}>
-                  <Select
-                    name={'user_id'}
-                    model={{ name: 'User', service: 'auth' }}
-                    valueKey={{ key: 'id', reduce: true }}
-                    labelKey={'email'}
-                  />
-                </FormField>
-              </Resource.Actions.Create>
-              <Resource.Actions.Update>
-                <FormField name="name" component={TextInput} label="Name" required />
-                <FormField name="surname" component={TextInput} label="Surname" required />
-                <FormField label={'Country'}>
-                  <Select
-                    name={'country_id'}
-                    model={{ name: 'Country', service: 'core' }}
-                    valueKey={{ key: 'id', reduce: true }}
-                    labelKey={'name'}
-                  />
-                </FormField>
-                <FormField label={'User'}>
-                  <Select
-                    disabled
-                    name={'user_id'}
-                    model={{ name: 'User', service: 'auth' }}
-                    valueKey={{ key: 'id', reduce: true }}
-                    labelKey={'email'}
-                  />
-                </FormField>
-              </Resource.Actions.Update>
-            </Resource.Actions>
-            <Resource.DataTable
-              columns={[
-                { property: 'id', header: 'ID' },
-                { property: 'name', header: 'Name' },
-                { property: 'country_id', header: 'Country ID' },
-                { property: 'country.name', header: 'Country name' }
-              ]}
-            />
-          </Resource>
-        )
+        element: <SpeakersResource />
       }
     ]}
     additionalRoutes={[

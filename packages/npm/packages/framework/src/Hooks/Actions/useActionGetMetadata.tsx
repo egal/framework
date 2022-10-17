@@ -33,7 +33,9 @@ type Params = {};
 
 export type ActionGetMetadataHook = Omit<ActionHook<Result, Params>, 'call'>;
 
-export function useActionGetMetadata(model: ActionModel): ActionGetMetadataHook {
+export function useActionGetMetadata(
+  model: ActionModel
+): ActionGetMetadataHook {
   const { result, error, call } = useAction<Result, Params>(
     model,
     'getMetadata'

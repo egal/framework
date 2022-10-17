@@ -41,9 +41,19 @@ export function useExtensions(): Extensions {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    if (!pagination.exists || (pagination.exists && pagination.ready))
+    const check = (extension: Extension) =>
+      !extension.exists || (extension.exists && extension.ready);
+
+    if (
+      check(pagination) &&
+      check(showing) &&
+      check(creating) &&
+      check(updating) &&
+      check(deleting)
+    ) {
       setReady(true);
-  }, [pagination]);
+    }
+  }, [pagination, showing, creating, updating, deleting]);
 
   return {
     showing,

@@ -6,15 +6,13 @@ import { Buttons } from './Buttons/Buttons';
 import { useEffect } from 'react';
 
 type Props = {
-  //
   children: React.ReactNode;
 };
 
 export function Update({ children }: Props) {
   const {
     resource,
-    selectedKeys,
-    extensions: { showing: updating },
+    extensions: { updating },
     manipulates: { updating: manipulate },
   } = useResourceContext();
 

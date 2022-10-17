@@ -23,7 +23,7 @@ export type ResourceHook<ItemType> = {
 };
 
 export interface ResourceHookConfig {
-  getItems: {
+  actionGetItems: {
     initParams: ActionGetItemsParams;
   };
 }
@@ -33,7 +33,7 @@ export function useResource<ItemType>(
   config: RecursivePartial<ResourceHookConfig> = {}
 ): ResourceHook<ItemType> {
   const defaultConfig: ResourceHookConfig = {
-    getItems: {
+    actionGetItems: {
       initParams: {},
     },
   };
@@ -44,7 +44,7 @@ export function useResource<ItemType>(
     metadata: useActionGetMetadata(model),
     getItems: useActionGetItems<ItemType>(
       model,
-      mergedConfig.getItems.initParams
+      mergedConfig.actionGetItems.initParams
     ),
     create: useActionCreate<ItemType>(model),
     update: useActionUpdate<ItemType>(model),
