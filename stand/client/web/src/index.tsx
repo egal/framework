@@ -1,7 +1,14 @@
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import { App, NotFoundFullLayerError as NotFound, interfaceConfig, authConfig, Resource } from '@egalteam/framework';
-import { Heading } from 'grommet';
+import {
+  App,
+  NotFoundFullLayerError as NotFound,
+  interfaceConfig,
+  authConfig,
+  Resource,
+  Select
+} from '@egalteam/framework';
+import { Heading, TextInput, FormField } from 'grommet';
 import { grommet as grommetTheme } from 'grommet/themes';
 import { deepMerge } from 'grommet/utils';
 import React from 'react';
@@ -137,11 +144,9 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
     additionalRoutes={[
       { path: '*', element: <NotFound /> },
       { path: '/custom', element: <h1>Custom route!</h1> },
-      { path: '/login', element: <LoginComponent /> },
-      { path: '/register', element: <RegisterComponent /> },
-      { path: '/logout', element: <LogoutComponent /> }
+      { path: '/login', element: <LoginPage /> },
+      { path: '/register', element: <RegisterPage /> },
+      { path: '/logout', element: <LogoutPage /> }
     ]}
   />
 );
-
-ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(<App />);
