@@ -59,7 +59,7 @@ class ActionCaller
      */
     public function call(): mixed
     {
-        if (Session::isAuthEnabled() && !$this->isAccessedForCall()) {
+        if (Session::isAuthEnabled() && $this->modelMetadata->getPolicy() === null) {
             throw new NoAccessActionCallException();
         }
 
@@ -70,16 +70,6 @@ class ActionCaller
             ],
             $this->getValidActionParameters()
         );
-    }
-
-    /**
-     * Checks if the action call is available for current session.
-     *
-     * @throws \Exception
-     */
-    private function isAccessedForCall(): bool
-    {
-        return $this->modelMetadata->getPolicy() !== null;
     }
 
     /**
