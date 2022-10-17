@@ -56,7 +56,7 @@ class ModelMetadata
         $key?->guarded();
     }
 
-    public static function make(string $modelClass, ?FieldMetadata $key = null): self
+    public static function make(string $modelClass, FieldMetadata $key): self
     {
         return new static($modelClass, $key);
     }
