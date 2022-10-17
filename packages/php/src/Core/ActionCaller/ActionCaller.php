@@ -62,10 +62,7 @@ class ActionCaller
         if (Session::isAuthEnabled() && $this->modelMetadata->getPolicy() === null) {
             throw new NoAccessActionCallException();
         }
-        dump([
-            $this->modelMetadata->getModelClass(),
-            $this->modelActionMetadata->getMethodName(),
-        ]);
+
         return call_user_func_array(
             [
                 $this->modelMetadata->getModelClass(),
@@ -85,36 +82,31 @@ class ActionCaller
     private function getValidActionParameters(): array
     {
         $actionParameters = $this->actionParameters;
-        $defaultParameters = [];
-
-        $missingParameters = array_filter(
-            $this->modelActionMetadata->getParameters(),
-            fn (ActionParameterMetadata $parameter) => !array_key_exists($parameter->getName(), $actionParameters)
-        );
 
         $notAllowedParameters = array_filter(
-            $actionParameters,
-            fn ($actionParameter) => $this->modelActionMetadata->parameterExist($actionParameter)
+            array_keys($actionParameters),
+            fn ($actionParameter) => !$this->modelActionMetadata->parameterExist($actionParameter)
         );
 
         /** @var ActionParameterMetadata $parameter */
-        foreach ($missingParameters as $parameter) {
-            if (!$parameter->isNullVariableReplaceableWithDefault()) {
+        foreach ($this->modelActionMetadata->getParameters() as $parameterMetadata) {
+            if (array_key_exists($parameterMetadata->getName(), $actionParameters)
+                || $parameterMetadata->getDefault() === null
+            ) {
                 continue;
             }
 
-            $defaultParameters[$parameter->getName()] = $parameter->getDefault();
+            $actionParameters[$parameter->getName()] = $parameter->getDefault();
         }
 
-        $actionParameters = array_merge($actionParameters, $defaultParameters);
         $validator = Validator::make($actionParameters, $this->modelActionMetadata->getValidationRules());
 
-        if ($validator->fails() || $notAllowedParameters != []) {
+        if ($validator->fails() || $notAllowedParameters !== []) {
             $exception = new ActionParameterValidateException();
             $exception->setMessageBag($validator->errors());
 
-            foreach ($notAllowedParameters as $key => $parameter) {
-                $exception->mergeMessage("Parameter $key not allowed here!");
+            foreach ($notAllowedParameters as $parameter) {
+                $exception->mergeMessage("Parameter $parameter not allowed here!");
             }
 
             throw $exception;

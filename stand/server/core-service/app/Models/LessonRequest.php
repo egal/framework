@@ -69,7 +69,17 @@ class LessonRequest extends Model
                             ->addValidationRule('exists:lesson_requests,id')
                     ]),
                 ActionMetadata::make('getMetadata'),
-                ActionMetadata::make('getItems'),
+                ActionMetadata::make('getItems')
+                    ->addParameters([
+                        ActionParameterMetadata::make('pagination', VariableType::ARRAY)
+                            ->nullable(),
+                        ActionParameterMetadata::make('relations', VariableType::ARRAY)
+                            ->nullable(),
+                        ActionParameterMetadata::make('filter', VariableType::ARRAY)
+                            ->nullable(),
+                        ActionParameterMetadata::make('order', VariableType::ARRAY)
+                            ->nullable(),
+                    ]),
                 ActionMetadata::make('delete')
                     ->addParameters([
                         ActionParameterMetadata::make('key', VariableType::INTEGER)
@@ -80,7 +90,9 @@ class LessonRequest extends Model
                     ->addParameters([
                         ActionParameterMetadata::make('key', VariableType::INTEGER)
                             ->required()
-                            ->addValidationRule('exists:lesson_requests,id')
+                            ->addValidationRule('exists:lesson_requests,id'),
+                        ActionParameterMetadata::make('relations', VariableType::ARRAY)
+                            ->nullable(),
                     ]),
                 ActionMetadata::make('getCount'),
                 ActionMetadata::make('createMany'),

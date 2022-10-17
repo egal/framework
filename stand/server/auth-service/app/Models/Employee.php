@@ -72,7 +72,9 @@ class Employee extends Model
                     ->addParameters([
                         ActionParameterMetadata::make('key', VariableType::UUID)
                             ->required()
-                            ->addValidationRule('exists:employees,id')
+                            ->addValidationRule('exists:employees,id'),
+                        ActionParameterMetadata::make('relations', VariableType::ARRAY)
+                            ->nullable(),
                     ]),
                 ActionMetadata::make('getCount'),
                 ActionMetadata::make('createMany'),

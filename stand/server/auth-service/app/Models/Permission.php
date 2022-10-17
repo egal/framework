@@ -54,7 +54,17 @@ class Permission extends Model
                             ->addValidationRule('exists:permissions,id')
                     ]),
                 ActionMetadata::make('getMetadata'),
-                ActionMetadata::make('getItems'),
+                ActionMetadata::make('getItems')
+                    ->addParameters([
+                        ActionParameterMetadata::make('pagination', VariableType::ARRAY)
+                            ->nullable(),
+                        ActionParameterMetadata::make('relations', VariableType::ARRAY)
+                            ->nullable(),
+                        ActionParameterMetadata::make('filter', VariableType::ARRAY)
+                            ->nullable(),
+                        ActionParameterMetadata::make('order', VariableType::ARRAY)
+                            ->nullable(),
+                    ]),
                 ActionMetadata::make('delete')
                     ->addParameters([
                         ActionParameterMetadata::make('key', VariableType::STRING)
@@ -65,7 +75,9 @@ class Permission extends Model
                     ->addParameters([
                         ActionParameterMetadata::make('key', VariableType::STRING)
                             ->required()
-                            ->addValidationRule('exists:permissions,id')
+                            ->addValidationRule('exists:permissions,id'),
+                        ActionParameterMetadata::make('relations', VariableType::ARRAY)
+                            ->nullable(),
                     ]),
                 ActionMetadata::make('getCount'),
                 ActionMetadata::make('createMany'),

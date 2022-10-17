@@ -169,13 +169,15 @@ class User extends BaseUser
                     ->addParameters([
                         ActionParameterMetadata::make('key', VariableType::UUID)
                             ->required()
-                            ->addValidationRule('exists:users,id')
+                            ->addValidationRule('exists:users,id'),
                     ]),
                 ActionMetadata::make('getItem')
                     ->addParameters([
                         ActionParameterMetadata::make('key', VariableType::UUID)
                             ->required()
-                            ->addValidationRule('exists:users,id')
+                            ->addValidationRule('exists:users,id'),
+                        ActionParameterMetadata::make('relations', VariableType::ARRAY)
+                            ->nullable(),
                     ]),
                 ActionMetadata::make('getCount'),
                 ActionMetadata::make('createMany'),

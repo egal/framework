@@ -38,7 +38,17 @@ class UserRole extends Model
                             ->addValidationRule('exists:user_roles,id')
                     ]),
                 ActionMetadata::make('getMetadata'),
-                ActionMetadata::make('getItems'),
+                ActionMetadata::make('getItems')
+                    ->addParameters([
+                        ActionParameterMetadata::make('pagination', VariableType::ARRAY)
+                            ->nullable(),
+                        ActionParameterMetadata::make('relations', VariableType::ARRAY)
+                            ->nullable(),
+                        ActionParameterMetadata::make('filter', VariableType::ARRAY)
+                            ->nullable(),
+                        ActionParameterMetadata::make('order', VariableType::ARRAY)
+                            ->nullable(),
+                    ]),
                 ActionMetadata::make('delete')
                     ->addParameters([
                         ActionParameterMetadata::make('key', VariableType::INTEGER)
@@ -49,7 +59,9 @@ class UserRole extends Model
                     ->addParameters([
                         ActionParameterMetadata::make('key', VariableType::INTEGER)
                             ->required()
-                            ->addValidationRule('exists:user_roles,id')
+                            ->addValidationRule('exists:user_roles,id'),
+                        ActionParameterMetadata::make('relations', VariableType::ARRAY)
+                            ->nullable(),
                     ]),
                 ActionMetadata::make('getCount'),
                 ActionMetadata::make('createMany'),

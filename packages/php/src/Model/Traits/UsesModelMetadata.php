@@ -54,11 +54,11 @@ trait UsesModelMetadata
     {
         static::creating(static function (Model $model): void {
             foreach ($model->getModelMetadata()->getFields() as $field) {
-                if (! $field->isNullVariableReplaceableWithDefault()) {
+                if ($field->getDefault() === null) {
                     continue;
                 }
 
-                if (! $model->getAttribute($field->getName())) {
+                if (!$model->getAttribute($field->getName())) {
                     $model->setAttribute($field->getName(), $field->getDefault());
                 }
             }
