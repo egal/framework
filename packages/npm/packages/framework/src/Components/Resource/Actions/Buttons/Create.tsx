@@ -15,7 +15,7 @@ export function Create(props: Props) {
       label={'Create'}
       primary
       color={'status-ok'}
-      onClick={() => manipulate.enable({ weight: '' })}
+      onClick={() => manipulate.enable({})}
     />
   );
 }

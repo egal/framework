@@ -10,13 +10,26 @@ import {
   useAction,
   useAuthContext,
   FullBoxLoader,
-  Resource
+  Resource,
+  ActionModel,
+  Select
 } from '@egalteam/framework';
 import { Box, Heading, Layer, Form, FormField, TextInput, Button, Text, DateInput } from 'grommet';
 import { grommet as grommetTheme } from 'grommet/themes';
 import { deepMerge } from 'grommet/utils';
 import React, { useEffect, useState } from 'react';
 import { Link, redirect, useNavigate } from 'react-router-dom';
+
+type SelectInputProps = {
+  model: ActionModel;
+  key: string;
+  viewField: string;
+};
+
+export function SelectInput(props: SelectInputProps) {
+  // подгрузка getItems
+  return <div>{/* отображение инпута */}</div>;
+}
 
 function LoginComponent() {
   const [formValue, setFormValue] = useState({ email: '', password: '' });
@@ -155,7 +168,6 @@ const App = () => (
         ]
       },
       {
-        // TODO: Show and set (create/update) relation one2many (employee.country.name).
         header: 'Employees',
         path: '/employees',
         element: (
@@ -263,13 +275,43 @@ const App = () => (
           <Resource
             key={'speakers'}
             model={{ service: 'core', name: 'Speaker' }}
-            //
-          >
+            config={{
+              getItems: {
+                initParams: {
+                  relations: ['country']
+                }
+              }
+            }}>
+            <Resource.Actions.Create>
+              <FormField name="name" component={TextInput} label="Name" required />
+              <FormField name="surname" component={TextInput} label="Surname" required />
+              <FormField label={'Country'}>
+                <Select
+                  name={'country_id'}
+                  model={{ name: 'Country', service: 'core' }}
+                  valueKey={{ key: 'id', reduce: true }}
+                  labelKey={'name'}
+                />
+              </FormField>
+            </Resource.Actions.Create>
+            <Resource.Actions.Update>
+              <FormField name="name" component={TextInput} label="Name" required />
+              <FormField name="surname" component={TextInput} label="Surname" required />
+              <FormField label={'Country'}>
+                <Select
+                  name={'country_id'}
+                  model={{ name: 'Country', service: 'core' }}
+                  valueKey={{ key: 'id', reduce: true }}
+                  labelKey={'name'}
+                />
+              </FormField>
+            </Resource.Actions.Update>
             <Resource.DataTable
               columns={[
-                //
                 { property: 'id', header: 'ID' },
-                { property: 'name', header: 'Name' }
+                { property: 'name', header: 'Name' },
+                { property: 'country_id', header: 'Country ID' },
+                { property: 'country.name', header: 'Country name' }
               ]}
             />
           </Resource>

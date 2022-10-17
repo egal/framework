@@ -8,6 +8,7 @@ import { Pagination } from './Pagination';
 import { EntityManipulate, useEntityManipulate } from '../../Hooks';
 import { Filters } from './Filters/Filters';
 import { Extensions, useExtensions } from './useExtensions';
+import type { ActionConfig } from '../../Hooks';
 
 type Model = {
   name: string;
@@ -49,14 +50,15 @@ export function useResourceContext(): ContextType {
 
 type Props = {
   model: Model;
+  config?: ActionConfig;
   children: React.ReactNode;
 };
 
-export function Resource<ItemType>({ children, model }: Props) {
+export function Resource<ItemType>({ children, model, config }: Props) {
   // TODO: Get items init params.
   // Like useResource<ItemType>(model, {gitItems: { intiParams: {...} }})
   // Intuit params stores in as prop of Resource { config: {...} }.
-  const resource = useResource<ItemType>(model);
+  const resource = useResource<ItemType>(model, config);
 
   type SelectedKey = string | number;
   type SelectedKeys = SelectedKey[];

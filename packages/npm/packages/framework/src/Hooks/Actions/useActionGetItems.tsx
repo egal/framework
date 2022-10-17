@@ -16,11 +16,12 @@ type Result<ItemType> = {
   items: ItemType[];
 };
 
-type Params = {
+export type Params = {
   pagination?: {
     per_page?: number;
     page?: number;
   };
+  relations?: string[];
   filter?: any; // TODO: Normalize.
 };
 
