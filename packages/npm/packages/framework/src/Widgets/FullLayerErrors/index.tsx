@@ -12,7 +12,7 @@ export const SomethingWentWrongFullLayerError = () => (
       <GrommetStatusWarningIcon size={'xlarge'} color={'dark-1'} />
       <GrommetHeading color={'dark-1'}>Что-то пошло не так...</GrommetHeading>
       <GrommetParagraph size="large">
-        Обратитесь в тех поддержку!
+        Обратитесь в тех. поддержку!
       </GrommetParagraph>
     </GrommetBox>
   </Layer>
