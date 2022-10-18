@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Policies\AllowPolicy;
+use Egal\Auth\Policies\AllowAllPolicy;
 use Egal\Model\Enums\VariableType;
 use Egal\Model\Enums\RelationType;
 use Egal\Model\Metadata\ActionMetadata;
@@ -27,7 +27,7 @@ class Language extends Model
     public static function constructMetadata(): ModelMetadata
     {
         return ModelMetadata::make(self::class, FieldMetadata::make('id', VariableType::STRING))
-            ->policy(AllowPolicy::class)
+            ->policy(AllowAllPolicy::class)
             ->addFields([
                 FieldMetadata::make('name', VariableType::STRING)
                     ->required()

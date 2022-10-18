@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Policies\AllowPolicy;
+use Egal\Auth\Policies\AllowAllPolicy;
 use Egal\Model\Enums\VariableType;
 use Egal\Model\Metadata\ActionMetadata;
 use Egal\Model\Metadata\ActionParameterMetadata;
@@ -16,7 +16,7 @@ class UserRole extends Model
     public static function constructMetadata(): ModelMetadata
     {
         return ModelMetadata::make(UserRole::class, FieldMetadata::make('id', VariableType::INTEGER))
-            ->policy(AllowPolicy::class)
+            ->policy(AllowAllPolicy::class)
             ->addFields([
                 FieldMetadata::make('user_id', VariableType::UUID)
                     ->required()

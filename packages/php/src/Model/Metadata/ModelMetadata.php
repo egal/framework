@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Egal\Model\Metadata;
 
+use Egal\Auth\Policies\DenyAllPolicy;
 use Egal\Model\Exceptions\ActionNotFoundException;
 use Egal\Model\Exceptions\FieldNotFoundException;
 use Egal\Model\Exceptions\RelationNotFoundException;
@@ -44,9 +45,9 @@ class ModelMetadata
     protected array $actions = [];
 
     /**
-     * @var string|null
+     * @var string
      */
-    protected ?string $policy;
+    protected string $policy = DenyAllPolicy::class;
 
     public function __construct(string $modelClass, ?FieldMetadata $key)
     {
