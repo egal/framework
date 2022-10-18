@@ -2,15 +2,17 @@
 
 namespace App\Models;
 
-use App\Exceptions\EmptyPasswordException;
 use App\Exceptions\PasswordHashException;
+use App\Policies\UserPolicy;
 use Egal\Auth\Tokens\UserMasterRefreshToken;
 use Egal\Auth\Tokens\UserMasterToken;
 use Egal\AuthServiceDependencies\Exceptions\LoginException;
 use Egal\AuthServiceDependencies\Models\User as BaseUser;
-use Egal\Model\Enums\FieldType;
+use Egal\Core\Session\Session;
+use Egal\Model\Enums\VariableType;
 use Egal\Model\Enums\RelationType;
 use Egal\Model\Metadata\ActionMetadata;
+use Egal\Model\Metadata\ActionParameterMetadata;
 use Egal\Model\Metadata\FieldMetadata;
 use Egal\Model\Metadata\ModelMetadata;
 use Egal\Model\Metadata\RelationMetadata;
@@ -25,11 +27,12 @@ class User extends BaseUser
     use HasFactory;
     use HasRelationships;
 
+    /**
+     * @throws PasswordHashException
+     */
     public static function actionRegister(string $email, string $password): User
     {
-        if (!$password) {
-            throw new EmptyPasswordException();
-        }
+        Session::client()->mayOrFail('register', static::class);
 
         $user = new static();
         $user->setAttribute('email', $email);
@@ -47,10 +50,10 @@ class User extends BaseUser
 
     public static function actionLogin(string $email, string $password): array
     {
+        Session::client()->mayOrFail('login', static::class);
+
         /** @var BaseUser $user */
-        $user = self::query()
-            ->where('email', '=', $email)
-            ->first();
+        $user = self::query()->where('email', '=', $email)->first();
 
         if (!$user || !password_verify($password, $user->getAttribute('password'))) {
             throw new LoginException('Incorrect Email or password!');
@@ -89,9 +92,7 @@ class User extends BaseUser
     {
         parent::boot();
         static::created(function (User $user) {
-            $defaultRoles = Role::query()
-                ->where('is_default', true)
-                ->get();
+            $defaultRoles = Role::query()->where('is_default', true)->get();
             $user->roles()->attach($defaultRoles->pluck('id'));
         });
     }
@@ -108,17 +109,18 @@ class User extends BaseUser
 
     public static function constructMetadata(): ModelMetadata
     {
-        return ModelMetadata::make(User::class, FieldMetadata::make('id',FieldType::UUID))
+        return ModelMetadata::make(User::class, FieldMetadata::make('id', VariableType::UUID))
+            ->policy(UserPolicy::class)
             ->addFields([
-                FieldMetadata::make('email', FieldType::STRING)
+                FieldMetadata::make('email', VariableType::STRING)
                     ->required()
                     ->addValidationRule('unique:users,email'),
-                FieldMetadata::make('password', FieldType::STRING)
+                FieldMetadata::make('password', VariableType::STRING)
                     ->required()
                     ->hidden()
                     ->guarded(),
-                FieldMetadata::make('created_at', FieldType::DATETIME),
-                FieldMetadata::make('updated_at', FieldType::DATETIME),
+                FieldMetadata::make('created_at', VariableType::DATETIME),
+                FieldMetadata::make('updated_at', VariableType::DATETIME),
             ])
             ->addRelations([
                 RelationMetadata::make(
@@ -128,16 +130,63 @@ class User extends BaseUser
                 ),
             ])
             ->addActions([
-                ActionMetadata::make('register'),
-                ActionMetadata::make('login'),
-                ActionMetadata::make('loginToService'),
+                ActionMetadata::make('register')
+                    ->addParameters([
+                        ActionParameterMetadata::make('password', VariableType::STRING)
+                            ->required(),
+                        ActionParameterMetadata::make('email', VariableType::STRING)
+                            ->required()
+                            ->addValidationRule('email:rfc,dns')
+                    ]),
+                ActionMetadata::make('login')
+                    ->addParameters([
+                        ActionParameterMetadata::make('email', VariableType::STRING)
+                            ->required()
+                            ->addValidationRule('exists:users,email'),
+                        ActionParameterMetadata::make('password', VariableType::STRING)
+                            ->required()
+                    ]),
+                ActionMetadata::make('loginToService')
+                    ->addParameters([
+                        ActionParameterMetadata::make('token', VariableType::STRING)
+                            ->required(),
+                        ActionParameterMetadata::make('service_name', VariableType::STRING)
+                            ->required(),
+                    ]),
                 ActionMetadata::make('refreshUserMasterToken'),
                 ActionMetadata::make('create'),
-                ActionMetadata::make('update'),
+                ActionMetadata::make('update')
+                    ->addParameters([
+                        ActionParameterMetadata::make('key', VariableType::UUID)
+                            ->required()
+                            ->addValidationRule('exists:users,id')
+                    ]),
                 ActionMetadata::make('getMetadata'),
-                ActionMetadata::make('getItems'),
-                ActionMetadata::make('delete'),
-                ActionMetadata::make('getItem'),
+                ActionMetadata::make('getItems')
+                    ->addParameters([
+                        ActionParameterMetadata::make('pagination', VariableType::ARRAY)
+                            ->nullable(),
+                        ActionParameterMetadata::make('relations', VariableType::ARRAY)
+                            ->nullable(),
+                        ActionParameterMetadata::make('filter', VariableType::ARRAY)
+                            ->nullable(),
+                        ActionParameterMetadata::make('order', VariableType::ARRAY)
+                            ->nullable(),
+                    ]),
+                ActionMetadata::make('delete')
+                    ->addParameters([
+                        ActionParameterMetadata::make('key', VariableType::UUID)
+                            ->required()
+                            ->addValidationRule('exists:users,id'),
+                    ]),
+                ActionMetadata::make('getItem')
+                    ->addParameters([
+                        ActionParameterMetadata::make('key', VariableType::UUID)
+                            ->required()
+                            ->addValidationRule('exists:users,id'),
+                        ActionParameterMetadata::make('relations', VariableType::ARRAY)
+                            ->nullable(),
+                    ]),
                 ActionMetadata::make('getCount'),
                 ActionMetadata::make('createMany'),
                 ActionMetadata::make('updateMany'),

@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
-use Egal\Model\Enums\FieldType;
+use Egal\Auth\Policies\AllowAllPolicy;
+use Egal\Model\Enums\VariableType;
 use Egal\Model\Metadata\ActionMetadata;
+use Egal\Model\Metadata\ActionParameterMetadata;
 use Egal\Model\Metadata\FieldMetadata;
 use Egal\Model\Metadata\ModelMetadata;
 use Egal\Model\Model;
@@ -18,34 +20,62 @@ class Employee extends Model
 
     public static function constructMetadata(): ModelMetadata
     {
-        return ModelMetadata::make(Employee::class, FieldMetadata::make('id',FieldType::UUID))
+        return ModelMetadata::make(Employee::class, FieldMetadata::make('id', VariableType::UUID))
+            ->policy(AllowAllPolicy::class)
             ->addFields([
-                FieldMetadata::make('address', FieldType::STRING)
+                FieldMetadata::make('address', VariableType::STRING)
                     ->default('Home Address'),
-                FieldMetadata::make('phone', FieldType::INTEGER)
+                FieldMetadata::make('phone', VariableType::INTEGER)
                     ->nullable()
                     ->addValidationRule('unique:employees,phone'),
-                FieldMetadata::make('adult', FieldType::BOOLEAN)
+                FieldMetadata::make('adult', VariableType::BOOLEAN)
                     ->required(),
-                FieldMetadata::make('weight', FieldType::NUMERIC)
+                FieldMetadata::make('weight', VariableType::NUMERIC)
                     ->required(),
-                FieldMetadata::make('created_at', FieldType::DATETIME)
+                FieldMetadata::make('created_at', VariableType::DATETIME)
                     ->guarded(),
-                FieldMetadata::make('updated_at', FieldType::DATETIME)
+                FieldMetadata::make('updated_at', VariableType::DATETIME)
                     ->guarded(),
             ])
             ->addFakeFields([
-                FieldMetadata::make('height',  FieldType::NUMERIC)
+                FieldMetadata::make('height', VariableType::NUMERIC)
                     ->sometimes()
                     ->required()
             ])
             ->addActions([
                 ActionMetadata::make('create'),
-                ActionMetadata::make('update'),
+                ActionMetadata::make('update')
+                    ->addParameters([
+                        ActionParameterMetadata::make('key', VariableType::UUID)
+                            ->required()
+                            ->addValidationRule('exists:employees,id')
+                    ]),
                 ActionMetadata::make('getMetadata'),
-                ActionMetadata::make('getItems'),
-                ActionMetadata::make('delete'),
-                ActionMetadata::make('getItem'),
+                ActionMetadata::make('getItems')
+                    ->addParameters([
+                        ActionParameterMetadata::make('pagination', VariableType::ARRAY)
+                            ->nullable(),
+                        ActionParameterMetadata::make('relations', VariableType::ARRAY)
+                            ->nullable(),
+                        ActionParameterMetadata::make('filter', VariableType::ARRAY)
+                            ->nullable(),
+                        ActionParameterMetadata::make('order', VariableType::ARRAY)
+                            ->nullable(),
+                    ]),
+                ActionMetadata::make('delete')
+                    ->addParameters([
+                        ActionParameterMetadata::make('key', VariableType::UUID)
+                            ->required()
+                            ->addValidationRule('exists:employees,id')
+                    ]),
+                ActionMetadata::make('getItem')
+                    ->addParameters([
+                        ActionParameterMetadata::make('key', VariableType::UUID)
+                            ->required()
+                            ->addValidationRule('exists:employees,id'),
+                        ActionParameterMetadata::make('relations', VariableType::ARRAY)
+                            ->nullable(),
+                    ]),
                 ActionMetadata::make('getCount'),
                 ActionMetadata::make('createMany'),
                 ActionMetadata::make('updateMany'),

@@ -3,9 +3,8 @@
 namespace App\Policies;
 
 use Egal\Core\Session\Session;
-use Illuminate\Support\Facades\Gate;
 
-class UserPolicy
+class ServicePolicy
 {
 
     public static function login(): bool
@@ -13,7 +12,7 @@ class UserPolicy
         return Session::client()->isGuest();
     }
 
-    public static function register(): bool
+    public static function logged(): bool
     {
         return Session::client()->isGuest();
     }
@@ -23,7 +22,7 @@ class UserPolicy
         return Session::client()->isGuest();
     }
 
-    public static function refreshUserMasterToken(): bool
+    public static function loggedToService(): bool
     {
         return Session::client()->isGuest();
     }

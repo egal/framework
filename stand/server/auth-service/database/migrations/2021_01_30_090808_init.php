@@ -56,13 +56,6 @@ class Init extends Migration
 
             $table->timestamps();
         });
-
-        Schema::create('services', function (Blueprint $table) {
-            $table->string('id')->primary()->unique();
-            $table->string('name')->unique();
-            $table->string('key');
-            $table->timestamps();
-        });
     }
 
     public function down(): void
@@ -72,7 +65,6 @@ class Init extends Migration
         Schema::dropIfExists('roles');
         Schema::dropIfExists('user_roles');
         Schema::dropIfExists('users');
-        Schema::dropIfExists('services');
         DB::statement('DROP EXTENSION IF EXISTS "uuid-ossp"');
     }
 }
