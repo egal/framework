@@ -92,7 +92,7 @@ trait VariableMetadata
         return $this->nullable;
     }
 
-    public function setValidationRules(): void
+    protected function constructValidationRules(): void
     {
         if (in_array($this->type->value, $this->validationRules)) {
             return;
@@ -115,7 +115,7 @@ trait VariableMetadata
     public function getValidationRules(): array
     {
         if (!isset($this->validationRules)) {
-            $this->setValidationRules();
+            $this->constructValidationRules();
         }
 
         return $this->validationRules;
