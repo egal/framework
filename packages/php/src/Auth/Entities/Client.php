@@ -24,7 +24,7 @@ abstract class Client
     {
         $methodName = preg_replace("/^(.*)(OrFail)$/", '$1', $name);
         if (!method_exists($this, $methodName)) {
-            trigger_error('Call to undefined method '.__CLASS__.'::'.$name.'()', E_USER_ERROR);
+            trigger_error('Call to undefined method ' . __CLASS__ . '::' . $name . '()', E_USER_ERROR);
         }
 
         return call_user_func_array([$this, $methodName], $arguments) ?: throw new NoAccessToActionException;

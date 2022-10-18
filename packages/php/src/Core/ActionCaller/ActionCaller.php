@@ -53,16 +53,10 @@ class ActionCaller
     /**
      * Calling action.
      *
-     * If not available to call, an {@see \Egal\Core\Exceptions\NoAccessActionCallException} is thrown.
-     *
-     * @throws \Exception|NoAccessActionCallException
+     * @throws \Exception
      */
     public function call(): mixed
     {
-        if (Session::isAuthEnabled() && $this->modelMetadata->getPolicy() === null) {
-            throw new NoAccessActionCallException();
-        }
-
         return call_user_func_array(
             [
                 $this->modelMetadata->getModelClass(),
