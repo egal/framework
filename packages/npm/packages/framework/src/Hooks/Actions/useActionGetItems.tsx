@@ -1,13 +1,7 @@
-import {
-  ActionHook,
-  ActionError,
-  ActionResultPromise,
-  ActionModel,
-  useAction,
-} from './useAction';
+import { ActionHook, ActionError, ActionModel, useAction } from './useAction';
 import { deepMerge } from 'grommet/utils';
 import { useState } from 'react';
-import { RecursivePartial } from '../../Utils';
+import { PromiseWithReject, RecursivePartial } from '../../Utils';
 
 type Result<ItemType> = {
   current_page: number;
@@ -29,7 +23,7 @@ export type ActionGetItemsHook<ItemType> = Omit<
   ActionHook<Result<ItemType>, ActionGetItemsParams>,
   'call'
 > & {
-  call: () => ActionResultPromise<Result<ItemType>, ActionError>;
+  call: () => PromiseWithReject<Result<ItemType>, ActionError>;
   params: ActionGetItemsParams;
   setParams: (value: ActionGetItemsParams) => void;
   mergeParams: (value: Partial<ActionGetItemsParams>) => void;

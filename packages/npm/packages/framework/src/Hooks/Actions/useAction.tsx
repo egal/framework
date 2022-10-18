@@ -1,5 +1,6 @@
 import axios, { AxiosError } from 'axios';
 import { useState } from 'react';
+import { PromiseWithReject } from '../../Utils';
 
 export type ActionModel = {
   name: string;
@@ -12,19 +13,10 @@ export type ActionError = {
   code: ActionErrorCode;
 };
 
-export type ActionResultPromise<T, F = any> = {
-  catch<TResult = never>(
-    onrejected?:
-      | ((reason: F) => TResult | PromiseLike<TResult>)
-      | undefined
-      | null
-  ): Promise<T | TResult>;
-} & Promise<T>;
-
 export type ActionHook<ResultType, ParamsType> = {
   result?: ResultType;
   error?: ActionError;
-  call: (params: ParamsType) => ActionResultPromise<ResultType, ActionError>;
+  call: (params: ParamsType) => PromiseWithReject<ResultType, ActionError>;
 };
 
 export function useAction<ResultType, ParamsType>(
@@ -36,7 +28,7 @@ export function useAction<ResultType, ParamsType>(
 
   const call = (
     params: ParamsType
-  ): ActionResultPromise<ResultType, ActionError> => {
+  ): PromiseWithReject<ResultType, ActionError> => {
     return new Promise((resolve, reject) => {
       axios
         .request({

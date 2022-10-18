@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import jwtDecode from 'jwt-decode';
-import { removeCookie, useCookie } from './useCookie';
+import { useCookie } from './useCookie';
 
 export type AuthConfig = {
   authServiceName: string;
@@ -29,8 +29,8 @@ export type Auth = {
   getServiceToken: <ServiceTokenType = any>(
     serviceName: string
   ) => ServiceTokenType;
-  login: (rawMasterToken: string) => void;
-  logout: () => void;
+  login: (rawMasterToken: string) => Promise<void>;
+  logout: () => Promise<void>;
 };
 
 export function useAuth(config: AuthConfig = authConfig): Auth {
@@ -66,22 +66,6 @@ export function useAuth(config: AuthConfig = authConfig): Auth {
     setLogged(true);
   };
 
-  const login = (rawMasterToken: string): void => {
-    rawLogin(rawMasterToken);
-    cookieMasterToken.set(rawMasterToken);
-  };
-
-  const logout = (): void => {
-    if (!logged) {
-      throw new Error('Logout impossible, because not logged!');
-    }
-
-    setServicesTokens([]);
-    setMasterToken(undefined);
-    cookieMasterToken.remove();
-    setLogged(false);
-  };
-
   // TODO: Default value for ServiceTokenType.
   const getServiceToken = <ServiceTokenType,>(
     serviceName: string
@@ -95,11 +79,32 @@ export function useAuth(config: AuthConfig = authConfig): Auth {
   }
 
   return {
-    //
     logged,
     getMasterToken,
     getServiceToken,
-    login,
-    logout,
+    login: (rawMasterToken: string) => {
+      return new Promise((resolve) => {
+        rawLogin(rawMasterToken);
+        cookieMasterToken.set(rawMasterToken);
+        resolve();
+      });
+    },
+    logout: () => {
+      return new Promise((resolve, reject) => {
+        try {
+          if (!logged) {
+            throw new Error('Logout impossible, because not logged!');
+          }
+
+          setServicesTokens([]);
+          setMasterToken(undefined);
+          cookieMasterToken.remove();
+          setLogged(false);
+          resolve();
+        } catch (e) {
+          reject();
+        }
+      });
+    },
   };
 }

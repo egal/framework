@@ -5,10 +5,11 @@ import React, { useEffect } from 'react';
 export function LogoutPage() {
   const auth = useAuthContext();
   const navigate = useNavigate();
+  const navigateLogin = () => navigate('/login');
 
   useEffect(() => {
-    auth.logout(); // TODO: Logout not working.
-    navigate('/login');
+    // TODO: Logout not working, infinity loop.
+    auth.logout().then(navigateLogin).catch(navigateLogin);
   }, []);
 
   return <FullBoxLoader />;
