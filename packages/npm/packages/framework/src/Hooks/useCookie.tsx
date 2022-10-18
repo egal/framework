@@ -11,7 +11,7 @@ type CookieOptions = {
   HttpOnly?: boolean;
 };
 
-export function stringifyOptions(options: CookieOptions) {
+function stringifyOptions(options: CookieOptions) {
   return Object.keys(options).reduce((acc, key) => {
     if (key === 'days') {
       return acc;
@@ -53,7 +53,7 @@ export const setCookie = (
     stringifyOptions(optionsWithDefaults);
 };
 
-export const deleteCookie = (name: string) => {
+export const removeCookie = (name: string) => {
   setCookie(name, '', { days: -1 });
 };
 
@@ -71,28 +71,28 @@ export const getCookie = (name: string, initialValue?: string) => {
 export function useCookie(
   key: string,
   initialValue?: string
-): [
-  string | undefined,
-  (value: string, options?: CookieOptions) => void,
-  () => void
-] {
-  const [item, setItem] = useState(() => {
+): {
+  value: string | undefined;
+  set: (value: string, options?: CookieOptions) => void;
+  remove: () => void;
+} {
+  const [value, setValue] = useState(() => {
     return getCookie(key, initialValue);
   });
 
-  const updateItem = (value: string, options: CookieOptions) => {
-    setItem(value);
+  const set = (value: string, options: CookieOptions) => {
+    setValue(value);
     setCookie(key, value, options);
   };
 
-  const deleteItem = () => {
-    deleteCookie(key);
+  const remove = () => {
+    removeCookie(key);
   };
 
-  return [
+  return {
     //
-    item,
-    updateItem,
-    deleteItem,
-  ];
+    value,
+    set,
+    remove,
+  };
 }

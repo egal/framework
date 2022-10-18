@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { Link } from 'react-router-dom';
-import { Box, Button } from 'grommet';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Box, Button, Text } from 'grommet';
 
 type Props = {
   header: string;
@@ -8,11 +8,15 @@ type Props = {
 };
 
 export function MenuItemLink({ header, path }: Props) {
+  const location = useLocation();
+
+  const navigate = useNavigate();
+
   return (
-    <Box pad="xsmall">
-      <Link to={path}>
-        <Button gap="xsmall" alignSelf="start" plain label={header} />
-      </Link>
+    <Box onClick={() => navigate(path)} focusIndicator={false}>
+      <Text color={path === location.pathname ? 'brand' : undefined}>
+        {header}
+      </Text>
     </Box>
   );
 }

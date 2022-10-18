@@ -25,7 +25,7 @@ import {
 
 type AppConfig = {
   menu?: MenuItemConfig[];
-  layout: React.ReactElement;
+  layout: React.ComponentType<any>;
   theme: ThemeType;
   additionalRoutes?: PathRouteProps[];
   mobileResolutionSupport?: boolean;
@@ -37,7 +37,7 @@ export function App({
   menu = [],
   theme,
   additionalRoutes = [],
-  layout,
+  layout: Layout,
   mobileResolutionSupport = true,
   interfaceConfig = defaultInterfaceConfig,
   authConfig = defaultAuthConfig,
@@ -58,8 +58,7 @@ export function App({
     return [
       <Route
         path={path}
-        // TODO: Twice render because using React.cloneElement. Its convenient to user use.
-        element={React.cloneElement(layout, { menuItems: menu }, element)}
+        element={<Layout menu={menu}>{element}</Layout>}
         key={key}
       />,
     ];

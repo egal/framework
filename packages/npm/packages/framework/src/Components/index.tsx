@@ -1,3 +1,4 @@
 export * from './App';
-export * from './Layout';
-export * from './Resources';
+export * from './Resource';
+export * from './Inputs';
+export * from './Auth';

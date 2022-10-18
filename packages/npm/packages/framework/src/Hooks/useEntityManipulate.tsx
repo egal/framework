@@ -1,14 +1,16 @@
 import { useState } from 'react';
 
-export function useEntityManipulate<EntityType = any>(): [
-  boolean,
-  EntityType | undefined, // TODO: Undefined if first is false.
-  (entity: EntityType) => void,
-  () => void,
-  (newEntity: EntityType) => void,
-  () => void,
-  boolean
-] {
+export type EntityManipulate<EntityType> = {
+  enabled: boolean;
+  entity: EntityType | undefined; // TODO: Undefined if first is false.
+  enable: (entity: EntityType) => void;
+  disable: () => void;
+  changeEntity: (newEntity: EntityType) => void;
+  resetEntity: () => void;
+  entityIsDirty: boolean;
+};
+
+export function useEntityManipulate<EntityType = any>(): EntityManipulate<EntityType> {
   const [enabled, setEnabled] = useState<boolean>(false);
   const [entity, setEntity] = useState<EntityType>();
   const [originalEntity, setOriginalEntity] = useState<EntityType>();
@@ -35,7 +37,6 @@ export function useEntityManipulate<EntityType = any>(): [
 
     setEntity(newEntity);
     setEntityIsDirty(entity !== originalEntity);
-    console.log(entityIsDirty);
   };
 
   const disable = () => {
@@ -61,7 +62,7 @@ export function useEntityManipulate<EntityType = any>(): [
     setEntityIsDirty(false);
   };
 
-  return [
+  return {
     enabled,
     entity,
     enable,
@@ -69,5 +70,5 @@ export function useEntityManipulate<EntityType = any>(): [
     changeEntity,
     resetEntity,
     entityIsDirty,
-  ];
+  };
 }

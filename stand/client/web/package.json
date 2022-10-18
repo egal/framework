@@ -30,9 +30,9 @@
     "lint:fix": "eslint --fix",
     "format": "prettier --write './**/*.{js,jsx,ts,tsx,css,md,json}' --config ./.prettierrc",
     "link": "npm-run-all -s link:*",
-    "link:lib-self": "cd ../../../npm-packages/packages/framework/ && npm link",
-    "link:lib-react": "cd ../../../npm-packages/packages/framework/ && npm link ../../../stand/client/web/node_modules/react/ ../../../stand/client/web/node_modules/react-router-dom/",
-    "link:app-to-lib": "npm link ../../../npm-packages/packages/framework/"
+    "link:lib-self": "cd ../../../packages/npm/packages/framework/ && npm link",
+    "link:lib-react": "cd ../../../packages/npm/packages/framework/ && npm link ../../../../stand/client/web/node_modules/react/ ../../../../stand/client/web/node_modules/react-router-dom/ ../../../../stand/client/web/node_modules/grommet/ ../../../../stand/client/web/node_modules/grommet-icons/ ../../../../stand/client/web/node_modules/grommet-styles/",
+    "link:app-to-lib": "npm link ../../../packages/npm/packages/framework/"
   },
   "eslintConfig": {
     "extends": [
