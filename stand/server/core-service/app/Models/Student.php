@@ -4,12 +4,9 @@ namespace App\Models;
 
 use Egal\Auth\Policies\AllowAllPolicy;
 use Egal\Model\Enums\VariableType;
-use Egal\Model\Enums\VariableType;
 use Egal\Model\Enums\RelationType;
-use Egal\Model\Metadata\ActionMetadata;
 use Egal\Model\Metadata\ActionParameterMetadata;
 use Egal\Model\Metadata\ActionMetadataDependencies;
-use Egal\Model\Metadata\ActionParameterMetadata;
 use Egal\Model\Metadata\FieldMetadata;
 use Egal\Model\Metadata\ModelMetadata;
 use Egal\Model\Metadata\RelationMetadata;
@@ -31,7 +28,6 @@ class Student extends Model
     {
         return ModelMetadata::make(self::class, FieldMetadata::make('id', VariableType::UUID))
             ->policy(AllowAllPolicy::class)
-        return ModelMetadata::make(self::class, FieldMetadata::make('id', VariableType::UUID))
             ->addFields([
                 FieldMetadata::make('user_id', VariableType::UUID)
                     ->required()
@@ -54,44 +50,6 @@ class Student extends Model
                 )
             ])
             ->addActions([
-                ActionMetadata::make('create'),
-                ActionMetadata::make('update')
-                    ->addParameters([
-                        ActionParameterMetadata::make('key', VariableType::UUID)
-                            ->required()
-                            ->addValidationRule('exists:students,id')
-                    ]),
-                ActionMetadata::make('getMetadata'),
-                ActionMetadata::make('getItems')
-                    ->addParameters([
-                        ActionParameterMetadata::make('pagination', VariableType::ARRAY)
-                            ->nullable(),
-                        ActionParameterMetadata::make('relations', VariableType::ARRAY)
-                            ->nullable(),
-                        ActionParameterMetadata::make('filter', VariableType::ARRAY)
-                            ->nullable(),
-                        ActionParameterMetadata::make('order', VariableType::ARRAY)
-                            ->nullable(),
-                    ]),
-                ActionMetadata::make('delete')
-                    ->addParameters([
-                        ActionParameterMetadata::make('key', VariableType::UUID)
-                            ->required()
-                            ->addValidationRule('exists:students,id'),
-                        ActionParameterMetadata::make('relations', VariableType::ARRAY)
-                            ->nullable(),
-                    ]),
-                ActionMetadata::make('getItem')
-                    ->addParameters([
-                        ActionParameterMetadata::make('key', VariableType::UUID)
-                            ->required()
-                            ->addValidationRule('exists:students,id')
-                    ]),
-                ActionMetadata::make('getCount'),
-                ActionMetadata::make('createMany'),
-                ActionMetadata::make('updateMany'),
-                ActionMetadata::make('updateManyRaw'),
-                ActionMetadata::make('deleteMany'),
                 ActionMetadataDependencies\CreateActionMetadata::make()
                     ->addParameters([
                         ActionParameterMetadata::make('user_id', VariableType::UUID)

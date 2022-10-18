@@ -6,9 +6,6 @@ use Egal\Model\Enums\VariableType;
 use Egal\Model\Metadata\ActionMetadataDependencies;
 use Egal\Model\Metadata\ActionParameterMetadata;
 use Egal\Auth\Policies\AllowAllPolicy;
-use Egal\Model\Enums\VariableType;
-use Egal\Model\Metadata\ActionMetadata;
-use Egal\Model\Metadata\ActionParameterMetadata;
 use Egal\Model\Metadata\FieldMetadata;
 use Egal\Model\Metadata\ModelMetadata;
 use Egal\Model\Model;
@@ -35,12 +32,9 @@ class Permission extends Model
     {
         return ModelMetadata::make(Permission::class, FieldMetadata::make('id', VariableType::STRING))
             ->policy(AllowAllPolicy::class)
-        return ModelMetadata::make(Permission::class, FieldMetadata::make('id', VariableType::STRING))
             ->addFields([
                 FieldMetadata::make('name', VariableType::STRING)
                     ->required()
-                    ->addValidationRule('unique:roles,name'),
-                FieldMetadata::make('is_default', VariableType::BOOLEAN)
                     ->addValidationRule('unique:permissions,name'),
                 FieldMetadata::make('is_default', VariableType::BOOLEAN)
                     ->required(),

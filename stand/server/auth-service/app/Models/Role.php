@@ -4,12 +4,9 @@ namespace App\Models;
 
 use Egal\Auth\Policies\AllowAllPolicy;
 use Egal\Model\Enums\VariableType;
-use Egal\Model\Enums\VariableType;
 use Egal\Model\Enums\RelationType;
-use Egal\Model\Metadata\ActionMetadata;
 use Egal\Model\Metadata\ActionParameterMetadata;
 use Egal\Model\Metadata\ActionMetadataDependencies;
-use Egal\Model\Metadata\ActionParameterMetadata;
 use Egal\Model\Metadata\FieldMetadata;
 use Egal\Model\Metadata\ModelMetadata;
 use Egal\Model\Metadata\RelationMetadata;
@@ -50,15 +47,12 @@ class Role extends Model
     {
         return ModelMetadata::make(Role::class, FieldMetadata::make('id', VariableType::STRING))
             ->policy(AllowAllPolicy::class)
-        return ModelMetadata::make(Role::class, FieldMetadata::make('id', VariableType::STRING))
             ->addFields([
                 FieldMetadata::make('name', VariableType::STRING)
                     ->required()
                     ->addValidationRule('unique:roles,name'),
                 FieldMetadata::make('is_default', VariableType::BOOLEAN)
-                    ->required(),
-                FieldMetadata::make('created_at', VariableType::DATETIME)
-                FieldMetadata::make('is_default', VariableType::BOOLEAN)
+                    ->required()
                     ->default(false),
                 FieldMetadata::make('created_at', VariableType::DATETIME)
                     ->hidden()

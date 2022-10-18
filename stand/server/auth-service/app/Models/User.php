@@ -25,7 +25,6 @@ use Egal\Model\Metadata\ActionMetadataDependencies\UpdateActionMetadata;
 use Egal\Model\Metadata\ActionMetadataDependencies\UpdateManyActionMetadata;
 use Egal\Model\Metadata\ActionMetadataDependencies\UpdateManyRawActionMetadata;
 use Egal\Model\Metadata\ActionParameterMetadata;
-use Egal\Model\Metadata\ActionParameterMetadata;
 use Egal\Model\Metadata\FieldMetadata;
 use Egal\Model\Metadata\ModelMetadata;
 use Egal\Model\Metadata\RelationMetadata;
@@ -45,7 +44,6 @@ class User extends BaseUser
      */
     public static function actionRegister(string $email, string $password): User
     {
-        Session::getAuthEntity()->mayOrFail(static::class, 'register');
         Session::client()->mayOrFail('register', static::class);
 
         $user = new static();
@@ -64,8 +62,6 @@ class User extends BaseUser
 
     public static function actionLogin(string $email, string $password): array
     {
-        Session::getAuthEntity()->mayOrFail(static::class, 'login');
-
         Session::client()->mayOrFail('login', static::class);
 
         /** @var BaseUser $user */
@@ -126,10 +122,6 @@ class User extends BaseUser
     public static function constructMetadata(): ModelMetadata
     {
         return ModelMetadata::make(User::class, FieldMetadata::make('id', VariableType::UUID))
-            ->addPolicies([
-                UserPolicy::class,
-            ])
-        return ModelMetadata::make(User::class, FieldMetadata::make('id', VariableType::UUID))
             ->policy(UserPolicy::class)
             ->addFields([
                 FieldMetadata::make('email', VariableType::STRING)
@@ -150,21 +142,6 @@ class User extends BaseUser
                 ),
             ])
             ->addActions([
-                ActionMetadata::make('register')
-                    ->addParameters([
-                        ActionParameterMetadata::make('password', VariableType::STRING)
-                            ->required(),
-                        ActionParameterMetadata::make('email', VariableType::STRING)
-                            ->required()
-                            ->addValidationRule('email:rfc,dns')
-                    ]),
-                ActionMetadata::make('login')
-                    ->addParameters([
-                        ActionParameterMetadata::make('email', VariableType::STRING)
-                            ->required()
-                            ->addValidationRule('exists:users,email'),
-                    ]),
-                ActionMetadata::make('loginToService'),
                 ActionMetadata::make('register')
                     ->addParameters([
                         ActionParameterMetadata::make('password', VariableType::STRING)
@@ -208,44 +185,6 @@ class User extends BaseUser
                 GetItemActionMetadata::make(static::class, VariableType::UUID),
                 GetCountActionMetadata::make(),
                 GetMetadataActionMetadata::make()
-                ActionMetadata::make('create'),
-                ActionMetadata::make('update')
-                    ->addParameters([
-                        ActionParameterMetadata::make('key', VariableType::UUID)
-                            ->required()
-                            ->addValidationRule('exists:users,id')
-                    ]),
-                ActionMetadata::make('getMetadata'),
-                ActionMetadata::make('getItems')
-                    ->addParameters([
-                        ActionParameterMetadata::make('pagination', VariableType::ARRAY)
-                            ->nullable(),
-                        ActionParameterMetadata::make('relations', VariableType::ARRAY)
-                            ->nullable(),
-                        ActionParameterMetadata::make('filter', VariableType::ARRAY)
-                            ->nullable(),
-                        ActionParameterMetadata::make('order', VariableType::ARRAY)
-                            ->nullable(),
-                    ]),
-                ActionMetadata::make('delete')
-                    ->addParameters([
-                        ActionParameterMetadata::make('key', VariableType::UUID)
-                            ->required()
-                            ->addValidationRule('exists:users,id'),
-                    ]),
-                ActionMetadata::make('getItem')
-                    ->addParameters([
-                        ActionParameterMetadata::make('key', VariableType::UUID)
-                            ->required()
-                            ->addValidationRule('exists:users,id'),
-                        ActionParameterMetadata::make('relations', VariableType::ARRAY)
-                            ->nullable(),
-                    ]),
-                ActionMetadata::make('getCount'),
-                ActionMetadata::make('createMany'),
-                ActionMetadata::make('updateMany'),
-                ActionMetadata::make('updateManyRaw'),
-                ActionMetadata::make('deleteMany'),
             ]);
     }
 
