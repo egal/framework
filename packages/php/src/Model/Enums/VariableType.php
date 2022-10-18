@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Egal\Model\Enums;
 
+// TODO: Переделать на FieldType и AttributeParameterType
 enum VariableType: string
 {
 
