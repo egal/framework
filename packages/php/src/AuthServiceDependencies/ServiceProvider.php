@@ -11,17 +11,11 @@ use Illuminate\Support\ServiceProvider as BaseServiceProvider;
 class ServiceProvider extends BaseServiceProvider
 {
 
-    /**
-     * @throws IncorrectAppServicesEnvironmentVariablePatternException
-     */
     public function register(): void
     {
         $this->registerServices();
     }
 
-    /**
-     * @throws IncorrectAppServicesEnvironmentVariablePatternException
-     */
     protected function registerServices(): void
     {
         $services = [];

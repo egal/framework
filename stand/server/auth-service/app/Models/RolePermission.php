@@ -6,7 +6,6 @@ use Egal\Model\Enums\VariableType;
 use Egal\Model\Metadata\ActionMetadataDependencies;
 use Egal\Model\Metadata\ActionParameterMetadata;
 use Egal\Auth\Policies\AllowAllPolicy;
-use Egal\Model\Metadata\ActionMetadata;
 use Egal\Model\Metadata\FieldMetadata;
 use Egal\Model\Metadata\ModelMetadata;
 use Egal\Model\Model;
