@@ -5,6 +5,10 @@ namespace App\Models;
 use Egal\Model\Enums\VariableType;
 use Egal\Model\Metadata\ActionMetadataDependencies;
 use Egal\Model\Metadata\ActionParameterMetadata;
+use Egal\Auth\Policies\AllowAllPolicy;
+use Egal\Model\Enums\VariableType;
+use Egal\Model\Metadata\ActionMetadata;
+use Egal\Model\Metadata\ActionParameterMetadata;
 use Egal\Model\Metadata\FieldMetadata;
 use Egal\Model\Metadata\ModelMetadata;
 use Egal\Model\Model;
@@ -19,6 +23,8 @@ class Employee extends Model
 
     public static function constructMetadata(): ModelMetadata
     {
+        return ModelMetadata::make(Employee::class, FieldMetadata::make('id', VariableType::UUID))
+            ->policy(AllowAllPolicy::class)
         return ModelMetadata::make(Employee::class, FieldMetadata::make('id', VariableType::UUID))
             ->addFields([
                 FieldMetadata::make('address', VariableType::STRING)

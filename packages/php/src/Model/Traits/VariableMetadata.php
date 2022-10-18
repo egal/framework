@@ -92,15 +92,10 @@ trait VariableMetadata
         return $this->nullable;
     }
 
-    public function getDefault(): mixed
-    {
-        return $this->default;
-    }
-
-    public function getValidationRules(): array
+    protected function constructValidationRules(): void
     {
         if (in_array($this->type->value, $this->validationRules)) {
-            return $this->validationRules;
+            return;
         }
 
         switch ($this->type) {
@@ -109,6 +104,18 @@ trait VariableMetadata
             default:
                 array_unshift($this->validationRules, $this->type->value);
                 break;
+        }
+    }
+
+    public function getDefault(): mixed
+    {
+        return $this->default;
+    }
+
+    public function getValidationRules(): array
+    {
+        if (!isset($this->validationRules)) {
+            $this->constructValidationRules();
         }
 
         return $this->validationRules;
@@ -122,11 +129,6 @@ trait VariableMetadata
     public function getType(): VariableType
     {
         return $this->type;
-    }
-
-    public function isNullVariableReplaceableWithDefault(): bool
-    {
-        return $this->isNullable() || ($this->getDefault() !== null);
     }
 
 }

@@ -11,8 +11,8 @@ pull: generate-dot-env-file
 
 # regionRelay
 up: generate-dot-env-file pull build
-	docker-compose up --detach rabbitmq postgres web-service proxy
-	docker-compose up --no-build auth-service || docker-compose down
+	docker-compose up --detach $(docker-compose config --services | grep -v -e "[auth|core]-service")
+	docker-compose up --no-build auth-service core-service || docker-compose down
 down:
 	docker-compose down
 down-with-volumes:

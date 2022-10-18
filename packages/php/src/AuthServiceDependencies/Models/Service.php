@@ -10,7 +10,7 @@ use Egal\AuthServiceDependencies\Exceptions\LoginException;
 use Egal\AuthServiceDependencies\Exceptions\ServiceNotFoundAuthException;
 use Egal\Core\Session\Session;
 
-abstract class Service
+class Service
 {
 
     protected string $name;
@@ -42,11 +42,11 @@ abstract class Service
         return $this->name;
     }
 
-    public static function actionLogin(string $serviceName, string $key): string
+    public static function actionLogin(string $service_name, string $key): string
     {
-        Session::getAuthEntity()->mayOrFail(Service::class, 'login');
+        Session::client()->mayOrFail('login', Service::class);
 
-        $service = static::find($serviceName);
+        $service = static::find($service_name);
 
         if (!$service || $service->getKey() !== $key) {
             throw new LoginException('Incorrect key or service name!');
@@ -59,9 +59,9 @@ abstract class Service
         return $smt->generateJWT();
     }
 
-    public static function actionLoginToService(string $token, string $serviceName): string
+    public static function actionLoginToService(string $token, string $service_name): string
     {
-        Session::getAuthEntity()->mayOrFail(Service::class, 'loginToService');
+        Session::client()->mayOrFail('loginToService', Service::class);
 
         /** @var \Egal\Auth\Tokens\ServiceMasterToken $smt */
         $smt = ServiceMasterToken::fromJWT($token, config('app.service_key'));
@@ -74,7 +74,7 @@ abstract class Service
             throw new ServiceNotFoundAuthException();
         }
 
-        $recipientService = static::find($serviceName);
+        $recipientService = static::find($service_name);
 
         if (!$recipientService) {
             throw new ServiceNotFoundAuthException();

@@ -4,12 +4,11 @@ declare(strict_types=1);
 
 namespace Egal\Model\Metadata;
 
-use Egal\Model\Enums\VariableType;
+use Egal\Auth\Policies\DenyAllPolicy;
 use Egal\Model\Exceptions\ActionNotFoundException;
 use Egal\Model\Exceptions\FieldNotFoundException;
 use Egal\Model\Exceptions\RelationNotFoundException;
 use Egal\Model\Exceptions\UnsupportedFilterValueTypeException;
-use Egal\Model\Metadata\ActionMetadataDependencies\BaseActionMetadata;
 use Illuminate\Validation\Concerns\ValidatesAttributes;
 
 class ModelMetadata
@@ -41,14 +40,14 @@ class ModelMetadata
     protected array $relations = [];
 
     /**
-     * @var BaseActionMetadata[]
+     * @var ActionMetadata[]
      */
     protected array $actions = [];
 
     /**
-     * @var string[]
+     * @var string
      */
-    protected array $policies = [];
+    protected string $policy = DenyAllPolicy::class;
 
     public function __construct(string $modelClass, ?FieldMetadata $key)
     {
@@ -58,7 +57,7 @@ class ModelMetadata
         $key?->guarded();
     }
 
-    public static function make(string $modelClass, ?FieldMetadata $key = null): self
+    public static function make(string $modelClass, FieldMetadata $key): self
     {
         return new static($modelClass, $key);
     }
@@ -73,7 +72,7 @@ class ModelMetadata
         $modelMetadata['fields'] = array_map(fn(FieldMetadata $field) => $field->toArray(), $this->fields);
         $modelMetadata['fake_fields'] = array_map(fn(FieldMetadata $field) => $field->toArray(), $this->fakeFields);
         $modelMetadata['relations'] = array_map(fn(RelationMetadata $relation) => $relation->toArray($loadRelatedMetadata), $this->relations);
-        $modelMetadata['actions'] = array_map(fn(BaseActionMetadata $action) => $action->toArray(), $this->actions);
+        $modelMetadata['actions'] = array_map(fn(ActionMetadata $action) => $action->toArray(), $this->actions);
 
         return $modelMetadata;
     }
@@ -109,7 +108,7 @@ class ModelMetadata
     }
 
     /**
-     * @param BaseActionMetadata[] $actions
+     * @param ActionMetadata[] $actions
      */
     public function addActions(array $actions): self
     {
@@ -129,11 +128,11 @@ class ModelMetadata
     }
 
     /**
-     * @param string[] $policies
+     * @param class-string $policy
      */
-    public function addPolicies(array $policies): self
+    public function policy(string $policy): self
     {
-        $this->policies = array_merge($this->policies, $policies);
+        $this->policy = $policy;
 
         return $this;
     }
@@ -142,7 +141,7 @@ class ModelMetadata
     {
         return array_filter(
                 [...$this->fields, ...$this->fakeFields, $this->getKey()],
-                fn(FieldMetadata $field) => $field->getName() === $fieldName
+                fn (FieldMetadata $field) => $field->getName() === $fieldName
             ) !== [];
     }
 
@@ -180,29 +179,16 @@ class ModelMetadata
     {
         $field = array_filter(
             [...$this->fields, ...$this->fakeFields, $this->getKey()],
-            fn(FieldMetadata $field) => $field->getName() === $fieldName
+            fn (FieldMetadata $field) => $field->getName() === $fieldName
         );
         $field = reset($field);
-        $fieldType = $field->getType();
 
-        switch ($fieldType) {
-            case VariableType::DATETIME:
-                return;
-            default:
-                $validationMethod = 'validate' . ucfirst($fieldType->value);
-                break;
-        }
-
+        $validationMethod = 'validate' . ucfirst($field->getType()->value);
         $fieldValidated = $this->$validationMethod($fieldName, $value);
 
         if (!$fieldValidated) {
             throw UnsupportedFilterValueTypeException::make($fieldName, $field->getType()->value);
         }
-    }
-
-    public function hasPolicies(): bool
-    {
-        return $this->policies !== [];
     }
 
     public function getModelShortName(): string
@@ -236,7 +222,7 @@ class ModelMetadata
     }
 
     /**
-     * @return BaseActionMetadata[]
+     * @return ActionMetadata[]
      */
     public function getActions(): array
     {
@@ -246,7 +232,7 @@ class ModelMetadata
     /**
      * @throws ActionNotFoundException
      */
-    public function getAction(string $actionName): BaseActionMetadata
+    public function getAction(string $actionName): ActionMetadata
     {
         foreach ($this->actions as $action) {
             if ($action->getName() === $actionName) {
@@ -278,9 +264,9 @@ class ModelMetadata
         return $this->casts;
     }
 
-    public function getPolicies(): array
+    public function getPolicy(): string
     {
-        return $this->policies;
+        return $this->policy;
     }
 
 }
