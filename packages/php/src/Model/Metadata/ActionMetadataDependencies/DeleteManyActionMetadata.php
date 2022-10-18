@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Egal\Model\Metadata\ActionMetadataDependencies;
 
 use Egal\Model\Enums\VariableType;
+use Egal\Model\Facades\ModelMetadataManager;
 use Egal\Model\Metadata\ActionParameterMetadata;
 use Illuminate\Support\Str;
 
@@ -20,11 +21,12 @@ class DeleteManyActionMetadata extends BaseActionMetadata
 
         $explodedModelClass = explode('\\', $modelClass);
         $tableName = Str::snake(Str::plural(end($explodedModelClass)));
+        $keyName = ModelMetadataManager::getModelMetadata($modelClass)->getKey()->getName();
 
         $this->addParameters([
-            ActionParameterMetadata::make('ids', VariableType::ARRAY),
-            ActionParameterMetadata::make('ids.*', $keyType)
-                ->addValidationRule("exists:{$tableName},id"),
+            ActionParameterMetadata::make('keys', VariableType::ARRAY),
+            ActionParameterMetadata::make('keys.*', $keyType)
+                ->addValidationRule("exists:{$tableName},{$keyName}"),
 
         ]);
     }
