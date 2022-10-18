@@ -11,7 +11,6 @@ use Egal\AuthServiceDependencies\Exceptions\LoginException;
 use Egal\AuthServiceDependencies\Exceptions\UserNotIdentifiedException;
 use Egal\Core\Session\Session;
 use Egal\Model\Model;
-use Egal\Model\Facades\ModelMetadataManager;
 
 abstract class User extends Model
 {
@@ -93,6 +92,7 @@ abstract class User extends Model
         ];
     }
 
+    // TODO: Переделать наполнение токена на основе спецификации протокола
     protected function generateAuthInformation(): array
     {
         return array_merge(
