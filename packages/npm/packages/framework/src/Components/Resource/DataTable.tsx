@@ -64,7 +64,8 @@ export function DataTable(props: Props) {
     <Box overflow="auto" fill justify={'start'}>
       <Box>
         <GrommetDataTable
-          pin={'header'}
+          fill
+          pin
           {...props}
           {...selectingProps}
           primaryKey={resource.metadata.result.primary_key.name}
