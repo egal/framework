@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Resource } from '@egalteam/framework';
-import { DateInput, FormField, TextInput } from 'grommet';
+import { CheckBox, DateInput, FormField, TextInput } from 'grommet';
 
 export const EmployeesResource = () => (
   <Resource
@@ -68,14 +68,14 @@ export const EmployeesResource = () => (
       <Resource.Actions.Create>
         <FormField name="address" component={TextInput} label="Address" required />
         <FormField name="phone" component={TextInput} label="Phone" />
-        <FormField name="adult" component={TextInput} label="Adult" required />
+        <FormField name="adult" component={CheckBox} label="Adult" required />
         <FormField name="weight" component={TextInput} label="Weight" required />
       </Resource.Actions.Create>
       <Resource.Actions.Show>
         <FormField name="id" component={TextInput} label="ID" disabled />
         <FormField name="address" component={TextInput} label="Address" disabled />
         <FormField name="phone" component={TextInput} label="Phone" disabled />
-        <FormField name="adult" component={TextInput} label="Adult" disabled />
+        <FormField name="adult" component={CheckBox} label="Adult" disabled />
         <FormField name="weight" component={TextInput} label="Weight" disabled />
         <FormField name="created_at" component={TextInput} label="Created at" disabled />
         <FormField name="updated_at" component={TextInput} label="Updated at" disabled />
@@ -84,7 +84,7 @@ export const EmployeesResource = () => (
         <FormField name="id" component={TextInput} label="ID" disabled />
         <FormField name="address" component={TextInput} label="Address" required />
         <FormField name="phone" component={TextInput} label="Phone" />
-        <FormField name="adult" component={TextInput} label="Adult" required />
+        <FormField name="adult" component={CheckBox} label="Adult" required />
         <FormField name="weight" component={TextInput} label="Weight" required />
       </Resource.Actions.Update>
       <Resource.Actions.Delete />
