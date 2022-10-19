@@ -3,12 +3,12 @@ import './index.css';
 import {
   App,
   NotFoundFullLayerError as NotFound,
-  interfaceConfig,
   authConfig,
-  Resource,
-  Select
+  appConfig,
+  AppConfig,
+  RecursivePartial
 } from '@egalteam/framework';
-import { Heading, TextInput, FormField } from 'grommet';
+import { Heading } from 'grommet';
 import { grommet as grommetTheme } from 'grommet/themes';
 import { deepMerge } from 'grommet/utils';
 import React from 'react';
@@ -43,13 +43,7 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
         }
       }
     })}
-    interfaceConfig={deepMerge(interfaceConfig, {
-      dataTableResource: {
-        createButton: {
-          label: 'Create'
-        }
-      }
-    })}
+    config={deepMerge<AppConfig, RecursivePartial<AppConfig>>(appConfig, {})}
     authConfig={deepMerge(authConfig, {})}
     menu={[
       { header: 'Home', path: '/', element: <Heading>Home page</Heading> },
