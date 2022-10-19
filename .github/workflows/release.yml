@@ -26,7 +26,8 @@ jobs:
           git clone https://rollsover:${{ secrets.ACCESS_TOKEN }}@github.com/egal/framework.git .
           git filter-repo --subdirectory-filter ${split_dir}/
           git remote set-url origin ${split_remote} || git remote add origin ${split_remote}
-          git push --tags -u origin ${git_branch}
+          git push -u origin ${git_branch}
+          git push -u origin ${{ github.event.release.tag_name }}
 
   package-npm-framework:
     runs-on: ubuntu-latest
