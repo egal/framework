@@ -101,6 +101,7 @@ export function Resource<ItemType>({ children, model, ...config }: Props) {
   }, [extensions.ready]);
 
   useEffect(() => {
+    resetSelectedKeys();
     resource.getItems.call();
   }, [resource.getItems.params]);
 
