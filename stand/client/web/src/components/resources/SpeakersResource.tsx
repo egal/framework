@@ -56,14 +56,16 @@ export const SpeakersResource = () => (
     </Resource.Actions>
     <Resource.DataTable
       columns={[
-        { property: 'id', header: 'ID' },
+        { property: 'id', header: 'ID', pin: true },
         { property: 'name', header: 'Name' },
         { property: 'country_id', header: 'Country ID' },
         {
           property: 'country.name',
           header: 'Country name',
           render: (datum) => <Tag value={datum.country.name} />
-        }
+        },
+        { property: 'created_at', header: 'created_at' },
+        { property: 'updated_at', header: 'updated_at' }
       ]}
     />
   </Resource>
