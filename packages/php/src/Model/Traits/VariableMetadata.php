@@ -47,7 +47,7 @@ trait VariableMetadata
             'type' => $this->type->value,
             'default' => $this->default,
             'nullable' => $this->nullable,
-            'validationRules' => $this->getValidationRules(),
+            'validationRules' => $this->validationRules,
         ];
     }
 
