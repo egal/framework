@@ -47,7 +47,7 @@ trait VariableMetadata
             'type' => $this->type->value,
             'default' => $this->default,
             'nullable' => $this->nullable,
-            'validationRules' => $this->validationRules,
+            'validationRules' => $this->getValidationRules(),
         ];
     }
 
@@ -114,9 +114,7 @@ trait VariableMetadata
 
     public function getValidationRules(): array
     {
-        if (!isset($this->validationRules)) {
-            $this->constructValidationRules();
-        }
+        $this->constructValidationRules();
 
         return $this->validationRules;
     }
