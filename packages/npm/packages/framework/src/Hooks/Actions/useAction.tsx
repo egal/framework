@@ -1,6 +1,7 @@
 import axios, { AxiosError } from 'axios';
 import { useState } from 'react';
 import { PromiseWithReject } from '../../Utils';
+import { useAppContext } from '../../Components';
 
 export type ActionModel = {
   name: string;
@@ -26,6 +27,12 @@ export function useAction<ResultType, ParamsType>(
   const [result, setResult] = useState<ResultType>();
   const [error, setError] = useState<ActionError>();
 
+  const {
+    config: {
+      actions: { apiURL },
+    },
+  } = useAppContext();
+
   const call = (
     params: ParamsType
   ): PromiseWithReject<ResultType, ActionError> => {
@@ -33,7 +40,7 @@ export function useAction<ResultType, ParamsType>(
       axios
         .request({
           method: 'POST',
-          url: `http://localhost:8080/${model.service}/${model.name}/${name}`,
+          url: `${apiURL}/${model.service}/${model.name}/${name}`,
           data: params,
           headers: { 'Content-Type': 'application/json' },
         })
