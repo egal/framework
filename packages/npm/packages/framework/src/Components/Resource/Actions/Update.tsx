@@ -13,6 +13,7 @@ export function Update({ children }: Props) {
   const {
     resource,
     extensions: { updating },
+    selectedKeys,
     manipulates: { updating: manipulate },
   } = useResourceContext();
 
@@ -41,6 +42,7 @@ export function Update({ children }: Props) {
                 })
                 .then(() => {
                   manipulate.disable();
+                  selectedKeys.reset();
                   resource.getItems.call();
                 });
             }}
