@@ -54,11 +54,9 @@ export function useAction<ResultType, ParamsType>(
           if (caughtError.code === undefined) {
             respectableError.code = 'ERR_UNDEFINED';
             respectableError.message = 'Undefined Error';
-          } else if (caughtError.code === 'ERR_NETWORK') {
+          } else {
             respectableError.code = caughtError.code;
             respectableError.message = caughtError.message;
-          } else {
-            throw new Error('Unsupported type of axios error!');
           }
 
           setError(respectableError);
