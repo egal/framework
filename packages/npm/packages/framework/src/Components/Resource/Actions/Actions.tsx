@@ -7,6 +7,24 @@ import { DataTable } from '../DataTable';
 import { Pagination } from '../Pagination';
 import { Show } from './Show';
 import { Buttons } from './Buttons/Buttons';
+import { EntityManipulate, ResourceHook } from '../../../Hooks';
+import { Extensions } from '../useExtensions';
+import { useContext } from 'react';
+
+type ContextType = {};
+
+export const ResourceActionsContext = React.createContext<
+  ContextType | undefined
+>(undefined);
+
+export function useResourceActionsContext(): ContextType {
+  const context = useContext(ResourceActionsContext);
+
+  if (context === undefined)
+    throw new Error('Element must be used in Resource.Actions context!');
+
+  return context;
+}
 
 type Props = {
   children: React.ReactNode;
@@ -16,9 +34,11 @@ export const Actions = ({ children }: Props) => {
   // TODO: Check children.
 
   return (
-    <Box gap={'small'} direction={'row'} justify={'end'}>
-      {children}
-    </Box>
+    <ResourceActionsContext.Provider value={{}}>
+      <Box gap={'small'} direction={'row'} justify={'end'}>
+        {children}
+      </Box>
+    </ResourceActionsContext.Provider>
   );
 };
 

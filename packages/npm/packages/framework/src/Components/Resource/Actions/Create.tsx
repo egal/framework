@@ -5,6 +5,7 @@ import { FullLayerModal } from '../FullLayerModal';
 import { useResourceContext } from '../Resource';
 import { Buttons } from './Buttons/Buttons';
 import { useEffect } from 'react';
+import { useResourceActionsContext } from './Actions';
 
 type Props = {
   children: React.ReactNode;
@@ -16,6 +17,8 @@ export function Create({ children }: Props) {
     extensions: { creating },
     manipulates: { creating: manipulate },
   } = useResourceContext();
+
+  useResourceActionsContext();
 
   useEffect(() => {
     creating.makeExists();
