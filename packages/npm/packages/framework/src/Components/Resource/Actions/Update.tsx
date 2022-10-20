@@ -4,6 +4,7 @@ import { useResourceContext } from '../Resource';
 import { FullLayerModal } from '../FullLayerModal';
 import { Buttons } from './Buttons/Buttons';
 import { useEffect } from 'react';
+import { useResourceActionsContext } from './Actions';
 
 type Props = {
   children: React.ReactNode;
@@ -16,6 +17,8 @@ export function Update({ children }: Props) {
     selectedKeys,
     manipulates: { updating: manipulate },
   } = useResourceContext();
+
+  useResourceActionsContext();
 
   useEffect(() => {
     updating.makeExists();
