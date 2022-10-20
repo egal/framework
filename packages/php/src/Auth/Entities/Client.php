@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Egal\Auth\Entities;
 
 use Egal\Auth\Exceptions\NoAccessToActionException;
-use Egal\Core\Exceptions\NoAccessActionCallException;
 use Egal\Core\Session\Session;
 use Egal\Model\Facades\ModelMetadataManager;
 use Egal\Model\Model;
