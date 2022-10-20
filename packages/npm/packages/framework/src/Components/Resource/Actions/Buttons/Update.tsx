@@ -4,10 +4,7 @@ import { ButtonExtendedProps } from 'grommet/components/Button';
 import { MouseEventHandler } from 'react';
 import { Button } from 'grommet';
 
-type Props = Omit<
-  ButtonExtendedProps,
-  'label' | 'color' | 'primary' | 'onClick'
-> & {
+export type UpdateButtonProps = Pick<ButtonExtendedProps, 'label'> & {
   onClick:
     | 'update-selected'
     | 'update-showing'
@@ -15,45 +12,48 @@ type Props = Omit<
     | undefined;
 };
 
-export function Update({ onClick, ...props }: Props) {
+export function UpdateButton({ onClick, label = 'Update' }: UpdateButtonProps) {
   const {
     manipulates: { updating, showing },
   } = useResourceContext();
 
   const { selectedKeys } = useResourceContext();
 
-  const newProps: ButtonExtendedProps = {};
+  const props: ButtonExtendedProps = {};
 
   if (onClick === 'update-selected') {
-    newProps.disabled = !(selectedKeys.value.length === 1);
-    newProps.onClick = () => updating.enable(selectedKeys.getSelectedEntity());
+    props.disabled = !(selectedKeys.value.length === 1);
+    props.onClick = () => updating.enable(selectedKeys.getSelectedEntity());
   } else if (onClick === 'update-showing') {
-    newProps.disabled = false;
-    newProps.onClick = () => {
+    props.disabled = false;
+    props.onClick = () => {
       const entity = { ...showing.entity };
       showing.disable(); // TODO: May be not?
       updating.enable(entity);
     };
   } else {
-    newProps.onClick = onClick;
+    props.onClick = onClick;
   }
 
   return (
     <Button
-      label={'Update'}
-      color={!newProps.disabled ? 'status-warning' : undefined}
-      primary={!newProps.disabled}
-      disabled={newProps.disabled}
-      {...newProps}
+      label={label}
+      color={!props.disabled ? 'status-warning' : undefined}
+      primary={!props.disabled}
+      disabled={props.disabled}
       {...props}
     />
   );
 }
 
-export function UpdateSelected(props: Omit<Props, 'onClick'>) {
-  return <Update onClick={'update-selected'} {...props} />;
+export type UpdateSelectedButtonProps = Omit<UpdateButtonProps, 'onClick'>;
+
+export function UpdateSelectedButton(props: UpdateSelectedButtonProps) {
+  return <UpdateButton onClick={'update-selected'} {...props} />;
 }
 
-export function UpdateShowing(props: Omit<Props, 'onClick'>) {
-  return <Update onClick={'update-showing'} {...props} />;
+export type UpdateShowingButtonProps = Omit<UpdateButtonProps, 'onClick'>;
+
+export function UpdateShowingButton(props: UpdateShowingButtonProps) {
+  return <UpdateButton onClick={'update-showing'} {...props} />;
 }
