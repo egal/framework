@@ -5,13 +5,14 @@ import { FullLayerModal } from '../FullLayerModal';
 import { useResourceContext } from '../Resource';
 import { useEffect } from 'react';
 import { useResourceActionsContext } from './Actions';
-import { CreateButton } from './Buttons/Create';
+import { CreateButton, CreateButtonProps } from './Buttons/Create';
 
 type Props = {
   children: React.ReactNode;
+  button?: CreateButtonProps;
 };
 
-export function Create({ children }: Props) {
+export function Create({ children, button = {} }: Props) {
   const {
     resource,
     extensions: { creating },
@@ -28,7 +29,7 @@ export function Create({ children }: Props) {
   return (
     <>
       <Box>
-        <CreateButton />
+        <CreateButton {...button} />
       </Box>
       {manipulate.enabled && (
         <FullLayerModal onClose={manipulate.disable}>
