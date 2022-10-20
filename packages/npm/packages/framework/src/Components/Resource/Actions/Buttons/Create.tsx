@@ -1,18 +1,18 @@
 import * as React from 'react';
 import { Box, Button } from 'grommet';
 import { useResourceContext } from '../../Resource';
+import { ButtonExtendedProps } from 'grommet/components/Button';
 
-type Props = {};
+export type CreateButtonProps = Pick<ButtonExtendedProps, 'label'>;
 
-export function Create(props: Props) {
+export function CreateButton({ label = 'Create' }: CreateButtonProps) {
   const {
-    resource,
     manipulates: { creating: manipulate },
   } = useResourceContext();
 
   return (
     <Button
-      label={'Create'}
+      label={label}
       primary
       color={'status-ok'}
       onClick={() => manipulate.enable({})}

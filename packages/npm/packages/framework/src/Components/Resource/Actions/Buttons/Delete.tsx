@@ -3,11 +3,9 @@ import { Button } from 'grommet';
 import { useResourceContext } from '../../Resource';
 import { MouseEventHandler } from 'react';
 import { ButtonExtendedProps } from 'grommet/components/Button';
+import { Delete } from '../Delete';
 
-type Props = Omit<
-  ButtonExtendedProps,
-  'label' | 'color' | 'primary' | 'onClick'
-> & {
+export type DeleteButtonProps = Pick<ButtonExtendedProps, 'label'> & {
   onClick:
     | 'delete-selected'
     | 'delete-showing'
@@ -15,27 +13,27 @@ type Props = Omit<
     | undefined;
 };
 
-export function Delete({ onClick, ...props }: Props) {
+export function DeleteButton({ onClick, label = 'Delete' }: DeleteButtonProps) {
   const {
     resource,
     selectedKeys,
     manipulates: { showing },
   } = useResourceContext();
 
-  const newProps: ButtonExtendedProps = {};
+  const props: ButtonExtendedProps = {};
 
   if (onClick === 'delete-selected') {
-    newProps.disabled = !(selectedKeys.value.length > 0);
-    newProps.onClick = () => {
+    props.disabled = !(selectedKeys.value.length > 0);
+    props.onClick = () => {
       // TODO: Remake to bachDelete and after implement normal .then().
       selectedKeys.value.map((key) => resource.delete.call({ key }));
       selectedKeys.reset();
       resource.getItems.call();
     };
-    newProps.badge = newProps.disabled ? undefined : selectedKeys.value.length;
+    props.badge = props.disabled ? undefined : selectedKeys.value.length;
   } else if (onClick === 'delete-showing') {
-    newProps.disabled = false;
-    newProps.onClick = () => {
+    props.disabled = false;
+    props.onClick = () => {
       if (!resource.metadata.result) throw new Error();
       const key = showing.entity[resource.metadata.result.primary_key.name];
       resource.delete.call({ key }).then(() => {
@@ -44,24 +42,27 @@ export function Delete({ onClick, ...props }: Props) {
       });
     };
   } else {
-    newProps.onClick = onClick;
+    props.onClick = onClick;
   }
 
   return (
     <Button
-      label={'Delete'}
-      primary={!newProps.disabled}
-      color={!newProps.disabled ? 'status-error' : undefined}
-      {...newProps}
+      label={label}
+      primary={!props.disabled}
+      color={!props.disabled ? 'status-error' : undefined}
       {...props}
     />
   );
 }
 
-export function DeleteSelected(props: Omit<Props, 'onClick'>) {
-  return <Delete onClick={'delete-selected'} {...props} />;
+export type DeleteSelectedButtonProps = Omit<DeleteButtonProps, 'onClick'>;
+
+export function DeleteSelectedButton(props: DeleteSelectedButtonProps) {
+  return <DeleteButton onClick={'delete-selected'} {...props} />;
 }
 
-export function DeleteShowing(props: Omit<Props, 'onClick'>) {
-  return <Delete onClick={'delete-showing'} {...props} />;
+export type DeleteShowingButtonProps = Omit<DeleteButtonProps, 'onClick'>;
+
+export function DeleteShowingButton(props: DeleteShowingButtonProps) {
+  return <DeleteButton onClick={'delete-showing'} {...props} />;
 }

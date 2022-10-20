@@ -1,16 +1,13 @@
 import * as React from 'react';
-import { Delete } from './Delete';
-import { Update } from './Update';
 import { useResourceContext } from '../../Resource';
 import { Button } from 'grommet';
 import { ButtonExtendedProps } from 'grommet/components/Button';
 
-type Props = Omit<
-  ButtonExtendedProps,
-  'label' | 'color' | 'primary' | 'onClick'
->;
+export type ShowSelectedButtonProps = Pick<ButtonExtendedProps, 'label'>;
 
-export function Show({ ...props }: Props) {
+export function ShowSelectedButton({
+  label = 'Show',
+}: ShowSelectedButtonProps) {
   const {
     selectedKeys,
     manipulates: { showing },
@@ -19,7 +16,7 @@ export function Show({ ...props }: Props) {
 
   return (
     <Button
-      label={'Show'}
+      label={label}
       color={active ? 'brand' : undefined}
       primary={active}
       disabled={!active}

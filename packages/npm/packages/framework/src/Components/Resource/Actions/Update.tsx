@@ -2,15 +2,19 @@ import * as React from 'react';
 import { Box, Button, Form } from 'grommet';
 import { useResourceContext } from '../Resource';
 import { FullLayerModal } from '../FullLayerModal';
-import { Buttons } from './Buttons/Buttons';
 import { useEffect, useState } from 'react';
 import { useResourceActionsContext } from './Actions';
+import {
+  UpdateSelectedButton,
+  UpdateSelectedButtonProps,
+} from './Buttons/Update';
 
 type Props = {
   children: React.ReactNode;
+  button?: UpdateSelectedButtonProps;
 };
 
-export function Update({ children }: Props) {
+export function Update({ children, button = {} }: Props) {
   const {
     resource,
     extensions,
@@ -45,7 +49,7 @@ export function Update({ children }: Props) {
 
   return (
     <Box>
-      {showButton && <Buttons.UpdateSelected />}
+      {showButton && <UpdateSelectedButton {...button} />}
       {manipulate.enabled && (
         <FullLayerModal onClose={manipulate.disable}>
           <Form

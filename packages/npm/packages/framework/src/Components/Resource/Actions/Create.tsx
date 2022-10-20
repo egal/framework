@@ -3,9 +3,9 @@ import { Box, Button, Form, FormField, TextInput } from 'grommet';
 import { useEntityManipulate } from '../../../Hooks';
 import { FullLayerModal } from '../FullLayerModal';
 import { useResourceContext } from '../Resource';
-import { Buttons } from './Buttons/Buttons';
 import { useEffect } from 'react';
 import { useResourceActionsContext } from './Actions';
+import { CreateButton } from './Buttons/Create';
 
 type Props = {
   children: React.ReactNode;
@@ -28,7 +28,7 @@ export function Create({ children }: Props) {
   return (
     <>
       <Box>
-        <Buttons.Create />
+        <CreateButton />
       </Box>
       {manipulate.enabled && (
         <FullLayerModal onClose={manipulate.disable}>
