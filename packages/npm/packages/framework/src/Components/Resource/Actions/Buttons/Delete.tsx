@@ -21,19 +21,20 @@ export function Delete({ onClick, ...props }: Props) {
     selectedKeys,
     manipulates: { showing },
   } = useResourceContext();
-  const active = selectedKeys.value.length > 0;
 
   const newProps: ButtonExtendedProps = {};
 
   if (onClick === 'delete-selected') {
+    newProps.disabled = !(selectedKeys.value.length > 0);
     newProps.onClick = () => {
       // TODO: Remake to bachDelete and after implement normal .then().
       selectedKeys.value.map((key) => resource.delete.call({ key }));
       selectedKeys.reset();
       resource.getItems.call();
     };
-    newProps.badge = active ? selectedKeys.value.length : undefined;
+    newProps.badge = newProps.disabled ? undefined : selectedKeys.value.length;
   } else if (onClick === 'delete-showing') {
+    newProps.disabled = false;
     newProps.onClick = () => {
       if (!resource.metadata.result) throw new Error();
       const key = showing.entity[resource.metadata.result.primary_key.name];
@@ -49,9 +50,8 @@ export function Delete({ onClick, ...props }: Props) {
   return (
     <Button
       label={'Delete'}
-      primary={active}
-      color={active ? 'status-error' : undefined}
-      disabled={!active}
+      primary={!newProps.disabled}
+      color={!newProps.disabled ? 'status-error' : undefined}
       {...newProps}
       {...props}
     />

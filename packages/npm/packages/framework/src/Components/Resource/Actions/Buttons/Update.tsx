@@ -3,7 +3,6 @@ import { useResourceContext } from '../../Resource';
 import { ButtonExtendedProps } from 'grommet/components/Button';
 import { MouseEventHandler } from 'react';
 import { Button } from 'grommet';
-import { find } from 'styled-components/test-utils';
 
 type Props = Omit<
   ButtonExtendedProps,
@@ -22,13 +21,14 @@ export function Update({ onClick, ...props }: Props) {
   } = useResourceContext();
 
   const { selectedKeys } = useResourceContext();
-  const active = selectedKeys.value.length === 1;
 
   const newProps: ButtonExtendedProps = {};
 
   if (onClick === 'update-selected') {
+    newProps.disabled = !(selectedKeys.value.length === 1);
     newProps.onClick = () => updating.enable(selectedKeys.getSelectedEntity());
   } else if (onClick === 'update-showing') {
+    newProps.disabled = false;
     newProps.onClick = () => {
       const entity = { ...showing.entity };
       showing.disable(); // TODO: May be not?
@@ -41,9 +41,9 @@ export function Update({ onClick, ...props }: Props) {
   return (
     <Button
       label={'Update'}
-      color={active ? 'status-warning' : undefined}
-      primary={active}
-      disabled={!active}
+      color={!newProps.disabled ? 'status-warning' : undefined}
+      primary={!newProps.disabled}
+      disabled={newProps.disabled}
       {...newProps}
       {...props}
     />
