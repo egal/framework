@@ -3,7 +3,7 @@ import { Box, Button, Form } from 'grommet';
 import { useResourceContext } from '../Resource';
 import { FullLayerModal } from '../FullLayerModal';
 import { Buttons } from './Buttons/Buttons';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useResourceActionsContext } from './Actions';
 
 type Props = {
@@ -13,21 +13,39 @@ type Props = {
 export function Update({ children }: Props) {
   const {
     resource,
-    extensions: { updating },
+    extensions,
     selectedKeys,
     manipulates: { updating: manipulate },
   } = useResourceContext();
 
+  const [showButton, setShowButton] = useState(false);
+
   useResourceActionsContext();
 
   useEffect(() => {
-    updating.makeExists();
-    updating.makeReady();
+    extensions.updating.makeExists();
+    extensions.updating.makeReady();
   }, []);
+
+  useEffect(() => {
+    switch ([extensions.showing.exists, extensions.deleting.exists].join()) {
+      case [true, true].join():
+      case [true, false].join():
+      case [false, true].join():
+        setShowButton(true);
+        break;
+      case [false, false].join():
+        break;
+    }
+  }, [
+    extensions.showing.exists,
+    extensions.updating.exists,
+    extensions.deleting.exists,
+  ]);
 
   return (
     <Box>
-      <Buttons.UpdateSelected />
+      {showButton && <Buttons.UpdateSelected />}
       {manipulate.enabled && (
         <FullLayerModal onClose={manipulate.disable}>
           <Form

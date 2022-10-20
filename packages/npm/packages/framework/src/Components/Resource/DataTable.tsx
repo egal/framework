@@ -11,7 +11,7 @@ import {
 import { DataTableProps } from 'grommet/components/DataTable';
 import { useResourceContext } from './Resource';
 import { Clear } from 'grommet-icons';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 type Props = Omit<
   DataTableProps,
@@ -21,27 +21,49 @@ type Props = Omit<
 };
 
 export function DataTable(props: Props) {
-  const { resource, selectedKeys, extensions } = useResourceContext();
-  let selectingProps: Partial<DataTableProps> = {};
+  const { resource, selectedKeys, extensions, manipulates } =
+    useResourceContext();
+  const [selectingProps, setSelectingProps] = useState<Partial<DataTableProps>>(
+    {}
+  );
 
-  // TODO: Not working disabling select.
-  // useEffect(() => {
-  //   if (
-  //     extensions.showing.exists ||
-  //     extensions.updating.exists ||
-  //     extensions.deleting.exists
-  //   ) {
-  selectingProps = {
-    select: selectedKeys.value,
-    onClickRow: 'select',
-    onSelect: (newSelectedKeys) => selectedKeys.set(newSelectedKeys),
-  };
-  //   }
-  // }, [
-  //   extensions.showing.exists,
-  //   extensions.updating.exists,
-  //   extensions.deleting.exists,
-  // ]);
+  useEffect(() => {
+    switch (
+      [
+        extensions.showing.exists,
+        extensions.updating.exists,
+        extensions.deleting.exists,
+      ].join()
+    ) {
+      case [true, true, true].join():
+      case [false, true, true].join():
+      case [true, false, true].join():
+      case [true, true, false].join():
+      case [false, false, true].join():
+        setSelectingProps({
+          select: selectedKeys.value,
+          onClickRow: 'select',
+          onSelect: (newSelectedKeys) => selectedKeys.set(newSelectedKeys),
+        });
+        break;
+      case [true, false, false].join():
+        setSelectingProps({
+          onClickRow: ({ datum }) => manipulates.showing.enable(datum),
+        });
+        break;
+      case [false, true, false].join():
+        setSelectingProps({
+          onClickRow: ({ datum }) => manipulates.updating.enable(datum),
+        });
+        break;
+      case [false, false, false].join():
+        break;
+    }
+  }, [
+    extensions.showing.exists,
+    extensions.updating.exists,
+    extensions.deleting.exists,
+  ]);
 
   if (
     !resource.metadata.result ||
