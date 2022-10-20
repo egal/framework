@@ -8,24 +8,37 @@ export type ActionModel = {
   service: string;
 };
 
-export type ActionErrorCode = 'ERR_UNDEFINED' | 'ERR_NETWORK' | string;
-export type ActionError = {
-  message: string;
+export type ActionErrorCode = 'ERR_UNDEFINED' | 'ERR_NETWORK' | string | number;
+type DefaultActionErrorDataType = null;
+export type ActionError<DataType = DefaultActionErrorDataType> = {
   code: ActionErrorCode;
+  internal_code: string | number | null;
+  message: string;
+  data: DataType | null;
 };
 
-export type ActionHook<ResultType, ParamsType> = {
+export type ActionHook<
+  ResultType,
+  ParamsType,
+  ErrorDataType = DefaultActionErrorDataType
+> = {
   result?: ResultType;
-  error?: ActionError;
-  call: (params: ParamsType) => PromiseWithReject<ResultType, ActionError>;
+  error?: ActionError<ErrorDataType>;
+  call: (
+    params: ParamsType
+  ) => PromiseWithReject<ResultType, ActionError<ErrorDataType>>;
 };
 
-export function useAction<ResultType, ParamsType>(
+export function useAction<
+  ResultType,
+  ParamsType,
+  ErrorDataType = DefaultActionErrorDataType
+>(
   model: ActionModel,
   name: string
-): ActionHook<ResultType, ParamsType> {
+): ActionHook<ResultType, ParamsType, ErrorDataType> {
   const [result, setResult] = useState<ResultType>();
-  const [error, setError] = useState<ActionError>();
+  const [error, setError] = useState<ActionError<ErrorDataType>>();
 
   const {
     config: {
@@ -35,7 +48,7 @@ export function useAction<ResultType, ParamsType>(
 
   const call = (
     params: ParamsType
-  ): PromiseWithReject<ResultType, ActionError> => {
+  ): PromiseWithReject<ResultType, ActionError<ErrorDataType>> => {
     return new Promise((resolve, reject) => {
       axios
         .request({
@@ -49,14 +62,25 @@ export function useAction<ResultType, ParamsType>(
           resolve(res.data.action_result.data);
         })
         .catch((caughtError: AxiosError) => {
-          const respectableError: any = {}; // TODO: ErrorType
+          const respectableError: ActionError<ErrorDataType> =
+            // @ts-ignore
+            caughtError.response?.data?.action_error ?? {};
 
-          if (caughtError.code === undefined) {
-            respectableError.code = 'ERR_UNDEFINED';
-            respectableError.message = 'Undefined Error';
-          } else {
-            respectableError.code = caughtError.code;
-            respectableError.message = caughtError.message;
+          delete respectableError['type'];
+          delete respectableError['uuid'];
+
+          if (!respectableError.code || respectableError.code === 0) {
+            if (caughtError.code && caughtError.message) {
+              respectableError.code = caughtError.code;
+              respectableError.internal_code = null;
+              respectableError.message = caughtError.message;
+              respectableError.data = null;
+            } else {
+              respectableError.code = 'ERR_UNDEFINED';
+              respectableError.internal_code = null;
+              respectableError.message = 'Undefined Error!';
+              respectableError.data = null;
+            }
           }
 
           setError(respectableError);
