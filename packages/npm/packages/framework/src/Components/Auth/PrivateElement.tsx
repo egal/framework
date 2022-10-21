@@ -22,8 +22,6 @@ export function PrivateElement({
   const navigate = useNavigate();
 
   const check = () => {
-    console.log(auth.logged);
-
     if (onlyFor === 'logged' && !auth.logged) {
       setAvailable(false);
       navigate(onFailureNavigateTo ?? '/login');
