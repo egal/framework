@@ -97,13 +97,11 @@ export function Resource<ItemType>({ children, model, ...config }: Props) {
   });
 
   useEffect(() => {
-    if (extensions.ready) resource.getItems.call();
-  }, [extensions.ready]);
-
-  useEffect(() => {
-    resetSelectedKeys();
-    resource.getItems.call();
-  }, [resource.getItems.params]);
+    if (extensions.ready) {
+      resource.getItems.call();
+      resetSelectedKeys();
+    }
+  }, [extensions.ready, resource.getItems.params]);
 
   const contextValue = {
     resource,
