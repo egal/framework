@@ -72,14 +72,25 @@ export function App({
     </Router>
   );
 
+  const AuthContextThere = ({ children }: { children: React.ReactNode }) => {
+    const auth = useAuth(authConfig);
+
+    return (
+      <AuthContext.Provider value={auth}>
+        {MobileResolutionNotSupportedElement}
+        {RouterElement}
+      </AuthContext.Provider>
+    );
+  };
+
   return (
     <Grommet theme={theme}>
-      <AuthContext.Provider value={useAuth(authConfig)}>
-        <AppContext.Provider value={{ config }}>
+      <AppContext.Provider value={{ config }}>
+        <AuthContextThere>
           {MobileResolutionNotSupportedElement}
           {RouterElement}
-        </AppContext.Provider>
-      </AuthContext.Provider>
+        </AuthContextThere>
+      </AppContext.Provider>
     </Grommet>
   );
 }

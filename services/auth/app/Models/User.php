@@ -81,11 +81,11 @@ class User extends BaseUser
 
         $umt = new UserMasterToken();
         $umt->setSigningKey(config('app.service_key'));
-        $umt->setAuthIdentification($user->getAuthIdentifier());
+        $umt->setSub($user->getAuthIdentifier());
 
         $umrt = new UserMasterRefreshToken();
         $umrt->setSigningKey(config('app.service_key'));
-        $umrt->setAuthIdentification($user->getAuthIdentifier());
+        $umrt->setSub($user->getAuthIdentifier());
 
         return [
             'user_master_token' => $umt->generateJWT(),

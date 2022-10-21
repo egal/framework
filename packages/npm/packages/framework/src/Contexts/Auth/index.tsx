@@ -1,5 +1,5 @@
-import { createContext, useContext } from 'react';
-import { Auth } from '../../Hooks';
+import { createContext, ReactNode, useContext } from 'react';
+import { Auth, AuthConfig, useAuth } from '../../Hooks';
 
 const contextNotInitializedErrorCallback = () => {
   throw new Error('Context not initialized!');
