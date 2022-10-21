@@ -30,14 +30,14 @@ function stringifyOptions(options: CookieOptions) {
 export const setCookie = (
   name: string,
   value: string,
-  options: CookieOptions
+  options?: CookieOptions
 ) => {
   if (!isBrowser) return;
 
   const optionsWithDefaults = {
     days: 7,
     path: '/',
-    ...options,
+    ...(options ?? {}),
   };
 
   const expires = new Date(
@@ -80,9 +80,9 @@ export function useCookie(
     return getCookie(key, initialValue);
   });
 
-  const set = (value: string, options: CookieOptions) => {
+  const set = (value: string, options?: CookieOptions) => {
     setValue(value);
-    setCookie(key, value, options);
+    setCookie(key, value, options ?? {});
   };
 
   const remove = () => {
