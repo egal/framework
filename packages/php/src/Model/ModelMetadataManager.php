@@ -53,29 +53,26 @@ class ModelMetadataManager
         }
     }
 
-    public function registerModel(string $class, bool $dynamic = false): void
+    public function registerModel(string $class): void
     {
         $classShortName = get_class_short_name($class);
 
-        if (! empty($this->modelsMetadata[$classShortName]) && (! $dynamic)) {
+        if (! empty($this->modelsMetadata[$classShortName]) && (! $this->modelsMetadata[$classShortName]->isDynamic())) {
             return;
         }
 
-        $this->parseModelMetadata($class);
+        $this->modelsMetadata[$classShortName] = $this->parseModelMetadata($class);
     }
 
     private function parseModelMetadata(string $class): ModelMetadata
     {
         $model = new $class();
-        $classShortName = get_class_short_name($class);
 
         if (! ($model instanceof Model || $model instanceof Service)) {
             throw new Exception();
         }
 
-        $this->modelsMetadata[$classShortName] = $model->constructMetadata();
-
-        return $this->modelsMetadata[$classShortName];
+        return $model->constructMetadata();
     }
 
     public function getModelsMetadata(): array
@@ -86,14 +83,16 @@ class ModelMetadataManager
     /**
      * @throws ModelNotFoundException
      */
-    public function getModelMetadata(string $class, bool $dynamic = false): ModelMetadata
+    public function getModelMetadata(string $class): ModelMetadata
     {
         if (class_exists($class)) {
             return $this->modelsMetadata[get_class_short_name($class)] ?? $this->parseModelMetadata($class);
         }
 
         if (isset($this->modelsMetadata[$class])) {
-            return $dynamic ? $this->parseModelMetadata($this->modelsMetadata[$class]->getModelClass()) : $this->modelsMetadata[$class];
+            return $this->modelsMetadata[$class]->isDynamic()
+                ? $this->parseModelMetadata($this->modelsMetadata[$class]->getModelClass())
+                : $this->modelsMetadata[$class];
         }
 
         throw ModelNotFoundException::make($class);
