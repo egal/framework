@@ -57,7 +57,10 @@ class ModelMetadataManager
     {
         $classShortName = get_class_short_name($class);
 
-        if (! empty($this->modelsMetadata[$classShortName]) && (! $this->modelsMetadata[$classShortName]->isDynamic())) {
+        if (
+            ! empty($this->modelsMetadata[$classShortName])
+            && (! $this->modelsMetadata[$classShortName]->isDynamic())
+        ) {
             return;
         }
 
