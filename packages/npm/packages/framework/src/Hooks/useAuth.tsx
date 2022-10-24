@@ -1,15 +1,16 @@
 import { useState } from 'react';
 import jwtDecode from 'jwt-decode';
 import { getCookie, removeCookie, setCookie, useCookie } from './useCookie';
-import { useAction } from './Actions';
+import { ActionModel, useAction } from './Actions';
 import axios from 'axios';
+import * as stream from 'stream';
 
 export type AuthConfig = {
-  authServiceName: string;
+  service: string;
 };
 
 export const authConfig: AuthConfig = {
-  authServiceName: 'auth',
+  service: 'auth',
 };
 
 type Token<SubType> = {
@@ -45,7 +46,7 @@ export function useAuth(config: AuthConfig = authConfig): Auth {
   // TODO: Refactoring.
   type Res = { data: string };
   const actionLoginToService = useAction<Res, any, any>(
-    { service: 'auth', name: 'User' },
+    { service: config.service, name: 'User' },
     'loginToService'
   );
 
