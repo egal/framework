@@ -13,7 +13,7 @@ export function FullLayerModal({ onClose, children, ...grommetProps }: Props) {
   return (
     <GrommetLayer onEsc={onClose} onClickOutside={onClose} {...grommetProps}>
       <GrommetBox pad={'medium'} width={'large'} overflow="auto">
-        <GrommetBox align={'end'} fill={'horizontal'}>
+        <GrommetBox height={{ min: 'auto' }} align={'end'} fill={'horizontal'}>
           <GrommetButton
             icon={<GrommetCloseIcon />}
             hoverIndicator
