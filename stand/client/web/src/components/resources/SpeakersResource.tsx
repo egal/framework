@@ -32,6 +32,9 @@ export const SpeakersResource = () => (
           />
         </FormField>
       </Resource.Actions.Create>
+      <Resource.Actions.Show>
+        <FormField name="name" component={TextInput} label="Name" required />
+      </Resource.Actions.Show>
       <Resource.Actions.Update>
         <FormField name="name" component={TextInput} label="Name" required />
         <FormField name="surname" component={TextInput} label="Surname" required />
@@ -68,5 +71,6 @@ export const SpeakersResource = () => (
         { property: 'updated_at', header: 'updated_at' }
       ]}
     />
+    <Resource.Pagination />
   </Resource>
 );

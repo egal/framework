@@ -28,9 +28,60 @@ class User extends BaseUser
     use HasFactory;
     use HasRelationships;
 
-    /**
-     * @throws PasswordHashException
-     */
+    public static function constructMetadata(): ModelMetadata
+    {
+        return ModelMetadata::make(User::class, FieldMetadata::make('id', VariableType::UUID))
+            ->policy(UserPolicy::class)
+            ->addFields([
+                FieldMetadata::make('email', VariableType::STRING)
+                    ->required()
+                    ->addValidationRule('unique:users,email'),
+                FieldMetadata::make('password', VariableType::STRING)
+                    ->required()
+                    ->hidden()
+                    ->guarded(),
+                FieldMetadata::make('created_at', VariableType::DATETIME),
+                FieldMetadata::make('updated_at', VariableType::DATETIME),
+            ])
+            ->addRelations([
+                RelationMetadata::make(
+                    'roles',
+                    Role::class,
+                    RelationType::HAS_MANY,
+                ),
+            ])
+            ->addActions([
+                ActionMetadata::make('register')
+                    ->addParameters([
+                        ActionParameterMetadata::make('password', VariableType::STRING)
+                            ->required(),
+                        ActionParameterMetadata::make('email', VariableType::STRING)
+                            ->required()
+                    ]),
+                ActionMetadata::make('login')
+                    ->addParameters([
+                        ActionParameterMetadata::make('email', VariableType::STRING)
+                            ->required(),
+                        ActionParameterMetadata::make('password', VariableType::STRING)
+                            ->required()
+                    ]),
+                ActionMetadata::make('loginToService')
+                    ->addParameters([
+                        ActionParameterMetadata::make('token', VariableType::STRING)
+                            ->required(),
+                        ActionParameterMetadata::make('service_name', VariableType::STRING)
+                            ->required(),
+                    ]),
+                ActionMetadata::make('refreshUserMasterToken'),
+                ActionMetadataBlanks::getMetadata(),
+                ActionMetadataBlanks::getItem(VariableType::STRING),
+                ActionMetadataBlanks::getItems(),
+                ActionMetadataBlanks::create(),
+                ActionMetadataBlanks::update(VariableType::STRING),
+                ActionMetadataBlanks::delete(VariableType::STRING),
+            ]);
+    }
+
     public static function actionRegister(string $email, string $password): User
     {
         Session::client()->mayOrFail('register', static::class);
@@ -54,24 +105,13 @@ class User extends BaseUser
         Session::client()->mayOrFail('login', static::class);
 
         /** @var BaseUser $user */
-        $user = self::query()->where('email', '=', $email)->first();
+        $user = static::query()->where('email', '=', $email)->first();
 
         if (!$user || !password_verify($password, $user->getAttribute('password'))) {
             throw new LoginException('Incorrect Email or password!');
         }
 
-        $umt = new UserMasterToken();
-        $umt->setSigningKey(config('app.service_key'));
-        $umt->setAuthIdentification($user->getAuthIdentifier());
-
-        $umrt = new UserMasterRefreshToken();
-        $umrt->setSigningKey(config('app.service_key'));
-        $umrt->setAuthIdentification($user->getAuthIdentifier());
-
-        return [
-            'user_master_token' => $umt->generateJWT(),
-            'user_master_refresh_token' => $umrt->generateJWT()
-        ];
+        return $user->generateLoginResult();
     }
 
     public function roles(): BelongsToMany
@@ -106,62 +146,6 @@ class User extends BaseUser
     protected function getPermissions(): array
     {
         return array_unique($this->permissions->pluck('id')->toArray());
-    }
-
-    public static function constructMetadata(): ModelMetadata
-    {
-        return ModelMetadata::make(User::class, FieldMetadata::make('id', VariableType::UUID))
-            ->policy(UserPolicy::class)
-            ->addFields([
-                FieldMetadata::make('email', VariableType::STRING)
-                    ->required()
-                    ->addValidationRule('unique:users,email'),
-                FieldMetadata::make('password', VariableType::STRING)
-                    ->required()
-                    ->hidden()
-                    ->guarded(),
-                FieldMetadata::make('created_at', VariableType::DATETIME),
-                FieldMetadata::make('updated_at', VariableType::DATETIME),
-            ])
-            ->addRelations([
-                RelationMetadata::make(
-                    'roles',
-                    Role::class,
-                    RelationType::HAS_MANY,
-                ),
-            ])
-            ->addActions([
-                ActionMetadata::make('register')
-                    ->addParameters([
-                        ActionParameterMetadata::make('password', VariableType::STRING)
-                            ->required(),
-                        ActionParameterMetadata::make('email', VariableType::STRING)
-                            ->required()
-                            ->addValidationRule('email:rfc,dns')
-                    ]),
-                ActionMetadata::make('login')
-                    ->addParameters([
-                        ActionParameterMetadata::make('email', VariableType::STRING)
-                            ->required()
-                            ->addValidationRule('exists:users,email'),
-                        ActionParameterMetadata::make('password', VariableType::STRING)
-                            ->required()
-                    ]),
-                ActionMetadata::make('loginToService')
-                    ->addParameters([
-                        ActionParameterMetadata::make('token', VariableType::STRING)
-                            ->required(),
-                        ActionParameterMetadata::make('service_name', VariableType::STRING)
-                            ->required(),
-                    ]),
-                ActionMetadata::make('refreshUserMasterToken'),
-                ActionMetadataBlanks::getMetadata(),
-                ActionMetadataBlanks::getItem(VariableType::STRING),
-                ActionMetadataBlanks::getItems(),
-                ActionMetadataBlanks::create(),
-                ActionMetadataBlanks::update(VariableType::STRING),
-                ActionMetadataBlanks::delete(VariableType::STRING),
-            ]);
     }
 
 }

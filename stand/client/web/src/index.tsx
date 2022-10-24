@@ -19,6 +19,7 @@ import { LogoutPage } from './pages/auth/LogoutPage';
 import { RegisterPage } from './pages/auth/RegisterPage';
 import { Layout } from './components/layouts/Main';
 import { SpeakersResource } from './components/resources/SpeakersResource';
+import { CountriesResourceWithRenamedButtons } from './components/resources/CountriesResourceWithRenamedButtons';
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <App
@@ -71,6 +72,11 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
         header: 'Speakers',
         path: '/speakers',
         element: <SpeakersResource />
+      },
+      {
+        header: 'Countries #1',
+        path: '/countries-1',
+        element: <CountriesResourceWithRenamedButtons />
       }
     ]}
     additionalRoutes={[
