@@ -5,11 +5,11 @@ import { useAction } from './Actions';
 import axios from 'axios';
 
 export type AuthConfig = {
-  authServiceName: string;
+  service: string;
 };
 
 export const authConfig: AuthConfig = {
-  authServiceName: 'auth',
+  service: 'auth',
 };
 
 type Token<SubType> = {
@@ -45,7 +45,7 @@ export function useAuth(config: AuthConfig = authConfig): Auth {
   // TODO: Refactoring.
   type Res = { data: string };
   const actionLoginToService = useAction<Res, any, any>(
-    { service: 'auth', name: 'User' },
+    { service: config.service, name: 'User' },
     'loginToService'
   );
 
