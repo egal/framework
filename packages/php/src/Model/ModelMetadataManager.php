@@ -17,7 +17,9 @@ class ModelMetadataManager
      */
     protected array $modelsMetadata = [];
 
-    public function __construct() { }
+    public function __construct()
+    {
+    }
 
     public function registerDirectory(string $dir, string $modelsNamespace): void
     {
@@ -58,20 +60,29 @@ class ModelMetadataManager
         $classShortName = get_class_short_name($class);
 
         if (
-            ! empty($this->modelsMetadata[$classShortName])
-            && (! $this->modelsMetadata[$classShortName]->isDynamic())
+            !empty($this->modelsMetadata[$classShortName])
+            && (!$this->modelsMetadata[$classShortName]->isDynamic())
         ) {
             return;
         }
 
-        $this->modelsMetadata[$classShortName] = $this->parseModelMetadata($class);
+        $this->addModelMetadata($this->parseModelMetadata($class));
+    }
+
+    private function addModelMetadata(ModelMetadata $modelMetadata, bool $reset = false): void
+    {
+        if (isset($this->modelsMetadata[$modelMetadata->getModelShortName()]) && !$reset) {
+            throw new \Exception('Already exists!');
+        }
+
+        $this->modelsMetadata[$modelMetadata->getModelShortName()] = $modelMetadata;
     }
 
     private function parseModelMetadata(string $class): ModelMetadata
     {
         $model = new $class();
 
-        if (! ($model instanceof Model || $model instanceof Service)) {
+        if (!($model instanceof Model || $model instanceof Service)) {
             throw new Exception();
         }
 
@@ -83,22 +94,34 @@ class ModelMetadataManager
         return $this->modelsMetadata;
     }
 
+    private function modelMetadataExists(string $name): bool
+    {
+        return isset($this->modelsMetadata[$name]);
+    }
+
+    private function getName(string $model): string
+    {
+        return class_exists($model) ? get_class_short_name($model) : $model;
+    }
+
     /**
      * @throws ModelNotFoundException
      */
-    public function getModelMetadata(string $class): ModelMetadata
+    public function getModelMetadata(string $model): ModelMetadata
     {
-        if (class_exists($class)) {
-            return $this->modelsMetadata[get_class_short_name($class)] ?? $this->parseModelMetadata($class);
+        $name = $this->getName($model);
+
+        if (!(class_exists($model) || $this->modelMetadataExists($name))) {
+            throw ModelNotFoundException::make($model);
         }
 
-        if (isset($this->modelsMetadata[$class])) {
-            return $this->modelsMetadata[$class]->isDynamic()
-                ? $this->parseModelMetadata($this->modelsMetadata[$class]->getModelClass())
-                : $this->modelsMetadata[$class];
+        $modelMetadata = $this->modelsMetadata[$name];
+
+        if ($modelMetadata->isDynamic()) {
+            $this->addModelMetadata($modelMetadata, true);
         }
 
-        throw ModelNotFoundException::make($class);
+        return $modelMetadata;
     }
 
 }
