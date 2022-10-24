@@ -81,8 +81,13 @@ class ModelMetadataManager
             $modelMetadata = $this->modelsMetadata[$model];
         }
         if (class_exists($model)) {
-            $this->modelsMetadata[get_class_short_name($model)] ?? $this->registerModel($model);
-            $modelMetadata = $this->modelsMetadata[get_class_short_name($model)];
+            $modelShortName = get_class_short_name($model);
+
+            if (isset($this->modelsMetadata[$modelShortName]) || $this->modelsMetadata[$model]->dynamic()) {
+                $this->registerModel($model);
+            }
+
+            $modelMetadata = $this->modelsMetadata[$modelShortName] ;
         }
 
         return $modelMetadata ?? throw ModelNotFoundException::make($model);
