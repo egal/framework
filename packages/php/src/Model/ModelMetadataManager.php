@@ -64,7 +64,7 @@ class ModelMetadataManager
     {
         $modelShortName = $modelMetadata->getModelShortName();
 
-        if (isset($this->modelsMetadata[$modelShortName]) && $reset) {
+        if (isset($this->modelsMetadata[$modelShortName]) && ! $reset) {
             throw new \Exception('Already exists!');
         }
 
@@ -77,17 +77,18 @@ class ModelMetadataManager
     public function getModelMetadata(string $model): ModelMetadata
     {
         if (isset($this->modelsMetadata[$model])) {
-            ! $this->modelsMetadata[$model]->dynamic() ?: $this->registerModel($this->modelsMetadata[$model]->getModelShortName());
+            ! $this->modelsMetadata[$model]->dynamic() ?: $this->addModelMetadata($this->modelsMetadata[$model]->getModelClass()::constructMetadata(), true);
             $modelMetadata = $this->modelsMetadata[$model];
         }
+
         if (class_exists($model)) {
             $modelShortName = get_class_short_name($model);
 
-            if (isset($this->modelsMetadata[$modelShortName]) || $this->modelsMetadata[$model]->dynamic()) {
-                $this->registerModel($model);
+            if (! isset($this->modelsMetadata[$modelShortName]) || $this->modelsMetadata[$modelShortName]->dynamic()) {
+                $this->addModelMetadata($model::constructMetadata(), true);
             }
 
-            $modelMetadata = $this->modelsMetadata[$modelShortName] ;
+            $modelMetadata = $this->modelsMetadata[$modelShortName];
         }
 
         return $modelMetadata ?? throw ModelNotFoundException::make($model);
