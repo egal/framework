@@ -44,6 +44,8 @@ services:
       - rabbitmq
       - postgres
     environment:
+      AUTH_USER_MASTER_TOKEN_TTL: ${AUTH_USER_MASTER_TOKEN_TTL:-600}
+      AUTH_USER_SERVICE_TOKEN_TTL: ${AUTH_USER_SERVICE_TOKEN_TTL:-600}
       APP_NAME: ${PROJECT_NAME}
       APP_SERVICE_NAME: auth
       APP_SERVICE_KEY: ${AUTH_SERVICE_KEY}
