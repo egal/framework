@@ -1,9 +1,8 @@
 import { useState } from 'react';
 import jwtDecode from 'jwt-decode';
 import { getCookie, removeCookie, setCookie, useCookie } from './useCookie';
-import { ActionModel, useAction } from './Actions';
+import { useAction } from './Actions';
 import axios from 'axios';
-import * as stream from 'stream';
 
 export type AuthConfig = {
   service: string;
