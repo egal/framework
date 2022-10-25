@@ -15,6 +15,7 @@ import {
 } from './Buttons/Delete';
 import { deepMerge } from 'grommet/utils';
 import { RecursivePartial } from '../../../Utils';
+import { FormFieldsFactory } from '../FormFieldsFactory';
 
 type Form = {
   buttons: {
@@ -24,7 +25,7 @@ type Form = {
 };
 
 type Props = {
-  children: React.ReactNode;
+  children?: React.ReactNode;
   button?: ShowSelectedButtonProps;
   form?: RecursivePartial<Form>;
 };
@@ -94,7 +95,7 @@ export function Show({ children, button = {}, form: enteredForm = {} }: Props) {
         <FullLayerModal onClose={showing.disable}>
           <Form value={showing.entity}>
             <Box gap={'small'} direction={'column'}>
-              {children}
+              {children ?? <FormFieldsFactory disabled={true} />}
               {showUpdateButton && (
                 <UpdateShowingButton {...form.buttons.update} />
               )}

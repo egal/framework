@@ -6,13 +6,13 @@ import {
   authConfig,
   appConfig,
   AppConfig,
-  RecursivePartial
+  RecursivePartial,
+  Resource
 } from '@egalteam/framework';
 import { Heading } from 'grommet';
 import { grommet as grommetTheme } from 'grommet/themes';
 import { deepMerge } from 'grommet/utils';
 import React from 'react';
-import { EmployeesResource } from './components/resources/EmployeesResource';
 import { Test } from './components/Test';
 import { LoginPage } from './pages/auth/LoginPage';
 import { LogoutPage } from './pages/auth/LogoutPage';
@@ -20,6 +20,7 @@ import { RegisterPage } from './pages/auth/RegisterPage';
 import { Layout } from './components/layouts/Main';
 import { SpeakersResource } from './components/resources/SpeakersResource';
 import { CountriesResourceWithRenamedButtons } from './components/resources/CountriesResourceWithRenamedButtons';
+import { EmployeesWithFiltersResource } from './components/resources/EmployeesWithFiltersResource';
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <App
@@ -65,8 +66,18 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
       },
       {
         header: 'Employees',
-        path: '/employees',
-        element: <EmployeesResource />
+        items: [
+          {
+            header: 'Base',
+            path: '/EmployeesResource',
+            element: <Resource key={'EmployeesResource'} model={{ service: 'auth', name: 'Employee' }} />
+          },
+          {
+            header: 'Filters',
+            path: '/EmployeesWithFiltersResource',
+            element: <EmployeesWithFiltersResource />
+          }
+        ]
       },
       {
         header: 'Speakers',

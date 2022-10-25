@@ -7,20 +7,24 @@ import {
   Keyboard,
   Text,
   Heading,
+  CheckBox,
 } from 'grommet';
-import { DataTableProps } from 'grommet/components/DataTable';
+import { ColumnConfig, DataTableProps } from 'grommet/components/DataTable';
 import { useResourceContext } from './Resource';
 import { Clear } from 'grommet-icons';
 import { useEffect, useState } from 'react';
+import { ServerModelFieldMetadata } from '../../Hooks';
+import { sentenceCase } from 'change-case';
 
-type Props = Omit<
+type Props<DataItemType> = Omit<
   DataTableProps,
   'data' | 'select' | 'onClickRow' | 'onSelect' | 'primaryKey'
-> & {
-  //
-};
+>;
 
-export function DataTable(props: Props) {
+export function DataTable<DataItemType = any>({
+  columns: columnsProp = [{ property: '*' }],
+  ...props
+}: Props<DataItemType>) {
   const { resource, selectedKeys, extensions, manipulates } =
     useResourceContext();
   const [selectingProps, setSelectingProps] = useState<Partial<DataTableProps>>(
@@ -73,6 +77,42 @@ export function DataTable(props: Props) {
     return <Spinner />;
   }
 
+  const usedColumnsProperties: string[] = columnsProp
+    .filter((column) => column.property !== '*')
+    .map((column): string => column.property);
+
+  const allFields = resource.metadata.getAllFields();
+
+  const columns: ColumnConfig<DataItemType>[] = columnsProp
+    .flatMap((column): ColumnConfig<DataItemType>[] => {
+      if (column.property !== '*') return [column];
+
+      return allFields
+        .filter((field) => !usedColumnsProperties.includes(field.name))
+        .map((field) => {
+          return { property: field.name };
+        });
+    })
+    .map((column): ColumnConfig<DataItemType> => {
+      if (column.property.includes('.')) return column;
+
+      if (column.render === undefined) {
+        switch (resource.metadata.findField(column.property).type) {
+          case 'boolean':
+            column.render = (datum) => (
+              <CheckBox checked={datum[column.property] as boolean} />
+            );
+            break;
+        }
+      }
+
+      if (column.header === undefined) {
+        column.header = sentenceCase(column.property);
+      }
+
+      return column;
+    });
+
   if (resource.getItems.result.total_count === 0) {
     return (
       <Box fill justify={'center'} align={'center'}>
@@ -85,9 +125,10 @@ export function DataTable(props: Props) {
   return (
     <Box overflow="auto" fill justify={'start'}>
       <Box>
-        <GrommetDataTable
+        <GrommetDataTable<DataItemType>
           fill
           pin
+          columns={columns}
           {...props}
           {...selectingProps}
           primaryKey={resource.metadata.result.primary_key.name}

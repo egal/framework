@@ -1,37 +1,39 @@
 import { ActionHook, ActionModel, useAction } from './useAction';
 import { useEffect } from 'react';
 
-type ActionMetadata = any;
+type Action = any;
 
-type FieldMetadata = {
+type Field = {
   name: string;
   type: string;
+  required: boolean;
   guarded: boolean;
   hidden: boolean;
 };
 
-type FakeFieldMetadata = any;
-
-type RelationMetadata = {
+type Relation = {
   name: string;
   guarded: boolean;
-  related: ModelMetadata;
+  related: Model;
   type: 'belongs_to' | string;
 };
 
-type ModelMetadata = {
-  primary_key: FieldMetadata;
-  actions: ActionMetadata[];
-  fields: FieldMetadata[];
-  fake_fields: FakeFieldMetadata[];
-  relations: RelationMetadata[];
+type Model = {
+  primary_key: Field;
+  actions: Action[];
+  fields: Field[];
+  fake_fields: Field[];
+  relations: Relation[];
 };
 
-type Result = ModelMetadata;
+type Result = Model;
 
 type Params = {};
 
-export type ActionGetMetadataHook = Omit<ActionHook<Result, Params>, 'call'>;
+export type ActionGetMetadataHook = Omit<ActionHook<Result, Params>, 'call'> & {
+  getAllFields: () => Field[];
+  findField: (name: string) => Field;
+};
 
 export function useActionGetMetadata(
   model: ActionModel
@@ -45,5 +47,25 @@ export function useActionGetMetadata(
     call({});
   }, []);
 
-  return { result, error };
+  const getAllFields = () => {
+    if (result === undefined) throw new Error('#1666682378');
+
+    return [result.primary_key, ...result.fields, ...result.fake_fields];
+  };
+
+  const findField = (name: string): Field => {
+    const field = getAllFields().find((field) => field.name === name);
+
+    if (field === undefined)
+      throw new Error(`Undefined '${name}' field! #1666682378`);
+
+    return field;
+  };
+
+  return { result, error, findField, getAllFields };
 }
+
+export type ServerModelActionMetadata = Action;
+export type ServerModelFieldMetadata = Field;
+export type ServerModelRelationMetadata = Relation;
+export type ServerModelMetadata = Model;

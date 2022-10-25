@@ -8,9 +8,10 @@ import {
   UpdateSelectedButton,
   UpdateSelectedButtonProps,
 } from './Buttons/Update';
+import { FormFieldsFactory } from '../FormFieldsFactory';
 
 type Props = {
-  children: React.ReactNode;
+  children?: React.ReactNode;
   button?: UpdateSelectedButtonProps;
 };
 
@@ -73,7 +74,7 @@ export function Update({ children, button = {} }: Props) {
             }}
           >
             <Box gap={'small'} direction={'column'}>
-              {children}
+              {children ?? <FormFieldsFactory />}
               <Button type="submit" label="Save" primary />
               <Button type="reset" label="Reset" />
             </Box>
