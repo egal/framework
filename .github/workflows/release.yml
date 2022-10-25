@@ -141,7 +141,6 @@ jobs:
       - service-postgres
       - service-rabbitmq
       - service-web
-      - service-auth
     runs-on: ubuntu-latest
     steps:
       - uses: egal/release-notify-action@main
