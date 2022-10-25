@@ -12,6 +12,8 @@ pull: generate-dot-env-file
 # regionRelay
 up: generate-dot-env-file pull build
 	docker-compose up --detach $(docker-compose config --services | grep -v -e "[auth|core]-service")
+	docker-compose run --rm auth-service sh -c "/wait && php artisan migrate --force --seed"
+	docker-compose run --rm core-service sh -c "/wait && php artisan migrate --force --seed"
 	docker-compose up --no-build auth-service core-service || docker-compose down
 down:
 	docker-compose down
