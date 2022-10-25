@@ -108,7 +108,13 @@ jobs:
         run: echo ::set-output name=tag::${{ github.event.release.tag_name }}
       - uses: php-actions/composer@v6
         with:
-          command: require --ignore-platform-reqs --working-dir ./services/web --no-install egal/framework:${{ steps.vars.outputs.tag }}
+          command: |
+            require \
+              --ignore-platform-reqs \
+              --working-dir ./services/web \
+              --no-install \
+              --with-all-dependencies \
+              egal/framework:${{ steps.vars.outputs.tag }}
       - uses: docker/setup-qemu-action@v1
       - uses: docker/setup-buildx-action@v1
       - uses: docker/login-action@v1
@@ -124,32 +130,6 @@ jobs:
       - uses: docker/build-push-action@v2
         with:
           context: ./services/web
-          push: true
-          tags: ${{ steps.image-metadata.outputs.tags }}
-
-  service-auth:
-    needs: package-php-framework
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: php-actions/composer@v6
-        with:
-          command: require --ignore-platform-reqs --working-dir ./services/auth --no-install egal/framework:${{ github.event.release.tag_name }}
-      - uses: docker/setup-qemu-action@v1
-      - uses: docker/setup-buildx-action@v1
-      - uses: docker/login-action@v1
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - id: image-metadata
-        run: |
-          REPOSITORY="${{ secrets.DOCKERHUB_USERNAME }}/auth-service"
-          GIT_TAG=${{ github.event.release.tag_name }}
-          TAGS="${REPOSITORY}:${GIT_TAG/v}"
-          echo "::set-output name=tags::$TAGS"
-      - uses: docker/build-push-action@v2
-        with:
-          context: ./services/auth
           push: true
           tags: ${{ steps.image-metadata.outputs.tags }}
 
