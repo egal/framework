@@ -65,7 +65,6 @@ class Service
 
         /** @var \Egal\Auth\Tokens\ServiceMasterToken $smt */
         $smt = ServiceMasterToken::fromJWT($token, config('app.service_key'));
-        $smt->isAliveOrFail();
 
         /** @var \Egal\AuthServiceDependencies\Models\Service $senderService */
         $senderService = static::find($smt->getSub()['name']);
@@ -82,17 +81,9 @@ class Service
 
         $sst = new ServiceServiceToken();
         $sst->setSigningKey($recipientService->key);
-        $sst->setSub($senderService->generateAuthInformation());
+        $sst->setSub(['name' => $senderService->getName()]);
 
         return $sst->generateJWT();
-    }
-
-    protected function generateAuthInformation(): array
-    {
-        return [
-            'auth_identification' => $this->getName(),
-            'service' => $this->getName(),
-        ];
     }
 
 }
