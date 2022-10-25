@@ -42,9 +42,9 @@ class Service
         return $this->name;
     }
 
-    public static function actionLogin(string $service_name, string $key): string
+    final public static function actionLogin(string $service_name, string $key): string
     {
-        Session::client()->mayOrFail('login', Service::class);
+        Session::client()->mayOrFail('login', static::class);
 
         $service = static::find($service_name);
 
@@ -59,9 +59,9 @@ class Service
         return $smt->generateJWT();
     }
 
-    public static function actionLoginToService(string $token, string $service_name): string
+    final public static function actionLoginToService(string $token, string $service_name): string
     {
-        Session::client()->mayOrFail('loginToService', Service::class);
+        Session::client()->mayOrFail('loginToService', static::class);
 
         /** @var \Egal\Auth\Tokens\ServiceMasterToken $smt */
         $smt = ServiceMasterToken::fromJWT($token, config('app.service_key'));
