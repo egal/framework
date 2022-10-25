@@ -1,9 +1,10 @@
 import * as React from 'react';
-import { Box, Button, Grid, Heading, Sidebar } from 'grommet';
+import { Box, Button, Grid, Sidebar } from 'grommet';
 import { Logout } from 'grommet-icons';
 import { useNavigate } from 'react-router-dom';
-import { Menu, MenuItemConfig, PrivateElement } from '@egalteam/framework';
+import { Menu, MenuItemConfig, PrivateElement, useAuthContext } from '@egalteam/framework';
 import logo from '../../assets/logo.svg';
+import { useEffect } from 'react';
 
 type Props = {
   children?: React.ReactElement;

@@ -30,9 +30,7 @@ export function LoginPage() {
               <FormField name={'password'} component={TextInput} placeholder={'*****'} type={'password'} />
               <Button type={'submit'} label={'Login'} primary />
               {/* TODO: Remake to ReactRouterDOM.Link */}
-              <Link to={'/register'}>
-                <Button label={'Register'} />
-              </Link>
+              <Button label={'Register'} onClick={() => navigate('/register')} />
             </Box>
           </Form>
         </Box>

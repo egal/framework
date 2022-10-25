@@ -1,34 +1,38 @@
 import { useState } from 'react';
 import jwtDecode from 'jwt-decode';
-import { useCookie } from './useCookie';
+import { getCookie, removeCookie, setCookie, useCookie } from './useCookie';
+import { useAction } from './Actions';
+import axios from 'axios';
 
 export type AuthConfig = {
-  authServiceName: string;
+  service: string;
 };
 
 export const authConfig: AuthConfig = {
-  authServiceName: 'auth',
+  service: 'auth',
 };
 
-type Token = {
+type Token<SubType> = {
   raw: string;
+  typ: string;
+  sub: SubType;
+  exp: number;
 };
 
-type MasterToken = Token & {
-  //
-};
+type MasterTokenSubType = any;
+type MasterToken = Token<MasterTokenSubType>;
 
-export type ServiceToken = Token;
+export type ServiceToken<SubType> = Token<SubType>;
 
-type ServicesTokens<ServiceTokenType extends ServiceToken = any> =
-  ServiceTokenType[];
+// TODO: Not any.
+type ServicesTokens = { [key: string]: ServiceToken<any> };
 
 export type Auth = {
   logged: boolean;
   getMasterToken: () => MasterToken;
-  getServiceToken: <ServiceTokenType = any>(
+  getServiceToken: <SubType = any>(
     serviceName: string
-  ) => ServiceTokenType;
+  ) => Promise<ServiceToken<SubType>>;
   login: (rawMasterToken: string) => Promise<void>;
   logout: () => Promise<void>;
 };
@@ -36,23 +40,27 @@ export type Auth = {
 export function useAuth(config: AuthConfig = authConfig): Auth {
   const [logged, setLogged] = useState<boolean>(false);
   const [masterToken, setMasterToken] = useState<MasterToken>();
-  const [servicesTokens, setServicesTokens] = useState<ServicesTokens>([]);
+  const [servicesTokens, setServicesTokens] = useState<ServicesTokens>({});
+
+  // TODO: Refactoring.
+  type Res = { data: string };
+  const actionLoginToService = useAction<Res, any, any>(
+    { service: config.service, name: 'User' },
+    'loginToService'
+  );
 
   const cookieMasterToken = useCookie('master_token');
 
-  const getMasterToken = (): MasterToken => {
-    if (!logged) {
-      throw new Error(
-        'Getting master token is impossible, because user not logged!'
-      );
-    }
+  const cookieServiceTokenNamePostfix = '_service_token';
 
-    if (masterToken === undefined) {
-      throw new Error('Master token is undefined!');
-    }
+  const cookieGetServiceToken = (serviceName: string) =>
+    getCookie(`${serviceName}${cookieServiceTokenNamePostfix}`);
 
-    return masterToken;
-  };
+  const cookieSetServiceToken = (serviceName: string, raw: string) =>
+    setCookie(`${serviceName}${cookieServiceTokenNamePostfix}`, raw);
+
+  const cookieRemoveServiceToken = (serviceName: string) =>
+    removeCookie(`${serviceName}${cookieServiceTokenNamePostfix}`);
 
   const rawLogin = (rawMasterToken: string): void => {
     if (logged) {
@@ -66,22 +74,101 @@ export function useAuth(config: AuthConfig = authConfig): Auth {
     setLogged(true);
   };
 
-  // TODO: Default value for ServiceTokenType.
-  const getServiceToken = <ServiceTokenType,>(
-    serviceName: string
-  ): ServiceTokenType => {
-    // TODO: Implementation.
-    throw new Error('Not implemented!');
-  };
-
   if (!logged && cookieMasterToken.value !== undefined) {
     rawLogin(cookieMasterToken.value);
   }
 
+  const logout = (): Promise<void> => {
+    return new Promise((resolve) => {
+      if (!logged) {
+        throw new Error('Logout impossible, because not logged!');
+      }
+
+      setServicesTokens({});
+      setMasterToken(undefined);
+      cookieMasterToken.remove();
+      Object.keys(servicesTokens).map((service) =>
+        cookieRemoveServiceToken(service)
+      );
+      setLogged(false);
+      resolve();
+    });
+  };
+
   return {
     logged,
-    getMasterToken,
-    getServiceToken,
+
+    getMasterToken: (): MasterToken => {
+      if (!logged)
+        throw new Error(
+          'Getting master token is impossible, because user not logged!'
+        );
+
+      if (masterToken === undefined)
+        throw new Error('Master token is undefined!');
+
+      return masterToken;
+    },
+
+    getServiceToken: async <SubType,>(
+      serviceName: string
+    ): Promise<ServiceToken<SubType>> => {
+      if (!logged)
+        throw new Error(
+          'Login to service is impossible, because user not logged!'
+        );
+
+      const decode = (raw: string): ServiceToken<any> => {
+        return { ...jwtDecode(raw), raw };
+      };
+
+      const expired = (token: ServiceToken<any>): boolean => {
+        const now = Date.now() / 1000;
+        return now > token.exp - 10;
+      };
+
+      const loginToService = async (): Promise<ServiceToken<any>> => {
+        if (masterToken === undefined)
+          throw new Error(
+            'Login to service is impossible, because master token is not set!'
+          );
+
+        // TODO: Refresh master token.
+        if (expired(masterToken)) {
+          await logout();
+          throw new Error('Master token expired! Logout.');
+        }
+
+        // TODO: Without @ts-ignore, how?
+        // @ts-ignore
+        const raw: string = await actionLoginToService.call({
+          token: masterToken.raw,
+          service_name: serviceName,
+        });
+
+        return decode(raw);
+      };
+
+      const getFromCookie = (): ServiceToken<any> | undefined => {
+        const cookieRaw = cookieGetServiceToken(serviceName);
+        return cookieRaw === undefined ? undefined : decode(cookieRaw);
+      };
+
+      let token: ServiceToken<any> | undefined;
+      let cookieToken: typeof token;
+      let stateToken: typeof token;
+
+      token = stateToken = servicesTokens[serviceName];
+      if (token === undefined) token = cookieToken = getFromCookie();
+      if (token === undefined || expired(token)) token = await loginToService();
+      if (cookieToken === undefined || expired(cookieToken))
+        cookieSetServiceToken(serviceName, token.raw);
+      if (stateToken === undefined || expired(stateToken))
+        setServicesTokens({ ...servicesTokens, [serviceName]: token });
+
+      return token;
+    },
+
     login: (rawMasterToken: string) => {
       return new Promise((resolve) => {
         rawLogin(rawMasterToken);
@@ -89,22 +176,7 @@ export function useAuth(config: AuthConfig = authConfig): Auth {
         resolve();
       });
     },
-    logout: () => {
-      return new Promise((resolve, reject) => {
-        try {
-          if (!logged) {
-            throw new Error('Logout impossible, because not logged!');
-          }
 
-          setServicesTokens([]);
-          setMasterToken(undefined);
-          cookieMasterToken.remove();
-          setLogged(false);
-          resolve();
-        } catch (e) {
-          reject();
-        }
-      });
-    },
+    logout,
   };
 }

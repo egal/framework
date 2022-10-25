@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
 use Egal\Auth\Policies\AllowAllPolicy;
@@ -11,6 +13,8 @@ use Egal\Model\Metadata\FieldMetadata;
 use Egal\Model\Metadata\ModelMetadata;
 use Egal\Model\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 use Staudenmeir\EloquentHasManyDeep\HasRelationships;
 
 class Employee extends Model
@@ -27,6 +31,7 @@ class Employee extends Model
                 FieldMetadata::make('address', VariableType::STRING)
                     ->default('Home Address'),
                 FieldMetadata::make('phone', VariableType::INTEGER)
+                    ->addValidationRule(Rule::notIn([1, 2, 3]))
                     ->nullable()
                     ->addValidationRule('unique:employees,phone'),
                 FieldMetadata::make('adult', VariableType::BOOLEAN)

@@ -2,6 +2,7 @@ import axios, { AxiosError } from 'axios';
 import { useState } from 'react';
 import { PromiseWithReject } from '../../Utils';
 import { useAppContext } from '../../Components';
+import { useAuthContext } from '../../Contexts';
 
 export type ActionModel = {
   name: string;
@@ -39,6 +40,7 @@ export function useAction<
 ): ActionHook<ResultType, ParamsType, ErrorDataType> {
   const [result, setResult] = useState<ResultType>();
   const [error, setError] = useState<ActionError<ErrorDataType>>();
+  const auth = useAuthContext();
 
   const {
     config: {
@@ -46,48 +48,56 @@ export function useAction<
     },
   } = useAppContext();
 
-  const call = (
-    params: ParamsType
-  ): PromiseWithReject<ResultType, ActionError<ErrorDataType>> => {
-    return new Promise((resolve, reject) => {
-      axios
-        .request({
-          method: 'POST',
-          url: `${apiURL}/${model.service}/${model.name}/${name}`,
-          data: params,
-          headers: { 'Content-Type': 'application/json' },
-        })
-        .then((res) => {
-          setResult(res.data.action_result.data);
-          resolve(res.data.action_result.data);
-        })
-        .catch((caughtError: AxiosError) => {
-          const respectableError: ActionError<ErrorDataType> =
-            // @ts-ignore
-            caughtError.response?.data?.action_error ?? {};
+  return {
+    result,
+    error,
 
-          delete respectableError['type'];
-          delete respectableError['uuid'];
+    call: async (params: ParamsType) => {
+      const headers = {};
 
-          if (!respectableError.code || respectableError.code === 0) {
-            if (caughtError.code && caughtError.message) {
-              respectableError.code = caughtError.code;
-              respectableError.internal_code = null;
-              respectableError.message = caughtError.message;
-              respectableError.data = null;
-            } else {
-              respectableError.code = 'ERR_UNDEFINED';
-              respectableError.internal_code = null;
-              respectableError.message = 'Undefined Error!';
-              respectableError.data = null;
+      if (auth.logged) {
+        const token = await auth.getServiceToken(model.service);
+        headers['Authorization'] = token.raw;
+      }
+
+      return new Promise((resolve, reject) => {
+        axios
+          .request({
+            method: 'POST',
+            url: `${apiURL}/${model.service}/${model.name}/${name}`,
+            data: params,
+            headers: { ...headers, 'Content-Type': 'application/json' },
+          })
+          .then((res) => {
+            setResult(res.data.action_result.data);
+            resolve(res.data.action_result.data);
+          })
+          .catch((caughtError: AxiosError) => {
+            const respectableError: ActionError<ErrorDataType> =
+              // @ts-ignore
+              caughtError.response?.data?.action_error ?? {};
+
+            delete respectableError['type'];
+            delete respectableError['uuid'];
+
+            if (!respectableError.code || respectableError.code === 0) {
+              if (caughtError.code && caughtError.message) {
+                respectableError.code = caughtError.code;
+                respectableError.internal_code = null;
+                respectableError.message = caughtError.message;
+                respectableError.data = null;
+              } else {
+                respectableError.code = 'ERR_UNDEFINED';
+                respectableError.internal_code = null;
+                respectableError.message = 'Undefined Error!';
+                respectableError.data = null;
+              }
             }
-          }
 
-          setError(respectableError);
-          reject(respectableError);
-        });
-    });
+            setError(respectableError);
+            reject(respectableError);
+          });
+      });
+    },
   };
-
-  return { result, error, call };
 }
