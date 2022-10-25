@@ -10,6 +10,8 @@ import { Filters } from './Filters/Filters';
 import { Extensions, useExtensions } from './useExtensions';
 import type { ResourceHookConfig } from '../../Hooks';
 import { RecursivePartial } from '../../Utils';
+import { FormField } from './FormField';
+import { FormFieldsFactory } from './FormFieldsFactory';
 
 type Model = {
   name: string;
@@ -52,7 +54,7 @@ export function useResourceContext(): ContextType<any> {
 
 type Props = {
   model: Model;
-  children: React.ReactNode;
+  children?: React.ReactNode;
 } & RecursivePartial<ResourceHookConfig>;
 
 // TODO: Save filter params in GET params of Browser URL.
@@ -127,7 +129,18 @@ export function Resource<ItemType>({ children, model, ...config }: Props) {
     <ResourceContext.Provider value={contextValue}>
       <Keyboard onEsc={() => setSelectedKeys([])}>
         <Box fill gap={'small'} justify={'between'} pad={'small'}>
-          {children}
+          {children ?? (
+            <>
+              <Resource.Actions>
+                <Resource.Actions.Create />
+                <Resource.Actions.Show />
+                <Resource.Actions.Update />
+                <Resource.Actions.Delete />
+              </Resource.Actions>
+              <Resource.DataTable />
+              <Resource.Pagination />
+            </>
+          )}
         </Box>
       </Keyboard>
     </ResourceContext.Provider>
@@ -138,3 +151,5 @@ Resource.DataTable = DataTable;
 Resource.Actions = Actions;
 Resource.Pagination = Pagination;
 Resource.Filters = Filters;
+Resource.FormField = FormField;
+Resource.FormFieldsFactory = FormFieldsFactory;
