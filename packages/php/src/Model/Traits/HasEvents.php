@@ -12,7 +12,12 @@ use Egal\Core\Events\GlobalEvent;
 trait HasEvents
 {
 
-    protected function fireCustomModelEvent(string $event, string $method): mixed
+    /**
+     * @param  string  $event
+     * @param  string  $method
+     * @return mixed|null
+     */
+    protected function fireCustomModelEvent($event, $method)
     {
         $result = parent::fireCustomModelEvent($event, $method);
 
