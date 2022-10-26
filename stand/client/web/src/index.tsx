@@ -69,8 +69,8 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
         items: [
           {
             header: 'Base',
-            path: '/EmployeesResource',
-            element: <Resource key={'EmployeesResource'} model={{ service: 'auth', name: 'Employee' }} />
+            path: '/EmployeesBaseResource',
+            element: <Resource key={'EmployeesBaseResource'} model={{ service: 'auth', name: 'Employee' }} />
           },
           {
             header: 'Filters',

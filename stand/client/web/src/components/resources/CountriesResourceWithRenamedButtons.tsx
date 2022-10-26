@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { Resource, Select } from '@egalteam/framework';
-import { CheckBox, FormField, Tag, TextInput } from 'grommet';
+import { Resource } from '@egalteam/framework';
+import { FormField, TextInput } from 'grommet';
 
 export const CountriesResourceWithRenamedButtons = () => (
   <Resource key={'countries'} model={{ service: 'core', name: 'Country' }}>
