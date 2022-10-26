@@ -6,4 +6,4 @@ git/checkout-3.x:
 	git pull
 
 git/new-3.x-patch-branch: git/checkout-3.x
-	git checkout -b 3.x-patch-$(shell date +%H:%M:%S-%d.%m.%Y)
+	git checkout -b 3.x-patch-$(shell date +%H.%M.%S-%d.%m.%Y)
