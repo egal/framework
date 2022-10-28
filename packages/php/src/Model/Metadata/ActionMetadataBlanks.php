@@ -43,10 +43,12 @@ final class ActionMetadataBlanks
     public static function create(): ActionMetadata
     {
         return ActionMetadata::make('create')
-            ->addParameter(
+            ->addParameters([
                 ActionParameterMetadata::make('attributes', VariableType::ARRAY)
-                    ->required()
-            );
+                    ->required(),
+                ActionParameterMetadata::make('relations', VariableType::ARRAY)
+                    ->required(),
+            ]);
     }
 
     // TODO: actionCreateMany
@@ -60,6 +62,8 @@ final class ActionMetadataBlanks
                 ActionParameterMetadata::make('key', $keyType)
                     ->required(),
                 ActionParameterMetadata::make('attributes', VariableType::ARRAY)
+                    ->required(),
+                ActionParameterMetadata::make('relations', VariableType::ARRAY)
                     ->required(),
             ]);
     }
