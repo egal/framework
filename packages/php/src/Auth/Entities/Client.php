@@ -62,7 +62,7 @@ abstract class Client
         return $this instanceof Guest;
     }
 
-    public function isService(): bool
+    public function isService(string|null $name = null): bool
     {
         return $this instanceof Service;
     }

@@ -6,16 +6,19 @@ namespace Egal\Auth\Entities;
 
 use Egal\Auth\Tokens\ServiceServiceToken;
 
-class Service extends AuthorizedClient
+class Service extends Client
 {
 
-    public readonly string $service;
+    public readonly string $name;
 
     public function __construct(ServiceServiceToken $sst)
     {
-        parent::__construct($sst);
+        $this->name = $sst->getSub()['name'];
+    }
 
-        $this->service = $sst->getSub()['name'];
+    public function isService(string|null $name = null): bool
+    {
+        return parent::isService($name) && ($name === null || $this->name === $name);
     }
 
 }

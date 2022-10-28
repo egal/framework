@@ -2,7 +2,7 @@
 
 namespace Egal\Tests\Auth\EntitiesAuthorizedClientHasRolesTest;
 
-use Egal\Auth\Entities\AuthorizedClient;
+use Egal\Auth\Entities\User;
 use Mockery as m;
 use PHPUnit\Framework\TestCase;
 
@@ -70,8 +70,8 @@ class Test extends TestCase
      */
     public function test(array $existsRoles, array $checkRoles, bool $expected)
     {
-        /** @var AuthorizedClient|\Mockery\MockInterface|\Mockery\LegacyMockInterface $client */
-        $client = m::mock(AuthorizedClient::class)->makePartial();
+        /** @var User|\Mockery\MockInterface|\Mockery\LegacyMockInterface $client */
+        $client = m::mock(User::class)->makePartial();
         $client->shouldReceive('getRoles')->andReturn($existsRoles);
 
         $this->assertEquals($expected, $client->hasRoles($checkRoles));
