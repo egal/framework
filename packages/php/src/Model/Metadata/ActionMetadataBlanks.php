@@ -45,9 +45,9 @@ final class ActionMetadataBlanks
         return ActionMetadata::make('create')
             ->addParameters([
                 ActionParameterMetadata::make('attributes', VariableType::ARRAY)
-                    ->required(),
+                    ->nullable(),
                 ActionParameterMetadata::make('relations', VariableType::ARRAY)
-                    ->required(),
+                    ->nullable(),
             ]);
     }
 
@@ -62,9 +62,9 @@ final class ActionMetadataBlanks
                 ActionParameterMetadata::make('key', $keyType)
                     ->required(),
                 ActionParameterMetadata::make('attributes', VariableType::ARRAY)
-                    ->required(),
+                    ->nullable(),
                 ActionParameterMetadata::make('relations', VariableType::ARRAY)
-                    ->required(),
+                    ->nullable(),
             ]);
     }
 
