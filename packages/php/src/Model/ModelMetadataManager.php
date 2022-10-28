@@ -40,6 +40,7 @@ class ModelMetadataManager
                 $itemPath = str_replace_first(base_path() . '/', '', $itemPath,);
 
                 $this->registerDirectory($itemPath, $itemNamespace);
+                continue;
             }
 
             if (!str_contains($dirItem, '.php')) {
