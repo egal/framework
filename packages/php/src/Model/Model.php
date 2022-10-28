@@ -195,7 +195,6 @@ abstract class Model extends EloquentModel
         try {
             $entity->save();
             foreach ($relations as $name => $value) $entity->saveRelation($name, $value);
-
             Session::client()->mayOrFail('created', $entity);
         } catch (Exception $exception) {
             DB::rollBack();
