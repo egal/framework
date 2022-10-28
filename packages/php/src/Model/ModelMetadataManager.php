@@ -37,6 +37,7 @@ class ModelMetadataManager
                 $itemNamespace = str_replace($itemPath, '', $itemNamespace);
                 $itemNamespace = str_replace('/', '\\', $itemNamespace);
                 $itemNamespace = ucfirst($itemNamespace);
+                $itemPath = str_replace_first(base_path() . '/', '', $itemPath,);
 
                 $this->registerDirectory($itemPath, $itemNamespace);
             }
