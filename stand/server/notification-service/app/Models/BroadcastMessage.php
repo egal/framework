@@ -16,11 +16,11 @@ class BroadcastMessage extends Model
         return ModelMetadata::make(self::class, FieldMetadata::make('id', VariableType::UUID))
             ->policy(AllowAllPolicy::class)
             ->addFields([
-                FieldMetadata::make('message', VariableType::STRING),
-                FieldMetadata::make('background_color', VariableType::STRING),
-                FieldMetadata::make('starts_at', VariableType::DATETIME),
-                FieldMetadata::make('ends_at', VariableType::DATETIME),
-                FieldMetadata::make('active', VariableType::BOOLEAN),
+                FieldMetadata::make('message', VariableType::STRING)->required(),
+                FieldMetadata::make('background_color', VariableType::STRING)->required(),
+                FieldMetadata::make('starts_at', VariableType::DATETIME)->required(),
+                FieldMetadata::make('ends_at', VariableType::DATETIME)->required(),
+                FieldMetadata::make('active', VariableType::BOOLEAN)->required(),
             ])
             ->addActions([
                 ActionMetadataBlanks::getMetadata(),

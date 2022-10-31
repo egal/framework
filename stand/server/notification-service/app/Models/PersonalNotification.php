@@ -1,6 +1,7 @@
 <?php
 namespace App\Models;
 
+use App\Policies\PersonalNotificationPolicy;
 use Carbon\Carbon;
 use Egal\Auth\Policies\AllowAllPolicy;
 use Egal\Model\Enums\VariableType;
@@ -23,10 +24,10 @@ class PersonalNotification extends Model
     public static function constructMetadata(): ModelMetadata
     {
         return ModelMetadata::make(self::class, FieldMetadata::make('id', VariableType::UUID))
-            ->policy(AllowAllPolicy::class)
+            ->policy(PersonalNotificationPolicy::class)
             ->addFields([
-                FieldMetadata::make('message', VariableType::STRING),
-                FieldMetadata::make('checked', VariableType::BOOLEAN),
+                FieldMetadata::make('message', VariableType::STRING)->isRequired(),
+                FieldMetadata::make('checked', VariableType::BOOLEAN)->isNullable(),
                 FieldMetadata::make('user_id', VariableType::UUID),
             ])
             ->addActions([
