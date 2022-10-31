@@ -90,7 +90,7 @@ services:
     environment:
       APP_NAME: ${PROJECT_NAME}
       APP_SERVICE_NAME: notification
-      APP_SERVICE_KEY: ${CORE_SERVICE_KEY}
+      APP_SERVICE_KEY: ${NOTIFICATION_SERVICE_KEY}
       DB_HOST: postgres
       DB_USERNAME: ${DB_USERNAME}
       DB_PASSWORD: ${DB_PASSWORD}
