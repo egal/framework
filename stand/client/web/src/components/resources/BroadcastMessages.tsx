@@ -14,6 +14,7 @@ type BroadcastMessageType = {
   message: string;
   active: boolean;
 };
+
 export const BroadcastMessages = (props: Props) => {
   const actionGetBanner = useActionGetItems(
     { name: 'BroadcastMessage', service: 'notification' },
