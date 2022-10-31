@@ -9,7 +9,7 @@ use Egal\Model\Metadata\FieldMetadata;
 use Egal\Model\Metadata\ModelMetadata;
 use Egal\Model\Model;
 
-class BroadcastMessage extends Model
+class PersonalNotification extends Model
 {
     protected $appends = ['active'];
     public function getActiveAttribute()
@@ -26,9 +26,8 @@ class BroadcastMessage extends Model
             ->policy(AllowAllPolicy::class)
             ->addFields([
                 FieldMetadata::make('message', VariableType::STRING),
-                FieldMetadata::make('background_color', VariableType::STRING),
-                FieldMetadata::make('starts_at', VariableType::DATETIME),
-                FieldMetadata::make('ends_at', VariableType::DATETIME),
+                FieldMetadata::make('checked', VariableType::BOOLEAN),
+                FieldMetadata::make('user_id', VariableType::UUID),
             ])
             ->addActions([
                 ActionMetadataBlanks::getMetadata(),
