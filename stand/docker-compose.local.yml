@@ -32,3 +32,10 @@ services:
     user: ${UID}:${GID}
     volumes:
       - ./server/core-service:/app:rw
+  notification-service:
+    build:
+      args:
+        DEBUG: 'true'
+    user: ${UID}:${GID}
+    volumes:
+      - ./server/notification-service:/app:rw
