@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('broadcast_message', function (Blueprint $table) {
+        Schema::create('broadcast_messages', function (Blueprint $table) {
             $table->id();
             $table->timestamp('starts_at');
             $table->timestamp('ends_at');
@@ -30,6 +30,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('broadcast_message');
+        Schema::dropIfExists('broadcast_messages');
     }
 };
