@@ -11,15 +11,6 @@ use Egal\Model\Model;
 
 class BroadcastMessage extends Model
 {
-    protected $appends = ['active'];
-    public function getActiveAttribute()
-    {
-        if ($this->starts_at < Carbon::now() && $this->ends_at > Carbon::now()) {
-            return true;
-        } else {
-            return false;
-        }
-    }
     public static function constructMetadata(): ModelMetadata
     {
         return ModelMetadata::make(self::class, FieldMetadata::make('id', VariableType::UUID))
@@ -29,6 +20,7 @@ class BroadcastMessage extends Model
                 FieldMetadata::make('background_color', VariableType::STRING),
                 FieldMetadata::make('starts_at', VariableType::DATETIME),
                 FieldMetadata::make('ends_at', VariableType::DATETIME),
+                FieldMetadata::make('active', VariableType::BOOLEAN),
             ])
             ->addActions([
                 ActionMetadataBlanks::getMetadata(),
