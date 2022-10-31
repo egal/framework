@@ -19,7 +19,6 @@ return new class extends Migration
             $table->timestamp('ends_at');
             $table->string('background_color');
             $table->string('message');
-            $table->boolean('active');
             $table->timestamps();
         });
     }
