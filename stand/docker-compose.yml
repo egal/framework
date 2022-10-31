@@ -49,7 +49,7 @@ services:
       APP_NAME: ${PROJECT_NAME}
       APP_SERVICE_NAME: auth
       APP_SERVICE_KEY: ${AUTH_SERVICE_KEY}
-      APP_SERVICES: "core:${CORE_SERVICE_KEY}"
+      APP_SERVICES: "core:${CORE_SERVICE_KEY},notification:${NOTIFICATION_SERVICE_KEY}"
       DB_HOST: postgres
       DB_USERNAME: ${DB_USERNAME}
       DB_PASSWORD: ${DB_PASSWORD}
