@@ -12,7 +12,7 @@ type NotificationType = {
   message: string;
 };
 export const Notifications = () => {
-  const show = useRelay();
+  const isNotificationsOpen = useRelay();
 
   const resource = useResource({ name: 'PersonalNotification', service: 'notification' });
 
@@ -25,30 +25,32 @@ export const Notifications = () => {
   };
 
   return (
-    <Box background={'white'}>
-      {show.enabled && (
-        <FullLayerModal onClose={show.disable} position={'right'} full={'vertical'}>
-          {resource.getItems.result && (
-            <List
-              margin={{ top: 'medium' }}
-              background={'white'}
-              primaryKey="name"
-              secondaryKey="percent"
-              data={resource.getItems.result.items as NotificationType[]}
-              action={(item: NotificationType) => (
-                <Button primary label={'Прочитано'} onClick={() => markAsRead(item)}></Button>
-              )}
-            />
-          )}
-        </FullLayerModal>
+    <>
+      {isNotificationsOpen.enabled && (
+        <Box background={'white'}>
+          <FullLayerModal onClose={isNotificationsOpen.disable} position={'right'} full={'vertical'}>
+            {resource.getItems.result && (
+              <List
+                margin={{ top: 'medium' }}
+                background={'white'}
+                primaryKey="name"
+                secondaryKey="percent"
+                data={resource.getItems.result.items as NotificationType[]}
+                action={(item: NotificationType) => (
+                  <Button secondary label={'Прочитано'} onClick={() => markAsRead(item)}></Button>
+                )}
+              />
+            )}
+          </FullLayerModal>
+        </Box>
       )}
       <Button
         icon={<NotificationIcon />}
-        onClick={show.enable}
+        onClick={isNotificationsOpen.enable}
         badge={{
           background: 'status-warning',
           value: 5
         }}></Button>
-    </Box>
+    </>
   );
 };
