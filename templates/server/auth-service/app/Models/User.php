@@ -84,17 +84,14 @@ class User extends BaseUser
 
     public static function actionRegister(string $email, string $password): User
     {
-        Session::client()->mayOrFail('register', static::class);
-
         $user = new static();
         $user->setAttribute('email', $email);
         $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
 
-        if (!$hashedPassword) {
-            throw new PasswordHashException();
-        }
+        if (!$hashedPassword) throw new PasswordHashException();
 
         $user->setAttribute('password', $hashedPassword);
+        Session::client()->mayOrFail('register', $user);
         $user->save();
 
         return $user;
@@ -102,14 +99,14 @@ class User extends BaseUser
 
     public static function actionLogin(string $email, string $password): array
     {
-        Session::client()->mayOrFail('login', static::class);
-
         /** @var BaseUser $user */
         $user = static::query()->where('email', '=', $email)->first();
 
         if (!$user || !password_verify($password, $user->getAttribute('password'))) {
             throw new LoginException('Incorrect Email or password!');
         }
+
+        Session::client()->mayOrFail('login', $user);
 
         return $user->generateLoginResult();
     }
