@@ -37,6 +37,7 @@ class BroadcastMessage extends Model
                 ActionMetadataBlanks::getItems(),
                 ActionMetadataBlanks::create(),
                 ActionMetadataBlanks::update(VariableType::STRING),
+                ActionMetadataBlanks::delete(VariableType::STRING),
             ]);
     }
 
