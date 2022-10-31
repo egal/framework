@@ -6,7 +6,7 @@ services:
     environment:
       POSTGRES_USER: ${DB_USERNAME}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
-      POSTGRES_MULTIPLE_DATABASES: auth,core
+      POSTGRES_MULTIPLE_DATABASES: auth,core,notification
     healthcheck:
       test: pg_isready --username=${DB_USERNAME} --dbname=auth && pg_isready --username=${DB_USERNAME}
         --dbname=auth
@@ -58,7 +58,7 @@ services:
       RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD}
       WAIT_HOSTS: rabbitmq:5672,postgres:5432
     volumes:
-      - ../packages/php:/app/vendor/egal/framework
+     - ../packages/php:/app/vendor/egal/framework
 #      - ../packages/php:/dependencies/php-package
   core-service:
     build:
@@ -70,6 +70,26 @@ services:
     environment:
       APP_NAME: ${PROJECT_NAME}
       APP_SERVICE_NAME: core
+      APP_SERVICE_KEY: ${CORE_SERVICE_KEY}
+      DB_HOST: postgres
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_USER: ${RABBITMQ_USER}
+      RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD}
+      WAIT_HOSTS: rabbitmq:5672,postgres:5432
+    volumes:
+      - ../packages/php:/dependencies/php-package
+  notification-service:
+    build:
+      context: server/notification-service
+    restart: unless-stopped
+    depends_on:
+      - rabbitmq
+      - postgres
+    environment:
+      APP_NAME: ${PROJECT_NAME}
+      APP_SERVICE_NAME: notification
       APP_SERVICE_KEY: ${CORE_SERVICE_KEY}
       DB_HOST: postgres
       DB_USERNAME: ${DB_USERNAME}
