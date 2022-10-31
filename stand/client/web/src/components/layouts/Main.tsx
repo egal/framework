@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { Menu, MenuItemConfig, PrivateElement, useAuthContext } from '@egalteam/framework';
 import logo from '../../assets/logo.svg';
 import { useEffect } from 'react';
+import { BroadcastMessages } from '../resources/BroadcastMessages';
 
 type Props = {
   children?: React.ReactElement;
@@ -16,6 +17,7 @@ export const Layout = ({ children, menu }: Props) => {
 
   return (
     <PrivateElement>
+      <BroadcastMessages background_color={'background-back'} text={'Some text'} />
       <Grid
         rows={['xxsmall', 'flex']}
         columns={['15%', 'flex']}
@@ -28,6 +30,7 @@ export const Layout = ({ children, menu }: Props) => {
           { name: 'main', start: [1, 1], end: [1, 1] }
         ]}>
         <Box gridArea={'header'} background={'brand'} pad="xsmall" />
+
         <Box gridArea="nav" background={'light-5'}>
           <Sidebar
             responsive={false}
