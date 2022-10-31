@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('background_color');
             $table->string('message');
             $table->boolean('active');
+            $table->timestamps();
         });
     }
 
