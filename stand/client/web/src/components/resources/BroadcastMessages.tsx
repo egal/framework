@@ -1,33 +1,48 @@
 import * as React from 'react';
 import { Text, Box, Header } from 'grommet';
-import { useAction, useActionGetItems } from '@egalteam/framework';
-import { useEffect, useState } from 'react';
+import { useActionGetItems } from '@egalteam/framework';
+import { useEffect } from 'react';
 
 type Props = {
-  background_color?: string;
-  text?: string;
+  //   background_color?: string;
+  //   text?: string;
 };
 
-export const BroadcastMessages = ({ background_color, text }: Props) => {
-  const [broadcastMessages, setBroadcastMessages] = useState<any>([]);
-
-  const actionGetBanner = useAction({ name: 'BroadcastMessage', service: 'core' }, 'getItems');
+type BroadcastMessageType = {
+  id: string;
+  background_color: string;
+  message: string;
+  active: boolean;
+};
+export const BroadcastMessages = (props: Props) => {
+  const actionGetBanner = useActionGetItems(
+    { name: 'BroadcastMessage', service: 'notification' },
+    {
+      filter: [['active', 'eq', true]]
+    }
+  );
 
   useEffect(() => {
-    actionGetBanner.call({}).then((result) => {
-      return setBroadcastMessages(result);
-    });
+    const myInterval = setInterval(() => actionGetBanner.call(), 30000);
+
+    actionGetBanner.call();
+
+    return () => {
+      clearInterval(myInterval);
+    };
   }, []);
 
-  return broadcastMessages.filter((msg: any) => {
-    return (
-      msg.active && (
-        <Header background={background_color}>
-          <Box pad={'medium'} justify={'center'} fill background={'light-5'} align={'center'}>
-            <Text>{text}</Text>
+  if (actionGetBanner.result === undefined) return <></>;
+
+  return (
+    <>
+      {actionGetBanner.result.items.map((msg: any) => (
+        <Header key={msg.id}>
+          <Box pad={'small'} justify={'center'} fill background={{ color: msg.background_color }} align={'center'}>
+            <Text>{msg.message}</Text>
           </Box>
         </Header>
-      )
-    );
-  });
+      ))}
+    </>
+  );
 };

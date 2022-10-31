@@ -21,6 +21,7 @@ import { Layout } from './components/layouts/Main';
 import { SpeakersResource } from './components/resources/SpeakersResource';
 import { CountriesResourceWithRenamedButtons } from './components/resources/CountriesResourceWithRenamedButtons';
 import { EmployeesWithFiltersResource } from './components/resources/EmployeesWithFiltersResource';
+import { Notifications } from './components/resources/Notifications';
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <App
@@ -48,7 +49,11 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
     config={deepMerge<AppConfig, RecursivePartial<AppConfig>>(appConfig, {})}
     authConfig={deepMerge(authConfig, {})}
     menu={[
-      { header: 'Home', path: '/', element: <Heading>Home page</Heading> },
+      {
+        header: 'Home',
+        path: '/',
+        element: <Heading>Home page</Heading>
+      },
       { header: 'Test', path: '/test', element: <Test /> },
       {
         header: 'First',
@@ -78,6 +83,11 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
             element: <EmployeesWithFiltersResource />
           }
         ]
+      },
+      {
+        header: 'BroadcastMessage',
+        path: '/BroadcastMessage',
+        element: <Resource key={'BroadcastMessage'} model={{ service: 'notification', name: 'BroadcastMessage' }} />
       },
       {
         header: 'Speakers',
