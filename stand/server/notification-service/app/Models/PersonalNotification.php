@@ -12,23 +12,14 @@ use Egal\Model\Model;
 
 class PersonalNotification extends Model
 {
-    protected $appends = ['active'];
-    public function getActiveAttribute()
-    {
-        if ($this->starts_at < Carbon::now() && $this->ends_at > Carbon::now()) {
-            return true;
-        } else {
-            return false;
-        }
-    }
     public static function constructMetadata(): ModelMetadata
     {
         return ModelMetadata::make(self::class, FieldMetadata::make('id', VariableType::UUID))
             ->policy(PersonalNotificationPolicy::class)
             ->addFields([
-                FieldMetadata::make('message', VariableType::STRING)->isRequired(),
-                FieldMetadata::make('checked', VariableType::BOOLEAN)->isNullable(),
-                FieldMetadata::make('user_id', VariableType::UUID),
+                FieldMetadata::make('message', VariableType::STRING)->required(),
+                FieldMetadata::make('checked', VariableType::BOOLEAN)->required(),
+                FieldMetadata::make('user_id', VariableType::UUID)->required(),
             ])
             ->addActions([
                 ActionMetadataBlanks::getMetadata(),
