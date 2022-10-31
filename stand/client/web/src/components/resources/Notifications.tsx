@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useAuthContext, useRelay, useResource } from '@egalteam/framework';
-import { Box, Button, List } from 'grommet';
+import { Box, Button, List, Notification } from 'grommet';
 import { Notification as NotificationIcon, Checkmark } from 'grommet-icons';
 import { FullLayerModal } from '@egalteam/framework/dist/cjs/Components/Resource/FullLayerModal';
 import { useEffect, useState } from 'react';
@@ -13,6 +13,7 @@ type NotificationType = {
 };
 export const Notifications = () => {
   const isNotificationsOpen = useRelay();
+  const [mountingTime, setMountingTime] = useState(new Date());
 
   const auth = useAuthContext();
 
@@ -28,8 +29,15 @@ export const Notifications = () => {
   );
 
   useEffect(() => {
+    setMountingTime(new Date());
+
+    const notificationInterval = setInterval(() => resource.getItems.call(), 30000);
+
     resource.getItems.call();
-    console.log(auth.getMasterToken());
+
+    return () => {
+      clearInterval(notificationInterval);
+    };
   }, []);
 
   const markAsRead = (item: NotificationType) => {
@@ -38,6 +46,11 @@ export const Notifications = () => {
 
   return (
     <>
+      {resource.getItems.result &&
+        resource.getItems.result.items
+          .filter((item: any) => new Date(item.created_at) > new Date(mountingTime))
+          .map((item: any) => <Notification key={item.id} toast title="Toast Notification" message={item} />)}
+
       {isNotificationsOpen.enabled && (
         <Box background={'white'}>
           <FullLayerModal onClose={isNotificationsOpen.disable} position={'right'} full={'vertical'}>
