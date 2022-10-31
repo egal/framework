@@ -13,11 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('personal_notifications', function (Blueprint $table) {
+        Schema::create('email_notifications', function (Blueprint $table) {
             $table->id();
-            $table->uuid('user_id');
-            $table->boolean('checked');
-            $table->string('message');
+            $table->string('body');
+            $table->string('target');
+            $table->string('status');
             $table->timestamps();
         });
     }
@@ -29,6 +29,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('personal_notifications');
+        Schema::dropIfExists('email_notifications');
     }
 };

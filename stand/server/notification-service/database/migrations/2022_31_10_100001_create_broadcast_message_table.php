@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::create('broadcast_messages', function (Blueprint $table) {
-            $table->uuid('id')->primary();
+            $table->id();
             $table->timestamp('starts_at');
             $table->timestamp('ends_at');
             $table->string('background_color');
