@@ -25,7 +25,7 @@ WORKDIR /app
 
 # Preparing code base
 COPY --chown=$user composer.json .
-COPY --chown=$user composer.* .
+COPY --chown=$user composer.lock .
 RUN composer install --dev --no-autoloader
 COPY . .
 RUN composer dump-autoload
