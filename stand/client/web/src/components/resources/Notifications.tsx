@@ -68,7 +68,8 @@ export const Notifications = ({ delay = 5000 }: Props) => {
               <List
                 margin={{ top: 'medium' }}
                 background={'white'}
-                secondaryKey="message"
+                primaryKey="title"
+                secondaryKey="text"
                 data={resource.getItems.result.items as NotificationType[]}
                 action={(item: NotificationType) => (
                   <Button icon={<Checkmark />} secondary onClick={() => markAsRead(item)}></Button>
