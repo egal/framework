@@ -1,9 +1,8 @@
 <?php
 use Egal\Core\Events\Event;
-use App\Models\EmailNotification;
 class OnRegistrationSendEmailEvent extends Event
 {
-    public function __construct(EmailNotification $emailNotification)
+    public function __construct(\App\Models\BroadcastMessage $emailNotification)
     {
         $this->emailNotification = $emailNotification;
     }

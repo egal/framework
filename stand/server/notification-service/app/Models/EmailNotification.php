@@ -11,12 +11,10 @@ use Egal\Model\Model;
 
 class EmailNotification extends Model
 {
-
     protected static function boot()
     {
         parent::boot();
-//        static::created(fn(self $notification) => $notification->applyEvents());
-        static::retrieved(fn(self $notification) => $notification->applyEvents());
+        static::created(fn(self $notification) => $notification->applyEvents());
     }
 
     public static function constructMetadata(): ModelMetadata
@@ -39,6 +37,6 @@ class EmailNotification extends Model
     }
     private function applyEvents()
     {
-        event(\OnRegistrationSendEmailEvent::class);
+
     }
 }

@@ -6,6 +6,8 @@ class OnRegistrationSendMailListener
 {
     public function handle(OnRegistrationSendEmailEvent $emailEvent)
     {
-        $emailEvent->emailNotification->setAttribute('body','justBody');
+        Mail::send(1, ['name' => 'da'], function ($message) {
+           $message->to('lebedev@sputnikfund.ru', 'name')->subject('dsada');
+        });
     }
 }

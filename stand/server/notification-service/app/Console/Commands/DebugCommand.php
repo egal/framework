@@ -2,7 +2,9 @@
 
 namespace App\Console\Commands;
 
+use App\Helpers\TestMail;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Mail;
 
 class DebugCommand extends Command
 {
@@ -11,7 +13,7 @@ class DebugCommand extends Command
 
     public function handle(): void
     {
-        //
+        Mail::to('lebedev@sputnikfund.ru')->send(new TestMail());
     }
 
 }

@@ -20,7 +20,7 @@ class BroadcastMessage extends Model
                 FieldMetadata::make('background_color', VariableType::STRING)->required(),
                 FieldMetadata::make('starts_at', VariableType::DATETIME)->required(),
                 FieldMetadata::make('ends_at', VariableType::DATETIME)->required(),
-                FieldMetadata::make('active', VariableType::BOOLEAN)->required(),
+                FieldMetadata::make('active', VariableType::BOOLEAN),
             ])
             ->addActions([
                 ActionMetadataBlanks::getMetadata(),
