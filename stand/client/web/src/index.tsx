@@ -21,7 +21,6 @@ import { Layout } from './components/layouts/Main';
 import { SpeakersResource } from './components/resources/SpeakersResource';
 import { CountriesResourceWithRenamedButtons } from './components/resources/CountriesResourceWithRenamedButtons';
 import { EmployeesWithFiltersResource } from './components/resources/EmployeesWithFiltersResource';
-import { Notifications } from './components/resources/Notifications';
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <App
