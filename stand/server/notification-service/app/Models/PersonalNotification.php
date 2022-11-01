@@ -17,7 +17,8 @@ class PersonalNotification extends Model
         return ModelMetadata::make(self::class, FieldMetadata::make('id', VariableType::INTEGER))
             ->policy(PersonalNotificationPolicy::class)
             ->addFields([
-                FieldMetadata::make('message', VariableType::STRING)->required(),
+                FieldMetadata::make('title', VariableType::STRING)->required(),
+                FieldMetadata::make('text', VariableType::STRING)->nullable(),
                 FieldMetadata::make('checked', VariableType::BOOLEAN),
                 FieldMetadata::make('user_id', VariableType::UUID)->required(),
             ])
