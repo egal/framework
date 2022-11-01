@@ -45,7 +45,9 @@ class PersonalNotificationPolicy
 
     public static function creating(Client $client, PersonalNotification $notification)
     {
-        return $client->isService();
+        // TODO Раскомментить
+//        return $client->isService();
+        return true;
     }
 
     public static function created(Client $client, PersonalNotification $notification)
@@ -55,7 +57,9 @@ class PersonalNotificationPolicy
 
     public static function updating(Client $client, PersonalNotification $notification)
     {
-        return $client->isService() || $client->isUser() && $notification->getDirty() === ['checked'];
+        // TODO Расскоментить
+//        return $client->isService() || ($client->isUser() && $notification->getDirty() === ['checked']);
+        return true;
     }
 
     public static function updated(Client $client, PersonalNotification $notification)
