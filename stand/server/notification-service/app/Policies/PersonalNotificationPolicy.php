@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Policies;
-
 use App\Models\PersonalNotification;
 use Egal\Auth\Entities\Client;
 
@@ -9,17 +8,22 @@ class PersonalNotificationPolicy
 {
     public static function retrieving(Client $client, PersonalNotification $notification)
     {
+        if (is_null($notification->getAttribute('user_id'))) {
+            return true;
+        }
         return $client->getSub()['id'] === $notification->getAttribute('user_id');
     }
 
     public static function retrieved(Client $client, PersonalNotification $notification)
     {
-
         return true;
     }
 
     public static function retrievingMetadata(Client $client, PersonalNotification $notification)
     {
+        if (is_null($notification->getAttribute('user_id'))) {
+            return true;
+        }
         return $client->getSub()['id'] === $notification->getAttribute('user_id');
     }
 
