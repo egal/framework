@@ -9,19 +9,41 @@ import {
   UpdateSelectedButtonProps,
 } from './Buttons/Update';
 import { FormFieldsFactory } from '../FormFieldsFactory';
+import { ButtonProps } from 'grommet/components/Button';
+import { RecursivePartial } from '../../../Utils';
+import { deepMerge } from 'grommet/utils';
+
+type Form = {
+  buttons: {
+    submit: ButtonProps;
+    reset: ButtonProps;
+  };
+};
 
 type Props = {
   children?: React.ReactNode;
   button?: UpdateSelectedButtonProps;
+  form?: RecursivePartial<Form>;
 };
 
-export function Update({ children, button = {} }: Props) {
+export function Update({
+  children,
+  button = {},
+  form: enteredForm = {},
+}: Props) {
   const {
     resource,
     extensions,
     selectedKeys,
     manipulates: { updating: manipulate },
   } = useResourceContext();
+
+  const form: Form = deepMerge(enteredForm, {
+    buttons: {
+      submit: {},
+      reset: {},
+    },
+  });
 
   const [showButton, setShowButton] = useState(false);
 
@@ -75,8 +97,13 @@ export function Update({ children, button = {} }: Props) {
           >
             <Box gap={'small'} direction={'column'}>
               {children ?? <FormFieldsFactory />}
-              <Button type="submit" label="Save" primary />
-              <Button type="reset" label="Reset" />
+              <Button
+                type="submit"
+                label="Save"
+                primary
+                {...form.buttons.submit}
+              />
+              <Button type="reset" label="Reset" {...form.buttons.reset} />
             </Box>
           </Form>
         </FullLayerModal>
