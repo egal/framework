@@ -15,10 +15,10 @@ class PersonalNotification extends Model
     public static function constructMetadata(): ModelMetadata
     {
         return ModelMetadata::make(self::class, FieldMetadata::make('id', VariableType::INTEGER))
-            ->policy(PersonalNotificationPolicy::class)
+            ->policy(AllowAllPolicy::class)
             ->addFields([
                 FieldMetadata::make('message', VariableType::STRING)->required(),
-                FieldMetadata::make('checked', VariableType::BOOLEAN)->required(),
+                FieldMetadata::make('checked', VariableType::BOOLEAN),
                 FieldMetadata::make('user_id', VariableType::UUID)->required(),
             ])
             ->addActions([
