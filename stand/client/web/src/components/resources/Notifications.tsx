@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useAuthContext, useRelay, useResource } from '@egalteam/framework';
-import { Box, Button, List, Notification } from 'grommet';
+import { Box, Button, List, Notification, Text } from 'grommet';
 import { Notification as NotificationIcon, Checkmark } from 'grommet-icons';
 import { FullLayerModal } from '@egalteam/framework/dist/cjs/Components/Resource/FullLayerModal';
 import { useEffect, useState } from 'react';
@@ -9,9 +9,15 @@ type NotificationType = {
   id: string;
   user_id: string;
   checked: boolean;
-  message: string;
+  title: string;
+  text: string;
 };
-export const Notifications = () => {
+
+type Props = {
+  delay?: number;
+};
+
+export const Notifications = ({ delay = 5000 }: Props) => {
   const isNotificationsOpen = useRelay();
   const [mountingTime, setMountingTime] = useState(new Date());
 
@@ -31,7 +37,7 @@ export const Notifications = () => {
   useEffect(() => {
     setMountingTime(new Date());
 
-    const notificationInterval = setInterval(() => resource.getItems.call(), 30000);
+    const notificationInterval = setInterval(() => resource.getItems.call(), delay);
 
     resource.getItems.call();
 
@@ -49,7 +55,11 @@ export const Notifications = () => {
       {resource.getItems.result &&
         resource.getItems.result.items
           .filter((item: any) => new Date(item.created_at) > new Date(mountingTime))
-          .map((item: any) => <Notification key={item.id} toast title="Toast Notification" message={item} />)}
+          .map((item: any) => (
+            <Box background={'white'} key={item.id}>
+              <Notification status="unknown" toast title={item.title} message={item.text ?? ''} />
+            </Box>
+          ))}
 
       {isNotificationsOpen.enabled && (
         <Box background={'white'}>
@@ -68,7 +78,6 @@ export const Notifications = () => {
           </FullLayerModal>
         </Box>
       )}
-
       {resource.getItems.result && (
         <Button
           icon={<NotificationIcon />}

@@ -4,8 +4,7 @@ import { useActionGetItems } from '@egalteam/framework';
 import { useEffect } from 'react';
 
 type Props = {
-  //   background_color?: string;
-  //   text?: string;
+  delay?: number;
 };
 
 type BroadcastMessageType = {
@@ -15,7 +14,7 @@ type BroadcastMessageType = {
   active: boolean;
 };
 
-export const BroadcastMessages = (props: Props) => {
+export const BroadcastMessages = ({ delay = 30000 }: Props) => {
   const actionGetBanner = useActionGetItems(
     { name: 'BroadcastMessage', service: 'notification' },
     {
@@ -24,7 +23,7 @@ export const BroadcastMessages = (props: Props) => {
   );
 
   useEffect(() => {
-    const myInterval = setInterval(() => actionGetBanner.call(), 30000);
+    const myInterval = setInterval(() => actionGetBanner.call(), delay);
 
     actionGetBanner.call();
 
