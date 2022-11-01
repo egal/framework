@@ -13,7 +13,7 @@ class EmailNotification extends Model
 {
     public static function constructMetadata(): ModelMetadata
     {
-        return ModelMetadata::make(self::class, FieldMetadata::make('id', VariableType::STRING))
+        return ModelMetadata::make(self::class, FieldMetadata::make('id', VariableType::INTEGER))
             ->policy(AllowAllPolicy::class)
             ->addFields([
                 FieldMetadata::make('body', VariableType::STRING)->required(),
