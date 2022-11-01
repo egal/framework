@@ -72,7 +72,7 @@ export const Notifications = ({ delay = 5000 }: Props) => {
                 secondaryKey="text"
                 data={resource.getItems.result.items as NotificationType[]}
                 action={(item: NotificationType) => (
-                  <Button icon={<Checkmark />} secondary onClick={() => markAsRead(item)}></Button>
+                  <Button hoverIndicator="light-1" icon={<Checkmark />} onClick={() => markAsRead(item)}></Button>
                 )}
               />
             )}
