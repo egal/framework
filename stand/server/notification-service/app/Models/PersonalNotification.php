@@ -23,11 +23,11 @@ class PersonalNotification extends Model
             ])
             ->addActions([
                 ActionMetadataBlanks::getMetadata(),
-                ActionMetadataBlanks::getItem(VariableType::STRING),
+                ActionMetadataBlanks::getItem(VariableType::INTEGER),
                 ActionMetadataBlanks::getItems(),
                 ActionMetadataBlanks::create(),
-                ActionMetadataBlanks::update(VariableType::STRING),
-                ActionMetadataBlanks::delete(VariableType::STRING),
+                ActionMetadataBlanks::update(VariableType::INTEGER),
+                ActionMetadataBlanks::delete(VariableType::INTEGER),
             ]);
     }
 }
