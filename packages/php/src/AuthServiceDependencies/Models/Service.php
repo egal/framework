@@ -49,8 +49,6 @@ class Service
 
         Session::client()->mayOrFail('login', $service);
 
-        Session::client()->mayOrFail('login', $service);
-
         $smt = new ServiceMasterToken();
         $smt->setSigningKey(config('app.service_key'));
         $smt->setSub(['name' => $service->name]);
@@ -67,8 +65,6 @@ class Service
         $senderService = static::find($smt->getSub()['name']);
 
         if (!$senderService) throw new ServiceNotFoundAuthException();
-        Session::client()->mayOrFail('loginToService', $senderService);
-
         Session::client()->mayOrFail('loginToService', $senderService);
 
         $recipientService = static::find($service_name);
