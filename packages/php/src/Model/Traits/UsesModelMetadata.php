@@ -40,7 +40,8 @@ trait UsesModelMetadata
         static::creating(static fn (self $model) => $model->setDefaultValues());
     }
 
-    private function setDefaultValues(): void {
+    private function setDefaultValues(): void
+    {
         foreach ($this->getModelMetadata()->getFields() as $field) {
             if ($field->getDefault() === null) continue;
             $attribute = $this->getAttribute($field->getName());
