@@ -21,9 +21,7 @@ class Service
     {
         $config = config('app.services.' . $name);
 
-        if (!$config) {
-            return null;
-        }
+        if (!$config) return null;
 
         $result = new static();
         $result->name = $name;
@@ -46,9 +44,10 @@ class Service
     {
         $service = static::find($service_name);
 
-        if (!$service || $service->getKey() !== $key) {
+        if (!$service || $service->getKey() !== $key)
             throw new LoginException('Incorrect key or service name!');
-        }
+
+        Session::client()->mayOrFail('login', $service);
 
         Session::client()->mayOrFail('login', $service);
 
@@ -67,17 +66,13 @@ class Service
         /** @var \Egal\AuthServiceDependencies\Models\Service $senderService */
         $senderService = static::find($smt->getSub()['name']);
 
-        if (!$senderService) {
-            throw new ServiceNotFoundAuthException();
-        }
+        if (!$senderService) throw new ServiceNotFoundAuthException();
+        Session::client()->mayOrFail('loginToService', $senderService);
 
         Session::client()->mayOrFail('loginToService', $senderService);
 
         $recipientService = static::find($service_name);
-
-        if (!$recipientService) {
-            throw new ServiceNotFoundAuthException();
-        }
+        if (!$recipientService) throw new ServiceNotFoundAuthException();
 
         $sst = new ServiceServiceToken();
         $sst->setSigningKey($recipientService->key);
