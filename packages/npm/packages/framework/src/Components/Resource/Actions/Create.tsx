@@ -7,18 +7,40 @@ import { useEffect } from 'react';
 import { useResourceActionsContext } from './Actions';
 import { CreateButton, CreateButtonProps } from './Buttons/Create';
 import { FormFieldsFactory } from '../FormFieldsFactory';
+import { deepMerge } from 'grommet/utils';
+import { RecursivePartial } from '../../../Utils';
+import { ButtonProps } from 'grommet/components/Button';
+
+type Form = {
+  buttons: {
+    submit: ButtonProps;
+    reset: ButtonProps;
+  };
+};
 
 type Props = {
   children?: React.ReactNode;
   button?: CreateButtonProps;
+  form?: RecursivePartial<Form>;
 };
 
-export function Create({ children, button = {} }: Props) {
+export function Create({
+  children,
+  button = {},
+  form: enteredForm = {},
+}: Props) {
   const {
     resource,
     extensions: { creating },
     manipulates: { creating: manipulate },
   } = useResourceContext();
+
+  const form: Form = deepMerge(enteredForm, {
+    buttons: {
+      submit: {},
+      reset: {},
+    },
+  });
 
   useResourceActionsContext();
 
@@ -49,8 +71,13 @@ export function Create({ children, button = {} }: Props) {
           >
             <Box gap={'small'} direction={'column'}>
               {children ?? <FormFieldsFactory excludeGuarded />}
-              <Button type="submit" label="Save" primary />
-              <Button type="reset" label="Reset" />
+              <Button
+                type="submit"
+                label="Save"
+                primary
+                {...form.buttons.submit}
+              />
+              <Button type="reset" label="Reset" {...form.buttons.reset} />
             </Box>
           </Form>
         </FullLayerModal>
