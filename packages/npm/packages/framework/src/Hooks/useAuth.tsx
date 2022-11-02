@@ -1,6 +1,12 @@
 import { useState } from 'react';
 import jwtDecode from 'jwt-decode';
-import { getCookie, removeCookie, setCookie, useCookie } from './useCookie';
+import {
+  getCookie,
+  removeCookie,
+  removeCookieByPattern,
+  setCookie,
+  useCookie,
+} from './useCookie';
 import { useAction } from './Actions';
 import axios from 'axios';
 
@@ -87,9 +93,7 @@ export function useAuth(config: AuthConfig = authConfig): Auth {
       setServicesTokens({});
       setMasterToken(undefined);
       cookieMasterToken.remove();
-      Object.keys(servicesTokens).map((service) =>
-        cookieRemoveServiceToken(service)
-      );
+      removeCookieByPattern(new RegExp(`^.*${cookieServiceTokenNamePostfix}$`));
       setLogged(false);
       resolve();
     });
