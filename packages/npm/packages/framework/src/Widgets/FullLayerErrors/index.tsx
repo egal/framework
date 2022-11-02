@@ -4,7 +4,6 @@ import { StatusWarning as GrommetStatusWarningIcon } from 'grommet-icons/icons';
 import { Heading as GrommetHeading } from 'grommet/components/Heading';
 import { Paragraph as GrommetParagraph } from 'grommet/components/Paragraph';
 import { Box, Heading, Layer } from 'grommet';
-import { Close, Halt, PhoneVertical } from 'grommet-icons';
 
 export const SomethingWentWrongFullLayerError = () => (
   <Layer full>
@@ -15,19 +14,6 @@ export const SomethingWentWrongFullLayerError = () => (
         Обратитесь в тех. поддержку!
       </GrommetParagraph>
     </GrommetBox>
-  </Layer>
-);
-
-export const MobileResolutionNotSupportedFullLayerError = () => (
-  <Layer full animation={'none'}>
-    <Box fill align="center" justify="center">
-      <Box direction={'row'}>
-        <Halt size={'xlarge'} color={'dark-1'} />
-        <Close size={'xlarge'} color={'dark-1'} />
-        <PhoneVertical size={'xlarge'} color={'dark-1'} />
-      </Box>
-      <Heading color={'dark-1'}>View from mobile not supported!</Heading>
-    </Box>
   </Layer>
 );
 

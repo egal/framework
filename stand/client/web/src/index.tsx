@@ -7,7 +7,8 @@ import {
   appConfig,
   AppConfig,
   RecursivePartial,
-  Resource
+  Resource,
+  SupportedWindowsSize
 } from '@egalteam/framework';
 import { Heading } from 'grommet';
 import { grommet as grommetTheme } from 'grommet/themes';
@@ -23,79 +24,80 @@ import { CountriesResourceWithRenamedButtons } from './components/resources/Coun
 import { EmployeesWithFiltersResource } from './components/resources/EmployeesWithFiltersResource';
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
-  <App
-    mobileResolutionSupport={false}
-    layout={Layout}
-    theme={deepMerge(grommetTheme, {
-      table: {
-        footer: {
-          background: {
-            color: 'background-back'
-          }
-        }
-      },
-      dataTable: {
-        pinned: {
-          header: {
+  <SupportedWindowsSize min={{ width: 1200 }}>
+    <App
+      layout={Layout}
+      theme={deepMerge(grommetTheme, {
+        table: {
+          footer: {
             background: {
-              opacity: '0.9',
-              color: 'background-front'
+              color: 'background-back'
+            }
+          }
+        },
+        dataTable: {
+          pinned: {
+            header: {
+              background: {
+                opacity: '0.9',
+                color: 'background-front'
+              }
             }
           }
         }
-      }
-    })}
-    config={deepMerge<AppConfig, RecursivePartial<AppConfig>>(appConfig, {})}
-    authConfig={deepMerge(authConfig, {})}
-    menu={[
-      { header: 'Home', path: '/', element: <Heading>Home page</Heading> },
-      { header: 'Test', path: '/test', element: <Test /> },
-      {
-        header: 'First',
-        items: [
-          { header: 'Second', path: '/second', element: <Heading>Second page</Heading> },
-          { header: 'Third', path: '/third', element: <Heading>Third page</Heading> },
-          {
-            header: 'Fifth',
-            items: [
-              { header: 'Sixth', path: '/sixth', element: <Heading>Sixth page</Heading> },
-              { header: 'Seventh', path: '/seventh', element: <Heading>Seventh page</Heading> }
-            ]
-          }
-        ]
-      },
-      {
-        header: 'Employees',
-        items: [
-          {
-            header: 'Base',
-            path: '/EmployeesResource',
-            element: <Resource key={'EmployeesResource'} model={{ service: 'auth', name: 'Employee' }} />
-          },
-          {
-            header: 'Filters',
-            path: '/EmployeesWithFiltersResource',
-            element: <EmployeesWithFiltersResource />
-          }
-        ]
-      },
-      {
-        header: 'Speakers',
-        path: '/speakers',
-        element: <SpeakersResource />
-      },
-      {
-        header: 'Countries #1',
-        path: '/countries-1',
-        element: <CountriesResourceWithRenamedButtons />
-      }
-    ]}
-    additionalRoutes={[
-      { path: '*', element: <NotFound /> },
-      { path: '/custom', element: <h1>Custom route!</h1> },
-      { path: '/login', element: <LoginPage /> },
-      { path: '/register', element: <RegisterPage /> },
-      { path: '/logout', element: <LogoutPage /> }
-    ]}
-  />
+      })}
+      config={deepMerge<AppConfig, RecursivePartial<AppConfig>>(appConfig, {})}
+      authConfig={deepMerge(authConfig, {})}
+      menu={[
+        { header: 'Home', path: '/', element: <Heading>Home page</Heading> },
+        { header: 'Test', path: '/test', element: <Test /> },
+        {
+          header: 'First',
+          items: [
+            { header: 'Second', path: '/second', element: <Heading>Second page</Heading> },
+            { header: 'Third', path: '/third', element: <Heading>Third page</Heading> },
+            {
+              header: 'Fifth',
+              items: [
+                { header: 'Sixth', path: '/sixth', element: <Heading>Sixth page</Heading> },
+                { header: 'Seventh', path: '/seventh', element: <Heading>Seventh page</Heading> }
+              ]
+            }
+          ]
+        },
+        {
+          header: 'Employees',
+          items: [
+            {
+              header: 'Base',
+              path: '/EmployeesResource',
+              element: <Resource key={'EmployeesResource'} model={{ service: 'auth', name: 'Employee' }} />
+            },
+            {
+              header: 'Filters',
+              path: '/EmployeesWithFiltersResource',
+              element: <EmployeesWithFiltersResource />
+            }
+          ]
+        },
+        {
+          header: 'Speakers',
+          path: '/speakers',
+          element: <SpeakersResource />
+        },
+        {
+          header: 'Countries #1',
+          path: '/countries-1',
+          element: <CountriesResourceWithRenamedButtons />
+        }
+      ]}
+      additionalRoutes={[
+        { path: '*', element: <NotFound /> },
+        { path: '/custom', element: <h1>Custom route!</h1> },
+        { path: '/login', element: <LoginPage /> },
+        { path: '/register', element: <RegisterPage /> },
+        { path: '/logout', element: <LogoutPage /> }
+      ]}
+    />
+  </SupportedWindowsSize>
 );
