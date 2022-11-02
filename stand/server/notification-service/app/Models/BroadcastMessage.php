@@ -11,6 +11,7 @@ use Egal\Model\Model;
 
 class BroadcastMessage extends Model
 {
+
     public static function constructMetadata(): ModelMetadata
     {
         return ModelMetadata::make(self::class, FieldMetadata::make('id', VariableType::INTEGER))
@@ -31,4 +32,5 @@ class BroadcastMessage extends Model
                 ActionMetadataBlanks::delete(VariableType::INTEGER),
             ]);
     }
+
 }

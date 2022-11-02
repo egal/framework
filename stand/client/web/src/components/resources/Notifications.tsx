@@ -7,10 +7,12 @@ import { useEffect, useState } from 'react';
 
 type NotificationType = {
   id: string;
-  user_id: string;
+  user_key: string;
   checked: boolean;
   title: string;
   text: string;
+  created_at: string;
+  updated_at: string;
 };
 
 type Props = {
@@ -23,12 +25,12 @@ export const Notifications = ({ delay = 5000 }: Props) => {
 
   const auth = useAuthContext();
 
-  const resource = useResource(
+  const resource = useResource<NotificationType>(
     { name: 'PersonalNotification', service: 'notification' },
     {
       actionGetItems: {
         initParams: {
-          filter: [['user_id', 'eq', auth.getMasterToken().sub.id], 'AND', ['checked', 'eq', false]]
+          filter: [['user_key', 'eq', auth.getMasterToken().sub.key], 'AND', ['checked', 'eq', false]]
         }
       }
     }
@@ -47,32 +49,38 @@ export const Notifications = ({ delay = 5000 }: Props) => {
   }, []);
 
   const markAsRead = (item: NotificationType) => {
-    resource.update.call({ key: item.id, attributes: { checked: item.checked } });
+    resource.update.call({ key: item.id, attributes: { checked: true } }).then(() => {
+      resource.getItems.call();
+    });
   };
 
   return (
     <>
       {resource.getItems.result &&
         resource.getItems.result.items
-          .filter((item: any) => new Date(item.created_at) > new Date(mountingTime))
-          .map((item: any) => (
+          .filter((item) => new Date(item.created_at) > new Date(mountingTime))
+          .map((item) => (
             <Box background={'white'} key={item.id}>
-              <Notification status="unknown" toast title={item.title} message={item.text ?? ''} />
+              <Notification
+                status="unknown"
+                toast
+                title={item.title}
+                message={item.text === null ? undefined : item.text}
+              />
             </Box>
           ))}
-
       {isNotificationsOpen.enabled && (
         <Box background={'white'}>
           <FullLayerModal onClose={isNotificationsOpen.disable} position={'right'} full={'vertical'}>
             {resource.getItems.result && (
-              <List
+              <List<NotificationType>
                 margin={{ top: 'medium' }}
                 background={'white'}
-                primaryKey="title"
-                secondaryKey="text"
-                data={resource.getItems.result.items as NotificationType[]}
-                action={(item: NotificationType) => (
-                  <Button hoverIndicator="light-1" icon={<Checkmark />} onClick={() => markAsRead(item)}></Button>
+                primaryKey={'id'}
+                secondaryKey={'text'}
+                data={resource.getItems.result.items}
+                action={(item) => (
+                  <Button hoverIndicator="light-1" icon={<Checkmark />} onClick={() => markAsRead(item)} />
                 )}
               />
             )}

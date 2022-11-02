@@ -45,6 +45,7 @@ services:
       - postgres
     environment:
       APP_DEBUG: "${APP_DEBUG:-true}"
+      AUTH_DISABLE: "${AUTH_DISABLE:-false}"
       AUTH_USER_MASTER_TOKEN_TTL: ${AUTH_USER_MASTER_TOKEN_TTL:-600}
       AUTH_USER_SERVICE_TOKEN_TTL: ${AUTH_USER_SERVICE_TOKEN_TTL:-600}
       APP_NAME: ${PROJECT_NAME}
@@ -70,6 +71,7 @@ services:
       - postgres
     environment:
       APP_DEBUG: "${APP_DEBUG:-true}"
+      AUTH_DISABLE: "${AUTH_DISABLE:-false}"
       APP_NAME: ${PROJECT_NAME}
       APP_SERVICE_NAME: core
       APP_SERVICE_KEY: ${CORE_SERVICE_KEY}
@@ -91,6 +93,7 @@ services:
       - postgres
     environment:
       APP_DEBUG: "${APP_DEBUG:-true}"
+      AUTH_DISABLE: "${AUTH_DISABLE:-false}"
       APP_NAME: ${PROJECT_NAME}
       APP_SERVICE_NAME: notification
       APP_SERVICE_KEY: ${NOTIFICATION_SERVICE_KEY}

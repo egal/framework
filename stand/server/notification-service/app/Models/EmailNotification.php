@@ -8,23 +8,24 @@ use Egal\Model\Metadata\ActionMetadataBlanks;
 use Egal\Model\Metadata\FieldMetadata;
 use Egal\Model\Metadata\ModelMetadata;
 use Egal\Model\Model;
+use Illuminate\Mail\Message;
+use Illuminate\Support\Facades\Mail;
 
 class EmailNotification extends Model
 {
-    protected static function boot()
-    {
-        parent::boot();
-        static::created(fn(self $notification) => $notification->applyEvents());
-    }
 
     public static function constructMetadata(): ModelMetadata
     {
         return ModelMetadata::make(self::class, FieldMetadata::make('id', VariableType::INTEGER))
             ->policy(AllowAllPolicy::class)
             ->addFields([
-                FieldMetadata::make('body', VariableType::STRING)->required(),
-                FieldMetadata::make('checked', VariableType::BOOLEAN)->required(),
-                FieldMetadata::make('user_id', VariableType::UUID)->required(),
+                FieldMetadata::make('to', VariableType::STRING)
+                    ->addValidationRule('email')
+                    ->required(),
+                FieldMetadata::make('subject', VariableType::STRING)
+                    ->required(),
+                FieldMetadata::make('body', VariableType::STRING)
+                    ->required(),
             ])
             ->addActions([
                 ActionMetadataBlanks::getMetadata(),
@@ -35,8 +36,20 @@ class EmailNotification extends Model
                 ActionMetadataBlanks::delete(VariableType::INTEGER),
             ]);
     }
-    private function applyEvents()
-    {
 
+    protected static function boot()
+    {
+        parent::boot();
+        static::created(fn(self $notification) => $notification->send());
     }
+
+    private function send()
+    {
+        Mail::send([], [], function (Message $message) {
+            $message->to($this->getAttribute('to'))
+                ->subject($this->getAttribute('subject'))
+                ->setBody($this->getAttribute('body'));
+        });
+    }
+
 }

@@ -18,13 +18,8 @@ date_default_timezone_set(env('APP_TIMEZONE', 'UTC'));
 | application as an "IoC" container and router for this framework.
 |
 */
-
-$app = new Egal\Core\Application(
-    dirname(__DIR__)
-);
-
+$app = new Egal\Core\Application(dirname(__DIR__));
 $app->withFacades();
-
 $app->withEloquent();
 
 /*
@@ -37,10 +32,13 @@ $app->withEloquent();
 | your own bindings here if you like or you can make another file.
 |
 */
-
 $app->singleton(Illuminate\Contracts\Debug\ExceptionHandler::class, App\Exceptions\Handler::class);
-
 $app->singleton(Illuminate\Contracts\Console\Kernel::class, App\Console\Kernel::class);
+$app->alias('mail.manager', Illuminate\Mail\MailManager::class);
+$app->alias('mail.manager', Illuminate\Contracts\Mail\Factory::class);
+$app->alias('mailer', Illuminate\Mail\Mailer::class);
+$app->alias('mailer', Illuminate\Contracts\Mail\Mailer::class);
+$app->alias('mailer', Illuminate\Contracts\Mail\MailQueue::class);
 
 /*
 |--------------------------------------------------------------------------
@@ -52,8 +50,8 @@ $app->singleton(Illuminate\Contracts\Console\Kernel::class, App\Console\Kernel::
 | the default version. You may register other files below as needed.
 |
 */
-
 $app->configure('app');
+$app->configure('mail');
 
 /*
 |--------------------------------------------------------------------------
@@ -65,20 +63,10 @@ $app->configure('app');
 | totally optional, so you are not required to uncomment this line.
 |
 */
-
 $app->register(Egal\Core\ServiceProvider::class);
 $app->register(Egal\Model\ServiceProvider::class);
 $app->register(Egal\AuthServiceDependencies\ServiceProvider::class);
-$app->register(App\Providers\AppServiceProvider::class);
-$app->register(App\Providers\EventServiceProvider::class);
 $app->register(Illuminate\Mail\MailServiceProvider::class);
-$app->configure('mail');
-$app->alias('mail.manager', Illuminate\Mail\MailManager::class);
-$app->alias('mail.manager', Illuminate\Contracts\Mail\Factory::class);
-$app->alias('mailer', Illuminate\Mail\Mailer::class);
-$app->alias('mailer', Illuminate\Contracts\Mail\Mailer::class);
-$app->alias('mailer', Illuminate\Contracts\Mail\MailQueue::class);
-
-
+$app->register(App\Providers\AppServiceProvider::class);
 
 return $app;

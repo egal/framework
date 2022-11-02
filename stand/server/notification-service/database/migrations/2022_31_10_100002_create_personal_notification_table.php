@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('personal_notifications', function (Blueprint $table) {
             $table->id();
-            $table->uuid('user_id');
+            $table->uuid('user_key');
             $table->string('title');
             $table->string('text')->nullable();
             $table->boolean('checked');

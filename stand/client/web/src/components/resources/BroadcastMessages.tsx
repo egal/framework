@@ -15,7 +15,7 @@ type BroadcastMessageType = {
 };
 
 export const BroadcastMessages = ({ delay = 30000 }: Props) => {
-  const actionGetBanner = useActionGetItems(
+  const actionGetItems = useActionGetItems<BroadcastMessageType>(
     { name: 'BroadcastMessage', service: 'notification' },
     {
       filter: [['active', 'eq', true]]
@@ -23,20 +23,18 @@ export const BroadcastMessages = ({ delay = 30000 }: Props) => {
   );
 
   useEffect(() => {
-    const myInterval = setInterval(() => actionGetBanner.call(), delay);
+    const myInterval = setInterval(() => actionGetItems.call(), delay);
 
-    actionGetBanner.call();
+    actionGetItems.call();
 
     return () => {
       clearInterval(myInterval);
     };
   }, []);
 
-  if (actionGetBanner.result === undefined) return <></>;
-
   return (
     <>
-      {actionGetBanner.result.items.map((msg: any) => (
+      {(actionGetItems.result?.items ?? []).map((msg) => (
         <Header key={msg.id}>
           <Box pad={'small'} justify={'center'} fill background={{ color: msg.background_color }} align={'center'}>
             <Text>{msg.message}</Text>

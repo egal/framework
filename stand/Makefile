@@ -1,3 +1,4 @@
+MAIN_SERVICES := auth-service|core-service|notification-service
 DOT_ENV_FILE_PATH:=.env
 
 # regionPrepare
@@ -11,11 +12,11 @@ pull: generate-dot-env-file
 
 # regionRelay
 up: generate-dot-env-file pull build
-	docker-compose up --detach $(docker-compose config --services | grep -v -e "[auth|core|notification]-service")
+	docker-compose up --detach $(shell docker-compose config --services | grep -v -E "${MAIN_SERVICES}")
 	docker-compose run --rm auth-service sh -c "/wait && php artisan migrate --force --seed"
 	docker-compose run --rm core-service sh -c "/wait && php artisan migrate --force --seed"
 	docker-compose run --rm notification-service sh -c "/wait && php artisan migrate --force --seed"
-	docker-compose up --no-build auth-service notification-service || docker-compose down
+	docker-compose up --no-build $(shell docker-compose config --services | grep -E "${MAIN_SERVICES}") || docker-compose down
 down:
 	docker-compose down
 down-with-volumes:
