@@ -57,6 +57,16 @@ export const removeCookie = (name: string) => {
   setCookie(name, '', { days: -1 });
 };
 
+export const removeCookieByPattern = (pattern: RegExp) => {
+  if (!isBrowser) return;
+
+  document.cookie.split('; ').map((value) => {
+    const parts = value.split('=');
+    const name = parts[0];
+    if (pattern.test(name)) setCookie(name, '', { days: -1 });
+  });
+};
+
 export const getCookie = (name: string, initialValue?: string) => {
   return (
     (isBrowser &&
