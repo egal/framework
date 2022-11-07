@@ -89,6 +89,23 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
           header: 'Countries #1',
           path: '/countries-1',
           element: <CountriesResourceWithRenamedButtons />
+        },
+        {
+          header: 'BroadcastMessage',
+          path: '/BroadcastMessage',
+          element: <Resource key={'BroadcastMessage'} model={{ service: 'notification', name: 'BroadcastMessage' }} />
+        },
+        {
+          header: 'PersonalNotification',
+          path: '/PersonalNotification',
+          element: (
+              <Resource key={'PersonalNotifications'} model={{ service: 'notification', name: 'PersonalNotification' }} />
+          )
+        },
+        {
+          header: 'EmailNotification',
+          path: '/EmailNotification',
+          element: <Resource key={'EmailNotification'} model={{ service: 'notification', name: 'EmailNotification' }} />
         }
       ]}
       additionalRoutes={[

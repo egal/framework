@@ -9,10 +9,13 @@ type Result<ItemType> = {
 
 type Params<ItemType> = {
   key: number | string;
-  attributes: ItemType; // TODO: Not undefinable.
+  attributes: Partial<ItemType>; // TODO: Not undefinable.
 };
 
-export type ActionUpdateHook<ItemType> = ActionHook<Result<ItemType>, Params<ItemType>>;
+export type ActionUpdateHook<ItemType> = ActionHook<
+  Result<ItemType>,
+  Params<ItemType>
+>;
 
 export function useActionUpdate<ItemType>(
   model: ActionModel

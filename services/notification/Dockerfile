@@ -1,4 +1,4 @@
-FROM alpine/git:v2.36.2 as wait
+FROM alpine/git:v2.32.0 as wait
 ADD https://github.com/ufoscout/docker-compose-wait/releases/download/2.8.0/wait /wait
 
 
@@ -24,11 +24,13 @@ COPY --from=composer /usr/bin/composer /usr/bin/composer
 WORKDIR /app
 
 # Preparing code base
-COPY --chown=$user composer.json .
-COPY --chown=$user composer.lock .
-#COPY --chown=$user composer.* .
-RUN composer install --dev --no-autoloader
+COPY composer.json .
+COPY composer.lock .
+RUN composer install --no-interaction --no-progress --no-autoloader --dev
 COPY . .
 RUN composer dump-autoload
+
+# Cleanup before run
+RUN if [ $DEBUG == 'false' ]; then rm /usr/bin/composer; fi
 
 CMD /wait && php artisan egal:run
