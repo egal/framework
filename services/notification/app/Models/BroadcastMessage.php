@@ -12,16 +12,24 @@ use Egal\Model\Model;
 class BroadcastMessage extends Model
 {
 
+    protected $casts = [
+        'starts_at' => 'datetime',
+        'ends_at' => 'datetime',
+    ];
+
     public static function constructMetadata(): ModelMetadata
     {
         return ModelMetadata::make(self::class, FieldMetadata::make('id', VariableType::INTEGER))
             ->policy(BroadcastMessagePolicy::class)
             ->addFields([
-                FieldMetadata::make('message', VariableType::STRING)->required(),
-                FieldMetadata::make('background_color', VariableType::STRING)->required(),
-                FieldMetadata::make('starts_at', VariableType::DATETIME)->required(),
-                FieldMetadata::make('ends_at', VariableType::DATETIME)->required(),
-                FieldMetadata::make('active', VariableType::BOOLEAN),
+                FieldMetadata::make('message', VariableType::STRING)
+                    ->required(),
+                FieldMetadata::make('background_color', VariableType::STRING)
+                    ->required(),
+                FieldMetadata::make('starts_at', VariableType::DATETIME)
+                    ->required(),
+                FieldMetadata::make('ends_at', VariableType::DATETIME)
+                    ->required(),
             ])
             ->addActions([
                 ActionMetadataBlanks::getMetadata(),

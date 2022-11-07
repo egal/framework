@@ -2,6 +2,7 @@ import * as React from 'react';
 import { Text, Box, Header } from 'grommet';
 import { useEffect } from 'react';
 import { useActionGetItems } from '../../Hooks';
+import dateFormat from 'dateformat';
 
 type BroadcastMessageType = {
   id: string;
@@ -15,10 +16,16 @@ type Props = {
 };
 
 export const BroadcastMessages = ({ delay = 30000 }: Props) => {
+  const now = dateFormat(new Date(), 'yyyy-mm-dd hh:mm:ss');
+
   const actionGetItems = useActionGetItems<BroadcastMessageType>(
     { name: 'BroadcastMessage', service: 'notification' },
     {
-      filter: [['active', 'eq', true]],
+      filter: [
+        [['starts_at', 'lt', now], 'OR', ['starts_at', 'eq', now]],
+        'AND',
+        [['ends_at', 'gt', now], 'OR', ['ends_at', 'eq', now]],
+      ],
     }
   );
 

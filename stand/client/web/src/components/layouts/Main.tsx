@@ -2,17 +2,8 @@ import * as React from 'react';
 import { Box, Button, Grid, Sidebar } from 'grommet';
 import { Logout } from 'grommet-icons';
 import { useNavigate } from 'react-router-dom';
-import {
-  BroadcastMessages,
-  Menu,
-  MenuItemConfig,
-  PersonalNotifications,
-  PrivateElement,
-  useAuthContext
-} from '@egalteam/framework';
+import { BroadcastMessages, Menu, MenuItemConfig, PersonalNotifications, PrivateElement } from '@egalteam/framework';
 import logo from '../../assets/logo.svg';
-import { useEffect } from 'react';
-import { GapType } from 'grommet/utils';
 
 type Props = {
   children?: React.ReactElement;
