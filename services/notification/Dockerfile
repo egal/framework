@@ -24,6 +24,9 @@ COPY --from=composer /usr/bin/composer /usr/bin/composer
 WORKDIR /app
 
 # Preparing code base
+COPY composer.json .
+COPY composer.lock .
+RUN composer install --no-interaction --no-progress --no-autoloader --dev
 COPY . .
 RUN composer dump-autoload
 

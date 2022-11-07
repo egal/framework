@@ -4,16 +4,10 @@
     "type": "project",
     "minimum-stability": "dev",
     "prefer-stable": true,
-    "repositories": [
-        {
-            "type": "path",
-            "url": "/dependencies/php-package"
-        }
-    ],
     "require": {
         "php": "^8.1",
         "ext-json": "*",
-        "egal/framework": "@dev",
+        "egal/framework": "^2.4",
         "illuminate/mail": "^9.37",
         "staudenmeir/eloquent-has-many-deep": "^1.16"
     },

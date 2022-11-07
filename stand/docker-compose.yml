@@ -44,7 +44,7 @@ services:
       - rabbitmq
       - postgres
     environment:
-      APP_DEBUG: "${APP_DEBUG:-true}"
+      APP_DEBUG: "${DEBUG:-true}"
       AUTH_DISABLE: "${AUTH_DISABLE:-false}"
       AUTH_USER_MASTER_TOKEN_TTL: ${AUTH_USER_MASTER_TOKEN_TTL:-600}
       AUTH_USER_SERVICE_TOKEN_TTL: ${AUTH_USER_SERVICE_TOKEN_TTL:-600}
@@ -60,8 +60,8 @@ services:
       RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD}
       WAIT_HOSTS: rabbitmq:5672,postgres:5432
     volumes:
-     - ../packages/php:/app/vendor/egal/framework
-#      - ../packages/php:/dependencies/php-package
+      - ../templates/server/auth-service:/app:rw
+      - ../packages/php:/app/vendor/egal/framework
   core-service:
     build:
       context: server/core-service
@@ -70,7 +70,7 @@ services:
       - rabbitmq
       - postgres
     environment:
-      APP_DEBUG: "${APP_DEBUG:-true}"
+      APP_DEBUG: "${DEBUG:-true}"
       AUTH_DISABLE: "${AUTH_DISABLE:-false}"
       APP_NAME: ${PROJECT_NAME}
       APP_SERVICE_NAME: core
@@ -83,16 +83,17 @@ services:
       RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD}
       WAIT_HOSTS: rabbitmq:5672,postgres:5432
     volumes:
+      - ./server/core-service:/app:rw
       - ../packages/php:/dependencies/php-package
   notification-service:
     build:
-      context: server/notification-service
+      context: ../services/notification
     restart: unless-stopped
     depends_on:
       - rabbitmq
       - postgres
     environment:
-      APP_DEBUG: "${APP_DEBUG:-true}"
+      APP_DEBUG: "${DEBUG:-true}"
       AUTH_DISABLE: "${AUTH_DISABLE:-false}"
       APP_NAME: ${PROJECT_NAME}
       APP_SERVICE_NAME: notification
@@ -113,4 +114,5 @@ services:
       MAIL_FROM_NAME: ${MAIL_FROM_NAME}
       WAIT_HOSTS: rabbitmq:5672,postgres:5432
     volumes:
-      - ../packages/php:/dependencies/php-package
+      - ../services/notification:/app:rw
+      - ../packages/php:/app/vendor/egal/framework

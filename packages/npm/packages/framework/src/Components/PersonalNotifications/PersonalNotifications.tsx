@@ -1,9 +1,10 @@
 import * as React from 'react';
-import { useAuthContext, useRelay, useResource } from '@egalteam/framework';
-import { Box, Button, List, Notification, Text } from 'grommet';
+import { Box, Button, List, Notification } from 'grommet';
 import { Notification as NotificationIcon, Checkmark } from 'grommet-icons';
-import { FullLayerModal } from '@egalteam/framework/dist/cjs/Components/Resource/FullLayerModal';
 import { useEffect, useState } from 'react';
+import { FullLayerModal } from '../Resource/FullLayerModal';
+import { useAuthContext } from '../../Contexts';
+import { useRelay, useResource } from '../../Hooks';
 
 type NotificationType = {
   id: string;
@@ -19,7 +20,7 @@ type Props = {
   delay?: number;
 };
 
-export const Notifications = ({ delay = 5000 }: Props) => {
+export const PersonalNotifications = ({ delay = 5000 }: Props) => {
   const isNotificationsOpen = useRelay();
   const [mountingTime, setMountingTime] = useState(new Date());
 
@@ -30,16 +31,23 @@ export const Notifications = ({ delay = 5000 }: Props) => {
     {
       actionGetItems: {
         initParams: {
-          filter: [['user_key', 'eq', auth.getMasterToken().sub.key], 'AND', ['checked', 'eq', false]]
-        }
-      }
+          filter: [
+            ['user_key', 'eq', auth.getMasterToken().sub.key],
+            'AND',
+            ['checked', 'eq', false],
+          ],
+        },
+      },
     }
   );
 
   useEffect(() => {
     setMountingTime(new Date());
 
-    const notificationInterval = setInterval(() => resource.getItems.call(), delay);
+    const notificationInterval = setInterval(
+      () => resource.getItems.call(),
+      delay
+    );
 
     resource.getItems.call();
 
@@ -49,9 +57,11 @@ export const Notifications = ({ delay = 5000 }: Props) => {
   }, []);
 
   const markAsRead = (item: NotificationType) => {
-    resource.update.call({ key: item.id, attributes: { checked: true } }).then(() => {
-      resource.getItems.call();
-    });
+    resource.update
+      .call({ key: item.id, attributes: { checked: true } })
+      .then(() => {
+        resource.getItems.call();
+      });
   };
 
   return (
@@ -71,7 +81,11 @@ export const Notifications = ({ delay = 5000 }: Props) => {
           ))}
       {isNotificationsOpen.enabled && (
         <Box background={'white'}>
-          <FullLayerModal onClose={isNotificationsOpen.disable} position={'right'} full={'vertical'}>
+          <FullLayerModal
+            onClose={isNotificationsOpen.disable}
+            position={'right'}
+            full={'vertical'}
+          >
             {resource.getItems.result && (
               <List<NotificationType>
                 margin={{ top: 'medium' }}
@@ -80,7 +94,11 @@ export const Notifications = ({ delay = 5000 }: Props) => {
                 secondaryKey={'text'}
                 data={resource.getItems.result.items}
                 action={(item) => (
-                  <Button hoverIndicator="light-1" icon={<Checkmark />} onClick={() => markAsRead(item)} />
+                  <Button
+                    hoverIndicator="light-1"
+                    icon={<Checkmark />}
+                    onClick={() => markAsRead(item)}
+                  />
                 )}
               />
             )}
@@ -96,9 +114,10 @@ export const Notifications = ({ delay = 5000 }: Props) => {
               ? undefined
               : {
                   background: 'status-warning',
-                  value: resource.getItems.result.items.length
+                  value: resource.getItems.result.items.length,
                 }
-          }></Button>
+          }
+        ></Button>
       )}
     </>
   );

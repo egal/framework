@@ -1,11 +1,7 @@
 import * as React from 'react';
 import { Text, Box, Header } from 'grommet';
-import { useActionGetItems } from '@egalteam/framework';
 import { useEffect } from 'react';
-
-type Props = {
-  delay?: number;
-};
+import { useActionGetItems } from '../../Hooks';
 
 type BroadcastMessageType = {
   id: string;
@@ -14,11 +10,15 @@ type BroadcastMessageType = {
   active: boolean;
 };
 
+type Props = {
+  delay?: number;
+};
+
 export const BroadcastMessages = ({ delay = 30000 }: Props) => {
   const actionGetItems = useActionGetItems<BroadcastMessageType>(
     { name: 'BroadcastMessage', service: 'notification' },
     {
-      filter: [['active', 'eq', true]]
+      filter: [['active', 'eq', true]],
     }
   );
 
@@ -36,7 +36,13 @@ export const BroadcastMessages = ({ delay = 30000 }: Props) => {
     <>
       {(actionGetItems.result?.items ?? []).map((msg) => (
         <Header key={msg.id}>
-          <Box pad={'small'} justify={'center'} fill background={{ color: msg.background_color }} align={'center'}>
+          <Box
+            pad={'small'}
+            justify={'center'}
+            fill
+            background={{ color: msg.background_color }}
+            align={'center'}
+          >
             <Text>{msg.message}</Text>
           </Box>
         </Header>

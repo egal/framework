@@ -2,11 +2,16 @@ import * as React from 'react';
 import { Box, Button, Grid, Sidebar } from 'grommet';
 import { Logout } from 'grommet-icons';
 import { useNavigate } from 'react-router-dom';
-import { Menu, MenuItemConfig, PrivateElement, useAuthContext } from '@egalteam/framework';
+import {
+  BroadcastMessages,
+  Menu,
+  MenuItemConfig,
+  PersonalNotifications,
+  PrivateElement,
+  useAuthContext
+} from '@egalteam/framework';
 import logo from '../../assets/logo.svg';
 import { useEffect } from 'react';
-import { BroadcastMessages } from '../resources/BroadcastMessages';
-import { Notifications } from '../resources/Notifications';
 import { GapType } from 'grommet/utils';
 
 type Props = {
@@ -36,7 +41,7 @@ export const Layout = ({ children, menu }: Props) => {
         </Box>
 
         <Box gridArea={'header'} background={{ color: 'brand' }} pad="xsmall" align={'end'} justify={'center'}>
-          <Notifications />
+          <PersonalNotifications />
         </Box>
 
         <Box gridArea="nav" background={'light-5'} fill>

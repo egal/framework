@@ -5,10 +5,6 @@ services:
       - published: 5432
         target: 5432
   rabbitmq:
-    image: ${RABBITMQ_IMAGE:-egalbox/rabbitmq:2.0.1}
-    environment:
-      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER}
-      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD}
     ports:
       - published: 15672
         target: 15672
@@ -21,21 +17,15 @@ services:
   auth-service:
     build:
       args:
-        DEBUG: 'true'
+        DEBUG: "${DEBUG:-false}"
     user: ${UID}:${GID}
-    volumes:
-      - ../templates/server/auth-service:/app:rw
   core-service:
     build:
       args:
-        DEBUG: 'true'
+        DEBUG: "${DEBUG:-false}"
     user: ${UID}:${GID}
-    volumes:
-      - ./server/core-service:/app:rw
   notification-service:
     build:
       args:
-        DEBUG: 'true'
+        DEBUG: "${DEBUG:-false}"
     user: ${UID}:${GID}
-    volumes:
-      - ./server/notification-service:/app:rw
