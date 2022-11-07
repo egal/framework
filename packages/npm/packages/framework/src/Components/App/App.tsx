@@ -6,11 +6,7 @@ import {
   BrowserRouter as Router,
   PathRouteProps,
 } from 'react-router-dom';
-import {
-  MobileResolutionNotSupportedFullLayerError,
-  MenuItemConfig,
-} from '../../Widgets';
-import { useWindowSize } from '../../Hooks';
+import { MenuItemConfig } from '../../Widgets';
 import { AuthContext } from '../../Contexts';
 import {
   AuthConfig,
@@ -25,7 +21,6 @@ type Props = {
   layout: React.ComponentType<any>;
   theme: ThemeType;
   additionalRoutes?: PathRouteProps[];
-  mobileResolutionSupport?: boolean;
   authConfig?: AuthConfig;
   config?: AppConfig;
 };
@@ -35,15 +30,9 @@ export function App({
   theme,
   additionalRoutes = [],
   layout: Layout,
-  mobileResolutionSupport = true,
   authConfig = defaultAuthConfig,
   config = appConfig,
 }: Props) {
-  const MobileResolutionNotSupportedElement = !mobileResolutionSupport &&
-    useWindowSize().width < 1200 && (
-      <MobileResolutionNotSupportedFullLayerError />
-    );
-
   const routeGenerator = (
     { path, element, items }: MenuItemConfig,
     key: number
@@ -75,21 +64,13 @@ export function App({
   const AuthContextThere = ({ children }: { children: React.ReactNode }) => {
     const auth = useAuth(authConfig);
 
-    return (
-      <AuthContext.Provider value={auth}>
-        {MobileResolutionNotSupportedElement}
-        {RouterElement}
-      </AuthContext.Provider>
-    );
+    return <AuthContext.Provider value={auth}>{children}</AuthContext.Provider>;
   };
 
   return (
     <Grommet theme={theme}>
       <AppContext.Provider value={{ config }}>
-        <AuthContextThere>
-          {MobileResolutionNotSupportedElement}
-          {RouterElement}
-        </AuthContextThere>
+        <AuthContextThere>{RouterElement}</AuthContextThere>
       </AppContext.Provider>
     </Grommet>
   );

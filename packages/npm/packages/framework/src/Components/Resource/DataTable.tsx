@@ -27,53 +27,8 @@ export function DataTable<DataItemType = any>({
 }: Props<DataItemType>) {
   const { resource, selectedKeys, extensions, manipulates } =
     useResourceContext();
-  const [selectingProps, setSelectingProps] = useState<Partial<DataTableProps>>(
-    {}
-  );
 
-  useEffect(() => {
-    switch (
-      [
-        extensions.showing.exists,
-        extensions.updating.exists,
-        extensions.deleting.exists,
-      ].join()
-    ) {
-      case [true, true, true].join():
-      case [false, true, true].join():
-      case [true, false, true].join():
-      case [true, true, false].join():
-      case [false, false, true].join():
-        setSelectingProps({
-          select: selectedKeys.value,
-          onClickRow: 'select',
-          onSelect: (newSelectedKeys) => selectedKeys.set(newSelectedKeys),
-        });
-        break;
-      case [true, false, false].join():
-        setSelectingProps({
-          onClickRow: ({ datum }) => manipulates.showing.enable(datum),
-        });
-        break;
-      case [false, true, false].join():
-        setSelectingProps({
-          onClickRow: ({ datum }) => manipulates.updating.enable(datum),
-        });
-        break;
-      case [false, false, false].join():
-        break;
-    }
-  }, [
-    extensions.showing.exists,
-    extensions.updating.exists,
-    extensions.deleting.exists,
-  ]);
-
-  if (
-    !resource.metadata.result ||
-    !resource.getItems.result ||
-    !selectingProps
-  ) {
+  if (!resource.metadata.result || !resource.getItems.result) {
     return <Spinner />;
   }
 
@@ -121,6 +76,38 @@ export function DataTable<DataItemType = any>({
       </Box>
     );
   }
+
+  const selectingProps: Partial<DataTableProps> = (() => {
+    switch (
+      [
+        extensions.showing.exists,
+        extensions.updating.exists,
+        extensions.deleting.exists,
+      ].join()
+    ) {
+      case [true, true, true].join():
+      case [false, true, true].join():
+      case [true, false, true].join():
+      case [true, true, false].join():
+      case [false, false, true].join():
+        return {
+          select: selectedKeys.value,
+          onClickRow: 'select',
+          onSelect: (newSelectedKeys) => selectedKeys.set(newSelectedKeys),
+        };
+      case [true, false, false].join():
+        return {
+          onClickRow: ({ datum }) => manipulates.showing.enable(datum),
+        };
+      case [false, true, false].join():
+        return {
+          onClickRow: ({ datum }) => manipulates.updating.enable(datum),
+        };
+      case [false, false, false].join():
+      default:
+        return {};
+    }
+  })();
 
   return (
     <Box overflow="auto" fill justify={'start'}>
