@@ -1,8 +1,8 @@
 <?php
+
 namespace App\Models;
 
-use Carbon\Carbon;
-use Egal\Auth\Policies\AllowAllPolicy;
+use App\Policies\BroadcastMessagePolicy;
 use Egal\Model\Enums\VariableType;
 use Egal\Model\Metadata\ActionMetadataBlanks;
 use Egal\Model\Metadata\FieldMetadata;
@@ -15,7 +15,7 @@ class BroadcastMessage extends Model
     public static function constructMetadata(): ModelMetadata
     {
         return ModelMetadata::make(self::class, FieldMetadata::make('id', VariableType::INTEGER))
-            ->policy(AllowAllPolicy::class)
+            ->policy(BroadcastMessagePolicy::class)
             ->addFields([
                 FieldMetadata::make('message', VariableType::STRING)->required(),
                 FieldMetadata::make('background_color', VariableType::STRING)->required(),
@@ -29,7 +29,6 @@ class BroadcastMessage extends Model
                 ActionMetadataBlanks::getItems(),
                 ActionMetadataBlanks::create(),
                 ActionMetadataBlanks::update(VariableType::INTEGER),
-                ActionMetadataBlanks::delete(VariableType::INTEGER),
             ]);
     }
 

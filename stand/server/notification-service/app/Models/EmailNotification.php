@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
 use Egal\Auth\Policies\AllowAllPolicy;
@@ -29,11 +31,7 @@ class EmailNotification extends Model
             ])
             ->addActions([
                 ActionMetadataBlanks::getMetadata(),
-                ActionMetadataBlanks::getItem(VariableType::INTEGER),
-                ActionMetadataBlanks::getItems(),
                 ActionMetadataBlanks::create(),
-                ActionMetadataBlanks::update(VariableType::INTEGER),
-                ActionMetadataBlanks::delete(VariableType::INTEGER),
             ]);
     }
 
@@ -43,12 +41,13 @@ class EmailNotification extends Model
         static::created(fn(self $notification) => $notification->send());
     }
 
-    private function send()
+    protected function send(): void
     {
         Mail::send([], [], function (Message $message) {
+            $body = $this->getAttribute('body');
             $message->to($this->getAttribute('to'))
                 ->subject($this->getAttribute('subject'))
-                ->setBody($this->getAttribute('body'));
+                ->html($body);
         });
     }
 

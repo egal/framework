@@ -37,7 +37,7 @@ auth-service-composer-update: generate-dot-env-file
 	docker-compose run --rm --no-deps auth-service composer update
 core-service-composer-update: generate-dot-env-file
 	docker-compose run --rm --no-deps core-service composer update
-notification-service-composer-install: generate-dot-env-file
+notification-service-composer-update: generate-dot-env-file
 	docker-compose run --rm --no-deps notification-service composer update
 # endregionComposerUpdate
 generate-service-key: generate-dot-env-file

@@ -89,11 +89,16 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
         element: <Resource key={'BroadcastMessage'} model={{ service: 'notification', name: 'BroadcastMessage' }} />
       },
       {
-        header: 'PersonalNotifications',
-        path: '/PersonalNotifications',
+        header: 'PersonalNotification',
+        path: '/PersonalNotification',
         element: (
           <Resource key={'PersonalNotifications'} model={{ service: 'notification', name: 'PersonalNotification' }} />
         )
+      },
+      {
+        header: 'EmailNotification',
+        path: '/EmailNotification',
+        element: <Resource key={'EmailNotification'} model={{ service: 'notification', name: 'EmailNotification' }} />
       },
       {
         header: 'Speakers',

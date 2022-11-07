@@ -7,6 +7,7 @@ import logo from '../../assets/logo.svg';
 import { useEffect } from 'react';
 import { BroadcastMessages } from '../resources/BroadcastMessages';
 import { Notifications } from '../resources/Notifications';
+import { GapType } from 'grommet/utils';
 
 type Props = {
   children?: React.ReactElement;
@@ -21,7 +22,7 @@ export const Layout = ({ children, menu }: Props) => {
       <Grid
         rows={['auto', 'xxsmall', 'flex']}
         columns={['15%', 'flex']}
-        gap="small"
+        gap={{ row: 'none', column: 'small' }}
         width={'100vw'}
         height={'100vh'}
         areas={[
