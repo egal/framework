@@ -7,7 +7,7 @@
     "require": {
         "php": "^8.1",
         "ext-json": "*",
-        "egal/framework": "^2.4",
+        "egal/framework": "3.x-dev",
         "illuminate/mail": "^9.37",
         "staudenmeir/eloquent-has-many-deep": "^1.16"
     },
