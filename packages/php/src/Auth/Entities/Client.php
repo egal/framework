@@ -59,7 +59,7 @@ abstract class Client
 
     public function isService(string|null $name = null): bool
     {
-        return $this instanceof Service;
+        return $this instanceof \Egal\Auth\Entities\Service;
     }
 
     public function hasRole(string $role): bool
