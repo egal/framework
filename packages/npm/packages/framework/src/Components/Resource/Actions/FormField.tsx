@@ -8,6 +8,8 @@ import {
 } from 'grommet';
 import { FormFieldExtendedProps as GFormFieldProps } from 'grommet/components/FormField';
 import { useResourceContext } from '../Resource';
+import { DateTimeInput } from '../../Inputs';
+import { DateInput } from 'grommet/components/DateInput';
 
 export type FormFieldProps = Omit<GFormFieldProps, 'name'> & {
   name: string;
@@ -34,6 +36,12 @@ export function FormField({ ...sourceProps }: FormFieldProps) {
         break;
       case 'boolean':
         props.component = CheckBox;
+        break;
+      case 'date':
+        props.component = DateInput;
+        break;
+      case 'datetime':
+        props.component = DateTimeInput;
         break;
       default:
         props.component = TextInput;
