@@ -4,11 +4,13 @@ import { Spinner } from 'grommet';
 import { FormField, FormFieldProps } from './FormField';
 
 type Props = Omit<FormFieldProps, 'name'> & {
+  include?: string[];
   exclude?: string[];
   excludeGuarded?: boolean;
 };
 
 export function FormFieldsFactory({
+  include = [],
   exclude = [],
   excludeGuarded = false,
   ...props
@@ -23,6 +25,7 @@ export function FormFieldsFactory({
     <>
       {metadata
         .getAllFields()
+        .filter((field) => include.includes(field.name))
         .filter((field) => !exclude.includes(field.name))
         .filter((field) => !excludeGuarded || !field.guarded)
         .filter((field) => !field.hidden)
