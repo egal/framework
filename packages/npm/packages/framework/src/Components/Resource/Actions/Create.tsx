@@ -5,7 +5,8 @@ import { useResourceContext } from '../Resource';
 import { useEffect } from 'react';
 import { useResourceActionsContext } from './Actions';
 import { CreateButton } from './Buttons/Create';
-import { FormFieldsFactory } from '../FormFieldsFactory';
+import { FormFields } from './FormFields';
+import { FormField } from './FormField';
 
 type Props = {
   children?: React.ReactNode;
@@ -47,7 +48,7 @@ export function Create({ children }: Props) {
             }}
           >
             <Box gap={'small'} direction={'column'}>
-              {children ?? <FormFieldsFactory excludeGuarded />}
+              {children ?? <FormFields excludeGuarded />}
               <Button
                 type="submit"
                 label={t('actions.create.buttons.submit', {
@@ -68,3 +69,6 @@ export function Create({ children }: Props) {
     </>
   );
 }
+
+Create.FormField = FormField;
+Create.FormFields = FormFields;

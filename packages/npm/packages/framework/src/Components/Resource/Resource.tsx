@@ -10,8 +10,8 @@ import { Filters } from './Filters/Filters';
 import { Extensions, useExtensions } from './useExtensions';
 import type { ResourceHookConfig } from '../../Hooks';
 import { RecursivePartial } from '../../Utils';
-import { FormField } from './FormField';
-import { FormFieldsFactory } from './FormFieldsFactory';
+import { FormField } from './Actions/FormField';
+import { FormFields } from './Actions/FormFields';
 import {
   ResourceTranslation,
   useResourceTranslation,
@@ -161,5 +161,3 @@ Resource.DataTable = DataTable;
 Resource.Actions = Actions;
 Resource.Pagination = Pagination;
 Resource.Filters = Filters;
-Resource.FormField = FormField;
-Resource.FormFieldsFactory = FormFieldsFactory;

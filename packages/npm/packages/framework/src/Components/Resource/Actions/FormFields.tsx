@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useResourceContext } from './Resource';
+import { useResourceContext } from '../Resource';
 import { Spinner } from 'grommet';
 import { FormField, FormFieldProps } from './FormField';
 
@@ -9,7 +9,7 @@ type Props = Omit<FormFieldProps, 'name'> & {
   excludeGuarded?: boolean;
 };
 
-export function FormFieldsFactory({
+export function FormFields({
   include = [],
   exclude = [],
   excludeGuarded = false,
