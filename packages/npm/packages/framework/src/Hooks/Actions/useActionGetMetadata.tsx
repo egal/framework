@@ -53,7 +53,41 @@ export function useActionGetMetadata(
     return [result.primary_key, ...result.fields, ...result.fake_fields];
   };
 
+  const findRelation = (name: string) => {
+    if (result === undefined) throw new Error('#1668056490');
+
+    const relation = result.relations.find(
+      (relation) => relation.name === name
+    );
+
+    if (relation === undefined)
+      throw new Error(`Undefined '${name}' relation! #1668056490`);
+
+    return relation;
+  };
+
+  const findRelationField = (name: string) => {
+    const nameSplit = name.split('.');
+
+    if (nameSplit.length > 2) throw new Error(`#1668056490`);
+
+    const { primary_key, fields, fake_fields } = findRelation(
+      nameSplit[0]
+    ).related;
+
+    const field = [primary_key, ...fields, ...fake_fields].find(
+      (field) => field.name === nameSplit[1]
+    );
+
+    if (field === undefined)
+      throw new Error(`Undefined '${name}' field! #1668056490`);
+
+    return field;
+  };
+
   const findField = (name: string): Field => {
+    if (name.includes('.')) return findRelationField(name);
+
     const field = getAllFields().find((field) => field.name === name);
 
     if (field === undefined)
