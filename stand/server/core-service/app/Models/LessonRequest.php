@@ -20,16 +20,6 @@ class LessonRequest extends Model
 
     use HasFactory;
 
-    public function school(): BelongsTo
-    {
-        return $this->belongsTo(School::class);
-    }
-
-    public function speaker(): BelongsTo
-    {
-        return $this->belongsTo(Speaker::class);
-    }
-
     public static function constructMetadata(): ModelMetadata
     {
         return ModelMetadata::make(self::class, FieldMetadata::make('id', VariableType::INTEGER))
@@ -42,10 +32,8 @@ class LessonRequest extends Model
                     ->addValidationRule('exists:schools,id')
                     ->required(),
                 FieldMetadata::make('stage', VariableType::STRING)
-                    ->string()
                     ->required(),
-                FieldMetadata::make('supposedly_lesson_starts_at', VariableType::DATETIME)
-                    ->date(),
+                FieldMetadata::make('supposedly_lesson_starts_at', VariableType::DATETIME),
                 FieldMetadata::make('created_at', VariableType::DATETIME),
                 FieldMetadata::make('updated_at', VariableType::DATETIME),
             ])
@@ -69,6 +57,16 @@ class LessonRequest extends Model
                 ActionMetadataBlanks::update(VariableType::STRING),
                 ActionMetadataBlanks::delete(VariableType::STRING),
             ]);
+    }
+
+    public function school(): BelongsTo
+    {
+        return $this->belongsTo(School::class);
+    }
+
+    public function speaker(): BelongsTo
+    {
+        return $this->belongsTo(Speaker::class);
     }
 
 }

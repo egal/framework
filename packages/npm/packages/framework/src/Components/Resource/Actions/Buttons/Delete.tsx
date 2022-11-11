@@ -13,11 +13,12 @@ export type DeleteButtonProps = Pick<ButtonExtendedProps, 'label'> & {
     | undefined;
 };
 
-export function DeleteButton({ onClick, label = 'Delete' }: DeleteButtonProps) {
+export function DeleteButton({ onClick }: DeleteButtonProps) {
   const {
     resource,
     selectedKeys,
     manipulates: { showing },
+    translation: { t },
   } = useResourceContext();
 
   const props: ButtonExtendedProps = {};
@@ -47,7 +48,7 @@ export function DeleteButton({ onClick, label = 'Delete' }: DeleteButtonProps) {
 
   return (
     <Button
-      label={label}
+      label={t('actions.delete.buttons.init', { defaultValue: 'Delete' })}
       primary={!props.disabled}
       color={!props.disabled ? 'status-error' : undefined}
       {...props}

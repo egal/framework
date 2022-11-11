@@ -1,46 +1,23 @@
 import * as React from 'react';
-import { Box, Button, Form, FormField, TextInput } from 'grommet';
-import { useEntityManipulate } from '../../../Hooks';
+import { Box, Button, Form } from 'grommet';
 import { FullLayerModal } from '../FullLayerModal';
 import { useResourceContext } from '../Resource';
 import { useEffect } from 'react';
 import { useResourceActionsContext } from './Actions';
-import { CreateButton, CreateButtonProps } from './Buttons/Create';
+import { CreateButton } from './Buttons/Create';
 import { FormFieldsFactory } from '../FormFieldsFactory';
-import { deepMerge } from 'grommet/utils';
-import { RecursivePartial } from '../../../Utils';
-import { ButtonProps } from 'grommet/components/Button';
-
-type Form = {
-  buttons: {
-    submit: ButtonProps;
-    reset: ButtonProps;
-  };
-};
 
 type Props = {
   children?: React.ReactNode;
-  button?: CreateButtonProps;
-  form?: RecursivePartial<Form>;
 };
 
-export function Create({
-  children,
-  button = {},
-  form: enteredForm = {},
-}: Props) {
+export function Create({ children }: Props) {
   const {
     resource,
     extensions: { creating },
     manipulates: { creating: manipulate },
+    translation: { t },
   } = useResourceContext();
-
-  const form: Form = deepMerge(enteredForm, {
-    buttons: {
-      submit: {},
-      reset: {},
-    },
-  });
 
   useResourceActionsContext();
 
@@ -52,7 +29,7 @@ export function Create({
   return (
     <>
       <Box>
-        <CreateButton {...button} />
+        <CreateButton />
       </Box>
       {manipulate.enabled && (
         <FullLayerModal onClose={manipulate.disable}>
@@ -73,11 +50,17 @@ export function Create({
               {children ?? <FormFieldsFactory excludeGuarded />}
               <Button
                 type="submit"
-                label="Save"
+                label={t('actions.create.buttons.submit', {
+                  defaultValue: 'Save',
+                })}
                 primary
-                {...form.buttons.submit}
               />
-              <Button type="reset" label="Reset" {...form.buttons.reset} />
+              <Button
+                type="reset"
+                label={t('actions.create.buttons.reset', {
+                  defaultValue: 'Reset',
+                })}
+              />
             </Box>
           </Form>
         </FullLayerModal>

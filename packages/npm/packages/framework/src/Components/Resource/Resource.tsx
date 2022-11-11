@@ -12,6 +12,10 @@ import type { ResourceHookConfig } from '../../Hooks';
 import { RecursivePartial } from '../../Utils';
 import { FormField } from './FormField';
 import { FormFieldsFactory } from './FormFieldsFactory';
+import {
+  ResourceTranslation,
+  useResourceTranslation,
+} from './useResourceTranslation';
 
 type Model = {
   name: string;
@@ -37,6 +41,7 @@ type ContextType<ItemType> = {
       secondary: EntityManipulate<any>; // TODO: Not any.
     };
   };
+  translation: ResourceTranslation;
 };
 
 // TODO: Not any.
@@ -94,6 +99,8 @@ export function Resource<ItemType>({ children, model, ...config }: Props) {
   const primary = useEntityManipulate();
   const secondary = useEntityManipulate();
 
+  const translation = useResourceTranslation(model);
+
   React.Children.map(children, (child) => {
     // TODO: Check extensions is valid.
     if (!React.isValidElement(child)) return;
@@ -125,6 +132,7 @@ export function Resource<ItemType>({ children, model, ...config }: Props) {
         secondary,
       },
     },
+    translation,
   };
 
   return (

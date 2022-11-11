@@ -7,14 +7,15 @@ import { Spinner } from 'grommet';
 
 type Props = {
   defaultPerPage?: number;
-  totalMessage?: string;
 };
 
-export function Pagination({
-  defaultPerPage = 10,
-  totalMessage = 'Total',
-}: Props) {
-  const { resource, selectedKeys, extensions } = useResourceContext();
+export function Pagination({ defaultPerPage = 10 }: Props) {
+  const {
+    resource,
+    selectedKeys,
+    extensions,
+    translation: { t },
+  } = useResourceContext();
 
   useEffect(() => {
     extensions.pagination.makeExists();
@@ -38,7 +39,10 @@ export function Pagination({
   return (
     <GrommetBox justify={'between'} direction={'row'} align={'center'}>
       <GrommetBox>
-        {totalMessage}: {resource.getItems.result.total_count}
+        {t('pagination.total', {
+          defaultValue: 'Total: {{count}}',
+          count: resource.getItems.result.total_count,
+        })}
       </GrommetBox>
       {isNeedPaginationElement && (
         <GrommetPagination

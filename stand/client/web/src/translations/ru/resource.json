@@ -1,0 +1,46 @@
+{
+  "filters": {
+    "primary": {
+      "buttons": {
+        "apply": "Поиск"
+      }
+    }
+  },
+  "actions": {
+    "show": {
+      "buttons": {
+        "init": "Просмотр"
+      }
+    },
+    "create": {
+      "buttons": {
+        "init": "Создать",
+        "submit": "Создать",
+        "reset": "Сбросить"
+      }
+    },
+    "update": {
+      "buttons": {
+        "init": "Изменить",
+        "submit": "Сохранить",
+        "reset": "Сбросить"
+      }
+    },
+    "delete": {
+      "buttons": {
+        "init": "Удалить"
+      }
+    }
+  },
+  "pagination": {
+    "total": "Всего: {{count}}"
+  },
+  "fields": {
+    "id": "ID",
+    "updated_at": "Дата и время обновления",
+    "created_at": "Дата и время создания",
+    "name": "Имя",
+    "surname": "Фамилия",
+    "stage": "Стадия"
+  }
+}

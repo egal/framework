@@ -6,6 +6,7 @@ import { Refresh } from 'grommet-icons';
 import { useResourceContext } from '../Resource';
 import { FilterFormField } from './FilterFormField';
 import { useFilterFormFieldConfig } from './useFilterFormFieldConfig';
+import { useTranslation } from 'react-i18next';
 
 type Props = {
   children: React.ReactNode;
@@ -14,10 +15,17 @@ type Props = {
 
 export function Filters({ children, skipValuesOnApply = [''] }: Props) {
   const {
+    model: { name: model, service },
     resource,
     manipulates: { filtering },
     selectedKeys,
   } = useResourceContext();
+
+  const { t: tResource } = useTranslation('resource');
+  const { t: tModels } = useTranslation('models');
+  const tKey = 'filters.primary.buttons.apply';
+  const tApplyButton = () =>
+    tModels(`${service}.${model}.resource.${tKey}`, tResource(tKey, 'Apply'));
 
   const applyFilter = () => {
     const mergedFilteringEntity = {
@@ -75,7 +83,7 @@ export function Filters({ children, skipValuesOnApply = [''] }: Props) {
         }}
       />
       <Button
-        label={'Apply'}
+        label={<>{tApplyButton()}</>}
         onClick={() => {
           selectedKeys.reset();
           applyFilter();

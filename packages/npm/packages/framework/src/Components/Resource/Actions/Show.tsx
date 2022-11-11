@@ -4,44 +4,20 @@ import { FullLayerModal } from '../FullLayerModal';
 import { useResourceContext } from '../Resource';
 import { useEffect, useState } from 'react';
 import { useResourceActionsContext } from './Actions';
-import { ShowSelectedButton, ShowSelectedButtonProps } from './Buttons/Show';
-import {
-  UpdateShowingButton,
-  UpdateShowingButtonProps,
-} from './Buttons/Update';
-import {
-  DeleteShowingButton,
-  DeleteShowingButtonProps,
-} from './Buttons/Delete';
-import { deepMerge } from 'grommet/utils';
-import { RecursivePartial } from '../../../Utils';
+import { ShowSelectedButton } from './Buttons/Show';
+import { UpdateShowingButton } from './Buttons/Update';
+import { DeleteShowingButton } from './Buttons/Delete';
 import { FormFieldsFactory } from '../FormFieldsFactory';
-
-type Form = {
-  buttons: {
-    update: UpdateShowingButtonProps;
-    delete: DeleteShowingButtonProps;
-  };
-};
 
 type Props = {
   children?: React.ReactNode;
-  button?: ShowSelectedButtonProps;
-  form?: RecursivePartial<Form>;
 };
 
-export function Show({ children, button = {}, form: enteredForm = {} }: Props) {
+export function Show({ children }: Props) {
   const {
     manipulates: { showing },
     extensions,
   } = useResourceContext();
-
-  const form: Form = deepMerge(enteredForm, {
-    buttons: {
-      update: {},
-      delete: {},
-    },
-  });
 
   const [showButton, setShowButton] = useState(false);
   const [showUpdateButton, setShowUpdateButton] = useState(false);
@@ -88,7 +64,7 @@ export function Show({ children, button = {}, form: enteredForm = {} }: Props) {
     <>
       {showButton && (
         <Box>
-          <ShowSelectedButton {...button} />
+          <ShowSelectedButton />
         </Box>
       )}
       {showing.enabled && (
@@ -96,12 +72,8 @@ export function Show({ children, button = {}, form: enteredForm = {} }: Props) {
           <Form value={showing.entity}>
             <Box gap={'small'} direction={'column'}>
               {children ?? <FormFieldsFactory disabled={true} />}
-              {showUpdateButton && (
-                <UpdateShowingButton {...form.buttons.update} />
-              )}
-              {showDeleteButton && (
-                <DeleteShowingButton {...form.buttons.delete} />
-              )}
+              {showUpdateButton && <UpdateShowingButton />}
+              {showDeleteButton && <DeleteShowingButton />}
             </Box>
           </Form>
         </FullLayerModal>
