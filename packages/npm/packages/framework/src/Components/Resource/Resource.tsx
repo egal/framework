@@ -19,6 +19,7 @@ type Model = {
 };
 
 type ContextType<ItemType> = {
+  model: Model;
   resource: ResourceHook<ItemType>;
   selectedKeys: {
     value: (string | number)[];
@@ -106,6 +107,7 @@ export function Resource<ItemType>({ children, model, ...config }: Props) {
   }, [extensions.ready, resource.getItems.params]);
 
   const contextValue = {
+    model,
     resource,
     selectedKeys: {
       value: selectedKeys,
