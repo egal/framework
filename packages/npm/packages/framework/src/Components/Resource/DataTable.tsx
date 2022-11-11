@@ -4,29 +4,41 @@ import {
   Box,
   DataTable as GrommetDataTable,
   Spinner,
-  Keyboard,
-  Text,
   Heading,
   CheckBox,
 } from 'grommet';
-import { ColumnConfig, DataTableProps } from 'grommet/components/DataTable';
+import {
+  ColumnConfig as GColumnConfig,
+  DataTableProps as GDataTableProps,
+} from 'grommet/components/DataTable';
 import { useResourceContext } from './Resource';
 import { Clear } from 'grommet-icons';
-import { useEffect, useState } from 'react';
-import { ServerModelFieldMetadata } from '../../Hooks';
 import { sentenceCase } from 'change-case';
+import { useTranslation } from 'react-i18next';
+
+type ColumnConfig<DataItemType> = GColumnConfig<DataItemType> & {
+  exclude?: boolean;
+};
 
 type Props<DataItemType> = Omit<
-  DataTableProps,
-  'data' | 'select' | 'onClickRow' | 'onSelect' | 'primaryKey'
->;
+  GDataTableProps<DataItemType>,
+  'data' | 'select' | 'onClickRow' | 'onSelect' | 'primaryKey' | 'columns'
+> & {
+  columns?: ColumnConfig<DataItemType>[];
+};
 
 export function DataTable<DataItemType = any>({
   columns: columnsProp = [{ property: '*' }],
   ...props
 }: Props<DataItemType>) {
-  const { resource, selectedKeys, extensions, manipulates } =
-    useResourceContext();
+  const {
+    model: { name: model, service },
+    resource,
+    selectedKeys,
+    extensions,
+    manipulates,
+    translation: { t },
+  } = useResourceContext();
 
   if (!resource.metadata.result || !resource.getItems.result) {
     return <Spinner />;
@@ -38,7 +50,7 @@ export function DataTable<DataItemType = any>({
 
   const allFields = resource.metadata.getAllFields();
 
-  const columns: ColumnConfig<DataItemType>[] = columnsProp
+  const columns: GColumnConfig<DataItemType>[] = columnsProp
     .flatMap((column): ColumnConfig<DataItemType>[] => {
       if (column.property !== '*') return [column];
 
@@ -48,7 +60,14 @@ export function DataTable<DataItemType = any>({
           return { property: field.name };
         });
     })
-    .map((column): ColumnConfig<DataItemType> => {
+    .filter((column) => (column.exclude === undefined ? true : !column.exclude))
+    .map((column): GColumnConfig<DataItemType> => {
+      if (column.header === undefined) {
+        column.header = t(`fields.${column.property}`, {
+          defaultValue: sentenceCase(column.property),
+        });
+      }
+
       if (column.property.includes('.')) return column;
 
       if (column.render === undefined) {
@@ -59,10 +78,6 @@ export function DataTable<DataItemType = any>({
             );
             break;
         }
-      }
-
-      if (column.header === undefined) {
-        column.header = sentenceCase(column.property);
       }
 
       return column;
@@ -77,7 +92,7 @@ export function DataTable<DataItemType = any>({
     );
   }
 
-  const selectingProps: Partial<DataTableProps> = (() => {
+  const selectingProps: Partial<GDataTableProps> = (() => {
     switch (
       [
         extensions.showing.exists,

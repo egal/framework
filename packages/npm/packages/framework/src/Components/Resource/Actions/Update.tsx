@@ -4,46 +4,21 @@ import { useResourceContext } from '../Resource';
 import { FullLayerModal } from '../FullLayerModal';
 import { useEffect, useState } from 'react';
 import { useResourceActionsContext } from './Actions';
-import {
-  UpdateSelectedButton,
-  UpdateSelectedButtonProps,
-} from './Buttons/Update';
+import { UpdateSelectedButton } from './Buttons/Update';
 import { FormFieldsFactory } from '../FormFieldsFactory';
-import { ButtonProps } from 'grommet/components/Button';
-import { RecursivePartial } from '../../../Utils';
-import { deepMerge } from 'grommet/utils';
-
-type Form = {
-  buttons: {
-    submit: ButtonProps;
-    reset: ButtonProps;
-  };
-};
 
 type Props = {
   children?: React.ReactNode;
-  button?: UpdateSelectedButtonProps;
-  form?: RecursivePartial<Form>;
 };
 
-export function Update({
-  children,
-  button = {},
-  form: enteredForm = {},
-}: Props) {
+export function Update({ children }: Props) {
   const {
     resource,
     extensions,
     selectedKeys,
     manipulates: { updating: manipulate },
+    translation: { t },
   } = useResourceContext();
-
-  const form: Form = deepMerge(enteredForm, {
-    buttons: {
-      submit: {},
-      reset: {},
-    },
-  });
 
   const [showButton, setShowButton] = useState(false);
 
@@ -72,7 +47,7 @@ export function Update({
 
   return (
     <Box>
-      {showButton && <UpdateSelectedButton {...button} />}
+      {showButton && <UpdateSelectedButton />}
       {manipulate.enabled && (
         <FullLayerModal onClose={manipulate.disable}>
           <Form
@@ -99,11 +74,17 @@ export function Update({
               {children ?? <FormFieldsFactory />}
               <Button
                 type="submit"
-                label="Save"
+                label={t('actions.update.buttons.submit', {
+                  defaultValue: 'Save',
+                })}
                 primary
-                {...form.buttons.submit}
               />
-              <Button type="reset" label="Reset" {...form.buttons.reset} />
+              <Button
+                type="reset"
+                label={t('actions.update.buttons.reset', {
+                  defaultValue: 'Reset',
+                })}
+              />
             </Box>
           </Form>
         </FullLayerModal>

@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Box, Button, Form, Spinner } from 'grommet';
 import { Filter } from 'grommet-icons';
 import { FullLayerModal } from '../FullLayerModal';
-import { useEntityManipulate, useRelay } from '../../../Hooks';
+import { useRelay } from '../../../Hooks';
 import { useResourceContext } from '../Resource';
 import { FilterFormField } from './FilterFormField';
 import { useEffect } from 'react';

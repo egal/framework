@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Create } from './Create';
 import { Update } from './Update';
 import { Delete } from './Delete';
-import { Box, Form } from 'grommet';
+import { Box } from 'grommet';
 import { Show } from './Show';
 import { useContext } from 'react';
 import { useResourceContext } from '../Resource';

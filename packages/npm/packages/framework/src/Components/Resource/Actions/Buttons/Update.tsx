@@ -4,7 +4,7 @@ import { ButtonExtendedProps } from 'grommet/components/Button';
 import { MouseEventHandler } from 'react';
 import { Button } from 'grommet';
 
-export type UpdateButtonProps = Pick<ButtonExtendedProps, 'label'> & {
+export type UpdateButtonProps = {
   onClick:
     | 'update-selected'
     | 'update-showing'
@@ -12,9 +12,10 @@ export type UpdateButtonProps = Pick<ButtonExtendedProps, 'label'> & {
     | undefined;
 };
 
-export function UpdateButton({ onClick, label = 'Update' }: UpdateButtonProps) {
+export function UpdateButton({ onClick }: UpdateButtonProps) {
   const {
     manipulates: { updating, showing },
+    translation: { t },
   } = useResourceContext();
 
   const { selectedKeys } = useResourceContext();
@@ -37,7 +38,7 @@ export function UpdateButton({ onClick, label = 'Update' }: UpdateButtonProps) {
 
   return (
     <Button
-      label={label}
+      label={t('actions.update.buttons.init', { defaultValue: 'Update' })}
       color={!props.disabled ? 'status-warning' : undefined}
       primary={!props.disabled}
       disabled={props.disabled}

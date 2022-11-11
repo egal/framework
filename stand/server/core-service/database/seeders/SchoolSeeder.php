@@ -23,16 +23,16 @@ class SchoolSeeder extends Seeder
 
             $speaker_ids = Speaker::all(['id']);
             foreach ($speaker_ids as $speaker) {
-                /** @var Lesson $lesson */
-                $lesson = Lesson::factory()->state([
-                    'speaker_id' => $speaker->id,
-                    'school_id' => $school->id
-                ])->create();
-
-                LessonRequest::factory()->state([
-                    'id' => $lesson->id,
+                $lessonRequest = LessonRequest::factory()->state([
                     'speaker_id' => $speaker->id,
                     'school_id' => $school->id,
+                ])->create();
+
+                /** @var Lesson $lesson */
+                Lesson::factory()->state([
+                    'speaker_id' => $speaker->id,
+                    'school_id' => $school->id,
+                    'lesson_request_id' => $lessonRequest->id,
                 ])->create();
             }
         });

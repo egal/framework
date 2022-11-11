@@ -3,16 +3,9 @@ import { Box } from 'grommet';
 import { useResourceContext } from '../Resource';
 import { useEffect } from 'react';
 import { useResourceActionsContext } from './Actions';
-import {
-  DeleteSelectedButton,
-  DeleteSelectedButtonProps,
-} from './Buttons/Delete';
+import { DeleteSelectedButton } from './Buttons/Delete';
 
-type Props = {
-  button?: DeleteSelectedButtonProps;
-};
-
-export function Delete({ button }: Props) {
+export function Delete() {
   const {
     extensions: { deleting },
   } = useResourceContext();
@@ -26,7 +19,7 @@ export function Delete({ button }: Props) {
 
   return (
     <Box>
-      <DeleteSelectedButton {...button} />
+      <DeleteSelectedButton />
     </Box>
   );
 }
