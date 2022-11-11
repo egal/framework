@@ -7,7 +7,8 @@ import { useResourceActionsContext } from './Actions';
 import { ShowSelectedButton } from './Buttons/Show';
 import { UpdateShowingButton } from './Buttons/Update';
 import { DeleteShowingButton } from './Buttons/Delete';
-import { FormFieldsFactory } from '../FormFieldsFactory';
+import { FormFields } from './FormFields';
+import { FormField } from './FormField';
 
 type Props = {
   children?: React.ReactNode;
@@ -71,7 +72,7 @@ export function Show({ children }: Props) {
         <FullLayerModal onClose={showing.disable}>
           <Form value={showing.entity}>
             <Box gap={'small'} direction={'column'}>
-              {children ?? <FormFieldsFactory disabled={true} />}
+              {children ?? <FormFields disabled={true} />}
               {showUpdateButton && <UpdateShowingButton />}
               {showDeleteButton && <DeleteShowingButton />}
             </Box>
@@ -81,3 +82,6 @@ export function Show({ children }: Props) {
     </>
   );
 }
+
+Show.FormField = FormField;
+Show.FormFields = FormFields;

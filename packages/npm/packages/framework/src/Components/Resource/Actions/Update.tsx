@@ -5,7 +5,8 @@ import { FullLayerModal } from '../FullLayerModal';
 import { useEffect, useState } from 'react';
 import { useResourceActionsContext } from './Actions';
 import { UpdateSelectedButton } from './Buttons/Update';
-import { FormFieldsFactory } from '../FormFieldsFactory';
+import { FormFields } from './FormFields';
+import { FormField } from './FormField';
 
 type Props = {
   children?: React.ReactNode;
@@ -71,7 +72,7 @@ export function Update({ children }: Props) {
             }}
           >
             <Box gap={'small'} direction={'column'}>
-              {children ?? <FormFieldsFactory />}
+              {children ?? <FormFields />}
               <Button
                 type="submit"
                 label={t('actions.update.buttons.submit', {
@@ -92,3 +93,6 @@ export function Update({ children }: Props) {
     </Box>
   );
 }
+
+Update.FormField = FormField;
+Update.FormFields = FormFields;

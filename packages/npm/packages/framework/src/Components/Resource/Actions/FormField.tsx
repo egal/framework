@@ -7,7 +7,7 @@ import {
   TextInput,
 } from 'grommet';
 import { FormFieldExtendedProps as GFormFieldProps } from 'grommet/components/FormField';
-import { useResourceContext } from './Resource';
+import { useResourceContext } from '../Resource';
 
 export type FormFieldProps = Omit<GFormFieldProps, 'name'> & {
   name: string;
