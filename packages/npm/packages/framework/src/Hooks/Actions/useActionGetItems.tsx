@@ -10,13 +10,56 @@ type Result<ItemType> = {
   items: ItemType[];
 };
 
+type FilterCombiner = 'AND' | 'OR';
+
+type FilterOperator =
+  | 'eq'
+  | 'eqi'
+  | 'ne'
+  | 'nei'
+  | 'gt'
+  | 'ge'
+  | 'lt'
+  | 'le'
+  | 'co'
+  | 'coi'
+  | 'nc'
+  | 'nci'
+  | 'sw'
+  | 'swi'
+  | 'ew'
+  | 'ewi'
+  | string;
+
+type FilterValue = string | number | boolean | bigint;
+
+type FilterField = string;
+
+type FilterCondition = [FilterField, FilterOperator, FilterValue];
+
+type Filter = {
+  [index: number]: FilterCombiner | FilterCondition | Filter; // TODO: Strict sequence.
+};
+
+type OrderCondition = {
+  column: string;
+  direction: 'asc' | 'desc';
+};
+
+type Order = OrderCondition[];
+
+type Pagination = {
+  per_page?: number;
+  page?: number;
+};
+
+type Relations = string[];
+
 export type ActionGetItemsParams = {
-  pagination?: {
-    per_page?: number;
-    page?: number;
-  };
-  relations?: string[];
-  filter?: any; // TODO: Normalize.
+  pagination?: Pagination;
+  relations?: Relations;
+  filter?: Filter;
+  order?: Order;
 };
 
 export type ActionGetItemsHook<ItemType> = Omit<
