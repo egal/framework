@@ -84,7 +84,7 @@ services:
       WAIT_HOSTS: rabbitmq:5672,postgres:5432
     volumes:
       - ./server/core-service:/app:rw
-      - ../packages/php:/dependencies/php-package
+      - ../packages/php:/app/vendor/egal/framework
   notification-service:
     build:
       context: ../services/notification
