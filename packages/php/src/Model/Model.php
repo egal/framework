@@ -104,7 +104,7 @@ abstract class Model extends EloquentModel
         /** @var Model|\Illuminate\Database\Eloquent\Collection|static[]|static|null $item */
         $item = $instance->newQuery()
             ->with($relations)
-            ->find($key);
+            ->where($instance->getKeyName(), $key)->first();
 
         if (!$item) {
             throw ObjectNotFoundException::make($key);
@@ -259,7 +259,7 @@ abstract class Model extends EloquentModel
         $instance->validateKey($key);
 
         /** @var \Egal\Model\Model $entity */
-        $entity = $instance->newQuery()->find($key);
+        $entity = $instance->newQuery()->where($instance->getKeyName(), $key)->first();
 
         if (!$entity) {
             throw ObjectNotFoundException::make($key);
@@ -311,7 +311,7 @@ abstract class Model extends EloquentModel
             $instance->validateKey($key);
 
             /** @var \Egal\Model\Model $entity */
-            $entity = $instance->newQuery()->find($key);
+            $entity = $instance->newQuery()->where($instance->getKeyName(), $key)->first();
 
             if (!$entity) {
                 DB::rollBack();
@@ -391,7 +391,7 @@ abstract class Model extends EloquentModel
         $instance->validateKey($key);
 
         /** @var \Egal\Model\Model $entity */
-        $entity = $instance->newQuery()->find($key);
+        $entity = $instance->newQuery()->where($instance->getKeyName(), $key)->first();
         if (!$entity) throw ObjectNotFoundException::make($key);
         Session::client()->mayOrFail('deleting', $entity);
 
@@ -428,7 +428,7 @@ abstract class Model extends EloquentModel
             $instance->validateKey($key);
 
             /** @var \Egal\Model\Model $entity */
-            $entity = $instance->newQuery()->find($key);
+            $entity = $instance->newQuery()->where($instance->getKeyName(), $key)->first();
 
             if (!$entity) {
                 DB::rollBack();
