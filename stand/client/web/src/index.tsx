@@ -10,7 +10,6 @@ import {
   Resource,
   SupportedWindowsSize,
   Select,
-  DateTimeInput,
 } from '@egalteam/framework';
 import { FormField, Heading, TextInput } from 'grommet';
 import { grommet as grommetTheme } from 'grommet/themes';
@@ -142,7 +141,6 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
                     />
                   </FormField>
                   <FormField label={'Stage'} component={TextInput} name={'stage'} />
-                  <FormField label={'Stage'} component={DateTimeInput} name={'supposedly_lesson_starts_at'} />
                 </Resource.Actions.Create>
               </Resource.Actions>
               <Resource.DataTable />
