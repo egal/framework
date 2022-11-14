@@ -35,5 +35,10 @@
         }
     },
     "minimum-stability": "dev",
-    "prefer-stable": true
+    "prefer-stable": true,
+    "scripts": {
+        "post-update-cmd": [
+            "@php -r \"copy('./vendor/egal/framework/src/PHPCS/main.xml', 'phpcs.xml');\""
+        ]
+    }
 }

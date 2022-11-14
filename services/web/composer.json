@@ -23,5 +23,10 @@
         "preferred-install": "dist",
         "sort-packages": true,
         "optimize-autoloader": true
+    },
+    "scripts": {
+        "post-update-cmd": [
+            "@php -r \"copy('./vendor/egal/framework/src/PHPCS/main.xml', 'phpcs.xml');\""
+        ]
     }
 }
