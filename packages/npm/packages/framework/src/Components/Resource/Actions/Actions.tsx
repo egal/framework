@@ -6,8 +6,6 @@ import { Box } from 'grommet';
 import { Show } from './Show';
 import { useContext } from 'react';
 import { useResourceContext } from '../Resource';
-import { FormFields } from './FormFields';
-import { FormField } from './FormField';
 
 type ContextType = {};
 
@@ -25,7 +23,7 @@ export function useResourceActionsContext(): ContextType {
 }
 
 type Props = {
-  children: React.ReactNode;
+  children?: React.ReactNode;
 };
 
 export const Actions = ({ children }: Props) => {
@@ -37,7 +35,10 @@ export const Actions = ({ children }: Props) => {
     <>
       <ResourceActionsContext.Provider value={{}}>
         <Box gap={'small'} direction={'row'} justify={'end'}>
-          {children}
+          {children ?? <Create />}
+          {children ?? <Show />}
+          {children ?? <Update />}
+          {children ?? <Delete />}
         </Box>
       </ResourceActionsContext.Provider>
     </>
