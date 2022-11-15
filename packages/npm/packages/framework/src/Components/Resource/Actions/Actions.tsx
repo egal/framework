@@ -26,7 +26,11 @@ type Props = {
   children?: React.ReactNode;
 };
 
-export const Actions = ({ children }: Props) => {
+export const Actions = ({
+  children = [Create, Show, Update, Delete].map((item: any) =>
+    React.createElement(item)
+  ),
+}: Props) => {
   useResourceContext();
 
   // TODO: Check children.
@@ -35,10 +39,7 @@ export const Actions = ({ children }: Props) => {
     <>
       <ResourceActionsContext.Provider value={{}}>
         <Box gap={'small'} direction={'row'} justify={'end'}>
-          {children ?? <Create />}
-          {children ?? <Show />}
-          {children ?? <Update />}
-          {children ?? <Delete />}
+          {children}
         </Box>
       </ResourceActionsContext.Provider>
     </>

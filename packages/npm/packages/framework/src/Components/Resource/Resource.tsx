@@ -63,7 +63,13 @@ type Props = {
 } & RecursivePartial<ResourceHookConfig>;
 
 // TODO: Save filter params in GET params of Browser URL.
-export function Resource<ItemType>({ children, model, ...config }: Props) {
+export function Resource<ItemType>({
+  children = [Actions, DataTable, Pagination].map((item: any) =>
+    React.createElement(item)
+  ),
+  model,
+  ...config
+}: Props) {
   const resource = useResource<ItemType>(model, config);
 
   type SelectedKey = string | number;
@@ -138,18 +144,7 @@ export function Resource<ItemType>({ children, model, ...config }: Props) {
     <ResourceContext.Provider value={contextValue}>
       <Keyboard onEsc={() => setSelectedKeys([])}>
         <Box fill gap={'small'} justify={'between'} pad={'small'}>
-          {children ?? (
-            <>
-              <Resource.Actions>
-                <Resource.Actions.Create />
-                <Resource.Actions.Show />
-                <Resource.Actions.Update />
-                <Resource.Actions.Delete />
-              </Resource.Actions>
-              <Resource.DataTable />
-              <Resource.Pagination />
-            </>
-          )}
+          {children}
         </Box>
       </Keyboard>
     </ResourceContext.Provider>
