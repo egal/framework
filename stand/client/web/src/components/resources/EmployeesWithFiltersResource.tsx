@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Resource } from '@egalteam/framework';
-import { DateInput, FormField, TextInput } from 'grommet';
+import { DateInput, TextInput } from 'grommet';
 
 export const EmployeesWithFiltersResource = () => (
   <Resource
@@ -11,7 +11,7 @@ export const EmployeesWithFiltersResource = () => (
     <Resource.Filters>
       <Resource.Filters.Primary
         initFormValue={{
-          'AND:address:co': ''
+          'AND:address:co': '',
           //
         }}>
         <Resource.Filters.FormField

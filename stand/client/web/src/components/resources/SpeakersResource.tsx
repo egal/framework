@@ -8,8 +8,8 @@ export const SpeakersResource = () => (
     model={{ service: 'core', name: 'Speaker' }}
     actionGetItems={{
       initParams: {
-        relations: ['country']
-      }
+        relations: ['country'],
+      },
     }}>
     <Resource.Actions>
       <Resource.Actions.Create>
@@ -65,10 +65,10 @@ export const SpeakersResource = () => (
         {
           property: 'country.name',
           header: 'Country name',
-          render: (datum) => <Tag value={datum.country.name} />
+          render: (datum: any) => <Tag value={datum.country.name} />,
         },
         { property: 'created_at', header: 'created_at' },
-        { property: 'updated_at', header: 'updated_at' }
+        { property: 'updated_at', header: 'updated_at' },
       ]}
     />
     <Resource.Pagination />
