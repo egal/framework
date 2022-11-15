@@ -16,7 +16,6 @@ export function useResourceTranslation({
   const t = (key: string, options: TOptions = {}) => {
     const tModelsKey = `${service}.${model}.resource.${key}`;
     let label = tModels(tModelsKey, { ...options, defaultValue: undefined });
-    if (label === tModelsKey) console.log(key);
     if (label === tModelsKey) label = tResource(key, options);
 
     return label;
