@@ -25,25 +25,18 @@ export function Card<ItemType>({ children, item }: Props<ItemType>) {
     setSelected(selectedKeys.includes(key));
   }, []);
 
-  useEffect(() => {
-    console.log(selectedKeys);
-  }, [selectedKeys]);
-
   const changeSelecting = () => {
     const key = item[metadata.primary_key.name];
 
-    console.log(selected);
     if (selected) {
       const newSelectedKeys = selectedKeys;
       const index = newSelectedKeys.indexOf(key);
       if (index !== -1) newSelectedKeys.splice(index, 1);
       setSelectedKeys(newSelectedKeys);
-      console.log(newSelectedKeys);
     } else {
       const newSelectedKeys = selectedKeys;
       newSelectedKeys.push(key);
       setSelectedKeys(newSelectedKeys);
-      console.log(newSelectedKeys);
     }
 
     // TODO: Remove next line. Because useEffect on 28 line must be updates this value.
