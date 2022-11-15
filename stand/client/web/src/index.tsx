@@ -23,6 +23,7 @@ import { Layout } from './components/layouts/Main';
 import { SpeakersResource } from './components/resources/SpeakersResource';
 import { EmployeesWithFiltersResource } from './components/resources/EmployeesWithFiltersResource';
 import i18next from './i18next';
+import { SpeakersAsCardsResource } from './components/resources/SpeakersAsCardsResource';
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <SupportedWindowsSize min={{ width: 1200 }}>
@@ -86,6 +87,11 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
           header: 'Speakers',
           path: '/speakers',
           element: <SpeakersResource />,
+        },
+        {
+          header: 'SpeakersAsCardsResource',
+          path: '/SpeakersAsCardsResource',
+          element: <SpeakersAsCardsResource />,
         },
         {
           header: 'BroadcastMessage',
