@@ -10,12 +10,11 @@ import { Filters } from './Filters/Filters';
 import { Extensions, useExtensions } from './useExtensions';
 import type { ResourceHookConfig } from '../../Hooks';
 import { RecursivePartial } from '../../Utils';
-import { FormField } from './Actions/FormField';
-import { FormFields } from './Actions/FormFields';
 import {
   ResourceTranslation,
   useResourceTranslation,
 } from './useResourceTranslation';
+import { Cards } from './Cards/Cards';
 
 type Model = {
   name: string;
@@ -158,6 +157,7 @@ export function Resource<ItemType>({ children, model, ...config }: Props) {
 }
 
 Resource.DataTable = DataTable;
+Resource.Cards = Cards;
 Resource.Actions = Actions;
 Resource.Pagination = Pagination;
 Resource.Filters = Filters;
