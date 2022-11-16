@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import jwtDecode from 'jwt-decode';
 import {
   getCookie,
@@ -8,7 +8,6 @@ import {
   useCookie,
 } from './useCookie';
 import { useAction } from './Actions';
-import axios from 'axios';
 
 export type AuthConfig = {
   service: string;
@@ -80,10 +79,6 @@ export function useAuth(config: AuthConfig = authConfig): Auth {
     setLogged(true);
   };
 
-  if (!logged && cookieMasterToken.value !== undefined) {
-    rawLogin(cookieMasterToken.value);
-  }
-
   const logout = (): Promise<void> => {
     return new Promise((resolve) => {
       if (!logged) {
@@ -98,6 +93,12 @@ export function useAuth(config: AuthConfig = authConfig): Auth {
       resolve();
     });
   };
+
+  useEffect(() => {
+    if (!logged && cookieMasterToken.value !== undefined) {
+      rawLogin(cookieMasterToken.value);
+    }
+  }, []);
 
   return {
     logged,
