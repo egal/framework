@@ -27,8 +27,8 @@ type Props = {
 };
 
 export const Actions = ({
-  children = [Create, Show, Update, Delete].map((item: any) =>
-    React.createElement(item)
+  children = [Create, Show, Update, Delete].map((item: any, key: number) =>
+    React.createElement(item, { key })
   ),
 }: Props) => {
   useResourceContext();
