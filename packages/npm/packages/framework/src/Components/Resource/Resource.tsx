@@ -64,8 +64,8 @@ type Props = {
 
 // TODO: Save filter params in GET params of Browser URL.
 export function Resource<ItemType>({
-  children = [Actions, DataTable, Pagination].map((item: any) =>
-    React.createElement(item)
+  children = [Actions, DataTable, Pagination].map((item: any, key: number) =>
+    React.createElement(item, { key })
   ),
   model,
   ...config
