@@ -1,6 +1,6 @@
 <?php
 
-namespace Egal\Tests\Model\ModelBootEventsResultsTest\Models;
+namespace Egal\Tests\Model\BootEventsResultsTest\Models;
 
 use Egal\Model\Enums\VariableType;
 use Egal\Model\Metadata\FieldMetadata;
@@ -9,7 +9,7 @@ use Egal\Model\Model;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class Technique extends Model
+class Maintainer extends Model
 {
 
     protected static function boot()
@@ -18,7 +18,7 @@ class Technique extends Model
         static::saving(fn(self $model) => $model->setAttribute('name', 'NamedModel'));
     }
 
-    public const TABLE = 'technique';
+    public const TABLE = 'maintainer';
 
     protected $table = self::TABLE;
 
@@ -49,5 +49,7 @@ class Technique extends Model
                 ->requiredVariableMetadata(),
             ]);
     }
+
+    public function returnVoid(): void { }
 
 }

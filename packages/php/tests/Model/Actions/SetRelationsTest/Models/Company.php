@@ -1,6 +1,6 @@
 <?php
 
-namespace Egal\Tests\Model\ModelActionsSetRelationsTest\Models;
+namespace Egal\Tests\Model\Actions\SetRelationsTest\Models;
 
 use Egal\Model\Enums\RelationType;
 use Egal\Model\Enums\VariableType;

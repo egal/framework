@@ -3,12 +3,9 @@
 namespace Egal\Tests\Model;
 
 use Carbon\Carbon;
-use Egal\Model\Filter\FilterConditions\SimpleFilterConditionApplier;
 use Egal\Model\Metadata\ModelMetadata;
 use Egal\Model\Model;
-use Egal\Tests\DatabaseSchema;
 use Illuminate\Database\Schema\Blueprint;
-use Laravel\Lumen\Application;
 use PHPUnit\Framework\TestCase;
 
 class ModelActionGetCountTest extends TestCase
@@ -49,25 +46,17 @@ class ModelActionGetCountTest extends TestCase
                 4,
             ],
             [
-                [
-                    ['id', 'eq', 5],
-                ],
+                [['id', 'eq', 5]],
                 null,
                 0,
             ],
             [
-                [
-                    ['id', 'eq', 1],
-                ],
+                [['id', 'eq', 1]],
                 null,
                 1,
             ],
             [
-                [
-                    ['id', 'eq', 1],
-                    'OR',
-                    ['id', 'eq', 2],
-                ],
+                [['id', 'eq', 1], 'OR', ['id', 'eq', 2]],
                 null,
                 2,
             ],
@@ -93,7 +82,7 @@ class ModelActionGetCountTest extends TestCase
 }
 
 /**
- * @property int    $id                           {@property-type field}  {@primary-key}
+ * @property int $id                           {@property-type field}  {@primary-key}
  * @property Carbon $created_at                   {@property-type field}  {@validation-rules date}
  * @property Carbon $updated_at                   {@property-type field}  {@validation-rules date}
  */

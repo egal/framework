@@ -1,6 +1,6 @@
 <?php
 
-namespace Egal\Tests\Model\ModelActionGetItemsFilterByRelationTest;
+namespace Egal\Tests\Model\Actions\GetItems\Filter\ByRelation\Test;
 
 use Carbon\Carbon;
 use Closure;
@@ -9,8 +9,8 @@ use Egal\Core\Session\Session;
 use Egal\Model\Builder;
 use Egal\Model\Exceptions\RelationNotFoundException;
 use Egal\Tests\DatabaseMigrations;
-use Egal\Tests\Model\ModelActionGetItemsFilterByRelationTest\Models\Category;
-use Egal\Tests\Model\ModelActionGetItemsFilterByRelationTest\Models\Product;
+use Egal\Tests\Model\Actions\GetItems\Filter\ByRelation\Test\Models\Category;
+use Egal\Tests\Model\Actions\GetItems\Filter\ByRelation\Test\Models\Product;
 use Egal\Tests\PHPUnitUtil;
 use Egal\Tests\TestCase;
 use Mockery as m;

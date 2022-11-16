@@ -1,6 +1,6 @@
 <?php
 
-namespace Egal\Tests\Model\ModelBootEventsResultsTest\Models;
+namespace Egal\Tests\Model\BootEventsResultsTest\Models;
 
 use Egal\Model\Enums\VariableType;
 use Egal\Model\Metadata\FieldMetadata;

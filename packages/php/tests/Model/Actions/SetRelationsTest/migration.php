@@ -1,8 +1,8 @@
 <?php
 
-use Egal\Tests\Model\ModelActionsSetRelationsTest\Models\Company;
-use Egal\Tests\Model\ModelActionsSetRelationsTest\Models\CompanyEmployees;
-use Egal\Tests\Model\ModelActionsSetRelationsTest\Models\Employee;
+use Egal\Tests\Model\Actions\SetRelationsTest\Models\Company;
+use Egal\Tests\Model\Actions\SetRelationsTest\Models\CompanyEmployees;
+use Egal\Tests\Model\Actions\SetRelationsTest\Models\Employee;
 use Illuminate\Database\Migrations\Migration as BaseMigration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Egal\Tests\Model\ModelBootEventsResultsTest\Models;
+namespace Egal\Tests\Model\Actions\SetRelationsTest\Models;
 
 use Egal\Model\Enums\VariableType;
 use Egal\Model\Metadata\FieldMetadata;
@@ -9,16 +9,10 @@ use Egal\Model\Model;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class Maintainer extends Model
+class Employee extends Model
 {
 
-    protected static function boot()
-    {
-        parent::boot();
-        static::saving(fn(self $model) => $model->setAttribute('name', 'NamedModel'));
-    }
-
-    public const TABLE = 'maintainer';
+    public const TABLE = 'employees';
 
     protected $table = self::TABLE;
 
@@ -29,7 +23,6 @@ class Maintainer extends Model
         Schema::dropIfExists(self::TABLE);
         Schema::create(self::TABLE, function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name');
         });
     }
 
@@ -43,13 +36,7 @@ class Maintainer extends Model
         return ModelMetadata::make(
             static::class,
             FieldMetadata::make('id', VariableType::INTEGER)
-        )
-            ->addFields([
-                FieldMetadata::make('name', VariableType::STRING)
-                ->requiredVariableMetadata(),
-            ]);
+        );
     }
-
-    public function returnVoid(): void { }
 
 }

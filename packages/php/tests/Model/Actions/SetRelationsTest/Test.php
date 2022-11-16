@@ -1,12 +1,12 @@
 <?php
 
-namespace Egal\Tests\Model\ModelActionsSetRelationsTest;
+namespace Egal\Tests\Model\Actions\SetRelationsTest;
 
 use Egal\Auth\Entities\Client;
 use Egal\Core\Session\Session;
-use Egal\Tests\Model\ModelActionsSetRelationsTest\Models\Company;
-use Egal\Tests\Model\ModelActionsSetRelationsTest\Models\CompanyEmployees;
-use Egal\Tests\Model\ModelActionsSetRelationsTest\Models\Employee;
+use Egal\Tests\Model\Actions\SetRelationsTest\Models\Company;
+use Egal\Tests\Model\Actions\SetRelationsTest\Models\CompanyEmployees;
+use Egal\Tests\Model\Actions\SetRelationsTest\Models\Employee;
 use Egal\Tests\PHPUnitUtil;
 use Egal\Tests\TestCase;
 use Egal\Tests\DatabaseMigrations;

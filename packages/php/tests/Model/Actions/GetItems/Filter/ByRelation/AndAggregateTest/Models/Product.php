@@ -1,11 +1,12 @@
 <?php
 
-namespace Egal\Tests\Model\ModelActionGetItemsFilterByRelationTest\Models;
+namespace Egal\Tests\Model\Actions\GetItems\Filter\ByRelation\AndAggregateTest\Models;
 
 use Egal\Model\Enums\RelationType as RelationT;
 use Egal\Model\Enums\VariableType as VariableT;
 use Egal\Model\Metadata\FieldMetadata as FieldM;
 use Egal\Model\Metadata\FieldsMetadataBlanks;
+use Egal\Model\Metadata\ModelMetadata;
 use Egal\Model\Metadata\ModelMetadata as ModelM;
 use Egal\Model\Metadata\RelationMetadata as RelationM;
 use Egal\Model\Model;
@@ -14,9 +15,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Product extends Model
 {
 
-    protected $table = 'products';
-
-    public static function constructMetadata(): ModelM
+    public static function constructMetadata(): ModelMetadata
     {
         return ModelM::make(static::class, FieldM::make('id', VariableT::INTEGER))
             ->addFields([
@@ -26,18 +25,12 @@ class Product extends Model
             ->addFields(FieldsMetadataBlanks::timestamps())
             ->addRelations([
                 RelationM::make('category', Category::class, RelationT::BELONGS_TO),
-                RelationM::make('category_with_word', Category::class, RelationT::BELONGS_TO),
             ]);
     }
 
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
-    }
-
-    public function categoryWithWord(): BelongsTo
-    {
-        return $this->belongsTo(Category::class, 'category_id', 'id');
     }
 
 }

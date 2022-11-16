@@ -1,10 +1,10 @@
 <?php
 
-namespace Egal\Tests\Model\ModelActionGetItemByCustomKeyNameTest;
+namespace Egal\Tests\Model\Actions\GetItem\ModelActionsGetItemByCustomKeyNameTest;
 
 use Egal\Auth\Entities\Client;
 use Egal\Core\Session\Session;
-use Egal\Tests\Model\ModelActionGetItemByCustomKeyNameTest\Models\Product;
+use Egal\Tests\Model\Actions\GetItem\ModelActionsGetItemByCustomKeyNameTest\Models\Product;
 use Egal\Tests\PHPUnitUtil;
 use Egal\Tests\TestCase;
 use Egal\Tests\DatabaseMigrations;
@@ -22,15 +22,11 @@ class Test extends TestCase
 
     public function testGetItem()
     {
-        $firstProduct = new Product([
-            'value' => '33'
-        ]);
+        $firstProduct = new Product(['value' => '33']);
         $firstProduct->key = '1';
         $firstProduct->save();
 
-        $secondProduct = new Product([
-            'value' => '33'
-        ]);
+        $secondProduct = new Product(['value' => '33']);
         $secondProduct->key = '2';
         $secondProduct->save();
 

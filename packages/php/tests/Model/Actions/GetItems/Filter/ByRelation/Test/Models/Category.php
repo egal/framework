@@ -1,6 +1,6 @@
 <?php
 
-namespace Egal\Tests\Model\ModelActionGetItemsFilterByRelationTest\Models;
+namespace Egal\Tests\Model\Actions\GetItems\Filter\ByRelation\Test\Models;
 
 use Egal\Model\Enums\VariableType as VariableT;
 use Egal\Model\Metadata\FieldMetadata as FieldM;

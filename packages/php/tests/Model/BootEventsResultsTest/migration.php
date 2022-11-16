@@ -1,9 +1,9 @@
 <?php
 
-use Egal\Tests\Model\ModelBootEventsResultsTest\Models\Company;
-use Egal\Tests\Model\ModelBootEventsResultsTest\Models\Employee;
-use Egal\Tests\Model\ModelBootEventsResultsTest\Models\Maintainer;
-use Egal\Tests\Model\ModelBootEventsResultsTest\Models\Technique;
+use Egal\Tests\Model\BootEventsResultsTest\Models\Company;
+use Egal\Tests\Model\BootEventsResultsTest\Models\Employee;
+use Egal\Tests\Model\BootEventsResultsTest\Models\Maintainer;
+use Egal\Tests\Model\BootEventsResultsTest\Models\Technique;
 use Illuminate\Database\Migrations\Migration as BaseMigration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;

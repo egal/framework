@@ -1,6 +1,6 @@
 <?php
 
-namespace Egal\Tests\Model\ModelActionsSetRelationsTest\Models;
+namespace Egal\Tests\Model\Actions\SetRelationsTest\Models;
 
 use Egal\Model\Enums\VariableType;
 use Egal\Model\Metadata\FieldMetadata;
@@ -9,10 +9,10 @@ use Egal\Model\Model;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class Employee extends Model
+class CompanyEmployees extends Model
 {
 
-    public const TABLE = 'employees';
+    public const TABLE = 'company_employee';
 
     protected $table = self::TABLE;
 
@@ -23,6 +23,8 @@ class Employee extends Model
         Schema::dropIfExists(self::TABLE);
         Schema::create(self::TABLE, function (Blueprint $table) {
             $table->increments('id');
+            $table->foreignId('company_id');
+            $table->foreignId('employee_id');
         });
     }
 
@@ -36,7 +38,10 @@ class Employee extends Model
         return ModelMetadata::make(
             static::class,
             FieldMetadata::make('id', VariableType::INTEGER)
-        );
+        )->addFields([
+            FieldMetadata::make("company_id", VariableType::INTEGER),
+            FieldMetadata::make("employee_id", VariableType::INTEGER),
+        ]);
     }
 
 }
