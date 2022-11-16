@@ -1,19 +1,12 @@
-import { createContext, ReactNode, useContext } from 'react';
-import { Auth, AuthConfig, useAuth } from '../../Hooks';
+import { createContext, useContext } from 'react';
+import { Auth } from '../../Hooks';
 
-const contextNotInitializedErrorCallback = () => {
-  throw new Error('Context not initialized!');
-};
-
-export const AuthContext = createContext<Auth>({
-  logged: false,
-  getMasterToken: contextNotInitializedErrorCallback,
-  getServiceToken: contextNotInitializedErrorCallback,
-  login: contextNotInitializedErrorCallback,
-  logout: contextNotInitializedErrorCallback,
-});
+export const AuthContext = createContext<Auth | undefined>(undefined);
 
 export function useAuthContext(): Auth {
-  // TODO: Exception "Not in context".
-  return useContext(AuthContext);
+  const context = useContext(AuthContext);
+
+  if (context === undefined) throw new Error('Context not initialized!');
+
+  return context;
 }

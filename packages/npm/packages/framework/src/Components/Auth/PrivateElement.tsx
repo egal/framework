@@ -21,24 +21,21 @@ export function PrivateElement({
   const auth = useAuthContext();
   const navigate = useNavigate();
 
-  const check = () => {
-    if (onlyFor === 'logged' && !auth.logged) {
+  useEffect(() => {
+    if (onlyFor === 'logged' && !auth.isLogged()) {
       setAvailable(false);
       navigate(onFailureNavigateTo ?? '/login');
       return;
     }
 
-    if (onlyFor === 'guest' && auth.logged) {
+    if (onlyFor === 'guest' && auth.isLogged()) {
       setAvailable(false);
       navigate(onFailureNavigateTo ?? '/logout');
       return;
     }
 
     setAvailable(true);
-  };
-
-  useEffect(check, []);
-  useEffect(check, [auth.logged]);
+  });
 
   return available ? <>{children}</> : <FullBoxLoader />;
 }

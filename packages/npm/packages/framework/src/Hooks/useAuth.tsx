@@ -33,7 +33,7 @@ export type ServiceToken<SubType> = Token<SubType>;
 type ServicesTokens = { [key: string]: ServiceToken<any> };
 
 export type Auth = {
-  logged: boolean;
+  isLogged: () => boolean;
   getMasterToken: () => MasterToken;
   getServiceToken: <SubType = any>(
     serviceName: string
@@ -43,7 +43,7 @@ export type Auth = {
 };
 
 export function useAuth(config: AuthConfig = authConfig): Auth {
-  const [logged, setLogged] = useState<boolean>(false);
+  const [logged, setLogged] = useState<boolean | undefined>(undefined);
   const [masterToken, setMasterToken] = useState<MasterToken>();
   const [servicesTokens, setServicesTokens] = useState<ServicesTokens>({});
 
@@ -94,14 +94,25 @@ export function useAuth(config: AuthConfig = authConfig): Auth {
     });
   };
 
-  useEffect(() => {
-    if (!logged && cookieMasterToken.value !== undefined) {
+  const loginFromCookieIfLoggedIsUndefined = (): boolean => {
+    if (logged !== undefined) return logged;
+
+    if (cookieMasterToken.value === undefined) {
+      setLogged(false);
+      return false;
+    } else {
       rawLogin(cookieMasterToken.value);
+      return true;
     }
+  };
+
+  useEffect(() => {
+    loginFromCookieIfLoggedIsUndefined();
   }, []);
 
   return {
-    logged,
+    isLogged: () =>
+      logged !== undefined ? logged : loginFromCookieIfLoggedIsUndefined(),
 
     getMasterToken: (): MasterToken => {
       if (!logged)
