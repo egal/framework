@@ -1,8 +1,8 @@
 import axios, { AxiosError } from 'axios';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { PromiseWithReject } from '../../Utils';
 import { useAppContext } from '../../Components';
-import { useAuthContext } from '../../Contexts';
+import { AuthContext } from '../../Contexts';
 
 export type ActionModel = {
   name: string;
@@ -40,7 +40,7 @@ export function useAction<
 ): ActionHook<ResultType, ParamsType, ErrorDataType> {
   const [result, setResult] = useState<ResultType>();
   const [error, setError] = useState<ActionError<ErrorDataType>>();
-  const auth = useAuthContext();
+  const auth = useContext(AuthContext);
 
   const {
     config: {
@@ -55,7 +55,7 @@ export function useAction<
     call: async (params: ParamsType) => {
       const headers = {};
 
-      if (auth.logged) {
+      if (auth !== undefined && auth.isLogged()) {
         const token = await auth.getServiceToken(model.service);
         headers['Authorization'] = token.raw;
       }
