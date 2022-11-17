@@ -12,31 +12,7 @@ use Illuminate\Support\Facades\Schema;
 class Maintainer extends Model
 {
 
-    protected static function boot()
-    {
-        parent::boot();
-        static::saving(fn(self $model) => $model->setAttribute('name', 'NamedModel'));
-    }
-
-    public const TABLE = 'maintainer';
-
-    protected $table = self::TABLE;
-
     public $timestamps = false;
-
-    public static function createSchema(): void
-    {
-        Schema::dropIfExists(self::TABLE);
-        Schema::create(self::TABLE, function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('name');
-        });
-    }
-
-    public static function dropSchema()
-    {
-        Schema::dropIfExists(self::TABLE);
-    }
 
     public static function constructMetadata(): ModelMetadata
     {
@@ -45,11 +21,14 @@ class Maintainer extends Model
             FieldMetadata::make('id', VariableType::INTEGER)
         )
             ->addFields([
-                FieldMetadata::make('name', VariableType::STRING)
-                ->requiredVariableMetadata(),
+                FieldMetadata::make('name', VariableType::STRING)->nullable(),
             ]);
     }
 
-    public function returnVoid(): void { }
+    protected static function boot()
+    {
+        parent::boot();
+        static::saving(fn(self $model) => $model->setAttribute('name', 'NamedModel'));
+    }
 
 }

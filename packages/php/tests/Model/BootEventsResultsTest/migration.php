@@ -14,19 +14,19 @@ return new class extends BaseMigration
     public function up()
     {
         $this->down();
-        Schema::create(Company::TABLE, function (Blueprint $table) {
+        Schema::create('companies', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
         });
-        Schema::create(Employee::TABLE, function (Blueprint $table) {
+        Schema::create('employees', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
         });
-        Schema::create(Maintainer::TABLE, function (Blueprint $table) {
+        Schema::create('maintainers', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
         });
-        Schema::create(Technique::TABLE, function (Blueprint $table) {
+        Schema::create('techniques', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
         });
@@ -34,10 +34,10 @@ return new class extends BaseMigration
 
     public function down()
     {
-        Schema::dropIfExists(Maintainer::TABLE);
-        Schema::dropIfExists(Technique::TABLE);
-        Schema::dropIfExists(Employee::TABLE);
-        Schema::dropIfExists(Company::TABLE);
+        Schema::dropIfExists('companies');
+        Schema::dropIfExists('employees');
+        Schema::dropIfExists('maintainers');
+        Schema::dropIfExists('techniques');
     }
 
 };

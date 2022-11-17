@@ -12,30 +12,12 @@ use Illuminate\Support\Facades\Schema;
 class Company extends Model
 {
 
+    public $timestamps = false;
+
     protected static function boot()
     {
         parent::boot();
         static::saving(fn(self $model) => $model->setAttribute('name', 'NamedModel'));
-    }
-
-    public const TABLE = 'companies';
-
-    protected $table = self::TABLE;
-
-    public $timestamps = false;
-
-    public static function createSchema(): void
-    {
-        Schema::dropIfExists(self::TABLE);
-        Schema::create(self::TABLE, function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('name');
-        });
-    }
-
-    public static function dropSchema()
-    {
-        Schema::dropIfExists(self::TABLE);
     }
 
     public static function constructMetadata(): ModelMetadata
@@ -45,8 +27,7 @@ class Company extends Model
             FieldMetadata::make('id', VariableType::INTEGER)
         )
             ->addFields([
-                FieldMetadata::make('name', VariableType::STRING)
-                    ->requiredVariableMetadata(),
+                FieldMetadata::make('name', VariableType::STRING)->nullable(),
             ]);
     }
 
