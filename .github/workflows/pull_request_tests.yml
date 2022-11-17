@@ -1,0 +1,54 @@
+name: Pull Request Tests
+
+on:
+  pull_request: { }
+
+jobs:
+
+  PHPCS:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 2
+      - name: Docker Compose build and pull
+        working-directory: packages/php
+        run: |
+          docker-compose pull
+          docker-compose build
+      - name: Install Composer
+        working-directory: packages/php
+        run: |
+          docker-compose run --rm \
+            --user "$(id -u):$(id -g)" \
+            php \
+            composer install \
+              --dev \
+              --no-interaction \
+              --no-progress
+      - name: Run a PHPCS
+        working-directory: packages/php
+        run: bash bin/phpcs.sh --warning-severity=0 --report=full $DIFF
+
+  PHPUnit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Docker Compose build and pull
+        working-directory: packages/php
+        run: |
+          docker-compose pull
+          docker-compose build
+      - name: Install Composer
+        working-directory: packages/php
+        run: |
+          docker-compose run --rm \
+            --user "$(id -u):$(id -g)" \
+            php \
+            composer install \
+              --dev \
+              --no-interaction \
+              --no-progress
+      - name: Run a PHPUnit
+        working-directory: packages/php
+        run: bash bin/phpunit.sh
