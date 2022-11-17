@@ -31,7 +31,7 @@ class ModelMetadataManager
                 $itemNamespace = str_replace($itemPath, '', $itemNamespace);
                 $itemNamespace = str_replace('/', '\\', $itemNamespace);
                 $itemNamespace = ucfirst($itemNamespace);
-                $itemPath = str_replace_first(base_path() . '/', '', $itemPath,);
+                $itemPath = str_replace_first(base_path() . '/', '', $itemPath);
 
                 $this->registerDirectory($itemPath, $itemNamespace);
                 continue;
@@ -73,10 +73,10 @@ class ModelMetadataManager
     public function getModelMetadata(string $model): ModelMetadata
     {
         if (isset($this->modelsMetadata[$model])) {
-            !$this->modelsMetadata[$model]->dynamic() ?: $this->addModelMetadata(
-                $this->modelsMetadata[$model]->getModelClass()::constructMetadata(),
-                true
-            );
+            if ($this->modelsMetadata[$model]->dynamic()) {
+                $modelClass = $this->modelsMetadata[$model]->getModelClass();
+                $this->addModelMetadata($modelClass::constructMetadata(), true);
+            }
             $modelMetadata = $this->modelsMetadata[$model];
         }
 
