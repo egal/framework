@@ -5,8 +5,15 @@ import { useResourceContext } from '../Resource';
 import { useEffect } from 'react';
 import { useResourceActionsContext } from './Actions';
 import { CreateButton } from './Buttons/Create';
-import { FormFields } from './FormFields';
+import {
+  FormFields as BaseFormFields,
+  FormFieldsProps as BaseFormFieldsProps,
+} from './FormFields';
 import { FormField } from './FormField';
+
+export function FormFields(props: Omit<BaseFormFieldsProps, 'excludeGuarded'>) {
+  return <BaseFormFields excludeGuarded {...props} />;
+}
 
 type Props = {
   children?: React.ReactNode;
@@ -48,7 +55,7 @@ export function Create({ children }: Props) {
             }}
           >
             <Box gap={'small'} direction={'column'}>
-              {children ?? <FormFields excludeGuarded />}
+              {children ?? <FormFields />}
               <Button
                 type="submit"
                 label={t('actions.create.buttons.submit', {
