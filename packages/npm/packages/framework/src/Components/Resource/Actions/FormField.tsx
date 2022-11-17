@@ -8,6 +8,7 @@ import {
 } from 'grommet';
 import { FormFieldExtendedProps as GFormFieldProps } from 'grommet/components/FormField';
 import { useResourceContext } from '../Resource';
+import { sentenceCase } from 'change-case';
 
 export type FormFieldProps = Omit<GFormFieldProps, 'name'> & {
   name: string;
@@ -23,7 +24,10 @@ export function FormField({ ...sourceProps }: FormFieldProps) {
 
   if (!metadata.result) return <Spinner />;
 
-  if (!props.label) props.label = t(`fields.${props.name}`);
+  if (!props.label)
+    props.label = t(`fields.${props.name}`, {
+      defaultValue: sentenceCase(props.name),
+    });
 
   const field = metadata.findField(props.name);
 
