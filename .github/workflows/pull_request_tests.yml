@@ -5,48 +5,20 @@ on:
 
 jobs:
 
-  PHPUnit74:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Set up PHP Dockerfile
-        run: echo PHP_DOCKERFILE='php74.Dockerfile' > .env
-      - name: Docker Compose build and pull
-        run: |
-          cd packages/php
-          docker-compose pull
-          docker-compose build
-      - name: Install Composer
-        run: |
-          cd packages/php
-          docker-compose run --rm \
-            --user "$(id -u):$(id -g)" \
-            php \
-            composer install \
-              --dev \
-              --no-interaction \
-              --no-progress
-      - name: Run a PHPUnit
-        run: |
-          cd packages/php
-          bash bin/phpunit.sh
-
-  PHPCS74:
+  PHPCS:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 2
-      - name: Set up PHP Dockerfile
-        run: echo PHP_DOCKERFILE='php74.Dockerfile' > .env
       - name: Docker Compose build and pull
+        working-directory: packages/php
         run: |
-          cd packages/php
           docker-compose pull
           docker-compose build
       - name: Install Composer
+        working-directory: packages/php
         run: |
-          cd packages/php
           docker-compose run --rm \
             --user "$(id -u):$(id -g)" \
             php \
@@ -55,8 +27,8 @@ jobs:
               --no-interaction \
               --no-progress
       - name: Run a PHPCS
+        working-directory: packages/php
         run: |
-          cd packages/php
           DIFF="$(git diff \
             --name-only \
             --diff-filter=dr \
@@ -65,20 +37,18 @@ jobs:
           if [ "${DIFF}" == '' ]; then exit 0; fi
           bash bin/phpcs.sh --warning-severity=0 --report=full $DIFF
 
-  PHPUnit81:
+  PHPUnit:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Set up PHP Dockerfile
-        run: echo PHP_DOCKERFILE='php81.Dockerfile' > .env
       - name: Docker Compose build and pull
+        working-directory: packages/php
         run: |
-          cd packages/php
           docker-compose pull
           docker-compose build
       - name: Install Composer
+        working-directory: packages/php
         run: |
-          cd packages/php
           docker-compose run --rm \
             --user "$(id -u):$(id -g)" \
             php \
@@ -87,6 +57,5 @@ jobs:
               --no-interaction \
               --no-progress
       - name: Run a PHPUnit
-        run: |
-          cd packages/php
-          bash bin/phpunit.sh
+        working-directory: packages/php
+        run: bash bin/phpunit.sh
