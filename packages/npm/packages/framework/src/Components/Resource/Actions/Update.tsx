@@ -5,8 +5,15 @@ import { FullLayerModal } from '../FullLayerModal';
 import { useEffect, useState } from 'react';
 import { useResourceActionsContext } from './Actions';
 import { UpdateSelectedButton } from './Buttons/Update';
-import { FormFields } from './FormFields';
+import {
+  FormFields as BaseFormFields,
+  FormFieldsProps as BaseFormFieldsProps,
+} from './FormFields';
 import { FormField } from './FormField';
+
+export function FormFields(props: BaseFormFieldsProps) {
+  return <BaseFormFields excludeGuarded {...props} />;
+}
 
 type Props = {
   children?: React.ReactNode;

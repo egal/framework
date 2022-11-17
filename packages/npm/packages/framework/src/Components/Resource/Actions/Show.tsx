@@ -7,8 +7,15 @@ import { useResourceActionsContext } from './Actions';
 import { ShowSelectedButton } from './Buttons/Show';
 import { UpdateShowingButton } from './Buttons/Update';
 import { DeleteShowingButton } from './Buttons/Delete';
-import { FormFields } from './FormFields';
+import {
+  FormFields as BaseFormFields,
+  FormFieldsProps as BaseFormFieldsProps,
+} from './FormFields';
 import { FormField } from './FormField';
+
+export function FormFields(props: Omit<BaseFormFieldsProps, 'excludeGuarded'>) {
+  return <BaseFormFields excludeGuarded {...props} />;
+}
 
 type Props = {
   children?: React.ReactNode;
