@@ -3,18 +3,18 @@ import { useResourceContext } from '../Resource';
 import { Spinner } from 'grommet';
 import { FormField, FormFieldProps } from './FormField';
 
-type Props = Omit<FormFieldProps, 'name'> & {
+export type FormFieldsProps = Omit<FormFieldProps, 'name'> & {
   include?: string[];
   exclude?: string[];
   excludeGuarded?: boolean;
 };
 
 export function FormFields({
-  include = [],
+  include,
   exclude = [],
   excludeGuarded = false,
   ...props
-}: Props) {
+}: FormFieldsProps) {
   const {
     resource: { metadata },
   } = useResourceContext();
@@ -23,15 +23,20 @@ export function FormFields({
 
   return (
     <>
-      {metadata
-        .getAllFields()
-        .filter((field) => include.includes(field.name))
-        .filter((field) => !exclude.includes(field.name))
-        .filter((field) => !excludeGuarded || !field.guarded)
-        .filter((field) => !field.hidden)
-        .map((field, key) => (
-          <FormField key={key} name={field.name} {...props} />
-        ))}
+      {
+        metadata
+          .getAllFields()
+          .filter(
+            (field) => include === undefined || include.includes(field.name)
+          )
+          .filter((field) => !exclude.includes(field.name))
+          .filter((field) => !excludeGuarded || !field.guarded)
+          .filter((field) => !field.hidden)
+          .map((field, key) => (
+            <FormField key={key} name={field.name} {...props} />
+          ))
+        //
+      }
     </>
   );
 }
