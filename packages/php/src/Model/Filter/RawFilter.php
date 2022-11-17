@@ -2,15 +2,10 @@
 
 declare(strict_types=1);
 
-/** @noinspection PhpUnused */
-
 namespace Egal\Model\Filter;
 
 use Illuminate\Support\Str;
 
-/**
- * @package Egal\Model
- */
 class RawFilter
 {
 

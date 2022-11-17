@@ -9,13 +9,11 @@ use Laravel\Lumen\Providers\EventServiceProvider as LumenEventServiceProvider;
 class EventServiceProvider extends LumenEventServiceProvider
 {
 
-    /**
-     * Сопоставления обработчиков событий для всей системы.
-     *
-     * @var array
-     */
     public array $globalListen = [];
 
+    /**
+     * @var array
+     */
     protected $listen = [];
 
     public function __construct($app)

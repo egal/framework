@@ -2,8 +2,6 @@
 
 declare(strict_types=1);
 
-/** @noinspection PhpMissingFieldTypeInspection */
-
 namespace Egal\Core\Commands;
 
 use Illuminate\Console\Command;
@@ -11,10 +9,16 @@ use Illuminate\Console\Command;
 class GenerateKeyCommand extends Command
 {
 
+    /**
+     * @var string
+     */
     protected $signature = 'egal:key:generate
                                 {--s|show : Показать ключ}
                            ';
 
+    /**
+     * @var string
+     */
     protected $description = '';
 
     public function handle(): void
