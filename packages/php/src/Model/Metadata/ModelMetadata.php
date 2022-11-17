@@ -154,9 +154,9 @@ class ModelMetadata
     public function fieldExist(string $fieldName): bool
     {
         return array_filter(
-                [...$this->fields, ...$this->fakeFields, $this->getKey()],
-                fn(FieldMetadata $field) => $field->getName() === $fieldName
-            ) !== [];
+            [...$this->fields, ...$this->fakeFields, $this->getKey()],
+            fn(FieldMetadata $field) => $field->getName() === $fieldName
+        ) !== [];
     }
 
     /**
@@ -172,9 +172,9 @@ class ModelMetadata
     public function relationExist(string $relationName): bool
     {
         return array_filter(
-                $this->getRelations(),
-                fn(RelationMetadata $relation) => $relation->getName() === $relationName,
-            ) !== [];
+            $this->getRelations(),
+            fn(RelationMetadata $relation) => $relation->getName() === $relationName,
+        ) !== [];
     }
 
     /**

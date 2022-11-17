@@ -1,4 +1,8 @@
-<?php /** @noinspection PhpUnused */
+<?php
+
+declare(strict_types=1);
+
+/** @noinspection PhpUnused */
 
 namespace Egal\Model\Filter;
 
@@ -26,7 +30,7 @@ class RawFilter
                 $rawFilter = str_replace(
                     "'" . $databaseProperty . "'",
                     '"' . $table . '"' . '.' . '"' . $databaseProperty . '"',
-                    $rawFilter
+                    $rawFilter,
                 );
             }
 

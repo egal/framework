@@ -1,4 +1,8 @@
-<?php /** @noinspection PhpMissingFieldTypeInspection */
+<?php
+
+declare(strict_types=1);
+
+/** @noinspection PhpMissingFieldTypeInspection */
 
 namespace Egal\Core\Commands;
 
@@ -19,7 +23,7 @@ class GenerateKeyCommand extends Command
             'abcdefghijklmnopqrstuvwxyz'
             . 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
             . '0123456789'
-            . '@#%^*'
+            . '@#%^*',
         );
         shuffle($seed);
         $key = '';
