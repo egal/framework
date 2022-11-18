@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Egal\Core\Communication;
 
-use Carbon\Carbon;
 use Egal\Core\ActionCaller\ActionCaller;
 use Egal\Core\Bus\Bus;
 use Egal\Core\Exceptions\RequestException;
 use Egal\Core\Messages\ActionMessage;
 use Egal\Core\Messages\Message;
 use Egal\Core\Session\Session;
+use Firebase\JWT\JWT;
 use Illuminate\Support\Facades\Cache;
 
 class Request extends ActionMessage
@@ -104,11 +104,10 @@ class Request extends ActionMessage
         $tokenFromCachePayload = $token !== null
             ? explode('.', $token)[1]
             : null;
-        $tokenFromCacheAliveUntil = $token !== null
-            ? json_decode(base64_decode($tokenFromCachePayload), true)['exp']
-            : null;
 
-        if (!$token || Carbon::now('UTC') >= Carbon::parse($tokenFromCacheAliveUntil)) {
+        $payload = JWT::jsonDecode(JWT::urlsafeB64Decode($tokenFromCachePayload));
+
+        if (isset($payload->exp) && time() >= $payload->exp) {
             $token = config('app.service_name') === $this->authServiceName
                 ? $this->getItselfServiceServiceTokenFromAuth()
                 : $this->getServiceServiceTokenFromAuthService();
