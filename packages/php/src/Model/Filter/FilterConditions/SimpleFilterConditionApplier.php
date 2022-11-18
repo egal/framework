@@ -34,16 +34,24 @@ class SimpleFilterConditionApplier extends FilterConditionApplier
     public static function apply(Builder &$builder, FilterCondition $condition, string $boolean): void
     {
         $operator = static::getSqlOperator($condition->getOperator());
+        $isFilterByField = preg_match('/^(\w+)$/', $condition->getField(), $matches);
+
+        if ($isFilterByField) {
+            $modelMetadata = $builder->getModel()->getModelMetadata();
+            $modelMetadata->fieldExistOrFail($condition->getField());
+            $modelMetadata->validateFieldValueType($condition->getField(), $condition->getValue());
+        }
+
         $value = static::getPreparedValue($condition->getOperator(), $condition->getValue());
 
-        if (preg_match('/^(\w+)\[([\w,\\\\]+)\]\.(\w+)$/', $condition->getField(), $matches)) {
+        if ($isFilterByField) {
+            self::filterByField($condition, $builder, $value, $operator, $boolean);
+        } elseif (preg_match('/^(\w+)\[([\w,\\\\]+)\]\.(\w+)$/', $condition->getField(), $matches)) {
             self::filterByMorphRelationField($matches, $builder, $value, $operator, $boolean);
         } elseif (preg_match('/^(\w+)\.(exists)\(\)$/', $condition->getField(), $matches)) {
             self::filterByExistsRelation($matches, $operator, $value, $builder, $boolean);
         } elseif (preg_match('/^(\w+)\.(\w+)$/', $condition->getField(), $matches)) {
             self::filterByRelationField($matches, $builder, $value, $operator, $boolean);
-        } elseif (preg_match('/^(\w+)$/', $condition->getField(), $matches)) {
-            self::filterByField($condition, $builder, $value, $operator, $boolean);
         } else {
             throw new UnsupportedFieldPatternInFilterConditionException();
         }
@@ -138,9 +146,6 @@ class SimpleFilterConditionApplier extends FilterConditionApplier
         string $boolean
     ): void {
         // For condition field like `field`.
-        [$field, $modelMetadata] = [$condition->getField(), $builder->getModel()->getModelMetadata()];
-        $modelMetadata->fieldExistOrFail($field);
-        $modelMetadata->validateFieldValueType($field, $value);
         $builder->where($condition->getField(), $operator, $value, $boolean);
     }
 
