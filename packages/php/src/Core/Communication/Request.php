@@ -105,7 +105,7 @@ class Request extends ActionMessage
             ? explode('.', $token)[1]
             : null;
         $tokenFromCacheAliveUntil = $token !== null
-            ? json_decode(base64_decode($tokenFromCachePayload), true)['alive_until']
+            ? json_decode(base64_decode($tokenFromCachePayload), true)['exp']
             : null;
 
         if (!$token || Carbon::now('UTC') >= Carbon::parse($tokenFromCacheAliveUntil)) {
