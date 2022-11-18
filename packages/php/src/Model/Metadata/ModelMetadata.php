@@ -203,7 +203,11 @@ class ModelMetadata
         );
         $field = reset($field);
 
-        $validator = Validator::make(['value' => $value], ['value' => $field->getType()->value]);
+        $fieldTypeValidationRules[] = $field->getType()->value;
+
+        $field->isNullable() && $fieldTypeValidationRules[] = 'nullable';
+
+        $validator = Validator::make(['value' => $value], ['value' => $fieldTypeValidationRules]);
 
         if ($validator->fails()) {
             throw UnsupportedFilterValueTypeException::make($fieldName, $field->getType()->value);
