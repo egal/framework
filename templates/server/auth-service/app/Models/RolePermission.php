@@ -23,9 +23,9 @@ class RolePermission extends Model
                     ->required(),
                 FieldMetadata::make('permission_id', VariableType::STRING)
                     ->required(),
-                FieldMetadata::make('created_at', VariableType::DATETIME)
+                FieldMetadata::make('created_at', VariableType::DATE)
                     ->hidden(),
-                FieldMetadata::make('updated_at', VariableType::DATETIME)
+                FieldMetadata::make('updated_at', VariableType::DATE)
                     ->hidden(),
             ])
             ->addActions([

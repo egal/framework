@@ -33,8 +33,8 @@ class Country extends Model
                 FieldMetadata::make('name', VariableType::STRING)
                     ->required()
                     ->addValidationRule('unique:countries,name'),
-                FieldMetadata::make('created_at', VariableType::DATETIME),
-                FieldMetadata::make('updated_at', VariableType::DATETIME),
+                FieldMetadata::make('created_at', VariableType::DATE),
+                FieldMetadata::make('updated_at', VariableType::DATE),
             ])
             ->addRelations([
                 RelationMetadata::make(

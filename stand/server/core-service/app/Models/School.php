@@ -34,8 +34,8 @@ class School extends Model
                     ->required()
                     ->addValidationRule('unique:schools,name'),
                 FieldMetadata::make('avatar', VariableType::STRING),
-                FieldMetadata::make('created_at', VariableType::DATETIME),
-                FieldMetadata::make('updated_at', VariableType::DATETIME),
+                FieldMetadata::make('created_at', VariableType::DATE),
+                FieldMetadata::make('updated_at', VariableType::DATE),
             ])
             ->addRelations([
                 RelationMetadata::make(

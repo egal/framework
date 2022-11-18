@@ -28,8 +28,8 @@ class AdditionalSpeakerLanguage extends Model
                 FieldMetadata::make('speaker_id', VariableType::UUID)
                     ->addValidationRule('exists:speakers,id')
                     ->required(),
-                FieldMetadata::make('created_at', VariableType::DATETIME),
-                FieldMetadata::make('updated_at', VariableType::DATETIME),
+                FieldMetadata::make('created_at', VariableType::DATE),
+                FieldMetadata::make('updated_at', VariableType::DATE),
             ])
             ->addActions([
                 ActionMetadataBlanks::getMetadata(),

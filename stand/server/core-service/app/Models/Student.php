@@ -40,8 +40,8 @@ class Student extends Model
                 FieldMetadata::make('school_id', VariableType::UUID)
                     ->addValidationRule('exists:schools,id')
                     ->required(),
-                FieldMetadata::make('created_at', VariableType::DATETIME),
-                FieldMetadata::make('updated_at', VariableType::DATETIME),
+                FieldMetadata::make('created_at', VariableType::DATE),
+                FieldMetadata::make('updated_at', VariableType::DATE),
             ])
             ->addRelations([
                 RelationMetadata::make(

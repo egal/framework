@@ -15,8 +15,8 @@ final class FieldsMetadataBlanks
     public static function timestamps(): array
     {
         return [
-            FieldMetadata::make('updated_at', VariableType::DATETIME)->nullable()->guarded(),
-            FieldMetadata::make('created_at', VariableType::DATETIME)->nullable()->guarded(),
+            FieldMetadata::make('updated_at', VariableType::DATE)->nullable()->guarded(),
+            FieldMetadata::make('created_at', VariableType::DATE)->nullable()->guarded(),
         ];
     }
 

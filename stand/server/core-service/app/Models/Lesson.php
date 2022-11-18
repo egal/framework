@@ -48,10 +48,10 @@ class Lesson extends Model
                     ->nullable(),
                 FieldMetadata::make('lesson_request_id', VariableType::INTEGER)
                     ->addValidationRule('exists:lesson_requests,id'),
-                FieldMetadata::make('starts_at', VariableType::DATETIME)
+                FieldMetadata::make('starts_at', VariableType::DATE)
                     ->date(),
-                FieldMetadata::make('created_at', VariableType::DATETIME),
-                FieldMetadata::make('updated_at', VariableType::DATETIME),
+                FieldMetadata::make('created_at', VariableType::DATE),
+                FieldMetadata::make('updated_at', VariableType::DATE),
             ])
             ->addRelations([
                 RelationMetadata::make(

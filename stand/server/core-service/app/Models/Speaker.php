@@ -48,8 +48,8 @@ class Speaker extends Model
                 FieldMetadata::make('country_id', VariableType::STRING)
                     ->addValidationRule('exists:countries,id')
                     ->required(),
-                FieldMetadata::make('created_at', VariableType::DATETIME),
-                FieldMetadata::make('updated_at', VariableType::DATETIME),
+                FieldMetadata::make('created_at', VariableType::DATE),
+                FieldMetadata::make('updated_at', VariableType::DATE),
             ])
             ->addRelations([
                 RelationMetadata::make(

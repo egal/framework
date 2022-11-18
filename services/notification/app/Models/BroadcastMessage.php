@@ -26,9 +26,9 @@ class BroadcastMessage extends Model
                     ->required(),
                 FieldMetadata::make('background_color', VariableType::STRING)
                     ->required(),
-                FieldMetadata::make('starts_at', VariableType::DATETIME)
+                FieldMetadata::make('starts_at', VariableType::DATE)
                     ->required(),
-                FieldMetadata::make('ends_at', VariableType::DATETIME)
+                FieldMetadata::make('ends_at', VariableType::DATE)
                     ->required(),
             ])
             ->addActions([

@@ -39,10 +39,10 @@ class Permission extends Model
                     ->addValidationRule('unique:roles,name'),
                 FieldMetadata::make('is_default', VariableType::BOOLEAN)
                     ->required(),
-                FieldMetadata::make('created_at', VariableType::DATETIME)
+                FieldMetadata::make('created_at', VariableType::DATE)
                     ->guarded()
                     ->hidden(),
-                FieldMetadata::make('updated_at', VariableType::DATETIME)
+                FieldMetadata::make('updated_at', VariableType::DATE)
                     ->guarded()
                     ->hidden(),
             ])

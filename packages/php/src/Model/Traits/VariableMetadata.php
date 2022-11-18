@@ -33,13 +33,7 @@ trait VariableMetadata
         $this->name = $name;
         $this->type = $type;
 
-        switch ($type) {
-            case VariableType::DATETIME:
-                break;
-            default:
-                $this->addValidationRule($type->value);
-                break;
-        }
+        $this->addValidationRule($type->value);
     }
 
     public static function make(string $name, VariableType $type): static

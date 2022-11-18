@@ -4,8 +4,6 @@ namespace App\Models;
 
 use App\Exceptions\PasswordHashException;
 use App\Policies\UserPolicy;
-use Egal\Auth\Tokens\UserMasterRefreshToken;
-use Egal\Auth\Tokens\UserMasterToken;
 use Egal\AuthServiceDependencies\Exceptions\LoginException;
 use Egal\AuthServiceDependencies\Models\User as BaseUser;
 use Egal\Core\Session\Session;
@@ -40,8 +38,8 @@ class User extends BaseUser
                     ->required()
                     ->hidden()
                     ->guarded(),
-                FieldMetadata::make('created_at', VariableType::DATETIME),
-                FieldMetadata::make('updated_at', VariableType::DATETIME),
+                FieldMetadata::make('created_at', VariableType::DATE),
+                FieldMetadata::make('updated_at', VariableType::DATE),
             ])
             ->addRelations([
                 RelationMetadata::make(

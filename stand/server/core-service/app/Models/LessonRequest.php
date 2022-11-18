@@ -33,9 +33,9 @@ class LessonRequest extends Model
                     ->required(),
                 FieldMetadata::make('stage', VariableType::STRING)
                     ->required(),
-                FieldMetadata::make('supposedly_lesson_starts_at', VariableType::DATETIME),
-                FieldMetadata::make('created_at', VariableType::DATETIME),
-                FieldMetadata::make('updated_at', VariableType::DATETIME),
+                FieldMetadata::make('supposedly_lesson_starts_at', VariableType::DATE),
+                FieldMetadata::make('created_at', VariableType::DATE),
+                FieldMetadata::make('updated_at', VariableType::DATE),
             ])
             ->addRelations([
                 RelationMetadata::make(

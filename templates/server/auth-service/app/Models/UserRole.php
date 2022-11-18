@@ -25,9 +25,9 @@ class UserRole extends Model
                 FieldMetadata::make('role_id', VariableType::STRING)
                     ->required()
                     ->addValidationRule('exists:roles'),
-                FieldMetadata::make('created_at', VariableType::DATETIME)
+                FieldMetadata::make('created_at', VariableType::DATE)
                     ->hidden(),
-                FieldMetadata::make('updated_at', VariableType::DATETIME)
+                FieldMetadata::make('updated_at', VariableType::DATE)
                     ->hidden(),
             ])
             ->addActions([

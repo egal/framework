@@ -33,12 +33,12 @@ class WorkingTime extends Model
                 FieldMetadata::make('speaker_id', VariableType::UUID)
                     ->addValidationRule('exists:speakers,id')
                     ->required(),
-                FieldMetadata::make('starts_at', VariableType::DATETIME)
+                FieldMetadata::make('starts_at', VariableType::DATE)
                     ->date(),
-                FieldMetadata::make('ends_at', VariableType::DATETIME)
+                FieldMetadata::make('ends_at', VariableType::DATE)
                     ->date(),
-                FieldMetadata::make('created_at', VariableType::DATETIME),
-                FieldMetadata::make('updated_at', VariableType::DATETIME),
+                FieldMetadata::make('created_at', VariableType::DATE),
+                FieldMetadata::make('updated_at', VariableType::DATE),
             ])
             ->addRelations([
                 RelationMetadata::make(

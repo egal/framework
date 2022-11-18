@@ -6,14 +6,11 @@ namespace App\Models;
 
 use Egal\Auth\Policies\AllowAllPolicy;
 use Egal\Model\Enums\VariableType;
-use Egal\Model\Metadata\ActionMetadata;
 use Egal\Model\Metadata\ActionMetadataBlanks;
-use Egal\Model\Metadata\ActionParameterMetadata;
 use Egal\Model\Metadata\FieldMetadata;
 use Egal\Model\Metadata\ModelMetadata;
 use Egal\Model\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Staudenmeir\EloquentHasManyDeep\HasRelationships;
 
@@ -38,9 +35,9 @@ class Employee extends Model
                     ->required(),
                 FieldMetadata::make('weight', VariableType::NUMERIC)
                     ->required(),
-                FieldMetadata::make('created_at', VariableType::DATETIME)
+                FieldMetadata::make('created_at', VariableType::DATE)
                     ->guarded(),
-                FieldMetadata::make('updated_at', VariableType::DATETIME)
+                FieldMetadata::make('updated_at', VariableType::DATE)
                     ->guarded(),
             ])
             ->addFakeFields([
