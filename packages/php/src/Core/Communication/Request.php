@@ -5,12 +5,17 @@ declare(strict_types=1);
 namespace Egal\Core\Communication;
 
 use Carbon\Carbon;
+use Egal\Auth\Tokens\Token;
+use Egal\AuthServiceDependencies\Exceptions\ServiceNotFoundAuthException;
+use Egal\AuthServiceDependencies\Models\Service;
 use Egal\Core\ActionCaller\ActionCaller;
 use Egal\Core\Bus\Bus;
+use Egal\Core\Exceptions\AuthenticationFailedException;
 use Egal\Core\Exceptions\RequestException;
 use Egal\Core\Messages\ActionMessage;
 use Egal\Core\Messages\Message;
 use Egal\Core\Session\Session;
+use Firebase\JWT\ExpiredException;
 use Illuminate\Support\Facades\Cache;
 
 class Request extends ActionMessage
@@ -101,19 +106,27 @@ class Request extends ActionMessage
     {
         $token = $this->getServiceServiceTokenFromCache();
 
-        $tokenFromCachePayload = $token !== null
-            ? explode('.', $token)[1]
-            : null;
-        $tokenFromCacheAliveUntil = $token !== null
-            ? json_decode(base64_decode($tokenFromCachePayload), true)['alive_until']
-            : null;
-
-        if (!$token || Carbon::now('UTC') >= Carbon::parse($tokenFromCacheAliveUntil)) {
+        if ($token === null) {
             $token = config('app.service_name') === $this->authServiceName
                 ? $this->getItselfServiceServiceTokenFromAuth()
                 : $this->getServiceServiceTokenFromAuthService();
 
-            $this->putServiceServiceTokenToCache($token);
+            return $token;
+        }
+
+        try {
+            /** @var Service $recipientService */
+            $recipientService = Service::find($this->serviceName);
+
+            if (!$recipientService) throw new ServiceNotFoundAuthException();
+
+            Token::decode($token, $recipientService->getKey());
+        } catch (\Exception $exception) {
+            if (!($exception instanceof ExpiredException)) {
+                throw config('app.debug')
+                    ? $exception
+                    : new AuthenticationFailedException();
+            }
         }
 
         return $token;
