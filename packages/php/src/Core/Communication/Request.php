@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Egal\Core\Communication;
 
-use Carbon\Carbon;
 use Egal\Auth\Tokens\Token;
 use Egal\AuthServiceDependencies\Exceptions\ServiceNotFoundAuthException;
 use Egal\AuthServiceDependencies\Models\Service;
