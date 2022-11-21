@@ -2,13 +2,13 @@
 
 namespace App\Models;
 
+use App\Traits\HasUser;
 use Egal\Auth\Policies\AllowAllPolicy;
 use Egal\Model\Enums\VariableType;
 use Egal\Model\Enums\RelationType;
-use Egal\Model\Metadata\ActionMetadata;
 use Egal\Model\Metadata\ActionMetadataBlanks;
-use Egal\Model\Metadata\ActionParameterMetadata;
 use Egal\Model\Metadata\FieldMetadata;
+use Egal\Model\Metadata\FieldsMetadataBlanks;
 use Egal\Model\Metadata\ModelMetadata;
 use Egal\Model\Metadata\RelationMetadata;
 use Egal\Model\Model;
@@ -20,16 +20,7 @@ class Speaker extends Model
 {
 
     use HasFactory;
-
-    public function country(): BelongsTo
-    {
-        return $this->belongsTo(Country::class);
-    }
-
-    public function languages(): HasManyThrough
-    {
-        return $this->hasManyThrough(Language::class, AdditionalSpeakerLanguage::class);
-    }
+    use HasUser;
 
     public static function constructMetadata(): ModelMetadata
     {
@@ -37,8 +28,7 @@ class Speaker extends Model
             ->policy(AllowAllPolicy::class)
             ->addFields([
                 FieldMetadata::make('user_id', VariableType::UUID)
-                    ->required()
-                    ->hidden(),
+                    ->required(),
                 FieldMetadata::make('name', VariableType::STRING)
                     ->required(),
                 FieldMetadata::make('surname', VariableType::STRING)
@@ -48,9 +38,8 @@ class Speaker extends Model
                 FieldMetadata::make('country_id', VariableType::STRING)
                     ->addValidationRule('exists:countries,id')
                     ->required(),
-                FieldMetadata::make('created_at', VariableType::DATETIME),
-                FieldMetadata::make('updated_at', VariableType::DATETIME),
             ])
+            ->addFields(FieldsMetadataBlanks::timestamps())
             ->addRelations([
                 RelationMetadata::make(
                     'country',
@@ -71,6 +60,16 @@ class Speaker extends Model
                 ActionMetadataBlanks::update(VariableType::STRING),
                 ActionMetadataBlanks::delete(VariableType::STRING),
             ]);
+    }
+
+    public function country(): BelongsTo
+    {
+        return $this->belongsTo(Country::class);
+    }
+
+    public function languages(): HasManyThrough
+    {
+        return $this->hasManyThrough(Language::class, AdditionalSpeakerLanguage::class);
     }
 
 }

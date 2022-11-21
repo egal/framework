@@ -7,6 +7,7 @@
         <exclude name="PSR1.Classes.ClassDeclaration.MissingNamespace"/>
     </rule>
     <rule ref="PSR2">
+        <exclude name="PSR2.ControlStructures.ControlStructureSpacing.SpacingAfterOpenBrace"/>
         <exclude name="PSR2.Methods.FunctionCallSignature.SpaceBeforeCloseBracket"/>
         <exclude name="PSR2.Classes.ClassDeclaration.CloseBraceAfterBody"/>
         <exclude name="PSR2.Methods.FunctionClosingBrace.SpacingBeforeClose"/>
@@ -14,6 +15,8 @@
     </rule>
 
     <rule ref="PSR12">
+        <exclude name="PSR12.Files.DeclareStatement.SpaceFoundAfterDirectiveValue"/>
+        <exclude name="PSR12.Traits.UseDeclaration.BlankLineAfterLastUse"/>
         <exclude name="PSR12.Traits.UseDeclaration.UseAfterBrace"/>
         <exclude name="PSR12.Classes.OpeningBraceSpace.Found"/>
         <exclude name="PSR12.Files.FileHeader.SpacingAfterBlock"/>

@@ -9,6 +9,7 @@ use Egal\Model\Metadata\ActionMetadata;
 use Egal\Model\Metadata\ActionMetadataBlanks;
 use Egal\Model\Metadata\ActionParameterMetadata;
 use Egal\Model\Metadata\FieldMetadata;
+use Egal\Model\Metadata\FieldsMetadataBlanks;
 use Egal\Model\Metadata\ModelMetadata;
 use Egal\Model\Metadata\RelationMetadata;
 use Egal\Model\Model;
@@ -34,9 +35,8 @@ class LessonRequest extends Model
                 FieldMetadata::make('stage', VariableType::STRING)
                     ->required(),
                 FieldMetadata::make('supposedly_lesson_starts_at', VariableType::DATETIME),
-                FieldMetadata::make('created_at', VariableType::DATETIME),
-                FieldMetadata::make('updated_at', VariableType::DATETIME),
             ])
+            ->addFields(FieldsMetadataBlanks::timestamps())
             ->addRelations([
                 RelationMetadata::make(
                     'school',

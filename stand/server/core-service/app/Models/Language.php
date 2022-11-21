@@ -9,6 +9,7 @@ use Egal\Model\Metadata\ActionMetadata;
 use Egal\Model\Metadata\ActionMetadataBlanks;
 use Egal\Model\Metadata\ActionParameterMetadata;
 use Egal\Model\Metadata\FieldMetadata;
+use Egal\Model\Metadata\FieldsMetadataBlanks;
 use Egal\Model\Metadata\ModelMetadata;
 use Egal\Model\Metadata\RelationMetadata;
 use Egal\Model\Model;
@@ -33,9 +34,8 @@ class Language extends Model
                 FieldMetadata::make('name', VariableType::STRING)
                     ->required()
                     ->addValidationRule('unique:languages,name'),
-                FieldMetadata::make('created_at', VariableType::DATETIME),
-                FieldMetadata::make('updated_at', VariableType::DATETIME),
             ])
+            ->addFields(FieldsMetadataBlanks::timestamps())
             ->addRelations([
                 RelationMetadata::make(
                     'speakers',

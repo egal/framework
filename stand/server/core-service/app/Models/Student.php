@@ -2,13 +2,13 @@
 
 namespace App\Models;
 
+use App\Traits\HasUser;
 use Egal\Auth\Policies\AllowAllPolicy;
 use Egal\Model\Enums\VariableType;
 use Egal\Model\Enums\RelationType;
-use Egal\Model\Metadata\ActionMetadata;
 use Egal\Model\Metadata\ActionMetadataBlanks;
-use Egal\Model\Metadata\ActionParameterMetadata;
 use Egal\Model\Metadata\FieldMetadata;
+use Egal\Model\Metadata\FieldsMetadataBlanks;
 use Egal\Model\Metadata\ModelMetadata;
 use Egal\Model\Metadata\RelationMetadata;
 use Egal\Model\Model;
@@ -19,11 +19,7 @@ class Student extends Model
 {
 
     use HasFactory;
-
-    public function school(): BelongsTo
-    {
-        return $this->belongsTo(School::class);
-    }
+    use HasUser;
 
     public static function constructMetadata(): ModelMetadata
     {
@@ -31,8 +27,7 @@ class Student extends Model
             ->policy(AllowAllPolicy::class)
             ->addFields([
                 FieldMetadata::make('user_id', VariableType::UUID)
-                    ->required()
-                    ->hidden(),
+                    ->required(),
                 FieldMetadata::make('name', VariableType::STRING)
                     ->required(),
                 FieldMetadata::make('surname', VariableType::STRING)
@@ -40,9 +35,8 @@ class Student extends Model
                 FieldMetadata::make('school_id', VariableType::UUID)
                     ->addValidationRule('exists:schools,id')
                     ->required(),
-                FieldMetadata::make('created_at', VariableType::DATETIME),
-                FieldMetadata::make('updated_at', VariableType::DATETIME),
             ])
+            ->addFields(FieldsMetadataBlanks::timestamps())
             ->addRelations([
                 RelationMetadata::make(
                     'school',
@@ -58,6 +52,11 @@ class Student extends Model
                 ActionMetadataBlanks::update(VariableType::STRING),
                 ActionMetadataBlanks::delete(VariableType::STRING),
             ]);
+    }
+
+    public function school(): BelongsTo
+    {
+        return $this->belongsTo(School::class);
     }
 
 }
