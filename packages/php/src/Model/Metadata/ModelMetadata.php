@@ -11,7 +11,11 @@ use Egal\Model\Exceptions\RelationNotFoundException;
 use Egal\Model\Exceptions\UnsupportedFilterValueTypeException;
 use Exception;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Concerns\ValidatesAttributes;
+use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Enum;
+use Illuminate\Validation\Rules\In;
 
 class ModelMetadata
 {
@@ -157,9 +161,9 @@ class ModelMetadata
     public function fieldExist(string $fieldName): bool
     {
         return array_filter(
-            [...$this->fields, ...$this->fakeFields, $this->getKey()],
-            fn(FieldMetadata $field) => $field->getName() === $fieldName
-        ) !== [];
+                [...$this->fields, ...$this->fakeFields, $this->getKey()],
+                fn(FieldMetadata $field) => $field->getName() === $fieldName
+            ) !== [];
     }
 
     /**
@@ -175,9 +179,9 @@ class ModelMetadata
     public function relationExist(string $relationName): bool
     {
         return array_filter(
-            $this->getRelations(),
-            fn(RelationMetadata $relation) => $relation->getName() === $relationName,
-        ) !== [];
+                $this->getRelations(),
+                fn(RelationMetadata $relation) => $relation->getName() === $relationName,
+            ) !== [];
     }
 
     /**
@@ -190,24 +194,6 @@ class ModelMetadata
         }
 
         return true;
-    }
-
-    /**
-     * @throws UnsupportedFilterValueTypeException
-     */
-    public function validateFieldValueType(string $fieldName, mixed $value): void
-    {
-        $field = array_filter(
-            [...$this->fields, ...$this->fakeFields, $this->getKey()],
-            fn(FieldMetadata $field) => $field->getName() === $fieldName
-        );
-        $field = reset($field);
-
-        $validator = Validator::make(['value' => $value], ['value' => $field->getValidationRules()]);
-
-        if ($validator->fails()) {
-            throw UnsupportedFilterValueTypeException::make($fieldName, $field->getType()->value);
-        }
     }
 
     public function getModelShortName(): string
