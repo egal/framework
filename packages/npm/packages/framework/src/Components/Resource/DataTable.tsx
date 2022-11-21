@@ -87,7 +87,9 @@ export function DataTable<DataItemType = any>({
     return (
       <Box fill justify={'center'} align={'center'}>
         <Clear size={'large'} />
-        <Heading level={3}>No values!</Heading>
+        <Heading level={3}>
+          {t('no_values', { defaultValue: 'No values!' })}
+        </Heading>
       </Box>
     );
   }
