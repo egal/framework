@@ -486,12 +486,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/egal/framework-php-package.git",
-                "reference": "8ea1fe2e98d1f87b81d9d4fa778fe2120bbaffaf"
+                "reference": "d8c156c0d4c53c16f4ef915c9d235239d76564f3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/egal/framework-php-package/zipball/8ea1fe2e98d1f87b81d9d4fa778fe2120bbaffaf",
-                "reference": "8ea1fe2e98d1f87b81d9d4fa778fe2120bbaffaf",
+                "url": "https://api.github.com/repos/egal/framework-php-package/zipball/d8c156c0d4c53c16f4ef915c9d235239d76564f3",
+                "reference": "d8c156c0d4c53c16f4ef915c9d235239d76564f3",
                 "shasum": ""
             },
             "require": {
@@ -530,9 +530,9 @@
             "description": "The Egal Framework.",
             "support": {
                 "issues": "https://github.com/egal/framework-php-package/issues",
-                "source": "https://github.com/egal/framework-php-package/tree/v3.0.0-beta.41"
+                "source": "https://github.com/egal/framework-php-package/tree/v3.0.0-beta.47"
             },
-            "time": "2022-11-14T06:22:31+00:00"
+            "time": "2022-11-17T08:23:37+00:00"
         },
         {
             "name": "egulias/email-validator",

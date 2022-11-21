@@ -1,4 +1,6 @@
 version: '3.7'
+x-user: &user
+  user: "${UID}:${GID}"
 services:
   postgres:
     ports:
@@ -11,21 +13,22 @@ services:
       - published: 5672
         target: 5672
   web-service:
+    <<: *user
     ports:
       - published: 80
         target: 8080
   auth-service:
+    <<: *user
     build:
       args:
         DEBUG: "${DEBUG:-false}"
-    user: ${UID}:${GID}
   core-service:
+    <<: *user
     build:
       args:
         DEBUG: "${DEBUG:-false}"
-    user: ${UID}:${GID}
   notification-service:
+    <<: *user
     build:
       args:
         DEBUG: "${DEBUG:-false}"
-    user: ${UID}:${GID}

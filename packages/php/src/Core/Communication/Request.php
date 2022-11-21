@@ -101,13 +101,16 @@ class Request extends ActionMessage
     {
         $token = $this->getServiceServiceTokenFromCache();
 
-        $tokenFromCachePayload = $token !== null
-            ? explode('.', $token)[1]
-            : null;
+        $needNewToken = $token === null;
 
-        $payload = JWT::jsonDecode(JWT::urlsafeB64Decode($tokenFromCachePayload));
+        // Checking token is expired or not.
+        if (!$needNewToken) {
+            [, $payload_b64] = explode('.', $token);
+            $payload = JWT::jsonDecode(JWT::urlsafeB64Decode($payload_b64));
+            $needNewToken = isset($payload->exp) && time() >= $payload->exp;
+        }
 
-        if (isset($payload->exp) && time() >= $payload->exp) {
+        if ($needNewToken) {
             $token = config('app.service_name') === $this->authServiceName
                 ? $this->getItselfServiceServiceTokenFromAuth()
                 : $this->getServiceServiceTokenFromAuthService();

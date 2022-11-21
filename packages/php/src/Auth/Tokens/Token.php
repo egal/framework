@@ -88,11 +88,6 @@ abstract class Token
         return static::fromArray(static::decode($encodedJWT, $key));
     }
 
-    public function isAlive(): bool
-    {
-        throw new Exception('REMOVE!');
-    }
-
     public function generateJWT(): string
     {
         return JWT::encode($this->toArray(), $this->getSigningKey());
