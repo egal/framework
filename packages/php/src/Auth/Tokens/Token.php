@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Egal\Auth\Tokens;
 
 use Egal\Auth\Exceptions\InitializeServiceMasterTokenException;
-use Exception;
 use Firebase\JWT\JWT;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
