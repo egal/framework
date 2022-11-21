@@ -1,4 +1,5 @@
 PHP_SERVICE_RUN := docker-compose run --rm --user "$(shell id -u):$(shell id -g)" php
+
 composer/install:
 	${PHP_SERVICE_RUN} \
 		composer install \
