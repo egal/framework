@@ -81,8 +81,10 @@ class ModelMetadataManager
 
         if (class_exists($model)) {
             $modelShortName = get_class_short_name($model);
-
-            if (!isset($this->modelsMetadata[$modelShortName]) || $this->modelsMetadata[$modelShortName]->isDynamic()) {
+            if (
+                !isset($this->modelsMetadata[$modelShortName])
+                || $this->modelsMetadata[$modelShortName]->isDynamic()
+            ) {
                 $this->addModelMetadata($model::constructMetadata());
             }
 
