@@ -24,7 +24,9 @@ class Product extends Model
                 FieldM::make('category_id', VariableT::INTEGER),
             ])
             ->addFields(FieldsMetadataBlanks::timestamps())
-            ->addRelation(RelationM::make('category', Category::class, RelationT::BELONGS_TO));
+            ->addRelations([
+                RelationM::make('category', Category::class, RelationT::BELONGS_TO),
+            ]);
     }
 
     public function category(): BelongsTo

@@ -26,7 +26,9 @@ class Category extends Model
                 FieldM::make('sale', VariableT::INTEGER),
             ])
             ->addFields(FieldsMetadataBlanks::timestamps())
-            ->addRelation(RelationM::make('products', Product::class, RelationT::HAS_MANY));
+            ->addRelations([
+                RelationM::make('products', Product::class, RelationT::HAS_MANY),
+            ]);
     }
 
     public function products(): HasMany
