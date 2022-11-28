@@ -33,26 +33,6 @@ class FieldMetadata
         ];
     }
 
-    public function hidden(): self
-    {
-        $this->hidden = true;
-        return $this;
-    }
-
-    public function guarded(): self
-    {
-        $this->guarded = true;
-        return $this;
-    }
-
-    public function required(): self
-    {
-        $this->required = true;
-        $this->requiredVariableMetadata();
-
-        return $this;
-    }
-
     public function isRequired(): bool
     {
         return $this->required;

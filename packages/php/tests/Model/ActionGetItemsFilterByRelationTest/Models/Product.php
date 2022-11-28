@@ -4,10 +4,8 @@ namespace Egal\Tests\Model\ActionGetItemsFilterByRelationTest\Models;
 
 use Egal\Model\Enums\RelationType as RelationT;
 use Egal\Model\Enums\VariableType as VariableT;
-use Egal\Model\Metadata\FieldMetadata as FieldM;
-use Egal\Model\Metadata\FieldsMetadataBlanks;
-use Egal\Model\Metadata\ModelMetadata as ModelM;
-use Egal\Model\Metadata\RelationMetadata as RelationM;
+use Egal\Model\Metadata\Constructors\Metadata as m;
+use Egal\Model\Metadata\ModelMetadata;
 use Egal\Model\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -16,12 +14,25 @@ class Product extends Model
 
     protected $table = 'products';
 
-    public static function constructMetadata(): ModelM
+    public static function constructMetadata(): ModelMetadata
     {
+        return m::model(static::class)
+            ->dynamic()
+            ->policy('')
+            ->timestamps(false)
+            ->fields(
+                m::id(),
+                m::string('name'),
+                m::integer('category_id'),
+                ...m::timestamps(),
+            )
+            ->relations(
+
+            )
+            ->actions(m::action('getItem'));
+
         return ModelM::make(static::class, FieldM::make('id', VariableT::INTEGER))
             ->addFields([
-                FieldM::make('name', VariableT::STRING),
-                FieldM::make('category_id', VariableT::INTEGER),
             ])
             ->addFields(FieldsMetadataBlanks::timestamps())
             ->addRelations([

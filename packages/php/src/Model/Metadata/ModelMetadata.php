@@ -22,6 +22,8 @@ class ModelMetadata
 
     protected readonly ?FieldMetadata $key;
 
+    protected bool $timestamps = true;
+
     protected bool $dynamic = false;
 
     /**
@@ -62,11 +64,6 @@ class ModelMetadata
         $key?->guarded();
     }
 
-    public static function make(string $modelClass, FieldMetadata $key): self
-    {
-        return new static($modelClass, $key);
-    }
-
     public function toArray(bool $loadRelatedMetadata = false): array
     {
         $modelMetadata = [
@@ -83,73 +80,6 @@ class ModelMetadata
         $modelMetadata['actions'] = array_map(fn(ActionMetadata $action) => $action->toArray(), $this->actions);
 
         return $modelMetadata;
-    }
-
-    /**
-     * @param FieldMetadata[] $fields
-     */
-    public function addFields(array $fields): self
-    {
-        $this->fields = array_merge($this->fields, $fields);
-
-        return $this;
-    }
-
-    /**
-     * @param FieldMetadata[] $fakeFields
-     */
-    public function addFakeFields(array $fakeFields): self
-    {
-        $this->fakeFields = array_merge($this->fakeFields, $fakeFields);
-
-        return $this;
-    }
-
-    /**
-     * @param RelationMetadata[] $relations
-     */
-    public function addRelations(array $relations): self
-    {
-        $this->relations = array_merge($this->relations, $relations);
-
-        return $this;
-    }
-
-    /**
-     * @param ActionMetadata[] $actions
-     */
-    public function addActions(array $actions): self
-    {
-        $this->actions = array_merge($this->actions, $actions);
-
-        return $this;
-    }
-
-    /**
-     * @param string[] $casts
-     */
-    public function addCasts(array $casts): self
-    {
-        $this->casts = array_merge($this->casts, $casts);
-
-        return $this;
-    }
-
-    /**
-     * @param class-string $policy
-     */
-    public function policy(string $policy): self
-    {
-        $this->policy = $policy;
-
-        return $this;
-    }
-
-    public function dynamic(): self
-    {
-        $this->dynamic = true;
-
-        return $this;
     }
 
     public function fieldExist(string $fieldName): bool
