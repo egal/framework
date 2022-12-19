@@ -175,7 +175,7 @@ export function useAuth(config: AuthConfig = authConfig): Auth {
       let stateToken: typeof token;
 
       token = stateToken = servicesTokens[serviceName];
-      if (token === undefined) token = cookieToken = getFromCookie();
+      if (token === undefined || expired(token)) token = cookieToken = getFromCookie();
       if (token === undefined || expired(token)) token = await loginToService();
       if (cookieToken === undefined || expired(cookieToken))
         cookieSetServiceToken(serviceName, token.raw);
