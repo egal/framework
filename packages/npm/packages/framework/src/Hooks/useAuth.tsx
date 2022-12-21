@@ -8,13 +8,21 @@ import {
   useCookie,
 } from './useCookie';
 import { useAction } from './Actions';
+import { deepMerge } from 'grommet/utils';
+import { RecursivePartial } from '../Utils';
 
 export type AuthConfig = {
   service: string;
+  jwt: {
+    leeway: number | (() => number);
+  };
 };
 
 export const authConfig: AuthConfig = {
   service: 'auth',
+  jwt: {
+    leeway: -10,
+  },
 };
 
 type Token<SubType> = {
@@ -42,7 +50,9 @@ export type Auth = {
   logout: () => Promise<void>;
 };
 
-export function useAuth(config: AuthConfig = authConfig): Auth {
+export function useAuth(config: RecursivePartial<AuthConfig> = {}): Auth {
+  const mConfig: AuthConfig = deepMerge(config, authConfig);
+
   const [logged, setLogged] = useState<boolean | undefined>(undefined);
   const [masterToken, setMasterToken] = useState<MasterToken>();
   const [servicesTokens, setServicesTokens] = useState<ServicesTokens>({});
@@ -50,7 +60,7 @@ export function useAuth(config: AuthConfig = authConfig): Auth {
   // TODO: Refactoring.
   type Res = { data: string };
   const actionLoginToService = useAction<Res, any, any>(
-    { service: config.service, name: 'User' },
+    { service: mConfig.service, name: 'User' },
     'loginToService'
   );
 
@@ -139,8 +149,12 @@ export function useAuth(config: AuthConfig = authConfig): Auth {
       };
 
       const expired = (token: ServiceToken<any>): boolean => {
+        const leeway =
+          typeof mConfig.jwt.leeway === 'number'
+            ? mConfig.jwt.leeway
+            : mConfig.jwt.leeway();
         const now = Date.now() / 1000;
-        return now > token.exp - 10;
+        return now > token.exp + leeway;
       };
 
       const loginToService = async (): Promise<ServiceToken<any>> => {
@@ -171,16 +185,14 @@ export function useAuth(config: AuthConfig = authConfig): Auth {
       };
 
       let token: ServiceToken<any> | undefined;
-      let cookieToken: typeof token;
-      let stateToken: typeof token;
 
-      token = stateToken = servicesTokens[serviceName];
-      if (token === undefined || expired(token)) token = cookieToken = getFromCookie();
-      if (token === undefined || expired(token)) token = await loginToService();
-      if (cookieToken === undefined || expired(cookieToken))
+      token = servicesTokens[serviceName] ?? getFromCookie();
+
+      if (token === undefined || expired(token)) {
+        token = await loginToService();
         cookieSetServiceToken(serviceName, token.raw);
-      if (stateToken === undefined || expired(stateToken))
         setServicesTokens({ ...servicesTokens, [serviceName]: token });
+      }
 
       return token;
     },
