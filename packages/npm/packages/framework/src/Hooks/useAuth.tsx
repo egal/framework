@@ -51,7 +51,7 @@ export type Auth = {
 };
 
 export function useAuth(config: RecursivePartial<AuthConfig> = {}): Auth {
-  const mConfig: AuthConfig = deepMerge(config, authConfig);
+  const mConfig: AuthConfig = deepMerge(authConfig, config);
 
   const [logged, setLogged] = useState<boolean | undefined>(undefined);
   const [masterToken, setMasterToken] = useState<MasterToken>();
