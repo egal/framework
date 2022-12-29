@@ -8,7 +8,7 @@ export class GlobalVariables {
 
 export const decipherJWT = function (token: string): any {
     if (!token) {
-        return
+        return;
     }
 
     const base64Url = token.split('.')[1];
