@@ -1,8 +1,0 @@
-__SERVICE_NAME__:pull-service-image:
-  extends: .template
-  stage: build
-  needs:
-    - prepare
-  variables:
-    SERVICE_NAME: __SERVICE_NAME__
-  <<: *docker-compose-pull-service-image-script

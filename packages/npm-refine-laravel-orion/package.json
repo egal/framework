@@ -1,0 +1,45 @@
+{
+  "name": "@egal/refine-laravel-orion",
+  "publishConfig": {
+    "access": "public"
+  },
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/esm/index.js",
+  "types": "./dist/esm/index.d.ts",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "engines": {
+    "node": ">=10"
+  },
+  "nodemonConfig": {
+    "ext": "ts,tsx",
+    "ignore": [
+      "**/dist/**"
+    ]
+  },
+  "scripts": {
+    "watch": "nodemon --exec 'npm run build'",
+    "build": "npm run build:esm && npm run build:cjs",
+    "build:esm": "tsc",
+    "build:cjs": "tsc --module commonjs --outDir dist/cjs"
+  },
+  "prettier": {
+    "semi": true,
+    "singleQuote": true,
+    "trailingComma": "es5"
+  },
+  "devDependencies": {
+    "@pankod/refine-core": "^3.86.0",
+    "nodemon": "^2.0.20",
+    "typescript": "^4.9.4"
+  },
+  "dependencies": {
+    "axios": "^0.26.1",
+    "query-string": "^7.1.1"
+  },
+  "peerDependencies": {
+    "@pankod/refine-core": "^3.23.2"
+  }
+}

@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+
+  keycloak:
+    command: start-dev
+
+  client:
+#    user: ${UID?:err}:${GID?:err}
+    build:
+      target: develop
+    volumes:
+      - ./client/web:/app
+      - ../../packages:/packages
+    ports:
+      - target: 3000
+        published: 3000
+
+  inventory-server:
+    user: ${UID?:err}:${GID?:err}
+    volumes:
+      - ./server/inventory:/var/www/html
+
+  inventory-scheduler:
+    user: ${UID?:err}:${GID?:err}
+    volumes:
+      - ./server/inventory:/var/www/html
