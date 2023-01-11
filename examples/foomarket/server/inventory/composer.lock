@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e029c06f1c97493f7831037763a64dfa",
+    "content-hash": "09c824a4f9dc9f9139399247fbeefe94",
     "packages": [
         {
             "name": "brick/math",
@@ -8392,6 +8392,62 @@
                 }
             ],
             "time": "2020-09-28T06:39:44+00:00"
+        },
+        {
+            "name": "sethphat/eloquent-docs",
+            "version": "1.1.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/sethsandaru/eloquent-docs.git",
+                "reference": "607ff44263e4e3734b89af19cfcecde636d0d9eb"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/sethsandaru/eloquent-docs/zipball/607ff44263e4e3734b89af19cfcecde636d0d9eb",
+                "reference": "607ff44263e4e3734b89af19cfcecde636d0d9eb",
+                "shasum": ""
+            },
+            "require": {
+                "laravel/framework": "^9|^8",
+                "php": "^8"
+            },
+            "require-dev": {
+                "doctrine/dbal": "^3.4",
+                "fakerphp/faker": "^1.20",
+                "mockery/mockery": "^1.5",
+                "orchestra/testbench": "^7.6",
+                "phpunit/php-code-coverage": "^9.2",
+                "phpunit/phpunit": "^9.5"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "SethPhat\\EloquentDocs\\EloquentDocsServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "SethPhat\\EloquentDocs\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Seth Phat",
+                    "email": "phattranminh96@gmail.com"
+                }
+            ],
+            "description": "Generate PHPDoc scope for your Eloquent models",
+            "support": {
+                "issues": "https://github.com/sethsandaru/eloquent-docs/issues",
+                "source": "https://github.com/sethsandaru/eloquent-docs/tree/v1.1.2"
+            },
+            "time": "2023-01-02T09:14:19+00:00"
         },
         {
             "name": "spatie/backtrace",
