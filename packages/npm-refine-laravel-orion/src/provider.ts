@@ -2,7 +2,7 @@ import { AxiosInstance } from 'axios';
 import { stringify } from 'query-string';
 import { DataProvider } from '@pankod/refine-core';
 import { axiosInstance, generateSort, generateFilter } from './utils';
-import { SearchBody } from './types';
+import { SearchBody, SearchQuery } from './types';
 
 export const dataProvider = (
   apiUrl: string,
@@ -17,22 +17,22 @@ export const dataProvider = (
     pagination,
     filters,
     sort,
+    metaData,
   }) => {
     const url = `${apiUrl}/${resource}/search`;
 
     const { current = 1, pageSize = 10 } = pagination ?? {};
 
-    const query: {
-      limit?: number;
-      page?: number;
-    } = hasPagination
-      ? {
-          page: current,
-          limit: pageSize,
-        }
-      : {};
+    const query: SearchQuery = {};
+
+    if (hasPagination) {
+      query.page = current;
+      query.limit = pageSize;
+    }
 
     const body: SearchBody = {};
+
+    body.includes = metaData?.includes ?? [];
 
     const { data } = await httpClient.post(`${url}?${stringify(query)}`, body);
 

@@ -38,6 +38,11 @@ export type Include = {
 
 export type Includes = Include[];
 
+export type SearchQuery = {
+  limit?: number;
+  page?: number;
+};
+
 export type SearchBody = {
   scopes?: Scopes;
   filters?: Filters;
