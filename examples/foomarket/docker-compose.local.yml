@@ -17,6 +17,8 @@ services:
         published: 3000
 
   inventory-server:
+    build:
+      target: server-develop
     user: ${UID?:err}:${GID?:err}
     volumes:
       - ./server/inventory:/var/www/html

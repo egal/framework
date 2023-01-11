@@ -117,6 +117,7 @@ services:
 
   inventory-server:
     environment:
+      APP_URL: server.${HOST?:err}
       <<: *inventory-environment
       VIRTUAL_PORT: 8000
       VIRTUAL_HOST: server.${HOST?:err}
