@@ -13,10 +13,12 @@ import { Login } from "./pages/login";
 import { useKeycloak } from "@react-keycloak/web";
 import { dataProvider } from "@egal/refine-laravel-orion";
 import { authProvider } from "@egal/refine-keycloak";
-import { API_URL } from "./constants";
+import { API_URL, INVENTORY_DATA_PROVIDER } from "./constants";
 import { axios } from "./exios";
 import { ProductList } from "./pages/product/list";
 import { ProductCreate } from "./pages/product/create";
+import { MovementList } from "./pages/movement/list";
+import { MovementCreate } from "./pages/movement/create";
 
 function App() {
   const { keycloak, initialized } = useKeycloak();
@@ -31,7 +33,10 @@ function App() {
       LoginPage={Login}
       dataProvider={{
         default: dataProvider(API_URL, axios),
-        inventory: dataProvider(`${API_URL}/inventory/api`, axios),
+        [INVENTORY_DATA_PROVIDER]: dataProvider(
+          `${API_URL}/inventory/api`,
+          axios
+        ),
       }}
       notificationProvider={notificationProvider}
       Layout={Layout}
@@ -44,7 +49,15 @@ function App() {
           list: ProductList,
           create: ProductCreate,
           options: {
-            dataProviderName: "inventory",
+            dataProviderName: INVENTORY_DATA_PROVIDER,
+          },
+        },
+        {
+          name: "movements",
+          list: MovementList,
+          create: MovementCreate,
+          options: {
+            dataProviderName: INVENTORY_DATA_PROVIDER,
           },
         },
       ]}

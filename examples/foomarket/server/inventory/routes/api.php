@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\MovementsController;
 use Illuminate\Support\Facades\Route;
 use Orion\Facades\Orion;
 use App\Http\Controllers\ProductsController;
@@ -15,6 +16,7 @@ use App\Http\Controllers\ProductsController;
 |
 */
 
-Route::group(['as' => 'api.'], function() {
+Route::group(['as' => 'api.'], function () {
     Orion::resource('products', ProductsController::class);
+    Orion::resource('movements', MovementsController::class);
 });

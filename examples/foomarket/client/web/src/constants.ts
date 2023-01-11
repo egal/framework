@@ -9,3 +9,5 @@ export const KEYCLOAK_URL =
 export const KEYCLOAK_REALM = "master";
 
 export const KEYCLOAK_CLIENT_ID = "web";
+
+export const INVENTORY_DATA_PROVIDER = "inventory";
