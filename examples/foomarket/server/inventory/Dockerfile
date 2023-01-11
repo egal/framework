@@ -9,7 +9,7 @@ ARG COMPOSER_VERSION=latest
 FROM composer:${COMPOSER_VERSION} AS vendor
 ARG ROOT=/var/www/html
 WORKDIR $ROOT
-COPY composer* .
+COPY ./composer* .
 RUN composer install \
         --no-dev \
         --no-interaction \
