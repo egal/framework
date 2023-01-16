@@ -4,7 +4,8 @@ WORKDIR /app
 
 FROM node as develop
 EXPOSE 3000
-CMD npm run dev
+CMD npm link /packages/npm-refine-laravel-orion/ /packages/npm-refine-keycloak/ \
+    && npm run dev
 
 
 FROM node as build
@@ -12,6 +13,7 @@ COPY package.json .
 COPY package-lock.json .
 RUN npm install --legacy-peer-deps
 COPY . .
+HEALTHCHECK --start-period=60s --interval=3s --timeout=3s --retries=8 CMD curl --fail http://localhost:3000 || exit 1
 RUN npm run build
 
 

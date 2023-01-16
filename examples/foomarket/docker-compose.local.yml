@@ -5,8 +5,17 @@ services:
   keycloak:
     command: start-dev
 
+  client-node-modules-installer:
+    build:
+      context: client/web
+      target: node
+    volumes:
+      - ./client/web:/app
+      - ../../packages:/packages
+    command: npm install
+
   client:
-#    user: ${UID?:err}:${GID?:err}
+    # user: ${UID?:err}:${GID?:err}
     build:
       target: develop
     volumes:
@@ -15,15 +24,65 @@ services:
     ports:
       - target: 3000
         published: 3000
+    depends_on:
+      client-node-modules-installer:
+        condition: service_completed_successfully
+
+  inventory-vendor-installer:
+    build:
+      context: server/inventory
+      target: composer
+    user: ${UID?:err}:${GID?:err}
+    working_dir: /app
+    volumes:
+      - ./server/inventory:/app
+    command:
+      - install
+      - --no-interaction
+      - --prefer-dist
+      - --ignore-platform-reqs
+      - --optimize-autoloader
+      - --apcu-autoloader
+      - --ansi
+      - --no-scripts
+      - --audit
+
+  inventory-migration:
+    build:
+      target: cli-develop
+    user: ${UID?:err}:${GID?:err}
+    volumes:
+      - ./server/inventory:/app
+    depends_on:
+      inventory-vendor-installer:
+        condition: service_completed_successfully
 
   inventory-server:
     build:
       target: server-develop
     user: ${UID?:err}:${GID?:err}
     volumes:
-      - ./server/inventory:/var/www/html
+      - ./server/inventory:/app
+    depends_on:
+      inventory-vendor-installer:
+        condition: service_completed_successfully
 
   inventory-scheduler:
     user: ${UID?:err}:${GID?:err}
     volumes:
-      - ./server/inventory:/var/www/html
+      - ./server/inventory:/app
+    build:
+      target: cli-develop
+    depends_on:
+      inventory-vendor-installer:
+        condition: service_completed_successfully
+
+  inventory-movements-handler:
+    user: ${UID?:err}:${GID?:err}
+    volumes:
+      - ./server/inventory:/app
+    build:
+      target: cli-develop
+    depends_on:
+      inventory-vendor-installer:
+        condition: service_completed_successfully

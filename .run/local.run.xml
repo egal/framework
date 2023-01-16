@@ -1,8 +1,0 @@
-<component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="local" type="Multirun" separateTabs="false" reuseTabsWithFailures="false" startOneByOne="true" markFailedProcess="true" hideSuccessProcess="false" delayTime="0.0">
-    <runConfiguration name="local.example.foomarket" type="Docker" />
-    <runConfiguration name="local.package.npm-refine-keycloak" type="npm" />
-    <runConfiguration name="local.package.npm-refine-laravel-orion" type="npm" />
-    <method v="2" />
-  </configuration>
-</component>

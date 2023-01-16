@@ -98,6 +98,11 @@ services:
     environment:
       VIRTUAL_HOST: ${HOST?:err}
       LETSENCRYPT_HOST: ${HOST?:err}
+    depends_on:
+      keycloak:
+        condition: service_started
+      inventory-server:
+        condition: service_healthy
 
   keycloak:
     image: quay.io/keycloak/keycloak:20.0.2
@@ -114,6 +119,22 @@ services:
       POSTGRES_DB: *inventory-database-name
       POSTGRES_USER: *inventory-database-user
       POSTGRES_PASSWORD: *inventory-database-password
+    healthcheck:
+      test: pg_isready --username=${INVENTORY_DATABASE_USER:-user} --dbname=${INVENTORY_DATABASE_NAME:-inventory}
+      interval: 3s
+      timeout: 3s
+      retries: 8
+
+  inventory-migration:
+    environment:
+      <<: *inventory-environment
+    build:
+      context: server/inventory
+      target: cli
+    command: php artisan migrate
+    depends_on:
+      inventory-database:
+        condition: service_healthy
 
   inventory-server:
     environment:
@@ -127,10 +148,34 @@ services:
     build:
       context: server/inventory
       target: server
+    depends_on:
+      inventory-database:
+        condition: service_healthy
+      inventory-migration:
+        condition: service_completed_successfully
 
   inventory-scheduler:
     environment:
       <<: *inventory-environment
     build:
       context: server/inventory
-      target: scheduler
+      target: cli
+    command: php artisan schedule:work
+    depends_on:
+      inventory-database:
+        condition: service_healthy
+      inventory-migration:
+        condition: service_completed_successfully
+
+  inventory-movements-handler:
+    environment:
+      <<: *inventory-environment
+    build:
+      context: server/inventory
+      target: cli
+    command: php artisan handle:movements
+    depends_on:
+      inventory-database:
+        condition: service_healthy
+      inventory-migration:
+        condition: service_completed_successfully

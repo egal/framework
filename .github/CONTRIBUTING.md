@@ -67,47 +67,10 @@ For example, improving performance, implementing those. debt, etc..
 > **Platform reqs:**
 > 1. Docker
 > 2. Docker Compose
-> 3. PHP
-> 4. Composer
-> 5. Node
-> 6. NPM
->
-> **Life-hack:**
->
-> Add to your `.bashrc` (or `.zshrc`) file next aliases for using Compose, PHP dockerized:
-> ```shell
-> alias dockerrunhelper='docker run --rm --interactive --tty --volume ${PWD}:/app --workdir /app --user $(id -u):$(id -g)'
-> alias composer='dockerrunhelper composer';
-> alias php7.4='dockerrunhelper php:7.4-cli-buster'
-> alias php8.0='dockerrunhelper php:8.0-cli-buster'
-> alias php8.1='dockerrunhelper php:8.1-cli-buster'
-> alias php8.2='dockerrunhelper php:8.2-cli-buster'
-> alias php='php8.2'
-> ```
 
-1. Install deps:
-    1. Packages:
+Open in Jetbrains storm Run's from `.run` directory, and run some.
 
-         ```shell
-         cd packages/npm-refine-keycloak && npm install && \
-         cd packages/npm-refine-laravel-orion && npm install
-         ```
+> Dont forget configure `.env` files from `.env.example` template.
 
-    2. Examples:
-        1. Foomarket
-
-            ```shell
-            cd examples/foomarket/server/inventory && compose install && \
-            cd examples/foomarket/client/web && npm install
-            ```
-
-2. Run:
-
-   Open in Jetbrains storm Run.
-
-   > If in examples you need using local packages - run in container:
-   > 
-   > ```shell
-   > # client container
-   > npm link /packages/npm-refine-laravel-orion/ /packages/npm-refine-keycloak/
-   > ```
+> If you want to use docker-compose cli manually - don't forget
+> about `COMPOSE_FILE` variable in `.env` file.

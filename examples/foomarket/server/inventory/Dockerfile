@@ -6,8 +6,11 @@ ARG COMPOSER_VERSION=latest
 # https://github.com/exaco/laravel-octane-dockerfile
 ###########################################
 
-FROM composer:${COMPOSER_VERSION} AS vendor
-ARG ROOT=/var/www/html
+FROM composer:${COMPOSER_VERSION} as composer
+
+
+FROM composer AS vendor
+ARG ROOT=/app
 WORKDIR $ROOT
 COPY composer.json .
 COPY composer.lock .
@@ -22,9 +25,11 @@ RUN composer install \
         --no-scripts \
         --audit
 
+# TODO: --audit not found sometimes.
+
 
 FROM php:${PHP_VERSION}-cli-buster as base
-ARG ROOT=/var/www/html
+ARG ROOT=/app
 WORKDIR $ROOT
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime; \
     echo $TZ > /etc/timezone
@@ -36,8 +41,6 @@ RUN apt-get update; \
 RUN docker-php-ext-install \
         pdo_pgsql \
         pgsql
-COPY . .
-COPY --from=vendor ${ROOT}/vendor vendor
 
 
 FROM base as base-server
@@ -51,7 +54,7 @@ RUN apt-get clean; \
     docker-php-source delete; \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*; \
     rm /var/log/lastlog /var/log/faillog
-HEALTHCHECK --start-period=5s --interval=2s --timeout=5s --retries=8 CMD php artisan octane:status || exit 1
+HEALTHCHECK --start-period=60s --interval=3s --timeout=3s --retries=8 CMD php artisan octane:status || exit 1
 
 
 FROM node:16 AS server-develop-node
@@ -59,6 +62,18 @@ RUN npm install --global chokidar
 
 
 FROM base-server as server-develop
+COPY --from=composer /usr/bin/composer /usr/bin/composer
+RUN apt-get update; \
+    apt-get upgrade -yqq; \
+    apt-get install -yqq --no-install-recommends --show-progress \
+        git \
+        libzip-dev \
+        zip \
+        unzip
+RUN docker-php-ext-configure \
+        zip \
+    && docker-php-ext-install \
+        zip
 COPY --from=server-develop-node /usr/local/lib/node_modules /usr/local/lib/node_modules
 COPY --from=server-develop-node /usr/local/bin/node /usr/local/bin/node
 RUN ln -s /usr/local/lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm
@@ -67,12 +82,18 @@ CMD php artisan octane:start --host=localhost --watch
 
 
 FROM base-server as server
+COPY . .
+COPY --from=vendor ${ROOT}/vendor vendor
 CMD php artisan octane:start --host=localhost
 
 
-FROM base as scheduler
+FROM base as cli
 RUN apt-get clean; \
     docker-php-source delete; \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*; \
     rm /var/log/lastlog /var/log/faillog
-CMD php artisan schedule:work
+COPY . .
+COPY --from=vendor ${ROOT}/vendor vendor
+
+
+FROM base as cli-develop
