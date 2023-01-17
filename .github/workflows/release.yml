@@ -1,0 +1,61 @@
+name: Build release
+
+on:
+  release:
+    types:
+      - published
+
+jobs:
+
+  package/npm-refine-keycloak:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16.x
+          registry-url: 'https://registry.npmjs.org'
+      - name: Publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          cd ./packages/npm-refine-keycloak && \
+            npm install && \
+            npm version ${{ github.event.release.tag_name }} && \
+            npm run build && \
+            npm publish --access public
+
+  package/npm-refine-laravel-orion:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16.x
+          registry-url: 'https://registry.npmjs.org'
+      - name: Publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          cd ./packages/npm-refine-laravel-orion && \
+            npm install && \
+            npm version ${{ github.event.release.tag_name }} && \
+            npm run build && \
+            npm publish --access public
+
+  notify:
+    if: "!github.event.release.prerelease"
+    needs:
+      - package-php-framework
+      - package-npm-framework
+      - service-postgres
+      - service-rabbitmq
+      - service-web
+    runs-on: ubuntu-latest
+    steps:
+      - uses: egal/release-notify-action@main
+        with:
+          repository_name: ${{ github.repository }}
+          release_json: ${{ toJson(github.event.release) }}
+          telegram_channel_id: ${{ secrets.TELEGRAM_CHANNEL_ID_FOR_RELEASE_NOTIFY }}
+          telegram_token: ${{ secrets.TELEGRAM_TOKEN }}
