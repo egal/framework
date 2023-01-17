@@ -46,11 +46,8 @@ jobs:
   notify:
     if: "!github.event.release.prerelease"
     needs:
-      - package-php-framework
-      - package-npm-framework
-      - service-postgres
-      - service-rabbitmq
-      - service-web
+      - package-npm-refine-keycloak
+      - package-npm-refine-laravel-orion
     runs-on: ubuntu-latest
     steps:
       - uses: egal/release-notify-action@main
