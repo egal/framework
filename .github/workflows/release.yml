@@ -68,6 +68,7 @@ jobs:
   notify:
     if: "!github.event.release.prerelease"
     needs:
+      - package-php-laravel-event-bus
       - package-npm-refine-keycloak
       - package-npm-refine-laravel-orion
     runs-on: ubuntu-latest
