@@ -1,7 +1,7 @@
 import { AxiosInstance } from 'axios';
 import { stringify } from 'query-string';
 import { DataProvider, HttpError } from '@pankod/refine-core';
-import { axiosInstance, generateSort, generateFilter } from './utils';
+import { generateSort, generateFilter } from './utils';
 import { SearchBody, SearchQuery } from './types';
 
 export const dataProvider = (
@@ -29,8 +29,6 @@ export const dataProvider = (
       resource,
       hasPagination = true,
       pagination,
-      filters,
-      sort,
       metaData,
     }) => {
       const url = `${apiUrl}/${resource}/search`;
@@ -47,10 +45,12 @@ export const dataProvider = (
       const body: SearchBody = {};
 
       body.includes = metaData?.includes ?? [];
+      const headers = metaData?.headers ?? {};
 
       const { data } = await httpClient.post(
         `${url}?${stringify(query)}`,
-        body
+        body,
+        { headers }
       );
 
       return {
@@ -59,45 +59,54 @@ export const dataProvider = (
       };
     },
 
-    getMany: async ({ resource, ids }) => {
+    getMany: async ({}) => {
       throw new Error('Not implemented!');
     },
 
-    create: async ({ resource, variables }) => {
+    create: async ({ resource, variables, metaData }) => {
       const url = `${apiUrl}/${resource}`;
 
-      const { data } = await httpClient.post(url, variables);
+      const headers = metaData?.headers ?? {};
+
+      const { data } = await httpClient.post(url, variables, { headers });
 
       return {
         data,
       };
     },
 
-    update: async ({ resource, id, variables }) => {
+    update: async ({ resource, id, variables, metaData }) => {
       const url = `${apiUrl}/${resource}/${id}`;
 
-      const { data } = await httpClient.patch(url, variables);
+      const headers = metaData?.headers ?? {};
+
+      const { data } = await httpClient.patch(url, variables, { headers });
 
       return {
         data,
       };
     },
 
-    getOne: async ({ resource, id }) => {
+    getOne: async ({ resource, id, metaData }) => {
       const url = `${apiUrl}/${resource}/${id}`;
 
-      const { data } = await httpClient.get(url);
+      const headers = metaData?.headers ?? {};
+
+      const { data } = await httpClient.get(url, { headers });
 
       return {
         data,
       };
     },
 
-    deleteOne: async ({ resource, id, variables }) => {
+    deleteOne: async ({ resource, id, variables, metaData }) => {
       const url = `${apiUrl}/${resource}/${id}`;
+
+      const headers = metaData?.headers ?? {};
 
       const { data } = await httpClient.delete(url, {
         data: variables,
+        headers,
       });
 
       return {
