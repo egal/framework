@@ -1,7 +1,7 @@
 import { AxiosInstance } from 'axios';
 import { stringify } from 'query-string';
 import { DataProvider, HttpError } from '@pankod/refine-core';
-import { axiosInstance, generateSort, generateFilter } from './utils';
+import { generateSort, generateFilter } from './utils';
 import { SearchBody, SearchQuery } from './types';
 
 export const dataProvider = (
@@ -29,8 +29,6 @@ export const dataProvider = (
       resource,
       hasPagination = true,
       pagination,
-      filters,
-      sort,
       metaData,
     }) => {
       const url = `${apiUrl}/${resource}/search`;
@@ -61,7 +59,7 @@ export const dataProvider = (
       };
     },
 
-    getMany: async ({ resource, ids, metaData }) => {
+    getMany: async ({}) => {
       throw new Error('Not implemented!');
     },
 
