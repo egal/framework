@@ -2,7 +2,7 @@ import { AxiosInstance } from 'axios';
 import { stringify } from 'query-string';
 import { DataProvider, HttpError } from '@pankod/refine-core';
 import { generateSort, generateFilter } from './utils';
-import { SearchBody, SearchQuery } from './types';
+import { SearchBody, SearchQuery, Sort, SortCondition } from './types';
 
 export const dataProvider = (
   apiUrl: string,
@@ -26,10 +26,12 @@ export const dataProvider = (
 
   return {
     getList: async ({
+      //
       resource,
       hasPagination = true,
       pagination,
       metaData,
+      sort,
     }) => {
       const url = `${apiUrl}/${resource}/search`;
 
@@ -45,6 +47,7 @@ export const dataProvider = (
       const body: SearchBody = {};
 
       body.includes = metaData?.includes ?? [];
+      body.sort = generateSort(sort);
       const headers = metaData?.headers ?? {};
 
       const { data } = await httpClient.post(
@@ -63,7 +66,12 @@ export const dataProvider = (
       throw new Error('Not implemented!');
     },
 
-    create: async ({ resource, variables, metaData }) => {
+    create: async ({
+      //
+      resource,
+      variables,
+      metaData,
+    }) => {
       const url = `${apiUrl}/${resource}`;
 
       const headers = metaData?.headers ?? {};
@@ -75,7 +83,13 @@ export const dataProvider = (
       };
     },
 
-    update: async ({ resource, id, variables, metaData }) => {
+    update: async ({
+      //
+      resource,
+      id,
+      variables,
+      metaData,
+    }) => {
       const url = `${apiUrl}/${resource}/${id}`;
 
       const headers = metaData?.headers ?? {};
@@ -87,7 +101,12 @@ export const dataProvider = (
       };
     },
 
-    getOne: async ({ resource, id, metaData }) => {
+    getOne: async ({
+      //
+      resource,
+      id,
+      metaData,
+    }) => {
       const url = `${apiUrl}/${resource}/${id}`;
 
       const headers = metaData?.headers ?? {};
@@ -99,7 +118,13 @@ export const dataProvider = (
       };
     },
 
-    deleteOne: async ({ resource, id, variables, metaData }) => {
+    deleteOne: async ({
+      //
+      resource,
+      id,
+      variables,
+      metaData,
+    }) => {
       const url = `${apiUrl}/${resource}/${id}`;
 
       const headers = metaData?.headers ?? {};
@@ -118,20 +143,16 @@ export const dataProvider = (
       return apiUrl;
     },
 
-    custom: async ({ url, method, filters, sort, payload, query, headers }) => {
+    custom: async ({
+      //
+      url,
+      method,
+      filters,
+      payload,
+      query,
+      headers,
+    }) => {
       let requestUrl = `${url}?`;
-
-      if (sort) {
-        const generatedSort = generateSort(sort);
-        if (generatedSort) {
-          const { _sort, _order } = generatedSort;
-          const sortQuery = {
-            _sort: _sort.join(','),
-            _order: _order.join(','),
-          };
-          requestUrl = `${requestUrl}&${stringify(sortQuery)}`;
-        }
-      }
 
       if (filters) {
         const filterQuery = generateFilter(filters);
