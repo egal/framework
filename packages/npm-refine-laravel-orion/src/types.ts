@@ -18,10 +18,12 @@ export type Search = {
   [key: string]: any;
 };
 
-export type Sort = {
+export type SortCondition = {
   field: string;
   direction: 'asc' | 'desc';
-}[];
+};
+
+export type Sort = SortCondition[];
 
 export type Aggregate = {
   relation: string;
