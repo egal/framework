@@ -5,12 +5,37 @@ export type Scope = {
 
 export type Scopes = Scope[];
 
-export type Filter = {
+export type Operator =
+  | '<'
+  | '<='
+  | '>'
+  | '>='
+  | '='
+  | '!='
+  | 'like'
+  | 'not like'
+  | 'ilike'
+  | 'not ilike'
+  | 'in'
+  | 'not in'
+  | 'all in'
+  | 'any in';
+
+type BaseFilter = {
   type?: 'and' | 'or';
+};
+
+type LogicalFilter = BaseFilter & {
   field: string;
-  operator: string;
+  operator: Operator;
   value: any;
 };
+
+type ConditionalFilter = BaseFilter & {
+  nested: Filters;
+};
+
+export type Filter = LogicalFilter | ConditionalFilter;
 
 export type Filters = Filter[];
 
