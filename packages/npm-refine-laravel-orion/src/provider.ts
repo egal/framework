@@ -114,7 +114,7 @@ export const dataProvider = (
       const { data } = await httpClient.get(url, { headers });
 
       return {
-        data,
+        data: data.data,
       };
     },
 
