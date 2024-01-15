@@ -43,10 +43,10 @@ export class HttpRequest {
                             refreshSubscribers = [];
                         })
                     }).catch((error) => {
-                        return error
+                        return Promise.reject(error);
                     })
                 } else {
-                    return error;
+                    return Promise.reject(error);
                 }
             }
         );
