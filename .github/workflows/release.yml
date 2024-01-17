@@ -22,8 +22,8 @@ jobs:
         run: |
           git_branch='2.x'
           split_dir=packages/php/framework
-          split_remote='https://rollsover:${{ secrets.ACCESS_TOKEN }}@github.com/egal/framework-php-package.git'
-          git clone https://rollsover:${{ secrets.ACCESS_TOKEN }}@github.com/egal/framework.git .
+          split_remote='https://shtaigerwald:${{ secrets.ACCESS_TOKEN }}@github.com/egal/framework-php-package.git'
+          git clone https://shtaigerwald:${{ secrets.ACCESS_TOKEN }}@github.com/egal/framework.git .
           git filter-repo --subdirectory-filter ${split_dir}/
           git remote set-url origin ${split_remote} || git remote add origin ${split_remote}
           git push -u origin ${git_branch}
